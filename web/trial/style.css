@@ -1,0 +1,106 @@
+:root {
+  --primary-green: #214332;
+  --accent-tan: #BF9B7B;
+  --bg-cream: #F2F0E6;
+  --charcoal: #2B2B2B;
+
+  --text-dark: #1f1f1f;
+  --text-muted: #6b6b6b;
+
+  --border-soft: #e4e1d7;
+  --card-bg: #ffffff;
+
+  --radius: 14px;
+}
+
+/* ===== BASE ===== */
+
+body {
+  background: var(--bg-cream);
+  color: var(--text-dark);
+  font-family: 'Inter', sans-serif;
+}
+
+/* ===== NAV ===== */
+
+nav {
+  background: rgba(242,240,230,0.92);
+  border-bottom: 1px solid var(--border-soft);
+}
+
+.nav-links a:hover {
+  color: var(--primary-green);
+}
+
+.nav-cta {
+  background: var(--primary-green);
+}
+
+.nav-cta:hover {
+  background: #163326;
+}
+
+/* ===== CARDS ===== */
+
+.metric-card,
+.bird-card,
+.chart-wrap,
+.contact-card,
+.record-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius);
+}
+
+/* ===== TAGS ===== */
+
+.section-tag,
+.page-tag {
+  color: var(--primary-green);
+  background: rgba(33,67,50,0.08);
+}
+
+/* ===== BUTTON ===== */
+
+button,
+.btn-register,
+.submit-btn {
+  background: var(--primary-green);
+  color: white;
+}
+
+button:hover,
+.btn-register:hover,
+.submit-btn:hover {
+  background: #163326;
+}
+
+/* ===== FOOTER ===== */
+
+footer {
+  background: var(--charcoal);
+}
+
+footer a {
+  color: var(--accent-tan);
+}
+
+/* ===== RESPONSIVE ===== */
+
+@media (max-width: 768px) {
+  nav {
+    padding: 0 1rem;
+  }
+
+  .nav-links {
+    display: none;
+  }
+
+  .metrics-row {
+    grid-template-columns: 1fr;
+  }
+
+  .content {
+    padding: 1rem;
+  }
+}
