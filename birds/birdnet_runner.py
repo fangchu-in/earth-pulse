@@ -24,8 +24,8 @@ from supabase import create_client
 LAT          = 18.5526156
 LON          = 73.7818663
 TIMEZONE     = "Asia/Kolkata"
-RECORD_SECS  = 60        # record 60 seconds per detection cycle
-MIN_CONF     = 0.70      # only log detections above 70% confidence
+RECORD_SECS  = 300        # record 300 seconds per detection cycle
+MIN_CONF     = 0.35      # only log detections above 70% confidence
 AUDIO_DIR    = "/home/fangchu/earth_pulse/birds/recordings"
 ENV_FILE     = "/home/fangchu/earth_pulse/.env"
 
