@@ -4,14 +4,14 @@ Each detection is timestamped, enriched with environmental context such as AQI a
 The goal is simple: to observe how a small patch of land behaves over time. When the air worsens, do birds go quiet? When the first rains arrive, which species return? When does the dawn chorus peak through the year?
 Rather than snapshots, Earth Pulse builds a continuous, living record.
 
-🔍 What it currently tracks
+🔍 What it currently tracks:- 
 Air Quality (PM2.5, PM10, AQI, gases)
 Weather (temperature, humidity, pressure, wind)
 Solar radiation (shortwave, direct, diffuse)
 Bird detections (species, confidence, timestamps)
 Time-of-day patterns (dawn, evening, night activity)
 
-⚙️ Tech stack
+⚙️ Tech stack:- 
 Raspberry Pi (Zero 2W + 3B+)
 Python (data ingestion, logging, BirdNET integration)
 BirdNET (acoustic AI)
@@ -19,7 +19,7 @@ Supabase (database + API)
 Cloudflare Pages (frontend hosting)
 Open-Meteo APIs (climate + air quality)
 
-🌱 Why this exists
+🌱 Why this exists:- 
 Most environmental data is either too broad (city-level) or too sparse. Earth Pulse sits in between, capturing one location in depth, over time.
 It is an attempt to make the invisible visible:
 how air, weather, and life interact
