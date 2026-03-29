@@ -9,200 +9,103 @@
   <link rel="canonical" href="https://earthpulse.pages.dev/birds.html">
   <meta property="og:title" content="Birds of Baner — Earth Pulse">
   <meta property="og:description" content="Every bird species detected acoustically in Baner, Pune. Updated continuously.">
-  <meta property="og:image" content="https://earthpulse.pages.dev/earthpulse-og.png">
-  <link rel="icon" type="image/svg+xml" href="earthpulse-logo.svg">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <meta property="og:image" content="https://earthpulse.pages.dev/earth-pulse-logo.png">
+  <link rel="icon" type="image/png" href="earth-pulse-logo.png">
+  <link rel="stylesheet" href="styles.css">
   <style>
-    :root {
-      --green-50:#f0fdf4;--green-100:#dcfce7;--green-200:#bbf7d0;
-      --green-400:#4ade80;--green-500:#22c55e;--green-600:#16a34a;
-      --green-700:#15803d;--green-900:#14532d;
-      --stone-50:#fafaf9;--stone-100:#f5f5f4;--stone-200:#e7e5e4;
-      --stone-300:#d6d3d1;--stone-500:#78716c;--stone-700:#44403c;--stone-900:#1c1917;
-      --serif:'DM Serif Display',Georgia,serif;
-      --sans:'DM Sans',system-ui,sans-serif;
-      --mono:'DM Mono',monospace;
-    }
-    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-    html{scroll-behavior:smooth;}
-    body{font-family:var(--sans);background:var(--stone-50);color:var(--stone-900);line-height:1.6;overflow-x:hidden;}
-
-    nav{position:sticky;top:0;z-index:100;background:rgba(250,250,249,0.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--stone-200);padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:60px;}
-    .nav-brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--stone-900);}
-    .nav-brand svg{width:32px;height:32px;}
-    .nav-brand-text{font-family:var(--serif);font-size:1.2rem;}
-    .nav-links{display:flex;gap:2rem;list-style:none;}
-    .nav-links a{text-decoration:none;color:var(--stone-500);font-size:0.875rem;font-weight:500;transition:color 0.2s;}
-    .nav-links a:hover,.nav-links a.active{color:var(--green-600);}
-    .nav-cta{background:var(--green-500);color:white;padding:0.4rem 1.1rem;border-radius:2rem;text-decoration:none;font-size:0.85rem;font-weight:500;transition:background 0.2s;}
-    .nav-cta:hover{background:var(--green-600);}
-
-    .page-hero{background:linear-gradient(160deg,var(--green-50) 0%,white 60%);padding:4rem 2rem 2.5rem;text-align:center;}
-    .page-tag{display:inline-flex;align-items:center;gap:6px;background:var(--green-100);color:var(--green-700);padding:0.3rem 1rem;border-radius:2rem;font-size:0.8rem;font-weight:500;letter-spacing:0.04em;margin-bottom:1rem;}
-    .page-hero h1{font-family:var(--serif);font-size:clamp(2rem,5vw,3.5rem);line-height:1.1;margin-bottom:0.75rem;}
-    .page-hero p{color:var(--stone-500);font-size:1rem;max-width:520px;margin:0 auto;}
-
-    .filters{background:white;border-bottom:1px solid var(--stone-200);padding:1rem 2rem;display:flex;gap:0.75rem;flex-wrap:wrap;align-items:center;position:sticky;top:60px;z-index:90;}
-    .filter-label{font-size:0.78rem;font-weight:600;color:var(--stone-500);letter-spacing:0.06em;text-transform:uppercase;margin-right:0.25rem;}
-    .filter-btn{padding:0.35rem 0.9rem;border-radius:2rem;border:1px solid var(--stone-200);background:transparent;font-family:var(--sans);font-size:0.8rem;cursor:pointer;transition:all 0.15s;color:var(--stone-700);}
-    .filter-btn:hover{border-color:var(--green-400);color:var(--green-600);}
-    .filter-btn.active{background:var(--green-500);color:white;border-color:var(--green-500);}
-
-    .stats-strip{max-width:1100px;margin:2rem auto 0;padding:0 2rem;display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1rem;}
-    .stat-pill{background:white;border:1px solid var(--stone-200);border-radius:12px;padding:1rem 1.25rem;text-align:center;}
-    .stat-pill-val{font-family:var(--serif);font-size:2rem;color:var(--stone-900);}
-    .stat-pill-label{font-size:0.72rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--stone-500);margin-top:0.2rem;}
-
-    .birds-section{max-width:1100px;margin:0 auto;padding:2rem;}
-    .section-divider{font-size:0.72rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--green-600);margin:2rem 0 1rem;padding-bottom:0.5rem;border-bottom:2px solid var(--green-100);}
-
-    .bird-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1rem;}
-    .bird-card{background:white;border:1px solid var(--stone-200);border-radius:14px;padding:1.25rem;display:flex;gap:1rem;align-items:flex-start;transition:box-shadow 0.2s,transform 0.2s;text-decoration:none;color:inherit;}
-    .bird-card:hover{box-shadow:0 6px 28px rgba(0,0,0,0.08);transform:translateY(-2px);}
-    .bird-icon{width:56px;height:56px;border-radius:12px;background:var(--green-50);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:2rem;}
-    .bird-name{font-weight:600;font-size:1rem;margin-bottom:2px;}
-    .bird-scientific{font-style:italic;font-size:0.78rem;color:var(--stone-500);margin-bottom:6px;}
-    .bird-badges{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:6px;}
-    .badge{font-size:0.65rem;font-weight:600;padding:2px 8px;border-radius:20px;letter-spacing:0.04em;}
-    .badge-common{background:#dcfce7;color:#15803d;}
-    .badge-migratory{background:#dbeafe;color:#1d4ed8;}
-    .badge-rare{background:#fef3c7;color:#92400e;}
-    .badge-vulnerable{background:#fee2e2;color:#991b1b;}
-    .badge-new{background:#fef08a;color:#713f12;}
-    .bird-stats{display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-top:6px;}
-    .bird-stat{font-family:var(--mono);font-size:0.7rem;color:var(--stone-500);}
-    .bird-stat strong{color:var(--stone-700);font-family:var(--sans);font-weight:500;}
-    .bird-conf{font-family:var(--mono);font-size:0.72rem;color:var(--green-600);}
-    .bird-new-star{display:inline-block;margin-left:6px;background:#fef08a;color:#713f12;font-size:0.62rem;font-weight:700;padding:1px 6px;border-radius:10px;}
-
-    .empty-state{text-align:center;padding:4rem 2rem;color:var(--stone-500);}
-    .empty-state p{font-size:0.9rem;margin-top:0.5rem;}
-
-    .skeleton{background:linear-gradient(90deg,var(--stone-100) 25%,var(--stone-200) 50%,var(--stone-100) 75%);background-size:200% 100%;animation:shimmer 1.5s infinite;border-radius:14px;}
-    @keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
-
-    footer{background:var(--stone-900);color:rgba(255,255,255,0.5);padding:2rem;text-align:center;font-size:0.8rem;margin-top:4rem;}
-    footer a{color:#4ade80;text-decoration:none;}
-    .footer-logo{font-family:var(--serif);font-size:1.1rem;color:white;margin-bottom:0.5rem;}
-    .footer-tagline{font-size:0.78rem;color:rgba(255,255,255,0.35);margin-bottom:0.75rem;font-style:italic;}
+    .stats-strip { max-width:1100px; margin:2rem auto 0; padding:0 2rem; display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:1rem; }
+    .stat-pill { background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-md); padding:1rem 1.25rem; text-align:center; }
+    .stat-pill-val { font-family:var(--serif); font-size:2rem; color:var(--ep-green); }
+    .stat-pill-label { font-size:0.7rem; font-weight:600; letter-spacing:0.08em; text-transform:uppercase; color:var(--text-muted); margin-top:0.2rem; }
+    .birds-section { max-width:1100px; margin:0 auto; padding:2rem; }
+    .section-divider { font-size:0.72rem; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; color:var(--ep-tan); margin:2rem 0 1rem; padding-bottom:0.5rem; border-bottom:2px solid rgba(191,155,123,0.2); }
+    .bird-list { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:1rem; }
+    .bird-stats-mini { display:grid; grid-template-columns:1fr 1fr; gap:4px; margin-top:6px; }
+    .bird-stat { font-family:var(--mono); font-size:0.7rem; color:var(--text-muted); }
+    .bird-stat strong { color:var(--ep-green); font-family:var(--sans); font-weight:500; font-size:0.72rem; }
+    .bird-new-star { display:inline-block; margin-left:6px; background:#fef08a; color:#713f12; font-size:0.62rem; font-weight:700; padding:1px 6px; border-radius:10px; }
+    .empty-state { text-align:center; padding:4rem 2rem; color:var(--text-muted); grid-column:1/-1; }
   </style>
 </head>
 <body>
+<div id="ep-nav"></div>
 
-<nav>
-  <a href="index.html" class="nav-brand">
-    <svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
-      <defs><radialGradient id="eg" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#4ade80"/><stop offset="100%" stop-color="#15803d"/></radialGradient></defs>
-      <circle cx="200" cy="200" r="185" fill="rgba(74,222,128,0.12)"/>
-      <circle cx="200" cy="200" r="155" fill="url(#eg)"/>
-      <ellipse cx="175" cy="165" rx="45" ry="38" fill="#15803d" opacity="0.5" transform="rotate(-15 175 165)"/>
-      <path d="M60 200 L110 200 L128 200 L140 165 L155 235 L168 180 L178 220 L190 200 L340 200" fill="none" stroke="white" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
-    </svg>
-    <span class="nav-brand-text">Earth Pulse</span>
-  </a>
-  <ul class="nav-links">
-    <li><a href="birds.html" class="active">Birds</a></li>
-    <li><a href="climate.html">Climate</a></li>
-    <li><a href="index.html#insights">Insights</a></li>
-    <li><a href="contact.html">Contact</a></li>
-    <li><a href="index.html#about">About</a></li>
-  </ul>
-  <a href="register.html" class="nav-cta">Register</a>
-</nav>
-
-<div class="page-hero">
-  <div class="page-tag">Acoustic monitoring · BirdNET AI · Baner, Pune</div>
+<div class="ep-hero">
+  <div class="ep-hero-tag">Acoustic monitoring · BirdNET AI · Baner, Pune</div>
   <h1>Birds of Baner</h1>
-  <p>Every species detected from the Sahyadri foothills — identified by sound, logged by time, correlated with air quality and weather.</p>
+  <p class="ep-hero-sub">Every species detected from the Sahyadri foothills — identified by sound, logged by time, correlated with air quality and weather.</p>
 </div>
 
-<div class="filters" role="toolbar" aria-label="Filter birds">
-  <span class="filter-label">Filter</span>
-  <button class="filter-btn active" onclick="filterBirds('all',this)">All time</button>
-  <button class="filter-btn" onclick="filterBirds('today',this)">Today</button>
-  <button class="filter-btn" onclick="filterBirds('week',this)">This week</button>
-  <button class="filter-btn" onclick="filterBirds('month',this)">This month</button>
-  <span class="filter-label" style="margin-left:1rem;">Season</span>
-  <button class="filter-btn" onclick="filterBirds('summer',this)">Summer</button>
-  <button class="filter-btn" onclick="filterBirds('monsoon',this)">Monsoon</button>
-  <button class="filter-btn" onclick="filterBirds('winter',this)">Winter</button>
-  <span class="filter-label" style="margin-left:1rem;">Type</span>
-  <button class="filter-btn" onclick="filterBirds('new',this)">First this year</button>
-  <button class="filter-btn" onclick="filterBirds('highconf',this)">High confidence</button>
+<div class="ep-filters" role="toolbar" aria-label="Filter birds">
+  <span class="ep-filter-label">Time</span>
+  <button class="ep-filter-btn active" onclick="filterBirds('all',this)">All time</button>
+  <button class="ep-filter-btn" onclick="filterBirds('today',this)">Today</button>
+  <button class="ep-filter-btn" onclick="filterBirds('week',this)">This week</button>
+  <button class="ep-filter-btn" onclick="filterBirds('month',this)">This month</button>
+  <span class="ep-filter-label" style="margin-left:1rem;">Season</span>
+  <button class="ep-filter-btn" onclick="filterBirds('summer',this)">Summer</button>
+  <button class="ep-filter-btn" onclick="filterBirds('monsoon',this)">Monsoon</button>
+  <button class="ep-filter-btn" onclick="filterBirds('winter',this)">Winter</button>
+  <span class="ep-filter-label" style="margin-left:1rem;">Filter</span>
+  <button class="ep-filter-btn" onclick="filterBirds('new',this)">First this year</button>
+  <button class="ep-filter-btn" onclick="filterBirds('highconf',this)">High confidence</button>
 </div>
 
 <div class="stats-strip" id="stats-strip">
   <div class="stat-pill"><div class="stat-pill-val" id="stat-total">—</div><div class="stat-pill-label">Total detections</div></div>
   <div class="stat-pill"><div class="stat-pill-val" id="stat-species">—</div><div class="stat-pill-label">Species this year</div></div>
   <div class="stat-pill"><div class="stat-pill-val" id="stat-today">—</div><div class="stat-pill-label">Detected today</div></div>
-  <div class="stat-pill"><div class="stat-pill-val" id="stat-first">—</div><div class="stat-pill-label">First detection date</div></div>
+  <div class="stat-pill"><div class="stat-pill-val" id="stat-first">—</div><div class="stat-pill-label">Monitoring since</div></div>
 </div>
 
 <div class="birds-section">
   <div class="section-divider" id="list-label">All species detected</div>
   <div class="bird-list" id="bird-list">
-    <div class="skeleton" style="height:120px"></div>
-    <div class="skeleton" style="height:120px"></div>
-    <div class="skeleton" style="height:120px"></div>
-    <div class="skeleton" style="height:120px"></div>
+    <div class="ep-skeleton" style="height:120px"></div>
+    <div class="ep-skeleton" style="height:120px"></div>
+    <div class="ep-skeleton" style="height:120px"></div>
+    <div class="ep-skeleton" style="height:120px"></div>
   </div>
 </div>
 
-<footer>
-  <div class="footer-logo">Earth Pulse</div>
-  <div class="footer-tagline">Observing the Earth, over time.</div>
-  <p>Baner, Pune · 18.5526°N 73.7819°E · Recording since January 2022</p>
-  <p style="margin-top:0.5rem;">
-    <a href="https://github.com/fangchu-in/earth-pulse">GitHub</a> ·
-    <a href="index.html">Home</a> ·
-    <a href="climate.html">Climate</a> ·
-    <a href="register.html">Register</a> ·
-    <a href="contact.html">Contact</a>
-  </p>
-  <p style="margin-top:1rem;font-size:0.72rem;">
-    Data: Open-Meteo (CAMS) · Google Air Quality · BirdNET (Cornell Lab) · Made with love using <a href="https://claude.ai">Claude</a>
-  </p>
-</footer>
-
+<div id="ep-footer"></div>
 <script src="analytics.js"></script>
+<script src="nav.js"></script>
 <script>
 const SUPABASE_URL = 'https://krmczyqwblsoekceanlj.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_DrHFT5J0vmrkYraUXIlpQQ_gsk1rdq6';
-const HDR = { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` };
+const HDR = { 'apikey':SUPABASE_KEY, 'Authorization':`Bearer ${SUPABASE_KEY}` };
 
-const BIRD_EMOJI = {'sunbird':'🌺','bulbul':'🐦','drongo':'🖤','kite':'🦅','hawk':'🦅','eagle':'🦅','crow':'🐦‍⬛','myna':'🐦','owl':'🦉','pigeon':'🕊️','sparrow':'🐦','swift':'💨','warbler':'🎵','heron':'🦢','kestrel':'🦅','pipit':'🐦','nightjar':'🌙','martin':'💨','bee-eater':'🦜','kingfisher':'💎','default':'🦜'};
-
-function getBirdEmoji(name) {
-  const lower = name.toLowerCase();
-  for (const [k,v] of Object.entries(BIRD_EMOJI)) { if (lower.includes(k)) return v; }
-  return BIRD_EMOJI.default;
+/* IST midnight → UTC for today filter */
+function todayUTC() {
+  const now = new Date();
+  /* IST is UTC+5:30, so midnight IST = 18:30 previous UTC day */
+  const istMidnight = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0);
+  return new Date(istMidnight.getTime() - 5.5*3600000).toISOString();
 }
 
-function getStatusBadge(name) {
-  const lower = name.toLowerCase();
-  if (['kestrel','nightjar','heron'].some(s=>lower.includes(s))) return '<span class="badge badge-rare">Rare</span>';
-  if (['pipit','warbler','martin'].some(s=>lower.includes(s))) return '<span class="badge badge-migratory">Migratory</span>';
-  return '<span class="badge badge-common">Common</span>';
+const BIRD_EMOJI={'sunbird':'🌺','bulbul':'🐦','drongo':'🖤','kite':'🦅','hawk':'🦅','eagle':'🦅','crow':'🐦‍⬛','myna':'🐦','owl':'🦉','pigeon':'🕊️','sparrow':'🐦','swift':'💨','warbler':'🎵','heron':'🦢','kestrel':'🦅','pipit':'🐦','nightjar':'🌙','martin':'💨','bee-eater':'🦜','kingfisher':'💎','default':'🦜'};
+function birdEmoji(n){const l=n.toLowerCase();for(const[k,v] of Object.entries(BIRD_EMOJI))if(l.includes(k))return v;return BIRD_EMOJI.default;}
+
+function statusBadge(name) {
+  const l = name.toLowerCase();
+  if(['kestrel','nightjar','heron','pipit'].some(s=>l.includes(s))) return '<span class="ep-badge ep-badge-rare">Rare</span>';
+  if(['warbler','martin','swift','pipit'].some(s=>l.includes(s))) return '<span class="ep-badge ep-badge-migratory">Migratory</span>';
+  return '<span class="ep-badge ep-badge-common">Common</span>';
 }
 
 let allDetections = [];
-let currentFilter = 'all';
 
 async function loadAllBirds() {
-  const res = await fetch(
-    `${SUPABASE_URL}/rest/v1/bird_detections?select=*&order=detected_at.desc&limit=500`,
-    { headers: HDR }
-  );
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/bird_detections?select=*&order=detected_at.desc&limit=1000`, {headers:HDR});
   allDetections = await res.json();
   renderStats();
-  renderBirds(allDetections);
+  renderBirds(allDetections, 'All species detected');
 }
 
 function renderStats() {
-  const today = new Date().toISOString().split('T')[0];
-  const todayCount = allDetections.filter(b => b.detected_at.startsWith(today)).length;
+  const todayUTCStr = todayUTC();
+  const todayCount = allDetections.filter(b=>b.detected_at>=todayUTCStr).length;
   const species = new Set(allDetections.map(b=>b.species_scientific)).size;
   const firstDate = allDetections.length ? new Date(allDetections[allDetections.length-1].detected_at).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}) : '—';
   document.getElementById('stat-total').textContent = allDetections.length;
@@ -212,70 +115,50 @@ function renderStats() {
 }
 
 function filterBirds(type, btn) {
-  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.ep-filter-btn').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
-  currentFilter = type;
   const now = new Date();
   let filtered = allDetections;
-  const labels = { all:'All species detected', today:"Detected today", week:"Detected this week", month:"Detected this month", summer:"Summer detections", monsoon:"Monsoon detections", winter:"Winter detections", new:"First detections this year", highconf:"High confidence (≥80%)" };
-  document.getElementById('list-label').textContent = labels[type] || 'All species detected';
+  const labels = {all:'All species detected',today:"Today's detections",week:"This week",month:"This month",summer:"Summer detections",monsoon:"Monsoon detections",winter:"Winter detections",new:"First detections this year",highconf:"High confidence (≥80%)"};
 
-  if (type === 'today') {
-    const today = now.toISOString().split('T')[0];
-    filtered = allDetections.filter(b=>b.detected_at.startsWith(today));
-  } else if (type === 'week') {
-    const weekAgo = new Date(now - 7*86400000).toISOString();
-    filtered = allDetections.filter(b=>b.detected_at >= weekAgo);
-  } else if (type === 'month') {
-    const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
-    filtered = allDetections.filter(b=>b.detected_at >= monthStart);
-  } else if (type === 'summer') {
-    filtered = allDetections.filter(b=>{ const m=new Date(b.detected_at).getMonth(); return m>=2&&m<=5; });
-  } else if (type === 'monsoon') {
-    filtered = allDetections.filter(b=>{ const m=new Date(b.detected_at).getMonth(); return m>=5&&m<=9; });
-  } else if (type === 'winter') {
-    filtered = allDetections.filter(b=>{ const m=new Date(b.detected_at).getMonth(); return m>=10||m<=1; });
-  } else if (type === 'new') {
-    filtered = allDetections.filter(b=>b.is_new_species_this_year);
-  } else if (type === 'highconf') {
-    filtered = allDetections.filter(b=>b.confidence>=0.8);
-  }
-  renderBirds(filtered);
+  if(type==='today') filtered = allDetections.filter(b=>b.detected_at>=todayUTC());
+  else if(type==='week') filtered = allDetections.filter(b=>new Date(b.detected_at)>=new Date(now-7*86400000));
+  else if(type==='month') { const ms=new Date(now.getFullYear(),now.getMonth(),1); filtered=allDetections.filter(b=>new Date(b.detected_at)>=ms); }
+  else if(type==='summer') filtered=allDetections.filter(b=>{const m=new Date(b.detected_at).getMonth();return m>=2&&m<=5;});
+  else if(type==='monsoon') filtered=allDetections.filter(b=>{const m=new Date(b.detected_at).getMonth();return m>=5&&m<=9;});
+  else if(type==='winter') filtered=allDetections.filter(b=>{const m=new Date(b.detected_at).getMonth();return m>=10||m<=1;});
+  else if(type==='new') filtered=allDetections.filter(b=>b.is_new_species_this_year);
+  else if(type==='highconf') filtered=allDetections.filter(b=>b.confidence>=0.8);
+
+  renderBirds(filtered, labels[type]);
 }
 
-function renderBirds(detections) {
+function renderBirds(detections, label) {
+  document.getElementById('list-label').textContent = label || 'Species';
   const list = document.getElementById('bird-list');
-  if (!detections.length) {
-    list.innerHTML = `<div class="empty-state" style="grid-column:1/-1"><span style="font-size:2rem">🔍</span><p>No detections found for this filter.<br>Try a broader time range.</p></div>`;
+  if(!detections.length){
+    list.innerHTML=`<div class="empty-state"><span style="font-size:2rem">🔍</span><p style="margin-top:0.5rem;">No detections for this filter.<br>Try a broader time range.</p></div>`;
     return;
   }
-
-  // Deduplicate by species, keep highest confidence
   const map = new Map();
-  for (const b of detections) {
-    if (!map.has(b.species_scientific) || b.confidence > map.get(b.species_scientific).confidence) {
-      map.set(b.species_scientific, b);
-    }
-  }
+  for(const b of detections){if(!map.has(b.species_scientific)||b.confidence>map.get(b.species_scientific).confidence)map.set(b.species_scientific,b);}
   const unique = Array.from(map.values()).sort((a,b)=>b.confidence-a.confidence);
-
-  list.innerHTML = unique.map(b => {
-    const wikiSlug = encodeURIComponent(b.species_scientific.replace(/ /g,'_'));
-    const time = new Date(b.detected_at).toLocaleString('en-IN',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
-    const newStar = b.is_new_species_this_year ? `<span class="bird-new-star">★ First this year</span>` : '';
-    const countForSpecies = detections.filter(d=>d.species_scientific===b.species_scientific).length;
-    return `
-    <a class="bird-card" href="https://en.wikipedia.org/wiki/${wikiSlug}" target="_blank" rel="noopener">
-      <div class="bird-icon">${getBirdEmoji(b.species_common)}</div>
+  list.innerHTML = unique.map(b=>{
+    const wiki=encodeURIComponent(b.species_scientific.replace(/ /g,'_'));
+    const time=new Date(b.detected_at).toLocaleString('en-IN',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit',hour12:true,timeZone:'Asia/Kolkata'});
+    const count=detections.filter(d=>d.species_scientific===b.species_scientific).length;
+    const newStar=b.is_new_species_this_year?`<span class="bird-new-star">★ First this year</span>`:'';
+    return `<a class="ep-bird-card" href="https://en.wikipedia.org/wiki/${wiki}" target="_blank" rel="noopener">
+      <div class="ep-bird-icon">${birdEmoji(b.species_common)}</div>
       <div style="flex:1;min-width:0;">
-        <div class="bird-name">${b.species_common}${newStar}</div>
-        <div class="bird-scientific">${b.species_scientific}</div>
-        <div class="bird-badges">${getStatusBadge(b.species_common)}</div>
-        <div class="bird-stats">
+        <div class="ep-bird-name">${b.species_common}${newStar}</div>
+        <div class="ep-bird-sci">${b.species_scientific}</div>
+        <div style="display:flex;gap:4px;margin-bottom:5px;">${statusBadge(b.species_common)}</div>
+        <div class="bird-stats-mini">
           <div class="bird-stat"><strong>First heard</strong><br>${time}</div>
-          <div class="bird-stat"><strong>Detections</strong><br>${countForSpecies}×</div>
-          <div class="bird-stat"><strong>Best confidence</strong><br><span class="bird-conf">${(b.confidence*100).toFixed(0)}%</span></div>
-          ${b.aqi_at_detection ? `<div class="bird-stat"><strong>AQI then</strong><br>${b.aqi_at_detection}</div>` : ''}
+          <div class="bird-stat"><strong>Detections</strong><br>${count}×</div>
+          <div class="bird-stat"><strong>Best confidence</strong><br><span style="color:var(--ep-tan);font-family:var(--mono);">${(b.confidence*100).toFixed(0)}%</span></div>
+          ${b.aqi_at_detection?`<div class="bird-stat"><strong>AQI then</strong><br>${b.aqi_at_detection}</div>`:''}
         </div>
       </div>
     </a>`;

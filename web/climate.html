@@ -8,244 +8,182 @@
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://earthpulse.pages.dev/climate.html">
   <meta property="og:title" content="Climate Data — Earth Pulse, Baner, Pune">
-  <meta property="og:description" content="4 years of hourly AQI, temperature and weather data for Baner, Pune. Monsoon patterns, festival spikes, seasonal trends.">
-  <meta property="og:image" content="https://earthpulse.pages.dev/earthpulse-og.png">
-  <link rel="icon" type="image/svg+xml" href="earthpulse-logo.svg">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <meta property="og:image" content="https://earthpulse.pages.dev/earth-pulse-logo.png">
+  <link rel="icon" type="image/png" href="earth-pulse-logo.png">
+  <link rel="stylesheet" href="styles.css">
   <style>
-    :root{--green-50:#f0fdf4;--green-100:#dcfce7;--green-400:#4ade80;--green-500:#22c55e;--green-600:#16a34a;--green-700:#15803d;--green-900:#14532d;--stone-50:#fafaf9;--stone-100:#f5f5f4;--stone-200:#e7e5e4;--stone-300:#d6d3d1;--stone-500:#78716c;--stone-700:#44403c;--stone-900:#1c1917;--serif:'DM Serif Display',Georgia,serif;--sans:'DM Sans',system-ui,sans-serif;--mono:'DM Mono',monospace;}
-    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-    body{font-family:var(--sans);background:var(--stone-50);color:var(--stone-900);line-height:1.6;overflow-x:hidden;}
-    nav{position:sticky;top:0;z-index:100;background:rgba(250,250,249,0.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--stone-200);padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:60px;}
-    .nav-brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--stone-900);}
-    .nav-brand svg{width:32px;height:32px;}
-    .nav-brand-text{font-family:var(--serif);font-size:1.2rem;}
-    .nav-links{display:flex;gap:2rem;list-style:none;}
-    .nav-links a{text-decoration:none;color:var(--stone-500);font-size:0.875rem;font-weight:500;transition:color 0.2s;}
-    .nav-links a:hover,.nav-links a.active{color:var(--green-600);}
-    .nav-cta{background:var(--green-500);color:white;padding:0.4rem 1.1rem;border-radius:2rem;text-decoration:none;font-size:0.85rem;font-weight:500;}
-
-    .page-hero{background:linear-gradient(160deg,var(--green-50) 0%,white 60%);padding:4rem 2rem 2.5rem;text-align:center;}
-    .page-tag{display:inline-flex;align-items:center;gap:6px;background:var(--green-100);color:var(--green-700);padding:0.3rem 1rem;border-radius:2rem;font-size:0.8rem;font-weight:500;letter-spacing:0.04em;margin-bottom:1rem;}
-    .page-hero h1{font-family:var(--serif);font-size:clamp(2rem,5vw,3.5rem);line-height:1.1;margin-bottom:0.75rem;}
-    .page-hero p{color:var(--stone-500);font-size:1rem;max-width:520px;margin:0 auto;}
-
-    .controls{background:white;border-bottom:1px solid var(--stone-200);padding:1rem 2rem;display:flex;gap:0.75rem;flex-wrap:wrap;align-items:center;position:sticky;top:60px;z-index:90;}
-    .control-label{font-size:0.78rem;font-weight:600;color:var(--stone-500);letter-spacing:0.06em;text-transform:uppercase;}
-    .range-btn{padding:0.35rem 0.9rem;border-radius:2rem;border:1px solid var(--stone-200);background:transparent;font-family:var(--sans);font-size:0.8rem;cursor:pointer;transition:all 0.15s;color:var(--stone-700);}
-    .range-btn:hover{border-color:var(--green-400);color:var(--green-600);}
-    .range-btn.active{background:var(--green-500);color:white;border-color:var(--green-500);}
-
-    .content{max-width:1100px;margin:0 auto;padding:2rem;}
-    .record-count{font-family:var(--mono);font-size:0.8rem;color:var(--stone-500);margin-bottom:1.5rem;}
-    .record-count strong{color:var(--green-600);}
-
-    .chart-block{background:white;border:1px solid var(--stone-200);border-radius:16px;padding:1.5rem;margin-bottom:1.5rem;}
-    .chart-title{font-family:var(--serif);font-size:1.2rem;margin-bottom:0.25rem;}
-    .chart-sub{font-size:0.82rem;color:var(--stone-500);margin-bottom:1.25rem;}
-    .chart-wrap{position:relative;}
-
-    .records-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1rem;margin-bottom:2rem;}
-    .record-card{background:white;border:1px solid var(--stone-200);border-radius:12px;padding:1.1rem;}
-    .record-card-val{font-family:var(--serif);font-size:1.8rem;color:var(--stone-900);}
-    .record-card-label{font-size:0.72rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--stone-500);margin-bottom:0.3rem;}
-    .record-card-date{font-family:var(--mono);font-size:0.72rem;color:var(--stone-500);margin-top:0.3rem;}
-
-    .festival-section{margin-top:1rem;}
-    .festival-item{display:flex;align-items:center;gap:1rem;padding:0.75rem 0;border-bottom:1px solid var(--stone-100);}
-    .festival-name{font-weight:500;font-size:0.9rem;min-width:140px;}
-    .festival-bar-wrap{flex:1;background:var(--stone-100);border-radius:4px;height:10px;overflow:hidden;}
-    .festival-bar{height:100%;border-radius:4px;background:var(--green-500);transition:width 1s ease;}
-    .festival-aqi{font-family:var(--mono);font-size:0.8rem;color:var(--stone-700);min-width:60px;text-align:right;}
-
-    .skeleton{background:linear-gradient(90deg,var(--stone-100) 25%,var(--stone-200) 50%,var(--stone-100) 75%);background-size:200% 100%;animation:shimmer 1.5s infinite;border-radius:8px;}
-    @keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
-
-    footer{background:var(--stone-900);color:rgba(255,255,255,0.5);padding:2rem;text-align:center;font-size:0.8rem;margin-top:4rem;}
-    footer a{color:#4ade80;text-decoration:none;}
-    .footer-logo{font-family:var(--serif);font-size:1.1rem;color:white;margin-bottom:0.5rem;}
-    .footer-tagline{font-size:0.78rem;color:rgba(255,255,255,0.35);margin-bottom:0.75rem;font-style:italic;}
+    .records-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:1rem; margin-bottom:1.5rem; }
+    .record-card { background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-md); padding:1.1rem; }
+    .record-card-label { font-size:0.7rem; font-weight:600; letter-spacing:0.08em; text-transform:uppercase; color:var(--ep-tan); margin-bottom:0.3rem; }
+    .record-card-val { font-family:var(--serif); font-size:1.9rem; color:var(--ep-green); }
+    .record-card-date { font-family:var(--mono); font-size:0.72rem; color:var(--text-muted); margin-top:0.3rem; }
+    .festival-item { display:flex; align-items:center; gap:1rem; padding:0.75rem 0; border-bottom:1px solid var(--border); }
+    .festival-name { font-weight:500; font-size:0.9rem; min-width:140px; color:var(--text-secondary); }
+    .festival-bar-wrap { flex:1; background:var(--ep-cream-dark); border-radius:4px; height:10px; overflow:hidden; }
+    .festival-bar { height:100%; border-radius:4px; transition:width 1s ease; }
+    .festival-aqi { font-family:var(--mono); font-size:0.8rem; color:var(--text-secondary); min-width:70px; text-align:right; }
+    .record-count { font-family:var(--mono); font-size:0.8rem; color:var(--text-muted); margin-bottom:1.5rem; }
+    .record-count strong { color:var(--ep-green); }
+    .content { max-width:1100px; margin:0 auto; padding:2rem; }
   </style>
 </head>
 <body>
-<nav>
-  <a href="index.html" class="nav-brand">
-    <svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
-      <defs><radialGradient id="eg" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#4ade80"/><stop offset="100%" stop-color="#15803d"/></radialGradient></defs>
-      <circle cx="200" cy="200" r="185" fill="rgba(74,222,128,0.12)"/>
-      <circle cx="200" cy="200" r="155" fill="url(#eg)"/>
-      <ellipse cx="175" cy="165" rx="45" ry="38" fill="#15803d" opacity="0.5" transform="rotate(-15 175 165)"/>
-      <path d="M60 200 L110 200 L128 200 L140 165 L155 235 L168 180 L178 220 L190 200 L340 200" fill="none" stroke="white" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
-    </svg>
-    <span class="nav-brand-text">Earth Pulse</span>
-  </a>
-  <ul class="nav-links">
-    <li><a href="birds.html">Birds</a></li>
-    <li><a href="climate.html" class="active">Climate</a></li>
-    <li><a href="index.html#insights">Insights</a></li>
-    <li><a href="contact.html">Contact</a></li>
-    <li><a href="index.html#about">About</a></li>
-  </ul>
-  <a href="register.html" class="nav-cta">Register</a>
-</nav>
+<div id="ep-nav"></div>
 
-<div class="page-hero">
-  <div class="page-tag">Open-Meteo · CAMS Copernicus · Hourly since January 2022</div>
+<div class="ep-hero">
+  <div class="ep-hero-tag">Open-Meteo · CAMS Copernicus · Hourly since January 2022</div>
   <h1>Climate record</h1>
-  <p>Four years of hourly air quality, temperature, humidity, wind and solar radiation for Baner, Pune — one of the few hyperlocal datasets of its kind.</p>
+  <p class="ep-hero-sub">Four years of hourly air quality, temperature, humidity, wind and solar radiation for Baner, Pune — one of the few hyperlocal datasets of its kind.</p>
 </div>
 
-<div class="controls">
-  <span class="control-label">Range</span>
-  <button class="range-btn active" onclick="loadRange(7,this)">7 days</button>
-  <button class="range-btn" onclick="loadRange(30,this)">30 days</button>
-  <button class="range-btn" onclick="loadRange(90,this)">3 months</button>
-  <button class="range-btn" onclick="loadRange(365,this)">1 year</button>
-  <button class="range-btn" onclick="loadRange(1461,this)">All data</button>
+<div class="ep-filters">
+  <span class="ep-filter-label">Range</span>
+  <button class="ep-filter-btn active" onclick="loadRange(7,this)">7 days</button>
+  <button class="ep-filter-btn" onclick="loadRange(30,this)">30 days</button>
+  <button class="ep-filter-btn" onclick="loadRange(90,this)">3 months</button>
+  <button class="ep-filter-btn" onclick="loadRange(365,this)">1 year</button>
+  <button class="ep-filter-btn" onclick="loadRange(1461,this)">All data</button>
 </div>
 
 <div class="content">
-  <p class="record-count" id="record-count">Loading climate records…</p>
-
-  <!-- All-time records -->
+  <p class="record-count" id="record-count">Loading…</p>
   <div class="records-grid" id="records-grid">
-    <div class="record-card skeleton" style="height:90px"></div>
-    <div class="record-card skeleton" style="height:90px"></div>
-    <div class="record-card skeleton" style="height:90px"></div>
-    <div class="record-card skeleton" style="height:90px"></div>
+    <div class="ep-skeleton" style="height:90px"></div>
+    <div class="ep-skeleton" style="height:90px"></div>
+    <div class="ep-skeleton" style="height:90px"></div>
+    <div class="ep-skeleton" style="height:90px"></div>
   </div>
 
-  <!-- AQI Chart -->
-  <div class="chart-block">
-    <div class="chart-title">Air Quality Index (AQI)</div>
-    <div class="chart-sub">European AQI scale · Lower is better · Hover for details</div>
-    <div class="chart-wrap"><canvas id="aqiChart" height="80"></canvas></div>
+  <div class="ep-chart-block">
+    <div class="ep-chart-title">Air Quality Index (AQI)</div>
+    <div class="ep-chart-sub">European AQI scale · Lower is better · All times in IST</div>
+    <canvas id="aqiChart" height="80"></canvas>
   </div>
 
-  <!-- Temperature Chart -->
-  <div class="chart-block">
-    <div class="chart-title">Temperature & humidity</div>
-    <div class="chart-sub">°C and % relative humidity · 2m above ground</div>
-    <div class="chart-wrap"><canvas id="tempChart" height="80"></canvas></div>
+  <div class="ep-chart-block">
+    <div class="ep-chart-title">Temperature & humidity</div>
+    <div class="ep-chart-sub">°C and % relative humidity · 2m above ground · IST</div>
+    <canvas id="tempChart" height="80"></canvas>
   </div>
 
-  <!-- Solar radiation Chart -->
-  <div class="chart-block">
-    <div class="chart-title">Solar radiation</div>
-    <div class="chart-sub">Shortwave radiation W/m² · Useful for solar panel planning</div>
-    <div class="chart-wrap"><canvas id="solarChart" height="70"></canvas></div>
+  <div class="ep-chart-block">
+    <div class="ep-chart-title">Solar radiation</div>
+    <div class="ep-chart-sub">Shortwave radiation W/m² · Useful for solar panel performance reference</div>
+    <canvas id="solarChart" height="70"></canvas>
   </div>
 
-  <!-- Festival pollution -->
-  <div class="chart-block">
-    <div class="chart-title">Festival pollution spikes</div>
-    <div class="chart-sub">Average AQI in the 24 hours after major festivals — auto-computed from historical data</div>
-    <div class="festival-section" id="festival-section">
-      <div class="skeleton" style="height:200px;border-radius:8px;"></div>
-    </div>
+  <div class="ep-chart-block">
+    <div class="ep-chart-title">Festival pollution spikes</div>
+    <div class="ep-chart-sub">Average AQI in 24 hours following major festivals — auto-computed from local data</div>
+    <div id="festival-section"><div class="ep-skeleton" style="height:200px;border-radius:8px;"></div></div>
   </div>
 </div>
 
-<footer>
-  <div class="footer-logo">Earth Pulse</div>
-  <div class="footer-tagline">Observing the Earth, over time.</div>
-  <p>Baner, Pune · 18.5526°N 73.7819°E · Recording since January 2022</p>
-  <p style="margin-top:0.5rem;">
-    <a href="https://github.com/fangchu-in/earth-pulse">GitHub</a> ·
-    <a href="index.html">Home</a> ·
-    <a href="birds.html">Birds</a> ·
-    <a href="register.html">Register</a> ·
-    <a href="contact.html">Contact</a>
-  </p>
-  <p style="margin-top:1rem;font-size:0.72rem;">Data: Open-Meteo (CAMS) · Google Air Quality · BirdNET (Cornell Lab) · Made with love using <a href="https://claude.ai">Claude</a></p>
-</footer>
-
+<div id="ep-footer"></div>
 <script src="analytics.js"></script>
+<script src="nav.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script>
 const SUPABASE_URL = 'https://krmczyqwblsoekceanlj.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_DrHFT5J0vmrkYraUXIlpQQ_gsk1rdq6';
-const HDR = { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` };
+const HDR = { 'apikey':SUPABASE_KEY, 'Authorization':`Bearer ${SUPABASE_KEY}` };
 
 let aqiChart, tempChart, solarChart;
 
+/* Convert UTC timestamp to IST label */
+function toIST(utcStr) {
+  return new Date(utcStr).toLocaleDateString('en-IN',{
+    day:'numeric', month:'short',
+    timeZone:'Asia/Kolkata'
+  });
+}
+function toISTFull(utcStr) {
+  return new Date(utcStr).toLocaleString('en-IN',{
+    day:'numeric', month:'short', year:'numeric',
+    hour:'2-digit', minute:'2-digit', hour12:true,
+    timeZone:'Asia/Kolkata'
+  });
+}
+
 function aqiColor(v) {
-  if (v<=20) return '#22c55e'; if (v<=40) return '#84cc16';
-  if (v<=60) return '#eab308'; if (v<=80) return '#f97316';
-  if (v<=100) return '#ef4444'; return '#8b5cf6';
+  if(v<=20) return '#22c55e'; if(v<=40) return '#84cc16';
+  if(v<=60) return '#ca8a04'; if(v<=80) return '#ea580c';
+  if(v<=100) return '#dc2626'; return '#7c3aed';
 }
 
 async function loadRange(days, btn) {
-  document.querySelectorAll('.range-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.ep-filter-btn').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
+  document.getElementById('record-count').textContent = 'Loading…';
 
+  /* Use UTC from-date */
   const from = new Date(Date.now() - days*86400000).toISOString();
-  document.getElementById('record-count').innerHTML = 'Loading…';
-
   const res = await fetch(
-    `${SUPABASE_URL}/rest/v1/climate_readings?select=recorded_at,aqi,temperature,relative_humidity_2m,shortwave_radiation,humidity,solar_radiation&recorded_at=gte.${from}&order=recorded_at.asc`,
-    { headers: HDR }
+    `${SUPABASE_URL}/rest/v1/climate_readings?select=recorded_at,aqi,temperature,humidity,solar_radiation,shortwave_radiation&recorded_at=gte.${from}&order=recorded_at.asc`,
+    { headers:HDR }
   );
   const rows = await res.json();
+  if (!Array.isArray(rows)||!rows.length) {
+    document.getElementById('record-count').textContent = 'No data found for this range.';
+    return;
+  }
 
   document.getElementById('record-count').innerHTML =
-    `Showing <strong>${rows.length.toLocaleString()}</strong> hourly records · ${days === 1461 ? 'Full dataset from January 2022' : `Last ${days} days`}`;
+    `Showing <strong>${rows.length.toLocaleString()}</strong> hourly records · All times in IST (Asia/Kolkata)`;
 
-  // Sample for chart performance
-  const step = Math.max(1, Math.floor(rows.length / 200));
+  const step = Math.max(1,Math.floor(rows.length/200));
   const s = rows.filter((_,i)=>i%step===0);
-  const labels = s.map(r=>{ const d=new Date(r.recorded_at); return d.toLocaleDateString('en-IN',{day:'numeric',month:'short'}); });
+  const labels = s.map(r=>toIST(r.recorded_at));
 
-  // AQI chart
-  if (aqiChart) aqiChart.destroy();
-  const aqiCtx = document.getElementById('aqiChart').getContext('2d');
-  aqiChart = new Chart(aqiCtx, {
-    type:'line',
-    data:{ labels, datasets:[{ label:'AQI', data:s.map(r=>r.aqi), borderColor:'#22c55e', backgroundColor:'rgba(34,197,94,0.06)', tension:0.3, pointRadius:0, borderWidth:1.5, fill:true }] },
-    options:{ responsive:true, plugins:{ legend:{display:false}, tooltip:{ callbacks:{ label: ctx => `AQI ${ctx.raw} — ${ctx.raw<=20?'Good':ctx.raw<=40?'Fair':ctx.raw<=60?'Moderate':ctx.raw<=80?'Poor':'Very Poor'}` } } }, scales:{ x:{ grid:{display:false}, ticks:{maxTicksLimit:8,font:{size:11}} }, y:{ grid:{color:'rgba(0,0,0,0.04)'}, ticks:{font:{size:11}} } } }
+  const chartOpts = (yLabel) => ({
+    responsive:true,
+    interaction:{mode:'index',intersect:false},
+    plugins:{ legend:{position:'top',labels:{font:{family:'DM Sans',size:12},boxWidth:12}}, tooltip:{callbacks:{label:ctx=>`${ctx.dataset.label}: ${ctx.raw?.toFixed?ctx.raw.toFixed(1):ctx.raw}`}} },
+    scales:{ x:{grid:{display:false},ticks:{maxTicksLimit:8,font:{size:10},color:'#6b6b6b'}}, y:{title:{display:true,text:yLabel,font:{size:11}},grid:{color:'rgba(0,0,0,0.04)'},ticks:{font:{size:10},color:'#6b6b6b'}} }
   });
 
-  // Temp + humidity chart
-  if (tempChart) tempChart.destroy();
-  const tCtx = document.getElementById('tempChart').getContext('2d');
-  tempChart = new Chart(tCtx, {
+  if(aqiChart) aqiChart.destroy();
+  aqiChart = new Chart(document.getElementById('aqiChart').getContext('2d'),{
     type:'line',
-    data:{ labels, datasets:[
-      { label:'Temperature (°C)', data:s.map(r=>r.temperature), borderColor:'#f97316', backgroundColor:'transparent', tension:0.3, pointRadius:0, borderWidth:1.5, yAxisID:'y' },
-      { label:'Humidity (%)', data:s.map(r=>r.humidity), borderColor:'#3b82f6', backgroundColor:'transparent', tension:0.3, pointRadius:0, borderWidth:1, borderDash:[4,3], yAxisID:'y2' }
+    data:{labels,datasets:[{label:'AQI',data:s.map(r=>r.aqi),borderColor:'#214332',backgroundColor:'rgba(33,67,50,0.07)',tension:0.3,pointRadius:0,borderWidth:1.5,fill:true}]},
+    options:chartOpts('AQI')
+  });
+
+  if(tempChart) tempChart.destroy();
+  tempChart = new Chart(document.getElementById('tempChart').getContext('2d'),{
+    type:'line',
+    data:{labels,datasets:[
+      {label:'Temperature (°C)',data:s.map(r=>r.temperature),borderColor:'#BF9B7B',backgroundColor:'transparent',tension:0.3,pointRadius:0,borderWidth:1.5,yAxisID:'y'},
+      {label:'Humidity (%)',data:s.map(r=>r.humidity),borderColor:'#214332',backgroundColor:'transparent',tension:0.3,pointRadius:0,borderWidth:1,borderDash:[4,3],yAxisID:'y2'}
     ]},
-    options:{ responsive:true, interaction:{mode:'index',intersect:false}, plugins:{ legend:{position:'top',labels:{font:{family:'DM Sans',size:12},boxWidth:12}} }, scales:{ x:{grid:{display:false},ticks:{maxTicksLimit:8,font:{size:11}}}, y:{position:'left',title:{display:true,text:'°C'},grid:{color:'rgba(0,0,0,0.04)'}}, y2:{position:'right',title:{display:true,text:'%'},grid:{display:false}} } }
+    options:{...chartOpts('°C / %'),scales:{x:{grid:{display:false},ticks:{maxTicksLimit:8,font:{size:10},color:'#6b6b6b'}},y:{position:'left',title:{display:true,text:'°C'},grid:{color:'rgba(0,0,0,0.04)'},ticks:{font:{size:10}}},y2:{position:'right',title:{display:true,text:'%'},grid:{display:false},ticks:{font:{size:10}}}}}
   });
 
-  // Solar chart
-  if (solarChart) solarChart.destroy();
-  const sCtx = document.getElementById('solarChart').getContext('2d');
-  solarChart = new Chart(sCtx, {
+  if(solarChart) solarChart.destroy();
+  solarChart = new Chart(document.getElementById('solarChart').getContext('2d'),{
     type:'line',
-    data:{ labels, datasets:[{ label:'Solar radiation (W/m²)', data:s.map(r=>r.solar_radiation||r.shortwave_radiation), borderColor:'#eab308', backgroundColor:'rgba(234,179,8,0.08)', tension:0.3, pointRadius:0, borderWidth:1.5, fill:true }]},
-    options:{ responsive:true, plugins:{legend:{display:false}}, scales:{ x:{grid:{display:false},ticks:{maxTicksLimit:8,font:{size:11}}}, y:{grid:{color:'rgba(0,0,0,0.04)'},ticks:{font:{size:11}}} } }
+    data:{labels,datasets:[{label:'Solar radiation (W/m²)',data:s.map(r=>r.solar_radiation||r.shortwave_radiation),borderColor:'#BF9B7B',backgroundColor:'rgba(191,155,123,0.08)',tension:0.3,pointRadius:0,borderWidth:1.5,fill:true}]},
+    options:chartOpts('W/m²')
   });
 
-  loadRecords(rows);
+  renderRecords(rows);
 }
 
-async function loadRecords(rows) {
-  if (!rows.length) return;
-  const maxTemp = rows.reduce((a,b)=>a.temperature>b.temperature?a:b);
-  const minTemp = rows.reduce((a,b)=>a.temperature<b.temperature?a:b);
-  const maxAqi = rows.filter(r=>r.aqi).reduce((a,b)=>a.aqi>b.aqi?a:b);
-  const minAqi = rows.filter(r=>r.aqi&&r.aqi>0).reduce((a,b)=>a.aqi<b.aqi?a:b);
-
-  function fmt(ts) { return new Date(ts).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}); }
-
-  document.getElementById('records-grid').innerHTML = [
-    { label:'Hottest day', val:`${maxTemp.temperature?.toFixed(1)}°C`, date:fmt(maxTemp.recorded_at) },
-    { label:'Coolest day', val:`${minTemp.temperature?.toFixed(1)}°C`, date:fmt(minTemp.recorded_at) },
-    { label:'Worst AQI', val:`${maxAqi.aqi}`, date:fmt(maxAqi.recorded_at) },
-    { label:'Best AQI', val:`${minAqi.aqi}`, date:fmt(minAqi.recorded_at) },
-  ].map(r=>`
+function renderRecords(rows) {
+  const valid = rows.filter(r=>r.temperature!=null);
+  if(!valid.length) return;
+  const maxT = valid.reduce((a,b)=>a.temperature>b.temperature?a:b);
+  const minT = valid.reduce((a,b)=>a.temperature<b.temperature?a:b);
+  const aqiRows = rows.filter(r=>r.aqi&&r.aqi>0);
+  const maxA = aqiRows.length ? aqiRows.reduce((a,b)=>a.aqi>b.aqi?a:b) : null;
+  const minA = aqiRows.length ? aqiRows.reduce((a,b)=>a.aqi<b.aqi?a:b) : null;
+  const items = [
+    {label:'Hottest reading', val:`${maxT.temperature?.toFixed(1)}°C`, date:toISTFull(maxT.recorded_at)},
+    {label:'Coolest reading', val:`${minT.temperature?.toFixed(1)}°C`, date:toISTFull(minT.recorded_at)},
+    {label:'Worst AQI', val:maxA?`${maxA.aqi}`:'—', date:maxA?toISTFull(maxA.recorded_at):''},
+    {label:'Best AQI',  val:minA?`${minA.aqi}`:'—', date:minA?toISTFull(minA.recorded_at):''},
+  ];
+  document.getElementById('records-grid').innerHTML = items.map(r=>`
     <div class="record-card">
       <div class="record-card-label">${r.label}</div>
       <div class="record-card-val">${r.val}</div>
@@ -255,39 +193,34 @@ async function loadRecords(rows) {
 
 async function loadFestivals() {
   const festivals = [
-    { name:'Diwali 2024', date:'2024-11-01' },
-    { name:'Holi 2024',   date:'2024-03-25' },
-    { name:'Diwali 2023', date:'2023-11-12' },
-    { name:'Holi 2023',   date:'2023-03-08' },
-    { name:'Diwali 2022', date:'2022-10-24' },
+    {name:'Diwali 2024',   date:'2024-11-01'},
+    {name:'Holi 2024',     date:'2024-03-25'},
+    {name:'Ganesh Viz 2024',date:'2024-09-17'},
+    {name:'Diwali 2023',   date:'2023-11-12'},
+    {name:'Holi 2023',     date:'2023-03-08'},
+    {name:'Diwali 2022',   date:'2022-10-24'},
   ];
-
-  const results = await Promise.all(festivals.map(async f => {
-    const from = new Date(f.date + 'T00:00:00+05:30').toISOString();
-    const to   = new Date(new Date(f.date).getTime() + 2*86400000).toISOString();
-    const res = await fetch(
-      `${SUPABASE_URL}/rest/v1/climate_readings?select=aqi&recorded_at=gte.${from}&recorded_at=lte.${to}&aqi=gt.0`,
-      { headers: HDR }
-    );
+  const results = await Promise.all(festivals.map(async f=>{
+    const from = new Date(f.date+'T00:00:00+05:30').toISOString();
+    const to   = new Date(new Date(f.date).getTime()+2*86400000).toISOString();
+    const res  = await fetch(`${SUPABASE_URL}/rest/v1/climate_readings?select=aqi&recorded_at=gte.${from}&recorded_at=lte.${to}&aqi=gt.0`,{headers:HDR});
     const rows = await res.json();
-    const avg = rows.length ? Math.round(rows.reduce((s,r)=>s+(r.aqi||0),0)/rows.length) : null;
-    return { ...f, avg };
+    const avg  = rows.length ? Math.round(rows.reduce((s,r)=>s+(r.aqi||0),0)/rows.length) : null;
+    return {...f,avg};
   }));
-
-  const maxAqi = Math.max(...results.map(r=>r.avg||0));
+  const maxAqi = Math.max(...results.map(r=>r.avg||0),1);
   document.getElementById('festival-section').innerHTML = results.map(r=>`
     <div class="festival-item">
       <span class="festival-name">${r.name}</span>
       <div class="festival-bar-wrap">
-        <div class="festival-bar" style="width:${r.avg?Math.round(r.avg/maxAqi*100):0}%;background:${r.avg>80?'#ef4444':r.avg>60?'#f97316':r.avg>40?'#eab308':'#22c55e'}"></div>
+        <div class="festival-bar" style="width:${r.avg?Math.round(r.avg/maxAqi*100):0}%;background:${r.avg>80?'#dc2626':r.avg>60?'#ea580c':r.avg>40?'#ca8a04':'#22c55e'}"></div>
       </div>
-      <span class="festival-aqi">${r.avg ? `AQI ${r.avg}` : 'No data'}</span>
+      <span class="festival-aqi">${r.avg?`AQI ${r.avg}`:'No data'}</span>
     </div>`).join('');
 }
 
-// Init
-const defaultBtn = document.querySelector('.range-btn.active');
-loadRange(7, defaultBtn);
+const defBtn = document.querySelector('.ep-filter-btn.active');
+loadRange(7, defBtn);
 loadFestivals();
 </script>
 </body>

@@ -4,20 +4,20 @@
    Add <div id="ep-footer"></div> at bottom of <body>
 */
 (function() {
-  const SITE = 'Earth Pulse';
+  const SITE    = 'Earth Pulse';
   const TAGLINE = 'Observing the Earth, over time.';
   const GITHUB  = 'https://github.com/fangchu-in/earth-pulse';
 
-  /* Icon-only SVG for nav (hills symbol extracted from logo) */
-  const ICON_SVG = `<svg viewBox="0 0 80 50" xmlns="http://www.w3.org/2000/svg" width="40" height="25" aria-hidden="true">
-    <path d="M5 42 Q20 5 38 18 Q50 28 55 42" fill="none" stroke="#214332" stroke-width="3.5" stroke-linecap="round"/>
-    <path d="M28 42 Q38 20 52 30 Q62 37 75 42" fill="none" stroke="#BF9B7B" stroke-width="3" stroke-linecap="round"/>
-    <line x1="2" y1="42" x2="78" y2="42" stroke="#214332" stroke-width="1.5" stroke-linecap="round" opacity="0.3"/>
+  /* Hills icon SVG (nav only — compact) */
+  const ICON = `<svg viewBox="0 0 90 55" xmlns="http://www.w3.org/2000/svg" width="38" height="24" aria-hidden="true">
+    <path d="M5 48 Q22 8 44 22 Q56 32 64 48" fill="none" stroke="#214332" stroke-width="4" stroke-linecap="round"/>
+    <path d="M36 48 Q50 22 68 34 Q78 41 88 48" fill="none" stroke="#BF9B7B" stroke-width="3.5" stroke-linecap="round"/>
+    <line x1="2" y1="48" x2="88" y2="48" stroke="rgba(33,67,50,0.25)" stroke-width="1.5" stroke-linecap="round"/>
   </svg>`;
 
   const LINKS = [
-    { href:'birds.html',   label:'Birds' },
-    { href:'climate.html', label:'Climate' },
+    { href:'birds.html',          label:'Birds' },
+    { href:'climate.html',        label:'Climate' },
     { href:'index.html#insights', label:'Insights' },
     { href:'index.html#about',    label:'About' },
   ];
@@ -31,19 +31,21 @@
     { href:GITHUB,          label:'GitHub', ext:true },
   ];
 
-  function page() { return window.location.pathname.split('/').pop() || 'index.html'; }
+  function page() {
+    return window.location.pathname.split('/').pop() || 'index.html';
+  }
 
   function injectNav() {
     const el = document.getElementById('ep-nav');
     if (!el) return;
     const pg = page();
     const links = LINKS.map(l =>
-      `<li><a href="${l.href}"${pg===l.href.split('#')[0]?' class="active"':''}>${l.label}</a></li>`
+      `<li><a href="${l.href}"${pg === l.href.split('#')[0] ? ' class="active"' : ''}>${l.label}</a></li>`
     ).join('');
     el.outerHTML = `
     <nav class="ep-nav" role="navigation" aria-label="Main navigation">
       <a href="index.html" class="ep-nav-brand" aria-label="${SITE} Home">
-        ${ICON_SVG}
+        ${ICON}
         <span class="ep-nav-brand-text">${SITE}</span>
       </a>
       <ul class="ep-nav-links">${links}</ul>
@@ -55,11 +57,17 @@
     const el = document.getElementById('ep-footer');
     if (!el) return;
     const flinks = FOOTER_LINKS.map(l =>
-      `<a href="${l.href}"${l.ext?' target="_blank" rel="noopener"':''}>${l.label}</a>`
+      `<a href="${l.href}"${l.ext ? ' target="_blank" rel="noopener"' : ''}>${l.label}</a>`
     ).join('');
     el.outerHTML = `
     <footer class="ep-footer">
-      <img src="earth-pulse-logo.png" alt="${SITE}" style="height:32px;opacity:0.85;margin-bottom:0.75rem;filter:brightness(0) invert(1) opacity(0.7);">
+      <!-- White logo SVG for dark green footer background -->
+      <svg viewBox="0 0 260 55" xmlns="http://www.w3.org/2000/svg" width="180" height="38" aria-label="${SITE}" style="margin-bottom:0.6rem;opacity:0.85;">
+        <path d="M5 46 Q20 10 40 22 Q52 32 60 46" fill="none" stroke="#F2F0E6" stroke-width="3.5" stroke-linecap="round"/>
+        <path d="M34 46 Q46 24 62 34 Q72 41 84 46" fill="none" stroke="#BF9B7B" stroke-width="3" stroke-linecap="round"/>
+        <line x1="2" y1="46" x2="86" y2="46" stroke="rgba(242,240,230,0.25)" stroke-width="1.5" stroke-linecap="round"/>
+        <text x="98" y="35" font-family="'DM Sans',sans-serif" font-weight="600" font-size="21" fill="#F2F0E6" letter-spacing="-0.2">Earth Pulse</text>
+      </svg>
       <div class="ep-footer-tagline">${TAGLINE}</div>
       <p>Baner, Pune · 18.5526°N 73.7819°E · Recording since January 2022</p>
       <div class="ep-footer-links">${flinks}</div>

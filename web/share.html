@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Earth Pulse — Share Card</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing:border-box; margin:0; padding:0; }
+    body { font-family:'DM Sans',sans-serif; background:#F2F0E6; min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:flex-start; padding:2rem 1rem; }
+
+    .card {
+      width:100%; max-width:500px;
+      background:#214332;
+      border-radius:20px;
+      overflow:hidden;
+      box-shadow:0 20px 60px rgba(33,67,50,0.25);
+    }
+
+    /* Header */
+    .card-header {
+      padding:1.5rem 1.75rem 1rem;
+      display:flex; align-items:center; justify-content:space-between;
+    }
+    .brand { display:flex; align-items:center; gap:10px; }
+    .brand-icon svg { display:block; }
+    .brand-name { font-weight:600; font-size:1rem; color:#F2F0E6; letter-spacing:-0.01em; }
+    .brand-tag  { font-size:0.72rem; color:rgba(242,240,230,0.5); }
+    .live-dot { display:flex; align-items:center; gap:6px; }
+    .dot { width:7px; height:7px; border-radius:50%; background:#4ade80; animation:pulse 2s ease infinite; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+    .live-txt { font-size:0.72rem; color:rgba(242,240,230,0.6); font-family:'DM Mono',monospace; }
+
+    /* AQI hero */
+    .aqi-hero {
+      margin:0 1.75rem 1.25rem;
+      background:rgba(242,240,230,0.07);
+      border-radius:14px;
+      padding:1.25rem 1.5rem;
+      display:flex; align-items:center; gap:1.25rem;
+    }
+    .aqi-circle {
+      width:72px; height:72px; border-radius:50%; flex-shrink:0;
+      display:flex; flex-direction:column; align-items:center; justify-content:center;
+    }
+    .aqi-num { font-family:'DM Serif Display',serif; font-size:1.9rem; color:white; line-height:1; }
+    .aqi-lbl { font-size:0.6rem; color:rgba(255,255,255,0.8); font-weight:600; letter-spacing:0.06em; }
+    .aqi-text h3 { font-family:'DM Serif Display',serif; font-size:1.2rem; color:#F2F0E6; margin-bottom:2px; }
+    .aqi-text p  { font-size:0.78rem; color:rgba(242,240,230,0.6); }
+    .aqi-text .pm { font-family:'DM Mono',monospace; font-size:0.7rem; color:rgba(242,240,230,0.5); margin-top:4px; }
+
+    /* Stats row */
+    .stats-row {
+      display:grid; grid-template-columns:1fr 1fr 1fr;
+      gap:0.75rem; margin:0 1.75rem 1.25rem;
+    }
+    .stat { background:rgba(242,240,230,0.06); border-radius:10px; padding:0.75rem 0.9rem; }
+    .stat-lbl { font-size:0.66rem; font-weight:600; text-transform:uppercase; letter-spacing:0.07em; color:#BF9B7B; margin-bottom:3px; }
+    .stat-val { font-family:'DM Serif Display',serif; font-size:1.3rem; color:#F2F0E6; line-height:1; }
+    .stat-unit { font-size:0.68rem; color:rgba(242,240,230,0.5); margin-top:2px; }
+
+    /* Birds strip */
+    .birds-strip {
+      margin:0 1.75rem 1.25rem;
+      background:rgba(242,240,230,0.06); border-radius:10px;
+      padding:0.85rem 1rem;
+    }
+    .birds-strip-lbl { font-size:0.66rem; font-weight:600; text-transform:uppercase; letter-spacing:0.07em; color:#BF9B7B; margin-bottom:0.5rem; }
+    .birds-list { display:flex; flex-wrap:wrap; gap:0.4rem; }
+    .bird-pill { background:rgba(242,240,230,0.1); border-radius:20px; padding:3px 10px; font-size:0.75rem; color:#F2F0E6; }
+    .bird-pill.new { background:#BF9B7B; color:#214332; font-weight:600; }
+    .no-birds { font-size:0.82rem; color:rgba(242,240,230,0.4); }
+
+    /* Tagline + URL */
+    .card-footer {
+      padding:1rem 1.75rem 1.5rem;
+      border-top:1px solid rgba(242,240,230,0.1);
+      display:flex; align-items:center; justify-content:space-between;
+    }
+    .tagline { font-size:0.75rem; color:rgba(242,240,230,0.45); font-style:italic; }
+    .url { font-family:'DM Mono',monospace; font-size:0.72rem; color:#BF9B7B; }
+
+    /* Controls (below card) */
+    .controls { width:100%; max-width:500px; margin-top:1.5rem; }
+    .controls h3 { font-size:0.85rem; font-weight:600; color:#214332; margin-bottom:0.75rem; }
+    .btn-row { display:flex; gap:0.75rem; flex-wrap:wrap; }
+    button {
+      padding:0.6rem 1.2rem; border-radius:8px; border:1.5px solid #214332;
+      background:transparent; color:#214332; font-family:'DM Sans',sans-serif;
+      font-size:0.85rem; font-weight:500; cursor:pointer; transition:all 0.15s;
+    }
+    button:hover { background:#214332; color:#F2F0E6; }
+    button.primary { background:#214332; color:#F2F0E6; }
+    button.primary:hover { background:#2d5c44; }
+    .hint { font-size:0.75rem; color:#6b6b6b; margin-top:0.75rem; line-height:1.5; }
+
+    /* Loading */
+    .loading { color:rgba(242,240,230,0.4); font-size:0.85rem; text-align:center; padding:1rem 0; }
+  </style>
+</head>
+<body>
+
+<div class="card" id="share-card">
+  <!-- Header -->
+  <div class="card-header">
+    <div class="brand">
+      <div class="brand-icon">
+        <svg viewBox="0 0 90 55" xmlns="http://www.w3.org/2000/svg" width="36" height="22">
+          <path d="M5 48 Q22 8 44 22 Q56 32 64 48" fill="none" stroke="#F2F0E6" stroke-width="4" stroke-linecap="round"/>
+          <path d="M36 48 Q50 22 68 34 Q78 41 88 48" fill="none" stroke="#BF9B7B" stroke-width="3.5" stroke-linecap="round"/>
+          <line x1="2" y1="48" x2="88" y2="48" stroke="rgba(242,240,230,0.2)" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div>
+        <div class="brand-name">Earth Pulse</div>
+        <div class="brand-tag">Baner, Pune · Sahyadri Foothills</div>
+      </div>
+    </div>
+    <div class="live-dot">
+      <div class="dot"></div>
+      <span class="live-txt" id="card-time">Loading…</span>
+    </div>
+  </div>
+
+  <!-- AQI Hero -->
+  <div class="aqi-hero">
+    <div class="aqi-circle" id="card-aqi-circle" style="background:#214332;">
+      <span class="aqi-num" id="card-aqi">—</span>
+      <span class="aqi-lbl">AQI</span>
+    </div>
+    <div class="aqi-text">
+      <h3 id="card-aqi-status">Loading…</h3>
+      <p id="card-aqi-health"></p>
+      <div class="pm" id="card-pm"></div>
+    </div>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats-row">
+    <div class="stat">
+      <div class="stat-lbl">Temperature</div>
+      <div class="stat-val" id="card-temp">—</div>
+      <div class="stat-unit">°C</div>
+    </div>
+    <div class="stat">
+      <div class="stat-lbl">Humidity</div>
+      <div class="stat-val" id="card-hum">—</div>
+      <div class="stat-unit">%</div>
+    </div>
+    <div class="stat">
+      <div class="stat-lbl">Wind</div>
+      <div class="stat-val" id="card-wind">—</div>
+      <div class="stat-unit">km/h</div>
+    </div>
+  </div>
+
+  <!-- Birds -->
+  <div class="birds-strip">
+    <div class="birds-strip-lbl">Birds heard today</div>
+    <div class="birds-list" id="card-birds">
+      <span class="no-birds">Loading…</span>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="card-footer">
+    <span class="tagline">Observing the Earth, over time.</span>
+    <span class="url">earthpulse.pages.dev</span>
+  </div>
+</div>
+
+<!-- Controls -->
+<div class="controls">
+  <h3>Share Earth Pulse</h3>
+  <div class="btn-row">
+    <button class="primary" onclick="shareCard()">Share via WhatsApp</button>
+    <button onclick="screenshotHint()">Save as image</button>
+    <button onclick="window.location.reload()">Refresh data</button>
+  </div>
+  <p class="hint">
+    To share: tap "Save as image", take a screenshot of the card above, then send on WhatsApp.<br>
+    Or tap "Share via WhatsApp" to send the live link directly.
+  </p>
+</div>
+
+<script>
+const SUPABASE_URL = 'https://krmczyqwblsoekceanlj.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_DrHFT5J0vmrkYraUXIlpQQ_gsk1rdq6';
+const HDR = {'apikey':SUPABASE_KEY,'Authorization':`Bearer ${SUPABASE_KEY}`};
+
+function aqiColor(v){if(v<=20)return'#22c55e';if(v<=40)return'#84cc16';if(v<=60)return'#ca8a04';if(v<=80)return'#ea580c';if(v<=100)return'#dc2626';return'#7c3aed';}
+function aqiLabel(v){if(v<=20)return['Good','Safe for all outdoor activities.'];if(v<=40)return['Fair','Acceptable quality.'];if(v<=60)return['Moderate','Limit prolonged exertion.'];if(v<=80)return['Poor','Reduce outdoor activity.'];if(v<=100)return['Very Poor','Limit exposure.'];return['Severe','Avoid outdoors.'];}
+function windDir(d){return['N','NE','E','SE','S','SW','W','NW'][Math.round((d||0)/45)%8];}
+
+async function loadData() {
+  try {
+    const [climateRes, birdsRes] = await Promise.all([
+      fetch(`${SUPABASE_URL}/rest/v1/climate_readings?select=*&order=recorded_at.desc&limit=1`,{headers:HDR}),
+      fetch(`${SUPABASE_URL}/rest/v1/bird_detections?select=species_common,is_new_species_this_year&detected_at=gte.${new Date().toISOString().split('T')[0]}T00:00:00&order=confidence.desc`,{headers:HDR}),
+    ]);
+    const [climate] = await climateRes.json();
+    const birds = await birdsRes.json();
+
+    if (climate) {
+      const aqi = climate.aqi || 0;
+      const [lbl, health] = aqiLabel(aqi);
+      document.getElementById('card-aqi').textContent = aqi || '—';
+      document.getElementById('card-aqi-circle').style.background = aqi ? aqiColor(aqi) : '#214332';
+      document.getElementById('card-aqi-status').textContent = lbl;
+      document.getElementById('card-aqi-health').textContent = health;
+      document.getElementById('card-pm').textContent = `PM2.5: ${climate.pm2_5??'—'} · PM10: ${climate.pm10??'—'} µg/m³`;
+      document.getElementById('card-temp').textContent = climate.temperature?.toFixed(1) ?? '—';
+      document.getElementById('card-hum').textContent = climate.humidity ?? '—';
+      document.getElementById('card-wind').textContent = `${climate.wind_speed?.toFixed(1)??'—'} ${windDir(climate.wind_direction)}`;
+      const dt = new Date(climate.recorded_at);
+      document.getElementById('card-time').textContent = dt.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit',hour12:true,timeZone:'Asia/Kolkata'})+' IST';
+    }
+
+    const birdEl = document.getElementById('card-birds');
+    const seen = new Set();
+    const unique = birds.filter(b=>{if(seen.has(b.species_common))return false;seen.add(b.species_common);return true;});
+    if (unique.length) {
+      birdEl.innerHTML = unique.slice(0,8).map(b=>
+        `<span class="bird-pill${b.is_new_species_this_year?' new':''}">${b.species_common}${b.is_new_species_this_year?' ★':''}</span>`
+      ).join('') + (unique.length>8?`<span class="bird-pill">+${unique.length-8} more</span>`:'');
+    } else {
+      birdEl.innerHTML = '<span class="no-birds">No detections yet today — BirdNET is listening</span>';
+    }
+  } catch(e) { console.error(e); }
+}
+
+function shareCard() {
+  const msg = `🌿 *Earth Pulse — Baner, Pune*\nLive AQI, climate & bird monitoring from the Sahyadri foothills.\n👉 earthpulse.pages.dev`;
+  window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
+}
+
+function screenshotHint() {
+  alert('Scroll so only the card is visible, then take a screenshot on your phone (Volume Down + Power). Share the screenshot on WhatsApp!');
+}
+
+loadData();
+</script>
+</body>
+</html>
