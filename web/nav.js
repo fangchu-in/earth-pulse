@@ -69,12 +69,11 @@
         <text x="98" y="35" font-family="'DM Sans',sans-serif" font-weight="600" font-size="21" fill="#F2F0E6" letter-spacing="-0.2">Earth Pulse</text>
       </svg>
       <div class="ep-footer-tagline">${TAGLINE}</div>
-      <p>Baner, Pune · 18.5526°N 73.7819°E · Recording since January 2022</p>
       <div class="ep-footer-links">${flinks}</div>
       <div class="ep-footer-credits">
-        Data: Open-Meteo (CAMS) · Google Air Quality · BirdNET (Cornell Lab)
+        Recording since January 2022 · Data: Open-Meteo (CAMS) · Google Air Quality · BirdNET (Cornell Lab)
         · Built with curiosity in Baner, Pune
-        · Made with love using <a href="https://claude.ai" target="_blank" rel="noopener">Claude</a>
+        · Built with ❤️&amp; <a href="https://claude.ai" target="_blank" rel="noopener">Claude</a>
       </div>
     </footer>`;
   }

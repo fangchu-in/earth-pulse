@@ -11,6 +11,20 @@ Schedule logic (handled inside script, not cron):
 - Night watch  : 10pm → 5am, runs every 30min (handled by cron interval)
 """
 
+import time
+
+def cleanup_old_recordings(folder, hours=14):
+    now = time.time()
+    cutoff = now - (hours * 3600)
+
+    for root, dirs, files in os.walk(folder):
+        for file in files:
+            path = os.path.join(root, file)
+            try:
+                if os.path.getmtime(path) < cutoff:
+                    os.remove(path)
+            except:
+                pass
 import os
 import subprocess
 from datetime import datetime, timezone
@@ -25,7 +39,7 @@ LAT          = 18.5526156
 LON          = 73.7818663
 TIMEZONE     = "Asia/Kolkata"
 RECORD_SECS  = 300        # record 300 seconds per detection cycle
-MIN_CONF     = 0.35      # only log detections above 70% confidence
+MIN_CONF     = 0.10      # only log detections above 10% confidence
 AUDIO_DIR    = "/home/fangchu/earth_pulse/birds/recordings"
 ENV_FILE     = "/home/fangchu/earth_pulse/.env"
 
@@ -69,30 +83,34 @@ def should_record_now():
     Session types: 'dawn', 'evening', 'night', None
     """
     from datetime import timedelta
+
     now = datetime.now(tz=ZoneInfo(TIMEZONE))
     sunrise, sunset = get_sun_times()
 
-    dawn_start   = sunrise - timedelta(minutes=45)
-    dawn_end     = sunrise + timedelta(hours=2, minutes=30)
-    evening_start = sunset - timedelta(hours=1)
-    evening_end   = sunset + timedelta(minutes=30)
+    # 🌅 Dawn: -45 min → +3 hours
+    dawn_start = sunrise - timedelta(minutes=45)
+    dawn_end   = sunrise + timedelta(hours=3)
 
-    # Night watch: 10pm to 5am, but only every 30 mins
-    # Cron runs every 10 mins — we check if minute is :00 or :30 for night
-    night_start  = now.replace(hour=22, minute=0, second=0, microsecond=0)
-    night_end    = now.replace(hour=5,  minute=0, second=0, microsecond=0)
+    # 🌇 Evening: -60 min → +60 min
+    evening_start = sunset - timedelta(minutes=60)
+    evening_end   = sunset + timedelta(minutes=60)
 
+    # 🌙 Night: 21:00 → 05:00 (once per hour only)
+    is_night = (now.hour >= 21 or now.hour < 5)
+
+    # --- Logic ---
     if dawn_start <= now <= dawn_end:
         return True, "dawn"
+
     elif evening_start <= now <= evening_end:
         return True, "evening"
-    elif now.hour >= 22 or now.hour < 5:
-        # Night watch only on :00 and :30 minutes
-        if now.minute < 10 or (29 <= now.minute <= 39):
+
+    elif is_night:
+        # Run at minute 0 and 30 (every 30 minutes)
+        if now.minute in [0, 30]:
             return True, "night"
 
     return False, None
-
 
 def record_audio(filepath, duration=RECORD_SECS):
     """Record audio from USB mic (card 2)."""
@@ -163,8 +181,7 @@ def check_new_species_this_year(species_scientific):
     except Exception:
         return False
 
-
-def push_detections(detections, session_type, aqi, temperature):
+def push_detections(detections, session_type, aqi, temperature, seen_species):
     """Push all detections to Supabase."""
     if not detections:
         return
@@ -173,13 +190,24 @@ def push_detections(detections, session_type, aqi, temperature):
     now = datetime.now(tz=ZoneInfo(TIMEZONE)).isoformat()
 
     for d in detections:
-        is_new = check_new_species_this_year(d["scientific_name"])
+        # Python-side filtering
+        if d["confidence"] < 0.15:
+            continue
+
+        species = d["scientific_name"]
+        confidence = d["confidence"]
+
+        print(f"  Detected: {species} ({confidence:.2f})")
+
+        # Check if new species this year (fast, in-memory)
+        is_new = species not in seen_species
+        seen_species.add(species)
 
         row = {
             "detected_at":              now,
             "species_common":           d["common_name"],
-            "species_scientific":       d["scientific_name"],
-            "confidence":               round(d["confidence"], 4),
+            "species_scientific":       species,
+            "confidence":               round(confidence, 4),
             "aqi_at_detection":         aqi,
             "temperature_at_detection": temperature,
             "is_new_species_this_year": is_new,
@@ -188,12 +216,33 @@ def push_detections(detections, session_type, aqi, temperature):
         try:
             supabase.table("bird_detections").insert(row).execute()
             new_tag = " *** FIRST THIS YEAR ***" if is_new else ""
-            print(f"  ✅ {d['common_name']} ({d['confidence']:.0%}){new_tag}")
+            print(f"  ✅ Inserted: {d['common_name']} ({confidence:.0%}){new_tag}")
         except Exception as e:
             print(f"  ⚠️  Supabase error for {d['common_name']}: {e}")
 
+def get_seen_species_this_year():
+    """Fetch all species seen this year (once per run)."""
+    supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
+
+    year_start = f"{datetime.now().year}-01-01"
+
+    try:
+        response = (
+            supabase.table("bird_detections")
+            .select("species_scientific")
+            .gte("detected_at", year_start)
+            .execute()
+        )
+
+        return set([r["species_scientific"] for r in response.data])
+
+    except Exception as e:
+        print(f"  ⚠️ Failed to fetch seen species: {e}")
+        return set()
 
 def main():
+    cleanup_old_recordings(AUDIO_DIR, hours=14)
+    seen_species = get_seen_species_this_year()
     now = datetime.now(tz=ZoneInfo(TIMEZONE))
     print(f"\n🐦 Earth Pulse BirdNET — {now.strftime('%Y-%m-%d %H:%M')}")
 
@@ -233,7 +282,7 @@ def main():
     aqi, temperature = get_current_aqi()
 
     # Push to Supabase
-    push_detections(detections, session, aqi, temperature)
+    push_detections(detections, session, aqi, temperature, seen_species)
 
     # Keep audio file only for high-confidence detections (>85%)
     high_conf = any(d["confidence"] > 0.85 for d in detections)

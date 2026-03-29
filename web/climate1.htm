@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Climate Data — Earth Pulse</title>
+
+<link rel="stylesheet" href="styles.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+
+<div id="ep-nav"></div>
+
+<div class="ep-hero">
+  <h1>Climate Record</h1>
+  <p>Hourly AQI, temperature and environment data from Baner.</p>
+</div>
+
+<div class="ep-filters">
+  <button onclick="loadRange(7,this)" class="ep-filter-btn active">7 days</button>
+  <button onclick="loadRange(30,this)" class="ep-filter-btn">30 days</button>
+  <button onclick="loadRange(90,this)" class="ep-filter-btn">3 months</button>
+</div>
+
+<div style="padding:2rem">
+  <p id="status">Loading…</p>
+
+  <canvas id="aqiChart"></canvas>
+  <canvas id="tempChart"></canvas>
+  <canvas id="solarChart"></canvas>
+</div>
+
+<script>
+
+const SUPABASE_URL = 'https://krmczyqwblsoekceanlj.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_DrHFT5J0vmrkYraUXIlpQQ_gsk1rdq6';
+
+let aqiChart, tempChart, solarChart;
+
+function safe(v){ return (v===null || v===undefined) ? 0 : v; }
+
+async function loadRange(days, btn){
+
+  document.getElementById('status').innerText = "Loading data...";
+
+  try {
+
+    const from = new Date(Date.now() - days*86400000).toISOString();
+
+    const res = await fetch(
+      `${SUPABASE_URL}/rest/v1/climate_readings?select=recorded_at,aqi,temperature,humidity,solar_radiation&recorded_at=gte.${from}&order=recorded_at.asc`,
+      {
+        headers:{
+          apikey:SUPABASE_KEY,
+          Authorization:`Bearer ${SUPABASE_KEY}`
+        }
+      }
+    );
+
+    const data = await res.json();
+
+    console.log("DATA:", data);
+
+    if(!data || !data.length){
+      document.getElementById('status').innerText = "No data found";
+      return;
+    }
+
+    document.getElementById('status').innerText = `${data.length} records loaded`;
+
+    const labels = data.map(d => new Date(d.recorded_at).toLocaleString());
+
+    const aqi = data.map(d => safe(d.aqi));
+    const temp = data.map(d => safe(d.temperature));
+    const humidity = data.map(d => safe(d.humidity));
+    const solar = data.map(d => safe(d.solar_radiation));
+
+    // AQI chart
+    if(aqiChart) aqiChart.destroy();
+    aqiChart = new Chart(document.getElementById('aqiChart'),{
+      type:'line',
+      data:{
+        labels,
+        datasets:[{
+          label:'AQI',
+          data:aqi,
+          borderColor:'green',
+          tension:0.3
+        }]
+      }
+    });
+
+    // Temp chart
+    if(tempChart) tempChart.destroy();
+    tempChart = new Chart(document.getElementById('tempChart'),{
+      type:'line',
+      data:{
+        labels,
+        datasets:[
+          {label:'Temp °C', data:temp, borderColor:'orange'},
+          {label:'Humidity %', data:humidity, borderColor:'blue'}
+        ]
+      }
+    });
+
+    // Solar
+    if(solarChart) solarChart.destroy();
+    solarChart = new Chart(document.getElementById('solarChart'),{
+      type:'line',
+      data:{
+        labels,
+        datasets:[
+          {label:'Solar', data:solar, borderColor:'brown'}
+        ]
+      }
+    });
+
+  } catch(e){
+    console.error(e);
+    document.getElementById('status').innerText = "Error loading data";
+  }
+}
+
+loadRange(7);
+
+</script>
+
+</body>
+</html>

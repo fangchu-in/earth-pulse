@@ -20,8 +20,8 @@ const ABOUT_HTML = `
     <h3>The hardware</h3>
     <ul>
       <li><strong>Raspberry Pi 3B+</strong> — AQI logging, data orchestration</li>
-      <li><strong>Raspberry Pi 3B</strong> — BirdNET inference, acoustic monitoring</li>
-      <li><strong>Raspberry Pi Zero 2W</strong> — Solar-powered hourly time-lapse (Phase 3)</li>
+      <li><strong>Raspberry Pi 3B+</strong> — BirdNET inference, acoustic monitoring</li>
+      <li><strong>Raspberry Pi Zero 2W</strong> — Solar-powered hourly time-lapse pictures (Phase 3)</li>
       <li><strong>3× Waaree WE-3 solar panels</strong> — 9W off-grid power</li>
       <li><strong>USB microphone</strong> — Facing the Sahyadri hills</li>
     </ul>

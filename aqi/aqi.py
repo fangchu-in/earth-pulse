@@ -10,6 +10,7 @@ import csv
 import os
 import sys
 import datetime
+import time
 
 # ─── CONFIG ─────────────────────────────────────────────
 LAT = 18.5526156
@@ -38,6 +39,16 @@ WEATHER_URL = (
     f"shortwave_radiation,direct_radiation,diffuse_radiation"
     f"&timezone=Asia/Kolkata&forecast_days=1"
 )
+
+
+def fetch_with_retry(url, retries=3):
+    for i in range(retries):
+        try:
+            return requests.get(url, timeout=10)
+        except Exception as e:
+            print(f"  ⚠️ API retry {i+1} failed: {e}")
+            time.sleep(2)
+    return None
 
 
 def safe_get(data, key, idx):
@@ -78,39 +89,40 @@ def push_to_supabase(row):
     if response.status_code in [200, 201]:
         print("  ✅ Supabase: saved")
     else:
-        print(f"  ⚠️  Supabase push failed: {response.text}")
+        print(f"  ⚠️ Supabase push failed: {response.text}")
 
 
 def main():
-    print(f"\n🌍 Earth Pulse AQI Logger — {datetime.datetime.now().strftime('%Y-%m-%d %H:%M')}")
-
-    # Fetch data
-    try:
-        aqi_data = requests.get(AQI_URL, timeout=10).json()
-        weather_data = requests.get(WEATHER_URL, timeout=10).json()
-    except Exception as e:
-        print(f"❌ API fetch failed: {e}")
-        sys.exit(1)
-
-    # Current hour
-    time_list = aqi_data["hourly"]["time"]
     now = datetime.datetime.now()
+    print(f"\n🌍 Earth Pulse AQI Logger — {now.strftime('%Y-%m-%d %H:%M')}")
 
-    # Convert API times to datetime
+    # Fetch with retry
+    aqi_response = fetch_with_retry(AQI_URL)
+    weather_response = fetch_with_retry(WEATHER_URL)
+
+    if aqi_response is None or weather_response is None:
+        print("❌ API failed after retries")
+        return
+
+    try:
+        aqi_data = aqi_response.json()
+        weather_data = weather_response.json()
+    except Exception as e:
+        print(f"❌ JSON parsing failed: {e}")
+        return
+
+    # Time handling
+    time_list = aqi_data["hourly"]["time"]
     api_times = [datetime.datetime.fromisoformat(t) for t in time_list]
 
-    # Find closest time <= now
     valid_times = [t for t in api_times if t <= now]
-    if valid_times:
-        closest_time = max(valid_times)
-        idx = api_times.index(closest_time)
-    else:
-        idx = 0
-    recorded_at = time_list[idx]
+    idx = api_times.index(max(valid_times)) if valid_times else 0
+
+    recorded_at = now.astimezone().isoformat()
 
     # Build row
     row = {
-        "recorded_at": datetime.datetime.now().astimezone().isoformat(),
+        "recorded_at": recorded_at,
         "pm2_5": safe_get(aqi_data, "pm2_5", idx),
         "pm10": safe_get(aqi_data, "pm10", idx),
         "aqi": safe_get(aqi_data, "european_aqi", idx),
@@ -133,18 +145,14 @@ def main():
         "diffuse_radiation": safe_get(weather_data, "diffuse_radiation", idx),
     }
 
-    print(f"  Time     : {recorded_at}")
     print(f"  AQI      : {row['aqi']} | PM2.5: {row['pm2_5']} | PM10: {row['pm10']}")
     print(f"  Temp     : {row['temperature']}°C (feels {row['feels_like']}°C)")
     print(f"  Humidity : {row['humidity']}% | Pressure: {row['pressure']} hPa")
 
-    # Push to Supabase
-    try:
-        push_to_supabase(row)
-    except Exception as e:
-        print(f"  ⚠️  Supabase push failed: {e}")
+    # Push
+    push_to_supabase(row)
 
-    # Save CSV backup
+    # CSV backup
     ensure_csv_header()
     with open(CSV_BACKUP, mode="a", newline="") as f:
         writer = csv.writer(f)
@@ -155,4 +163,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
