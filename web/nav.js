@@ -16,6 +16,7 @@
   </svg>`;
 
   const LINKS = [
+    { href:'index.html',          label:'Home' },
     { href:'birds.html',          label:'Birds' },
     { href:'climate.html',        label:'Climate' },
     { href:'index.html#insights', label:'Insights' },
