@@ -25,7 +25,16 @@
     .aqi-detail h3 { font-family:var(--serif); font-size:1.5rem; margin-bottom:0.2rem; color:var(--ep-green); }
     .aqi-detail p  { font-size:0.85rem; color:var(--text-muted); }
     .aqi-pollutant { display:inline-block; margin-top:0.5rem; background:var(--ep-cream); border-radius:4px; padding:0.2rem 0.6rem; font-family:var(--mono); font-size:0.74rem; color:var(--text-secondary); border:1px solid var(--border); }
-    .birds-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(270px,1fr)); gap:1rem; }
+
+.birds-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:1rem; }
+
+/* Bird cards — compact with small photo thumbnail */
+.ep-bird-card { display:flex; flex-direction:row; align-items:center; gap:0.75rem; padding:0.75rem 1rem; overflow:hidden; }
+.bird-photo-wrap { flex-shrink:0; width:56px; height:56px; border-radius:10px; overflow:hidden; background:var(--ep-cream-dark); }
+.bird-photo { width:56px; height:56px; object-fit:cover; display:block; border-radius:10px; }
+.bird-photo-placeholder { width:56px; height:56px; background:linear-gradient(135deg,rgba(33,67,50,0.07) 0%,rgba(191,155,123,0.1) 100%); display:flex; align-items:center; justify-content:center; font-size:2rem; border-radius:10px; }
+.bird-photo-loading { width:56px; height:56px; border-radius:10px; background:linear-gradient(90deg,var(--ep-cream-dark) 25%,var(--border) 50%,var(--ep-cream-dark) 75%); background-size:200% 100%; animation:ep-shimmer 1.5s infinite; flex-shrink:0; }
+
     .sparkline-row { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
     @media(max-width:700px){ .sparkline-row{grid-template-columns:1fr} }
     .alt-bg { background:white; }
@@ -67,7 +76,7 @@
 <div class="ep-hero">
   <div class="ep-hero-tag ep-fade-up">📍 Baner, Pune · 18.55°N 73.78°E · Sahyadri Foothills</div>
   <h1 class="ep-fade-up ep-delay-1">The <em>living pulse</em> of<br>Baner's environment</h1>
-  <p class="ep-hero-sub ep-fade-up ep-delay-2">Real-time air quality, microclimate, and bird biodiversity — monitored continuously from one balcony facing the hills.</p>
+  <p class="ep-hero-sub ep-fade-up ep-delay-2">Real-time air quality, microclimate, and bird biodiversity — monitored continuously.</p>
   <p class="ep-hero-meta ep-fade-up ep-delay-3">Updated hourly · Data since <strong>January 2022</strong> · <strong id="total-records">37,000+</strong> climate records · Last updated <strong id="last-updated">—</strong></p>
 </div>
 
@@ -140,7 +149,7 @@
 <!-- INSIGHT OF THE DAY -->
 <section class="ep-section alt-bg" id="insights">
   <div class="ep-section-inner">
-    <span class="ep-section-tag">Computed daily from your data</span>
+    <span class="ep-section-tag">Computed daily</span>
     <h2 class="ep-section-title">Insight of the day</h2>
     <div class="ep-insight" id="insight-main">
       <div class="ep-insight-icon" id="insight-icon">🌿</div>
@@ -184,7 +193,7 @@
   <div class="ep-section-inner">
     <span class="ep-section-tag">Hourly photos · Pi Camera · Coming Phase 3</span>
     <h2 class="ep-section-title">The hill — then and now</h2>
-    <p class="ep-section-sub">One photo per hour. Watching the Sahyadri foothills change through dry season, monsoon, and winter.</p>
+    <p class="ep-section-sub">One photo per hour. Watching the Baner hills change through summer, monsoon, and winter.</p>
     <div class="hill-grid">
       <div>
         <div class="hill-frame"><span style="font-size:2rem">📷</span><span>Camera coming soon — Phase 3</span></div>
@@ -371,14 +380,26 @@ async function loadChanges() {
   } catch(e) { console.warn('Changes error:', e); }
 }
 
-// ── BIRDS TODAY ───────────────────────────────────────────────────────────────
+// ── BIRDS TODAY with Wikipedia photos ─────────────────────────────────────────
 const BIRD_EMOJI={'sunbird':'🌺','bulbul':'🐦','drongo':'🖤','kite':'🦅','hawk':'🦅','eagle':'🦅','crow':'🐦‍⬛','myna':'🐦','owl':'🦉','pigeon':'🕊️','sparrow':'🐦','swift':'💨','warbler':'🎵','heron':'🦢','kestrel':'🦅','pipit':'🐦','nightjar':'🌙','martin':'💨','default':'🦜'};
 function birdEmoji(n){const l=n.toLowerCase();for(const[k,v] of Object.entries(BIRD_EMOJI))if(l.includes(k))return v;return BIRD_EMOJI.default;}
+const photoCache={};
+
+async function getWikiPhoto(scientificName) {
+  if (photoCache[scientificName] !== undefined) return photoCache[scientificName];
+  try {
+    const slug = encodeURIComponent(scientificName.replace(/ /g,'_'));
+    const res = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${slug}`,{headers:{'Accept':'application/json'}});
+    if (!res.ok) { photoCache[scientificName]=null; return null; }
+    const data = await res.json();
+    photoCache[scientificName] = data.thumbnail?.source || null;
+    return photoCache[scientificName];
+  } catch { photoCache[scientificName]=null; return null; }
+}
 
 async function loadBirds() {
   try {
     const today = new Date().toISOString().split('T')[0];
-    // Use simple date prefix filter — avoids timezone encoding issues
     const res = await fetch(
       `${SUPABASE_URL}/rest/v1/bird_detections?select=*&detected_at=gte.${today}T00:00:00&order=detected_at.desc`,
       { headers: HDR }
@@ -396,12 +417,14 @@ async function loadBirds() {
 
     const seen = new Set();
     const unique = birds.filter(b=>{if(seen.has(b.species_scientific))return false;seen.add(b.species_scientific);return true;});
-    grid.innerHTML = unique.map(b=>{
+
+    /* Render cards with shimmer placeholders, then load photos async */
+    grid.innerHTML = unique.map((b,i)=>{
       const time = new Date(b.detected_at).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit',hour12:true});
       const wiki = encodeURIComponent(b.species_scientific.replace(/ /g,'_'));
       const star = b.is_new_species_this_year?`<span class="bird-new-star">★ First this year</span>`:'';
       return `<a class="ep-bird-card" href="https://en.wikipedia.org/wiki/${wiki}" target="_blank" rel="noopener" role="listitem">
-        <div class="ep-bird-icon">${birdEmoji(b.species_common)}</div>
+        <div class="bird-photo-wrap" id="idx-photo-wrap-${i}"><div class="bird-photo-loading" id="idx-photo-${i}"></div></div>
         <div>
           <div class="ep-bird-name">${b.species_common}${star}</div>
           <div class="ep-bird-sci">${b.species_scientific}</div>
@@ -411,6 +434,19 @@ async function loadBirds() {
         </div>
       </a>`;
     }).join('');
+
+    /* Fetch Wikipedia photos async — each card updates as photo arrives */
+    unique.forEach(async (b,i) => {
+      const el = document.getElementById(`idx-photo-${i}`);
+      if (!el) return;
+      const photo = await getWikiPhoto(b.species_scientific);
+      if (photo) {
+        el.outerHTML = `<img class="bird-photo" src="${photo}" alt="${b.species_common}" loading="lazy"
+          onerror="this.outerHTML='<div class=\\'bird-photo-placeholder\\'>${birdEmoji(b.species_common)}</div>'">`;
+      } else {
+        el.outerHTML = `<div class="bird-photo-placeholder">${birdEmoji(b.species_common)}</div>`;
+      }
+    });
   } catch(e) { console.warn('Birds error:', e); }
 }
 

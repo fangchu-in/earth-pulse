@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Upload Hill Images</title>
+
+<style>
+body {
+  font-family: system-ui;
+  background: #faf8f5;
+  padding: 2rem;
+}
+
+.container {
+  max-width: 500px;
+  margin: auto;
+  background: white;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+}
+
+h2 {
+  margin-bottom: 1rem;
+}
+
+input {
+  margin: 1rem 0;
+}
+
+button {
+  padding: 10px 16px;
+  background: black;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+button:hover {
+  opacity: 0.9;
+}
+
+#status {
+  margin-top: 1rem;
+  font-size: 0.9rem;
+  color: #555;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+  <h2>Upload Hill Image</h2>
+
+  <input type="file" id="fileInput" accept="image/*"><br>
+  <button onclick="upload()">Upload</button>
+
+  <p id="status"></p>
+</div>
+
+<script>
+
+// ─────────────────────────────
+// 🔐 CONFIG (FILL THESE)
+// ─────────────────────────────
+
+// Your bucket endpoint
+const R2_ENDPOINT = "https://e340725bb3d0ace4725db23e1516a2a1.r2.cloudflarestorage.com";
+
+// Your bucket name
+const BUCKET = "earthpulse-files";
+
+// ⚠️ WRITE-ONLY TOKEN (NOT FULL ACCESS KEY)
+const API_KEY = "cfat_NEtceV6sZ2Q4yilOssz1Qjr8MD7zF37D2m66s9gMe900e208";
+
+
+// ─────────────────────────────
+// 📤 UPLOAD FUNCTION
+// ─────────────────────────────
+
+async function upload() {
+
+  const file = document.getElementById('fileInput').files[0];
+  if (!file) {
+    alert("Select a file first");
+    return;
+  }
+
+  const status = document.getElementById('status');
+  status.innerText = "Uploading...";
+
+  const formData = new FormData();
+  formData.append("file", file);
+
+  try {
+    const res = await fetch("http://localhost:5000/upload", {
+      method: "POST",
+      body: formData
+    });
+
+    const data = await res.json();
+
+    if (data.success) {
+      status.innerText = "✅ Uploaded successfully";
+    } else {
+      status.innerText = "❌ Upload failed";
+    }
+
+  } catch (err) {
+    console.error(err);
+    status.innerText = "❌ Upload failed";
+  }
+}
+</script>
+
+</body>
+</html>
