@@ -33,7 +33,7 @@ AQI_URL = (
     f"?latitude={LAT}&longitude={LON}"
     f"&hourly=pm2_5,pm10,european_aqi,nitrogen_dioxide,ozone,"
     f"carbon_monoxide,sulphur_dioxide,ammonia"
-    f"&timezone=Asia/Kolkata&forecast_days=1"
+    f"&timezone=Asia/Kolkata&past_days=2&forecast_days=1"
 )
 
 WEATHER_URL = (
@@ -43,7 +43,7 @@ WEATHER_URL = (
     f"surface_pressure,cloudcover,precipitation,visibility,"
     f"wind_speed_10m,wind_direction_10m,"
     f"shortwave_radiation,direct_radiation,diffuse_radiation"
-    f"&timezone=Asia/Kolkata&forecast_days=1"
+    f"&timezone=Asia/Kolkata&past_days=2&forecast_days=1"
 )
 
 GOOGLE_URL = f"https://airquality.googleapis.com/v1/currentConditions:lookup?key={GOOGLE_AQI_KEY}"
@@ -241,24 +241,28 @@ def main():
         return
 
     # ── BACKFILL (NEW) ─────────────────────────────────────────────
-    now_ist = datetime.datetime.now(ZoneInfo("Asia/Kolkata"))
-
     time_list = aqi_data["hourly"]["time"]
     api_times = [
     datetime.datetime.fromisoformat(t).replace(tzinfo=ZoneInfo("Asia/Kolkata"))
     for t in time_list
 ]
 
+    now_ist = datetime.datetime.now(ZoneInfo("Asia/Kolkata"))
+    current_hour = now_ist.replace(minute=0, second=0, microsecond=0)
+
     last_time = get_last_recorded_time()
 
     if last_time:
         last_time = last_time.astimezone(ZoneInfo("Asia/Kolkata"))
+
+        # 🔥 CRITICAL FIX
+        last_time = last_time.replace(minute=0, second=0, microsecond=0)
+
         print(f"🔎 Last DB entry: {last_time}")
 
-        current_hour = now_ist.replace(minute=0, second=0, microsecond=0)
-
         missing_hours = []
-        t = last_time + timedelta(hours=1)
+        t = last + timedelta(hours=1)
+        t = t.replace(minute=0, second=0, microsecond=0)
 
         while t < current_hour:
             missing_hours.append(t)
