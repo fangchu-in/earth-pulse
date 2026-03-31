@@ -1,33 +1,56 @@
 """
 Earth Pulse — AQI & Weather Logger
 Runs once per hour via cron. Fetches from Open-Meteo AND Google Air Quality.
-Pushes to Supabase with upsert (safe to re-run, no duplicates).
+Automatically backfills any missing hours (e.g. after power outage).
+Pushes to Supabase with upsert — safe to re-run, no duplicates.
 
-Cron entry (run `crontab -e` on Pi 3B+):
+Cron:
     0 * * * * /home/fangchu/earth_pulse/venv/bin/python /home/fangchu/earth_pulse/aqi/aqi.py >> /home/fangchu/earth_pulse/aqi/aqi.log 2>&1
+
+Google API key lives ONLY in /home/fangchu/earth_pulse/.env:
+    GOOGLE_AQI_KEY=AIza...FaCQ
 """
 
+# ── Imports (ALL at the top — never mid-file) ─────────────────────────────────
 import requests
 import csv
 import os
 import datetime
 import time
+from datetime import timedelta
+from zoneinfo import ZoneInfo
 
-# ─── CONFIG ───────────────────────────────────────────────────────────────────
+# ── Load .env (key never hardcoded here) ─────────────────────────────────────
+def load_env(path="/home/fangchu/earth_pulse/.env"):
+    env = {}
+    try:
+        with open(path) as f:
+            for line in f:
+                line = line.strip()
+                if line and not line.startswith("#") and "=" in line:
+                    k, v = line.split("=", 1)
+                    env[k.strip()] = v.strip()
+    except FileNotFoundError:
+        pass
+    return env
+
+_env = load_env()
+
+# ── CONFIG ────────────────────────────────────────────────────────────────────
 LAT          = 18.5526156
 LON          = 73.7818663
+IST          = ZoneInfo("Asia/Kolkata")
 
 SUPABASE_URL = "https://krmczyqwblsoekceanlj.supabase.co"
 SUPABASE_KEY = "sb_publishable_DrHFT5J0vmrkYraUXIlpQQ_gsk1rdq6"
 
-# Google Air Quality API key — ends in FaCQ
-# Restrict this key in GCP console: Air Quality API only + Pi IP 192.168.68.53
-# NEVER commit the full key to GitHub — keep this file out of git or use .env
-GOOGLE_AQI_KEY = "AIzaSyAIN9_Jcf62hLmoJA7i-7wTQas1PADFaCQ"
+# Read Google key from .env — never hardcode it here
+GOOGLE_AQI_KEY = _env.get("GOOGLE_AQI_KEY", "")
 
 CSV_BACKUP = os.path.join(os.path.dirname(__file__), "earth_pulse_log.csv")
-# ──────────────────────────────────────────────────────────────────────────────
+# ─────────────────────────────────────────────────────────────────────────────
 
+# past_days=2 ensures backfill data is available after short power outages
 AQI_URL = (
     f"https://air-quality-api.open-meteo.com/v1/air-quality"
     f"?latitude={LAT}&longitude={LON}"
@@ -46,8 +69,13 @@ WEATHER_URL = (
     f"&timezone=Asia/Kolkata&past_days=2&forecast_days=1"
 )
 
-GOOGLE_URL = f"https://airquality.googleapis.com/v1/currentConditions:lookup?key={GOOGLE_AQI_KEY}"
+GOOGLE_URL = (
+    f"https://airquality.googleapis.com/v1/currentConditions"
+    f":lookup?key={GOOGLE_AQI_KEY}"
+)
 
+
+# ── Helpers ───────────────────────────────────────────────────────────────────
 
 def fetch_with_retry(url, method="get", json_body=None, retries=3):
     for i in range(retries):
@@ -69,13 +97,41 @@ def safe_get(data, key, idx):
         return None
 
 
+def get_last_recorded_time():
+    """
+    Returns the most recent recorded_at from Supabase as an IST-aware datetime.
+    Returns None if no records exist or on error.
+    """
+    try:
+        headers = {
+            "apikey":        SUPABASE_KEY,
+            "Authorization": f"Bearer {SUPABASE_KEY}"
+        }
+        res  = requests.get(
+            f"{SUPABASE_URL}/rest/v1/climate_readings"
+            f"?select=recorded_at&order=recorded_at.desc&limit=1",
+            headers=headers, timeout=10
+        )
+        data = res.json()
+        if data and isinstance(data, list) and len(data) > 0:
+            raw = data[0]["recorded_at"]
+            dt  = datetime.datetime.fromisoformat(raw)
+            # Attach UTC if naive, then convert to IST
+            if dt.tzinfo is None:
+                dt = dt.replace(tzinfo=datetime.timezone.utc)
+            return dt.astimezone(IST)
+    except Exception as e:
+        print(f"  ⚠️  Could not fetch last record: {e}")
+    return None
+
+
 def fetch_google_aqi():
     """
-    Call Google Air Quality API for current conditions.
     Returns (india_aqi_int, dominant_pollutant_str, health_recommendation_str).
-    All values are None if API call fails or key is not set.
+    All None if key is missing or API fails — script continues without crashing.
     """
-    if not GOOGLE_AQI_KEY or "YOUR_FULL" in GOOGLE_AQI_KEY:
+    if not GOOGLE_AQI_KEY:
+        print("  ℹ️  No Google AQI key in .env — skipping")
         return None, None, None
 
     body = {
@@ -87,30 +143,28 @@ def fetch_google_aqi():
         ],
         "languageCode": "en"
     }
-
     resp = fetch_with_retry(GOOGLE_URL, method="post", json_body=body)
+
     if resp is None or resp.status_code != 200:
-        print(f"  ⚠️  Google AQI: HTTP {getattr(resp,'status_code','timeout')}")
+        print(f"  ⚠️  Google AQI HTTP {getattr(resp, 'status_code', 'timeout')} — stored as NULL")
         return None, None, None
 
     try:
-        data          = resp.json()
-        india_aqi     = None
-        dominant      = data.get("dominantPollutant")
+        data      = resp.json()
+        india_aqi = None
+        dominant  = data.get("dominantPollutant")
 
-        # Google returns multiple AQI indexes — find India's (code = "ind")
+        # Prefer India AQI standard (code="ind"), fall back to universal (code="uaqi")
         for index in data.get("indexes", []):
             if index.get("code") == "ind":
                 india_aqi = index.get("aqi")
                 break
-        # Fallback to universal AQI if India index not returned
         if india_aqi is None:
             for index in data.get("indexes", []):
                 if index.get("code") == "uaqi":
                     india_aqi = index.get("aqi")
                     break
 
-        # Health recommendation — use general population advice
         recs       = data.get("healthRecommendations", {})
         health_rec = recs.get("generalPopulation") or recs.get("athletes")
 
@@ -119,6 +173,40 @@ def fetch_google_aqi():
     except Exception as e:
         print(f"  ⚠️  Google AQI parse error: {e}")
         return None, None, None
+
+
+def build_row(idx, aqi_data, weather_data, timestamp,
+              google_aqi=None, dominant_pollutant=None, health_rec=None):
+    """
+    Build a complete Supabase row from API data at position idx.
+    timestamp must be a timezone-aware datetime (IST).
+    """
+    return {
+        "recorded_at":           timestamp.isoformat(),
+        "pm2_5":                 safe_get(aqi_data, "pm2_5", idx),
+        "pm10":                  safe_get(aqi_data, "pm10", idx),
+        "aqi":                   safe_get(aqi_data, "european_aqi", idx),
+        "no2":                   safe_get(aqi_data, "nitrogen_dioxide", idx),
+        "ozone":                 safe_get(aqi_data, "ozone", idx),
+        "co":                    safe_get(aqi_data, "carbon_monoxide", idx),
+        "so2":                   safe_get(aqi_data, "sulphur_dioxide", idx),
+        "ammonia":               safe_get(aqi_data, "ammonia", idx),
+        "temperature":           safe_get(weather_data, "temperature_2m", idx),
+        "feels_like":            safe_get(weather_data, "apparent_temperature", idx),
+        "humidity":              safe_get(weather_data, "relative_humidity_2m", idx),
+        "pressure":              safe_get(weather_data, "surface_pressure", idx),
+        "cloudcover":            safe_get(weather_data, "cloudcover", idx),
+        "precipitation":         safe_get(weather_data, "precipitation", idx),
+        "visibility":            safe_get(weather_data, "visibility", idx),
+        "wind_speed":            safe_get(weather_data, "wind_speed_10m", idx),
+        "wind_direction":        safe_get(weather_data, "wind_direction_10m", idx),
+        "solar_radiation":       safe_get(weather_data, "shortwave_radiation", idx),
+        "direct_radiation":      safe_get(weather_data, "direct_radiation", idx),
+        "diffuse_radiation":     safe_get(weather_data, "diffuse_radiation", idx),
+        "google_aqi_india":      google_aqi,
+        "dominant_pollutant":    dominant_pollutant,
+        "health_recommendation": health_rec,
+    }
 
 
 def push_to_supabase(row):
@@ -143,8 +231,7 @@ def ensure_csv_header():
         with open(CSV_BACKUP, mode="w", newline="") as f:
             csv.writer(f).writerow([
                 "recorded_at",
-                "pm2_5", "pm10", "aqi",
-                "no2", "ozone", "co", "so2", "ammonia",
+                "pm2_5", "pm10", "aqi", "no2", "ozone", "co", "so2", "ammonia",
                 "temperature", "feels_like", "humidity", "pressure",
                 "cloudcover", "precipitation", "visibility",
                 "wind_speed", "wind_direction",
@@ -152,80 +239,14 @@ def ensure_csv_header():
                 "google_aqi_india", "dominant_pollutant", "health_recommendation"
             ])
 
-def get_last_recorded_time():
-    try:
-        headers = {
-            "apikey": SUPABASE_KEY,
-            "Authorization": f"Bearer {SUPABASE_KEY}"
-        }
 
-        res = requests.get(
-            f"{SUPABASE_URL}/rest/v1/climate_readings"
-            "?select=recorded_at&order=recorded_at.desc&limit=1",
-            headers=headers,
-            timeout=10
-        )
-
-        data = res.json()
-        if data:
-            return datetime.datetime.fromisoformat(data[0]["recorded_at"])
-        return None
-
-    except Exception as e:
-        print(f"⚠️ Could not fetch last record: {e}")
-        return None
-
-from datetime import timedelta
-from zoneinfo import ZoneInfo
-
-def build_row_for_index(idx, aqi_data, weather_data, timestamp, include_google=False):
-    """Reuses your exact row-building logic"""
-
-    google_aqi = None
-    dominant_pollutant = None
-    health_rec = None
-
-    if include_google:
-        google_aqi, dominant_pollutant, health_rec = fetch_google_aqi()
-
-    return {
-        "recorded_at": timestamp.isoformat(),
-
-        "pm2_5": safe_get(aqi_data, "pm2_5", idx),
-        "pm10": safe_get(aqi_data, "pm10", idx),
-        "aqi": safe_get(aqi_data, "european_aqi", idx),
-        "no2": safe_get(aqi_data, "nitrogen_dioxide", idx),
-        "ozone": safe_get(aqi_data, "ozone", idx),
-        "co": safe_get(aqi_data, "carbon_monoxide", idx),
-        "so2": safe_get(aqi_data, "sulphur_dioxide", idx),
-        "ammonia": safe_get(aqi_data, "ammonia", idx),
-
-        "temperature": safe_get(weather_data, "temperature_2m", idx),
-        "feels_like": safe_get(weather_data, "apparent_temperature", idx),
-        "humidity": safe_get(weather_data, "relative_humidity_2m", idx),
-        "pressure": safe_get(weather_data, "surface_pressure", idx),
-
-        "cloudcover": safe_get(weather_data, "cloudcover", idx),
-        "precipitation": safe_get(weather_data, "precipitation", idx),
-        "visibility": safe_get(weather_data, "visibility", idx),
-
-        "wind_speed": safe_get(weather_data, "wind_speed_10m", idx),
-        "wind_direction": safe_get(weather_data, "wind_direction_10m", idx),
-
-        "solar_radiation": safe_get(weather_data, "shortwave_radiation", idx),
-        "direct_radiation": safe_get(weather_data, "direct_radiation", idx),
-        "diffuse_radiation": safe_get(weather_data, "diffuse_radiation", idx),
-
-        "google_aqi_india": google_aqi,
-        "dominant_pollutant": dominant_pollutant,
-        "health_recommendation": health_rec,
-    }
+# ── Main ──────────────────────────────────────────────────────────────────────
 
 def main():
-    now = datetime.datetime.now(ZoneInfo("Asia/Kolkata"))
-    print(f"\n🌍 Earth Pulse AQI Logger — {now.strftime('%Y-%m-%d %H:%M')}")
+    now_ist = datetime.datetime.now(IST)
+    print(f"\n🌍 Earth Pulse AQI Logger — {now_ist.strftime('%Y-%m-%d %H:%M IST')}")
 
-    # ── Open-Meteo ────────────────────────────────────────────────────────────
+    # ── Fetch Open-Meteo (past 2 days gives backfill headroom) ───────────────
     aqi_response     = fetch_with_retry(AQI_URL)
     weather_response = fetch_with_retry(WEATHER_URL)
 
@@ -240,106 +261,75 @@ def main():
         print(f"❌ JSON parsing failed: {e}")
         return
 
-    # ── BACKFILL (NEW) ─────────────────────────────────────────────
+    # Build lookup dict: IST-aware datetime → array index
     time_list = aqi_data["hourly"]["time"]
-    api_times = [
-    datetime.datetime.fromisoformat(t).replace(tzinfo=ZoneInfo("Asia/Kolkata"))
-    for t in time_list
-]
+    api_index = {
+        datetime.datetime.fromisoformat(t).replace(tzinfo=IST): i
+        for i, t in enumerate(time_list)
+    }
 
-    now_ist = datetime.datetime.now(ZoneInfo("Asia/Kolkata"))
+    # Current full hour in IST (e.g. 16:00, 17:00)
     current_hour = now_ist.replace(minute=0, second=0, microsecond=0)
 
+    # ── Backfill missing hours ────────────────────────────────────────────────
     last_time = get_last_recorded_time()
 
-    if last_time:
-        last_time = last_time.astimezone(ZoneInfo("Asia/Kolkata"))
+    if last_time is not None:
+        # Floor to the hour (remove minutes/seconds from the stored timestamp)
+        last_hour = last_time.replace(minute=0, second=0, microsecond=0)
+        print(f"  Last DB entry: {last_hour.strftime('%Y-%m-%d %H:%M IST')}")
 
-        # 🔥 CRITICAL FIX
-        last_time = last_time.replace(minute=0, second=0, microsecond=0)
-
-        print(f"🔎 Last DB entry: {last_time}")
-
-        missing_hours = []
-        t = last + timedelta(hours=1)
-        t = t.replace(minute=0, second=0, microsecond=0)
-
+        # Walk forward from last recorded hour to find gaps
+        missing = []
+        t = last_hour + timedelta(hours=1)   # ← BUG FIX: was `last`, now `last_hour`
         while t < current_hour:
-            missing_hours.append(t)
+            missing.append(t)
             t += timedelta(hours=1)
 
-        if missing_hours:
-            print(f"🔄 Backfilling {len(missing_hours)} hours...")
-
-            for ts in missing_hours:
-                try:
-                    idx = api_times.index(ts)
-                except ValueError:
-                    print(f"  ⚠️ Missing API data for {ts}")
+        if missing:
+            print(f"  🔄 Backfilling {len(missing)} missing hour(s)…")
+            for ts in missing:
+                if ts not in api_index:
+                    print(f"    ⚠️  No API data for {ts.strftime('%Y-%m-%d %H:%M')} — skipping")
                     continue
-
-                row = build_row_for_index(idx, aqi_data, weather_data, ts)
+                idx = api_index[ts]
+                row = build_row(idx, aqi_data, weather_data, ts)
+                print(f"    ↩️  {ts.strftime('%Y-%m-%d %H:%M')} | AQI {row['aqi']} | "
+                      f"Temp {row['temperature']}°C | Rain {row['precipitation']}mm")
                 push_to_supabase(row)
-
+                time.sleep(0.3)   # gentle rate limit
         else:
-            print("✅ No backfill needed")
+            print("  ✅ No gaps — database is continuous")
+    else:
+        print("  ℹ️  No existing records — this may be the first run")
 
-    # Match current time to nearest API hour
-    time_list   = aqi_data["hourly"]["time"]
-    api_times = [
-    datetime.datetime.fromisoformat(t).replace(tzinfo=ZoneInfo("Asia/Kolkata"))
-    for t in time_list
-]
-    valid_times = [t for t in api_times if t <= now]
-    idx         = api_times.index(max(valid_times)) if valid_times else 0
-    recorded_at = now.astimezone().isoformat()
-
-    # ── Google Air Quality ────────────────────────────────────────────────────
-    print("  Fetching Google Air Quality…")
+    # ── Current hour — also fetch Google AQI ─────────────────────────────────
+    print(f"\n  Fetching Google Air Quality…")
     google_aqi, dominant_pollutant, health_rec = fetch_google_aqi()
+
     if google_aqi:
-        print(f"  Google AQI @ ({LAT}, {LON}): {google_aqi} | Dominant: {dominant_pollutant}")
+        print(f"  Google AQI (India): {google_aqi} | Dominant: {dominant_pollutant}")
     else:
         print("  Google AQI: unavailable — stored as NULL")
 
-    # ── Build row (all existing + 3 new Google columns) ───────────────────────
-    row = {
-        "recorded_at":           recorded_at,
-        "pm2_5":                 safe_get(aqi_data, "pm2_5", idx),
-        "pm10":                  safe_get(aqi_data, "pm10", idx),
-        "aqi":                   safe_get(aqi_data, "european_aqi", idx),
-        "no2":                   safe_get(aqi_data, "nitrogen_dioxide", idx),
-        "ozone":                 safe_get(aqi_data, "ozone", idx),
-        "co":                    safe_get(aqi_data, "carbon_monoxide", idx),
-        "so2":                   safe_get(aqi_data, "sulphur_dioxide", idx),
-        "ammonia":               safe_get(aqi_data, "ammonia", idx),
-        "temperature":           safe_get(weather_data, "temperature_2m", idx),
-        "feels_like":            safe_get(weather_data, "apparent_temperature", idx),
-        "humidity":              safe_get(weather_data, "relative_humidity_2m", idx),
-        "pressure":              safe_get(weather_data, "surface_pressure", idx),
-        "cloudcover":            safe_get(weather_data, "cloudcover", idx),
-        "precipitation":         safe_get(weather_data, "precipitation", idx),
-        "visibility":            safe_get(weather_data, "visibility", idx),
-        "wind_speed":            safe_get(weather_data, "wind_speed_10m", idx),
-        "wind_direction":        safe_get(weather_data, "wind_direction_10m", idx),
-        "solar_radiation":       safe_get(weather_data, "shortwave_radiation", idx),
-        "direct_radiation":      safe_get(weather_data, "direct_radiation", idx),
-        "diffuse_radiation":     safe_get(weather_data, "diffuse_radiation", idx),
-        # ── NEW: Google AQI columns ──
-        "google_aqi_india":      google_aqi,
-        "dominant_pollutant":    dominant_pollutant,
-        "health_recommendation": health_rec,
-    }
+    if current_hour not in api_index:
+        print(f"  ⚠️  No Open-Meteo data for current hour — skipping push")
+        return
 
-    # ── Print ─────────────────────────────────────────────────────────────────
+    idx = api_index[current_hour]
+    row = build_row(idx, aqi_data, weather_data, current_hour,
+                    google_aqi, dominant_pollutant, health_rec)
+
+    # ── Print summary ─────────────────────────────────────────────────────────
     print(f"  AQI (EU)   : {row['aqi']} | PM2.5: {row['pm2_5']} | PM10: {row['pm10']}")
-    print(f"  AQI (India): {google_aqi or '—'} | Dominant pollutant: {dominant_pollutant or '—'}")
+    print(f"  AQI (India): {google_aqi or '—'} | Dominant: {dominant_pollutant or '—'}")
     print(f"  Temp       : {row['temperature']}°C (feels {row['feels_like']}°C)")
     print(f"  Humidity   : {row['humidity']}% | Pressure: {row['pressure']} hPa")
     print(f"  Rain       : {row['precipitation']} mm | Cloud: {row['cloudcover']}%")
 
-    # ── Push & backup ─────────────────────────────────────────────────────────
     push_to_supabase(row)
+
+    # ── CSV local backup ──────────────────────────────────────────────────────
     ensure_csv_header()
     with open(CSV_BACKUP, mode="a", newline="") as f:
         csv.writer(f).writerow(list(row.values()))
