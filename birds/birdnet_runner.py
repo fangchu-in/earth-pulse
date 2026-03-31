@@ -115,9 +115,12 @@ def should_record_now():
 def record_audio(filepath, duration=RECORD_SECS):
     """Record audio from USB mic (card 2)."""
     os.makedirs(os.path.dirname(filepath), exist_ok=True)
+    print("🎤 Recording audio...")
+    print("Using device: plughw:1,0")
+    print(f"Saving to: {filepath}")
     cmd = [
         "arecord",
-        "-D", "plughw:2,0",
+        "-D", "plughw:1,0",
         "-f", "S16_LE",
         "-r", "48000",
         "-c", "1",
