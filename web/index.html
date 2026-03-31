@@ -54,6 +54,31 @@
     .delta-down { color:#16a34a; }
     .delta-neu  { color:var(--text-muted); }
 
+    /* India AQI second gauge */
+    .aqi-dual { display:flex; flex-direction:column; gap:0.75rem; }
+    .aqi-india-block { background:rgba(33,67,50,0.05); border-radius:10px; padding:0.6rem 0.9rem; display:flex; align-items:center; gap:0.75rem; }
+    .aqi-india-circle { width:44px; height:44px; border-radius:50%; flex-shrink:0; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+    .aqi-india-num { font-family:var(--serif); font-size:1.1rem; color:white; line-height:1; font-weight:700; }
+    .aqi-india-lbl-sm { font-size:0.52rem; color:rgba(255,255,255,0.85); font-weight:600; letter-spacing:0.05em; }
+    .aqi-india-text .aqi-india-title { font-size:0.75rem; font-weight:600; color:var(--ep-green); }
+    .aqi-india-text .aqi-india-desc  { font-size:0.7rem; color:var(--text-muted); line-height:1.3; }
+
+    /* Stat sub-line for India AQI */
+    .ep-mini-sub { font-size:0.7rem; color:var(--ep-tan); margin-top:3px; font-family:var(--mono); }
+
+    /* Hill photos */
+    .hill-photo { width:100%; aspect-ratio:16/10; object-fit:cover; border-radius:var(--radius-lg); border:1px solid var(--border); display:block; background:var(--ep-cream-dark); }
+    .hill-meta { margin-top:0.5rem; }
+    .hill-meta-date { font-weight:600; font-size:0.82rem; color:var(--ep-green); }
+    .hill-meta-stats { font-family:var(--mono); font-size:0.7rem; color:var(--text-muted); line-height:1.8; margin-top:2px; }
+
+    /* Year stats */
+    .year-stats-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:0.85rem; }
+    .year-stat { background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-md); padding:1rem 1.1rem; text-align:center; }
+    .year-stat-icon { font-size:1.5rem; margin-bottom:0.3rem; }
+    .year-stat-val { font-family:var(--serif); font-size:1.8rem; color:var(--ep-green); line-height:1; }
+    .year-stat-label { font-size:0.67rem; font-weight:600; text-transform:uppercase; letter-spacing:0.07em; color:var(--text-muted); margin-top:0.25rem; }
+
     /* Monsoon countdown */
     .monsoon-banner {
       background:var(--ep-green); border-radius:var(--radius-xl);
@@ -83,15 +108,27 @@
 <!-- LIVE METRICS -->
 <div class="metrics-row" role="region" aria-label="Live environmental readings">
   <div class="ep-card metric-aqi ep-fade-up ep-delay-1">
-    <div class="ep-aqi-gauge" id="aqi-gauge" style="background:var(--ep-green);" aria-label="AQI gauge">
+    <div class="ep-aqi-gauge" id="aqi-gauge" style="background:var(--ep-green);" aria-label="AQI EU gauge">
       <span class="ep-aqi-gauge-num" id="aqi-number">—</span>
-      <span class="ep-aqi-gauge-lbl">AQI</span>
+      <span class="ep-aqi-gauge-lbl">EU AQI</span>
     </div>
-    <div class="aqi-detail">
-      <div class="ep-card-label">Air Quality Index</div>
-      <h3 id="aqi-status">Loading…</h3>
-      <p id="aqi-health">Fetching current conditions…</p>
-      <span class="aqi-pollutant" id="aqi-pollutant">PM2.5: — · PM10: —</span>
+    <div class="aqi-dual">
+      <div>
+        <div class="ep-card-label">Air Quality Index</div>
+        <h3 id="aqi-status">Loading…</h3>
+        <p id="aqi-health">Fetching current conditions…</p>
+        <span class="aqi-pollutant" id="aqi-pollutant">PM2.5: — · PM10: —</span>
+      </div>
+      <div class="aqi-india-block" id="aqi-india-block" style="display:none;">
+        <div class="aqi-india-circle" id="aqi-india-circle">
+          <span class="aqi-india-num" id="aqi-india-num">—</span>
+          <span class="aqi-india-lbl-sm">INDIA</span>
+        </div>
+        <div class="aqi-india-text">
+          <div class="aqi-india-title" id="aqi-india-status">—</div>
+          <div class="aqi-india-desc" id="aqi-india-desc"></div>
+        </div>
+      </div>
     </div>
   </div>
   <div class="ep-card ep-fade-up ep-delay-2">
@@ -161,8 +198,16 @@
     </div>
     <div class="ep-mini-grid">
       <div class="ep-mini"><div class="ep-mini-label">Highest temp this month</div><div class="ep-mini-val" id="stat-max-temp">—</div></div>
-      <div class="ep-mini"><div class="ep-mini-label">Best AQI this month</div><div class="ep-mini-val" id="stat-best-aqi">—</div></div>
-      <div class="ep-mini"><div class="ep-mini-label">Worst AQI this month</div><div class="ep-mini-val" id="stat-worst-aqi">—</div></div>
+      <div class="ep-mini">
+        <div class="ep-mini-label">Best AQI this month</div>
+        <div class="ep-mini-val" id="stat-best-aqi">—</div>
+        <div class="ep-mini-sub" id="stat-best-aqi-india"></div>
+      </div>
+      <div class="ep-mini">
+        <div class="ep-mini-label">Worst AQI this month</div>
+        <div class="ep-mini-val" id="stat-worst-aqi">—</div>
+        <div class="ep-mini-sub" id="stat-worst-aqi-india"></div>
+      </div>
       <div class="ep-mini"><div class="ep-mini-label">Species heard this month</div><div class="ep-mini-val" id="stat-species">—</div></div>
     </div>
   </div>
@@ -191,17 +236,25 @@
 <!-- HILL TIME-LAPSE -->
 <section class="ep-section alt-bg" id="timelapse">
   <div class="ep-section-inner">
-    <span class="ep-section-tag">Hourly photos · Pi Camera · Coming Phase 3</span>
+    <span class="ep-section-tag">Hill photos · Baner · Sahyadri foothills</span>
     <h2 class="ep-section-title">The hill — then and now</h2>
-    <p class="ep-section-sub">One photo per hour. Watching the Baner hills change through summer, monsoon, and winter.</p>
+    <p class="ep-section-sub">Watching the Baner hills change through summer, monsoon, and winter. Every photo is annotated with the climate conditions at the moment it was taken. <a href="hill.html" style="color:var(--ep-green);font-weight:500;">Full gallery →</a></p>
     <div class="hill-grid">
       <div>
-        <div class="hill-frame"><span style="font-size:2rem">📷</span><span>Camera coming soon — Phase 3</span></div>
-        <p class="hill-caption">Today's latest</p>
+        <div class="hill-frame" id="hill-latest-frame"><span style="font-size:2rem">📷</span><span>Loading latest photo…</span></div>
+        <div class="hill-meta" id="hill-latest-meta" style="display:none;">
+          <div class="hill-meta-date" id="hill-latest-date"></div>
+          <div class="hill-meta-stats" id="hill-latest-stats"></div>
+        </div>
+        <p class="hill-caption" id="hill-latest-caption">Most recent</p>
       </div>
       <div>
-        <div class="hill-frame"><span style="font-size:2rem">🗓</span><span>One month earlier</span></div>
-        <p class="hill-caption">30 days ago</p>
+        <div class="hill-frame" id="hill-compare-frame"><span style="font-size:2rem">🗓</span><span>Loading comparison…</span></div>
+        <div class="hill-meta" id="hill-compare-meta" style="display:none;">
+          <div class="hill-meta-date" id="hill-compare-date"></div>
+          <div class="hill-meta-stats" id="hill-compare-stats"></div>
+        </div>
+        <p class="hill-caption" id="hill-compare-caption">~30 days earlier</p>
       </div>
     </div>
   </div>
@@ -216,7 +269,7 @@
     <div class="sparkline-row">
       <div class="ep-chart-block">
         <div class="ep-chart-title">AQI this week</div>
-        <div class="ep-chart-sub">European AQI · Lower is better</div>
+        <div class="ep-chart-sub">EU AQI (dark green) · India AQI (tan dashed) · Lower is better</div>
         <canvas id="aqiChart" height="100"></canvas>
       </div>
       <div class="ep-chart-block">
@@ -224,6 +277,23 @@
         <div class="ep-chart-sub">°C at 2m · Baner, Pune</div>
         <canvas id="tempChart" height="100"></canvas>
       </div>
+    </div>
+  </div>
+</section>
+
+<!-- THIS YEAR IN BANER -->
+<section class="ep-section alt-bg">
+  <div class="ep-section-inner">
+    <span class="ep-section-tag">Since 1 January · Computed from hourly local data</span>
+    <h2 class="ep-section-title">This year in Baner</h2>
+    <p class="ep-section-sub">What the sky has done — computed from every hourly reading since January 1st.</p>
+    <div class="year-stats-grid" id="year-stats-grid">
+      <div class="ep-skeleton" style="height:110px"></div>
+      <div class="ep-skeleton" style="height:110px"></div>
+      <div class="ep-skeleton" style="height:110px"></div>
+      <div class="ep-skeleton" style="height:110px"></div>
+      <div class="ep-skeleton" style="height:110px"></div>
+      <div class="ep-skeleton" style="height:110px"></div>
     </div>
   </div>
 </section>
@@ -278,284 +348,387 @@
 <script src="about.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script>
-// ── CONFIG — replace these two values ────────────────────────────────────────
 const SUPABASE_URL = 'https://krmczyqwblsoekceanlj.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_DrHFT5J0vmrkYraUXIlpQQ_gsk1rdq6';
-// ─────────────────────────────────────────────────────────────────────────────
-
 const HDR = { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` };
 
+// ── AQI helpers ───────────────────────────────────────────────────────────────
 function aqiColor(v) {
+  if (!v||v<=0) return 'var(--ep-green)';
   if (v<=20) return '#22c55e'; if (v<=40) return '#84cc16';
   if (v<=60) return '#ca8a04'; if (v<=80) return '#ea580c';
   if (v<=100) return '#dc2626'; return '#7c3aed';
 }
 function aqiLabel(v) {
   if (!v) return ['—',''];
-  if (v<=20) return ['Good','Excellent air quality. Safe for all outdoor activities.'];
-  if (v<=40) return ['Fair','Acceptable air quality. Sensitive groups take note.'];
-  if (v<=60) return ['Moderate','Moderate pollution. Limit prolonged outdoor exertion.'];
-  if (v<=80) return ['Poor','Unhealthy for sensitive groups. Reduce outdoor activity.'];
-  if (v<=100) return ['Very Poor','Unhealthy for all. Limit outdoor exposure.'];
-  return ['Severe','Hazardous. Avoid outdoor activity if possible.'];
+  if (v<=20) return ['Good',      'Excellent air quality. Safe for all outdoor activities.'];
+  if (v<=40) return ['Fair',      'Acceptable. Sensitive groups take note.'];
+  if (v<=60) return ['Moderate',  'Moderate pollution. Limit prolonged outdoor exertion.'];
+  if (v<=80) return ['Poor',      'Unhealthy for sensitive groups. Reduce outdoor activity.'];
+  if (v<=100)return ['Very Poor', 'Unhealthy for all. Limit outdoor exposure.'];
+  return             ['Severe',   'Hazardous. Avoid outdoor activity if possible.'];
+}
+// India AQI uses a different 0–500 scale
+function indiaAqiColor(v) {
+  if (!v||v<=0) return 'var(--ep-green)';
+  if (v<=50)  return '#22c55e'; if (v<=100) return '#84cc16';
+  if (v<=200) return '#ca8a04'; if (v<=300) return '#ea580c';
+  if (v<=400) return '#dc2626'; return '#7c3aed';
+}
+function indiaAqiLabel(v) {
+  if (!v) return ['—',''];
+  if (v<=50)  return ['Good',         'Air quality is satisfactory.'];
+  if (v<=100) return ['Satisfactory', 'Minor discomfort for very sensitive people.'];
+  if (v<=200) return ['Moderate',     'Sensitive groups may experience breathing issues.'];
+  if (v<=300) return ['Poor',         'Everyone may begin to experience health effects.'];
+  if (v<=400) return ['Very Poor',    'Serious health effects for everyone.'];
+  return             ['Severe',       'Emergency conditions. Stay indoors.'];
 }
 function windDir(d) { return ['N','NE','E','SE','S','SW','W','NW'][Math.round((d||0)/45)%8]; }
 
-// ── FETCH LATEST (always most recent row) ─────────────────────────────────────
+// ── LOAD CLIMATE ──────────────────────────────────────────────────────────────
 async function loadClimate() {
   try {
-    const res = await fetch(
-      `${SUPABASE_URL}/rest/v1/climate_readings?select=*&order=recorded_at.desc&limit=1`,
-      { headers: HDR }
-    );
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/climate_readings?select=*&order=recorded_at.desc&limit=1`,{headers:HDR});
+    if (!res.ok) throw new Error();
     const [d] = await res.json();
     if (!d) return;
 
+    // EU AQI gauge
     const aqi = d.aqi || 0;
     const [lbl, health] = aqiLabel(aqi);
-    document.getElementById('aqi-number').textContent = aqi || '—';
-    document.getElementById('aqi-gauge').style.background = aqi ? aqiColor(aqi) : 'var(--ep-green)';
-    document.getElementById('aqi-status').textContent = lbl;
-    document.getElementById('aqi-health').textContent = health;
+    document.getElementById('aqi-number').textContent   = aqi || '—';
+    document.getElementById('aqi-gauge').style.background = aqiColor(aqi);
+    document.getElementById('aqi-status').textContent   = lbl;
+    document.getElementById('aqi-health').textContent   = health;
     document.getElementById('aqi-pollutant').textContent =
-      `PM2.5: ${d.pm2_5 ?? '—'} µg/m³ · PM10: ${d.pm10 ?? '—'} µg/m³`;
-    document.getElementById('temp-val').textContent = d.temperature?.toFixed(1) ?? '—';
-    document.getElementById('feels-val').textContent = d.feels_like?.toFixed(1) ?? '—';
-    document.getElementById('hum-val').textContent = d.humidity ?? '—';
-    document.getElementById('wind-val').textContent = d.wind_speed?.toFixed(1) ?? '—';
-    document.getElementById('wind-dir').textContent = windDir(d.wind_direction);
-    document.getElementById('cloud-val').textContent = d.cloudcover ?? '—';
-    document.getElementById('precip-val').textContent = (d.precipitation ?? 0).toFixed(1);
-    const dt = new Date(d.recorded_at);
+      `PM2.5: ${d.pm2_5??'—'} µg/m³ · PM10: ${d.pm10??'—'} µg/m³`;
+
+    // India AQI block — only show if data available
+    if (d.google_aqi_india) {
+      const g = d.google_aqi_india;
+      const [gLbl, gDesc] = indiaAqiLabel(g);
+      const block = document.getElementById('aqi-india-block');
+      const circle = document.getElementById('aqi-india-circle');
+      block.style.display = 'flex';
+      circle.style.background = indiaAqiColor(g);
+      document.getElementById('aqi-india-num').textContent    = g;
+      document.getElementById('aqi-india-status').textContent = gLbl;
+      document.getElementById('aqi-india-desc').textContent   = d.dominant_pollutant ? `${gDesc} · ${d.dominant_pollutant}` : gDesc;
+    }
+
+    document.getElementById('temp-val').textContent    = d.temperature?.toFixed(1) ?? '—';
+    document.getElementById('feels-val').textContent   = d.feels_like?.toFixed(1)  ?? '—';
+    document.getElementById('hum-val').textContent     = d.humidity    ?? '—';
+    document.getElementById('wind-val').textContent    = d.wind_speed?.toFixed(1)  ?? '—';
+    document.getElementById('wind-dir').textContent    = windDir(d.wind_direction);
+    document.getElementById('cloud-val').textContent   = d.cloudcover  ?? '—';
+    document.getElementById('precip-val').textContent  = (d.precipitation??0).toFixed(1);
     document.getElementById('last-updated').textContent =
-      dt.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit',hour12:true});
-  } catch(e) { console.warn('Climate error:', e); }
+      new Date(d.recorded_at).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit',hour12:true,timeZone:'Asia/Kolkata'});
+  } catch(e) { console.warn('Climate error:',e); }
 }
 
 // ── WHAT CHANGED TODAY ────────────────────────────────────────────────────────
 async function loadChanges() {
   try {
-    // Fetch today's latest and yesterday's same-hour reading
-    const [todayRes, yesterdayRes] = await Promise.all([
-      fetch(`${SUPABASE_URL}/rest/v1/climate_readings?select=aqi,temperature,humidity,wind_speed&order=recorded_at.desc&limit=1`, {headers:HDR}),
-      fetch(`${SUPABASE_URL}/rest/v1/climate_readings?select=aqi,temperature,humidity,wind_speed&order=recorded_at.desc&limit=1&offset=24`, {headers:HDR}),
+    const [tR, yR] = await Promise.all([
+      fetch(`${SUPABASE_URL}/rest/v1/climate_readings?select=aqi,temperature,humidity,wind_speed&order=recorded_at.desc&limit=1`,{headers:HDR}),
+      fetch(`${SUPABASE_URL}/rest/v1/climate_readings?select=aqi,temperature,humidity,wind_speed&order=recorded_at.desc&limit=1&offset=24`,{headers:HDR}),
     ]);
-    const [today] = await todayRes.json();
-    const [yesterday] = await yesterdayRes.json();
-    if (!today || !yesterday) return;
+    const [today] = await tR.json(); const [yesterday] = await yR.json();
+    if (!today||!yesterday) return;
 
-    // Bird counts
     const todayStr = new Date().toISOString().split('T')[0];
     const yestStr  = new Date(Date.now()-86400000).toISOString().split('T')[0];
-    const [todayBirds, yesterdayBirds] = await Promise.all([
-      fetch(`${SUPABASE_URL}/rest/v1/bird_detections?select=species_scientific&detected_at=gte.${todayStr}T00:00:00&detected_at=lt.${todayStr}T23:59:59`, {headers:HDR}).then(r=>r.json()),
-      fetch(`${SUPABASE_URL}/rest/v1/bird_detections?select=species_scientific&detected_at=gte.${yestStr}T00:00:00&detected_at=lt.${yestStr}T23:59:59`, {headers:HDR}).then(r=>r.json()),
+    const [tB,yB]  = await Promise.all([
+      fetch(`${SUPABASE_URL}/rest/v1/bird_detections?select=species_scientific&detected_at=gte.${todayStr}T00:00:00&detected_at=lt.${todayStr}T23:59:59`,{headers:HDR}).then(r=>r.json()),
+      fetch(`${SUPABASE_URL}/rest/v1/bird_detections?select=species_scientific&detected_at=gte.${yestStr}T00:00:00&detected_at=lt.${yestStr}T23:59:59`,{headers:HDR}).then(r=>r.json()),
     ]);
-    const todaySpecies = new Set(todayBirds.map(b=>b.species_scientific)).size;
-    const yestSpecies  = new Set(yesterdayBirds.map(b=>b.species_scientific)).size;
+    const tSp=new Set(tB.map(b=>b.species_scientific)).size;
+    const ySp=new Set(yB.map(b=>b.species_scientific)).size;
 
-    function delta(now, then, unit, higherIsBad=true) {
-      if (now==null||then==null) return { val:'—', delta:'', cls:'delta-neu' };
-      const d = now - then;
-      const sign = d > 0 ? '↑ +' : d < 0 ? '↓ ' : '→ ';
-      const cls = d === 0 ? 'delta-neu' : (d > 0 === higherIsBad) ? 'delta-up' : 'delta-down';
-      return { val: typeof now==='number'&&!Number.isInteger(now) ? now.toFixed(1)+unit : now+unit,
-               delta: `${sign}${Math.abs(d).toFixed(d%1?1:0)}${unit} vs yesterday`, cls };
+    function delta(now,then,unit,bad=true){
+      if(now==null||then==null)return{val:'—',delta:'',cls:'delta-neu'};
+      const d=now-then; const sign=d>0?'↑ +':d<0?'↓ ':'→ ';
+      const cls=d===0?'delta-neu':(d>0===bad)?'delta-up':'delta-down';
+      return{val:typeof now==='number'&&!Number.isInteger(now)?now.toFixed(1)+unit:now+unit,
+             delta:`${sign}${Math.abs(d).toFixed(d%1?1:0)}${unit} vs yesterday`,cls};
     }
-
-    const items = [
-      { label:'AQI',         ...delta(today.aqi,         yesterday.aqi,       '', true) },
-      { label:'Temperature', ...delta(today.temperature,  yesterday.temperature,'°C', true) },
-      { label:'Humidity',    ...delta(today.humidity,     yesterday.humidity,  '%', false) },
-      { label:'Birds today', ...delta(todaySpecies,       yestSpecies,         ' sp.', false) },
-    ];
-
-    document.getElementById('change-grid').innerHTML = items.map(item=>`
-      <div class="change-card">
-        <div class="change-label">${item.label}</div>
-        <div class="change-val">${item.val}</div>
-        <div class="change-delta ${item.cls}">${item.delta}</div>
-      </div>`).join('');
-  } catch(e) { console.warn('Changes error:', e); }
+    document.getElementById('change-grid').innerHTML=[
+      {label:'AQI (EU)',   ...delta(today.aqi,        yesterday.aqi,        '',    true)},
+      {label:'Temperature',...delta(today.temperature, yesterday.temperature,'°C',  true)},
+      {label:'Humidity',   ...delta(today.humidity,    yesterday.humidity,   '%',   false)},
+      {label:'Birds today',...delta(tSp,               ySp,                  ' sp.',false)},
+    ].map(i=>`<div class="change-card"><div class="change-label">${i.label}</div><div class="change-val">${i.val}</div><div class="change-delta ${i.cls}">${i.delta}</div></div>`).join('');
+  } catch(e){console.warn('Changes error:',e);}
 }
 
 // ── BIRDS TODAY with Wikipedia photos ─────────────────────────────────────────
-const BIRD_EMOJI={'sunbird':'🌺','bulbul':'🐦','drongo':'🖤','kite':'🦅','hawk':'🦅','eagle':'🦅','crow':'🐦‍⬛','myna':'🐦','owl':'🦉','pigeon':'🕊️','sparrow':'🐦','swift':'💨','warbler':'🎵','heron':'🦢','kestrel':'🦅','pipit':'🐦','nightjar':'🌙','martin':'💨','default':'🦜'};
+const BIRD_EMOJI={'sunbird':'🌺','bulbul':'🐦','drongo':'🖤','kite':'🦅','hawk':'🦅','eagle':'🦅','crow':'🐦','myna':'🐦','owl':'🦉','pigeon':'🕊️','sparrow':'🐦','swift':'💨','warbler':'🎵','heron':'🦢','kestrel':'🦅','pipit':'🐦','nightjar':'🌙','martin':'💨','default':'🦜'};
 function birdEmoji(n){const l=n.toLowerCase();for(const[k,v] of Object.entries(BIRD_EMOJI))if(l.includes(k))return v;return BIRD_EMOJI.default;}
 const photoCache={};
-
-async function getWikiPhoto(scientificName) {
-  if (photoCache[scientificName] !== undefined) return photoCache[scientificName];
-  try {
-    const slug = encodeURIComponent(scientificName.replace(/ /g,'_'));
-    const res = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${slug}`,{headers:{'Accept':'application/json'}});
-    if (!res.ok) { photoCache[scientificName]=null; return null; }
-    const data = await res.json();
-    photoCache[scientificName] = data.thumbnail?.source || null;
-    return photoCache[scientificName];
-  } catch { photoCache[scientificName]=null; return null; }
+async function getWikiPhoto(sci){
+  if(photoCache[sci]!==undefined)return photoCache[sci];
+  try{const r=await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(sci.replace(/ /g,'_'))}`,{headers:{'Accept':'application/json'}});photoCache[sci]=r.ok?(await r.json()).thumbnail?.source||null:null;}catch{photoCache[sci]=null;}
+  return photoCache[sci];
 }
 
 async function loadBirds() {
   try {
-    const today = new Date().toISOString().split('T')[0];
-    const res = await fetch(
-      `${SUPABASE_URL}/rest/v1/bird_detections?select=*&detected_at=gte.${today}T00:00:00&order=detected_at.desc`,
-      { headers: HDR }
-    );
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const birds = await res.json();
-    const grid = document.getElementById('birds-grid');
-
-    if (!Array.isArray(birds) || !birds.length) {
-      grid.innerHTML = `<p style="color:var(--text-muted);font-size:0.9rem;grid-column:1/-1;padding:2rem 0;">
-        No detections yet today. Dawn chorus starts at sunrise — BirdNET is listening.<br>
-        <span style="font-family:var(--mono);font-size:0.78rem;">228 species loaded for Baner, Pune.</span></p>`;
+    const now=new Date();
+    const istMidnight=new Date(now.getFullYear(),now.getMonth(),now.getDate(),0,0,0);
+    const todayUTC=new Date(istMidnight.getTime()-5.5*3600000).toISOString();
+    const res=await fetch(`${SUPABASE_URL}/rest/v1/bird_detections?select=*&detected_at=gte.${todayUTC}&order=detected_at.desc`,{headers:HDR});
+    if(!res.ok)throw new Error();
+    const birds=await res.json();
+    const grid=document.getElementById('birds-grid');
+    if(!Array.isArray(birds)||!birds.length){
+      grid.innerHTML=`<p style="color:var(--text-muted);font-size:0.9rem;grid-column:1/-1;padding:2rem 0;">No detections yet today. Dawn chorus starts at sunrise — BirdNET is listening.<br><span style="font-family:var(--mono);font-size:0.78rem;">228 species loaded for Baner, Pune.</span></p>`;
       return;
     }
-
-    const seen = new Set();
-    const unique = birds.filter(b=>{if(seen.has(b.species_scientific))return false;seen.add(b.species_scientific);return true;});
-
-    /* Render cards with shimmer placeholders, then load photos async */
-    grid.innerHTML = unique.map((b,i)=>{
-      const time = new Date(b.detected_at).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit',hour12:true});
-      const wiki = encodeURIComponent(b.species_scientific.replace(/ /g,'_'));
-      const star = b.is_new_species_this_year?`<span class="bird-new-star">★ First this year</span>`:'';
+    const seen=new Set();
+    const unique=birds.filter(b=>{if(seen.has(b.species_scientific))return false;seen.add(b.species_scientific);return true;});
+    grid.innerHTML=unique.map((b,i)=>{
+      const time=new Date(b.detected_at).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit',hour12:true,timeZone:'Asia/Kolkata'});
+      const wiki=encodeURIComponent(b.species_scientific.replace(/ /g,'_'));
+      const star=b.is_new_species_this_year?`<span class="bird-new-star">★ First this year</span>`:'';
       return `<a class="ep-bird-card" href="https://en.wikipedia.org/wiki/${wiki}" target="_blank" rel="noopener" role="listitem">
         <div class="bird-photo-wrap" id="idx-photo-wrap-${i}"><div class="bird-photo-loading" id="idx-photo-${i}"></div></div>
-        <div>
-          <div class="ep-bird-name">${b.species_common}${star}</div>
-          <div class="ep-bird-sci">${b.species_scientific}</div>
-          <div style="margin-bottom:4px;"><span class="ep-badge ep-badge-common">Common</span></div>
-          <div class="ep-bird-time">Heard at ${time}</div>
-          <div class="ep-bird-conf">${(b.confidence*100).toFixed(0)}% confidence</div>
-        </div>
-      </a>`;
+        <div><div class="ep-bird-name">${b.species_common}${star}</div><div class="ep-bird-sci">${b.species_scientific}</div>
+        <div style="margin-bottom:4px;"><span class="ep-badge ep-badge-common">Common</span></div>
+        <div class="ep-bird-time">Heard at ${time}</div>
+        <div class="ep-bird-conf">${(b.confidence*100).toFixed(0)}% confidence</div></div></a>`;
     }).join('');
-
-    /* Fetch Wikipedia photos async — each card updates as photo arrives */
-    unique.forEach(async (b,i) => {
-      const el = document.getElementById(`idx-photo-${i}`);
-      if (!el) return;
-      const photo = await getWikiPhoto(b.species_scientific);
-      if (photo) {
-        el.outerHTML = `<img class="bird-photo" src="${photo}" alt="${b.species_common}" loading="lazy"
-          onerror="this.outerHTML='<div class=\\'bird-photo-placeholder\\'>${birdEmoji(b.species_common)}</div>'">`;
-      } else {
-        el.outerHTML = `<div class="bird-photo-placeholder">${birdEmoji(b.species_common)}</div>`;
-      }
+    unique.forEach(async(b,i)=>{
+      const el=document.getElementById(`idx-photo-${i}`);
+      if(!el)return;
+      const photo=await getWikiPhoto(b.species_scientific);
+      el.outerHTML=photo
+        ?`<img class="bird-photo" src="${photo}" alt="${b.species_common}" loading="lazy" onerror="this.outerHTML='<div class=\\'bird-photo-placeholder\\'>${birdEmoji(b.species_common)}</div>'">`
+        :`<div class="bird-photo-placeholder">${birdEmoji(b.species_common)}</div>`;
     });
-  } catch(e) { console.warn('Birds error:', e); }
+  } catch(e){console.warn('Birds error:',e);}
 }
 
-// ── INSIGHTS ──────────────────────────────────────────────────────────────────
+// ── INSIGHTS with India AQI in best/worst ─────────────────────────────────────
 async function loadInsights() {
   try {
-    const ms = new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString();
-    const [maxT, bestAqi, worstAqi, species] = await Promise.all([
+    const ms=new Date(new Date().getFullYear(),new Date().getMonth(),1).toISOString();
+    const [maxT,bestAqi,worstAqi,bestG,worstG,species]=await Promise.all([
       fetch(`${SUPABASE_URL}/rest/v1/climate_readings?select=temperature,recorded_at&recorded_at=gte.${ms}&order=temperature.desc&limit=1`,{headers:HDR}).then(r=>r.json()),
       fetch(`${SUPABASE_URL}/rest/v1/climate_readings?select=aqi,recorded_at&recorded_at=gte.${ms}&aqi=gt.0&order=aqi.asc&limit=1`,{headers:HDR}).then(r=>r.json()),
       fetch(`${SUPABASE_URL}/rest/v1/climate_readings?select=aqi,recorded_at&recorded_at=gte.${ms}&order=aqi.desc&limit=1`,{headers:HDR}).then(r=>r.json()),
+      fetch(`${SUPABASE_URL}/rest/v1/climate_readings?select=google_aqi_india&recorded_at=gte.${ms}&google_aqi_india=gt.0&order=google_aqi_india.asc&limit=1`,{headers:HDR}).then(r=>r.json()),
+      fetch(`${SUPABASE_URL}/rest/v1/climate_readings?select=google_aqi_india&recorded_at=gte.${ms}&google_aqi_india=gt.0&order=google_aqi_india.desc&limit=1`,{headers:HDR}).then(r=>r.json()),
       fetch(`${SUPABASE_URL}/rest/v1/bird_detections?select=species_scientific&detected_at=gte.${ms}`,{headers:HDR}).then(r=>r.json()),
     ]);
-    const uniqueSp = new Set(species.map(b=>b.species_scientific)).size;
-
-    if(maxT[0]){const d=new Date(maxT[0].recorded_at);document.getElementById('stat-max-temp').textContent=`${maxT[0].temperature?.toFixed(1)}°C on ${d.toLocaleDateString('en-IN',{day:'numeric',month:'short'})}`;}
-    if(bestAqi[0]) document.getElementById('stat-best-aqi').textContent=`AQI ${bestAqi[0].aqi} — ${aqiLabel(bestAqi[0].aqi)[0]}`;
-    if(worstAqi[0]) document.getElementById('stat-worst-aqi').textContent=`AQI ${worstAqi[0].aqi} — ${aqiLabel(worstAqi[0].aqi)[0]}`;
+    const uniqueSp=new Set(species.map(b=>b.species_scientific)).size;
+    if(maxT[0]){
+      const d=new Date(maxT[0].recorded_at);
+      document.getElementById('stat-max-temp').textContent=`${maxT[0].temperature?.toFixed(1)}°C on ${d.toLocaleDateString('en-IN',{day:'numeric',month:'short',timeZone:'Asia/Kolkata'})}`;
+    }
+    if(bestAqi[0]){
+      document.getElementById('stat-best-aqi').textContent=`EU ${bestAqi[0].aqi} — ${aqiLabel(bestAqi[0].aqi)[0]}`;
+      if(bestG[0]?.google_aqi_india) document.getElementById('stat-best-aqi-india').textContent=`India ${bestG[0].google_aqi_india} — ${indiaAqiLabel(bestG[0].google_aqi_india)[0]}`;
+    }
+    if(worstAqi[0]){
+      document.getElementById('stat-worst-aqi').textContent=`EU ${worstAqi[0].aqi} — ${aqiLabel(worstAqi[0].aqi)[0]}`;
+      if(worstG[0]?.google_aqi_india) document.getElementById('stat-worst-aqi-india').textContent=`India ${worstG[0].google_aqi_india} — ${indiaAqiLabel(worstG[0].google_aqi_india)[0]}`;
+    }
     document.getElementById('stat-species').textContent=uniqueSp?`${uniqueSp} species`:'Listening…';
-
     if(uniqueSp>0){document.getElementById('insight-icon').textContent='🐦';document.getElementById('insight-text').textContent=`${uniqueSp} bird species detected from Baner this month.`;document.getElementById('insight-detail').textContent='Dawn chorus continues to be the most active window. Evening detections begin at sunset.';}
     else if(worstAqi[0]&&worstAqi[0].aqi>80){document.getElementById('insight-icon').textContent='⚠️';document.getElementById('insight-text').textContent=`AQI reached ${worstAqi[0].aqi} this month.`;document.getElementById('insight-detail').textContent='Consider limiting outdoor activity on high-AQI days.';}
-    else if(maxT[0]&&maxT[0].temperature>33){document.getElementById('insight-icon').textContent='🌡️';document.getElementById('insight-text').textContent=`Temperature reached ${maxT[0].temperature?.toFixed(1)}°C — a warm month in Baner.`;document.getElementById('insight-detail').textContent='High temperatures typically correlate with increased ozone levels.';}
+    else if(maxT[0]&&maxT[0].temperature>33){document.getElementById('insight-icon').textContent='🌡️';document.getElementById('insight-text').textContent=`Temperature reached ${maxT[0].temperature?.toFixed(1)}°C this month.`;document.getElementById('insight-detail').textContent='High temperatures typically correlate with increased ozone levels.';}
   } catch(e){console.warn('Insights error:',e);}
+}
+
+// ── HILL PHOTOS from timelapse_frames ─────────────────────────────────────────
+async function loadHillPhotos() {
+  try {
+    const thirtyDaysAgo = new Date(Date.now()-30*86400000).toISOString();
+    const [latestRes, compareRes] = await Promise.all([
+      fetch(`${SUPABASE_URL}/rest/v1/timelapse_frames?select=*&order=captured_at.desc&limit=1`,{headers:HDR}),
+      fetch(`${SUPABASE_URL}/rest/v1/timelapse_frames?select=*&captured_at=lte.${thirtyDaysAgo}&order=captured_at.desc&limit=1`,{headers:HDR}),
+    ]);
+    const [latest]  = await latestRes.json();
+    const [compare] = await compareRes.json();
+
+    function renderFrame(frame, frameId, dateId, statsId, captionId, fallbackText) {
+      const frameEl   = document.getElementById(frameId);
+      const metaEl    = document.getElementById(frameId.replace('-frame','-meta'));
+      const captionEl = document.getElementById(captionId);
+
+      if (!frame || !frame.r2_url) {
+        frameEl.innerHTML=`<span style="font-size:2rem">🏔️</span><span style="font-size:0.82rem;color:var(--text-muted);text-align:center;padding:0 1rem;">${fallbackText}</span>`;
+        return;
+      }
+      // Show real photo
+      frameEl.innerHTML=`<img src="${frame.r2_url}" alt="Hill — ${frame.filename}" style="width:100%;height:100%;object-fit:cover;display:block;" loading="lazy" onerror="this.parentElement.innerHTML='<span style=font-size:2rem>🏔️</span><span>Photo unavailable</span>'">`;
+
+      // Caption with climate data
+      const dt = new Date(frame.captured_at);
+      const dateStr = dt.toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric',timeZone:'Asia/Kolkata'});
+      const timeStr = dt.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit',hour12:true,timeZone:'Asia/Kolkata'});
+      document.getElementById(dateId).textContent = `${dateStr} · ${timeStr}`;
+      captionEl.textContent = dt.toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric',timeZone:'Asia/Kolkata'});
+
+      const parts=[];
+      if(frame.temperature!=null)  parts.push(`🌡️ ${frame.temperature}°C`);
+      if(frame.aqi!=null)          parts.push(`AQI(EU) ${frame.aqi}`);
+      if(frame.google_aqi_india)   parts.push(`AQI(IN) ${frame.google_aqi_india}`);
+      if(frame.precipitation>0)    parts.push(`🌧️ ${frame.precipitation}mm rain`);
+      if(frame.cloudcover!=null)   parts.push(`☁️ ${frame.cloudcover}% cloud`);
+      document.getElementById(statsId).textContent = parts.join('  ·  ');
+      if(metaEl) metaEl.style.display='block';
+    }
+
+    renderFrame(latest,  'hill-latest-frame',  'hill-latest-date',  'hill-latest-stats',  'hill-latest-caption',  'No photos yet — upload your hill pictures to get started.');
+    renderFrame(compare, 'hill-compare-frame', 'hill-compare-date', 'hill-compare-stats', 'hill-compare-caption', 'No older photos yet — comparison will appear after 30 days of data.');
+  } catch(e){console.warn('Hill photos error:',e);}
 }
 
 // ── MONSOON COUNTDOWN ─────────────────────────────────────────────────────────
 async function loadMonsoon() {
   try {
-    // Find first rain day each year from backfilled data (June–July window)
-    const years = [2022, 2023, 2024, 2025];
-    const firstRainDates = await Promise.all(years.map(async y => {
-      const res = await fetch(
-        `${SUPABASE_URL}/rest/v1/climate_readings?select=recorded_at&recorded_at=gte.${y}-06-01&recorded_at=lte.${y}-08-31&precipitation=gt.2&order=recorded_at.asc&limit=1`,
-        { headers: HDR }
-      );
-      const rows = await res.json();
-      if (rows.length) {
-        const d = new Date(rows[0].recorded_at);
-        return { year: y, dayOfYear: Math.floor((d - new Date(y,0,0)) / 86400000) };
-      }
+    const years=[2022,2023,2024,2025];
+    const dates=await Promise.all(years.map(async y=>{
+      const r=await fetch(`${SUPABASE_URL}/rest/v1/climate_readings?select=recorded_at&recorded_at=gte.${y}-06-01&recorded_at=lte.${y}-08-31&precipitation=gt.2&order=recorded_at.asc&limit=1`,{headers:HDR});
+      const rows=await r.json();
+      if(rows.length){const d=new Date(rows[0].recorded_at);return{year:y,dayOfYear:Math.floor((d-new Date(y,0,0))/86400000)};}
       return null;
     }));
-
-    const valid = firstRainDates.filter(Boolean);
-    if (!valid.length) {
-      // Fallback: Pune average monsoon is June 10
-      document.getElementById('monsoon-title').textContent = 'Monsoon typically arrives around June 10 in Baner';
-      document.getElementById('monsoon-detail').textContent = 'Not enough local rain data yet — based on Pune historical average.';
-      const daysAway = Math.round((new Date(new Date().getFullYear(),5,10) - new Date()) / 86400000);
-      document.getElementById('monsoon-days').textContent = daysAway > 0 ? daysAway : '—';
+    const valid=dates.filter(Boolean);
+    if(!valid.length){
+      document.getElementById('monsoon-title').textContent='Monsoon typically arrives around June 10 in Baner';
+      document.getElementById('monsoon-detail').textContent='Based on Pune historical average — local data building up.';
+      document.getElementById('monsoon-days').textContent=Math.max(0,Math.round((new Date(new Date().getFullYear(),5,10)-new Date())/86400000));
       return;
     }
-
-    const avgDay = Math.round(valid.reduce((s,d)=>s+d.dayOfYear,0) / valid.length);
-    const thisYear = new Date().getFullYear();
-    const monsoonDate = new Date(thisYear, 0, avgDay);
-    const daysAway = Math.round((monsoonDate - new Date()) / 86400000);
-
-    document.getElementById('monsoon-title').textContent =
-      daysAway > 0
-        ? `Monsoon expected around ${monsoonDate.toLocaleDateString('en-IN',{day:'numeric',month:'long'})}`
-        : `Monsoon season is here — watch for rain`;
-    document.getElementById('monsoon-detail').textContent =
-      `Average based on ${valid.length} years of local rain data from Baner. Historical range: June 5 – July 2.`;
-    document.getElementById('monsoon-days').textContent = daysAway > 0 ? daysAway : '🌧️';
-  } catch(e) { console.warn('Monsoon error:', e); }
+    const avgDay=Math.round(valid.reduce((s,d)=>s+d.dayOfYear,0)/valid.length);
+    const monsoonDate=new Date(new Date().getFullYear(),0,avgDay);
+    const daysAway=Math.round((monsoonDate-new Date())/86400000);
+    document.getElementById('monsoon-title').textContent=daysAway>0?`Monsoon expected around ${monsoonDate.toLocaleDateString('en-IN',{day:'numeric',month:'long'})}`:'Monsoon season is here — watch for rain';
+    document.getElementById('monsoon-detail').textContent=`Average from ${valid.length} years of local rain data. Historical range: June 5 – July 2.`;
+    document.getElementById('monsoon-days').textContent=daysAway>0?daysAway:'🌧️';
+  } catch(e){console.warn('Monsoon error:',e);}
 }
 
-// ── SPARKLINE CHARTS ──────────────────────────────────────────────────────────
+// ── AQI CHARTS — EU + India dual line, date labels ────────────────────────────
 async function loadCharts() {
   try {
-    const weekAgo = new Date(Date.now()-7*86400000).toISOString();
-    const res = await fetch(
-      `${SUPABASE_URL}/rest/v1/climate_readings?select=recorded_at,aqi,temperature&recorded_at=gte.${weekAgo}&order=recorded_at.asc`,
-      { headers: HDR }
-    );
-    const rows = await res.json();
-    if (!rows.length) return;
-    const step = Math.max(1,Math.floor(rows.length/60));
-    const s = rows.filter((_,i)=>i%step===0);
-    const labels = s.map(r=>new Date(r.recorded_at).toLocaleDateString('en-IN',{weekday:'short',hour:'2-digit'}));
-    const opts = { responsive:true, plugins:{legend:{display:false}}, scales:{ x:{grid:{display:false},ticks:{maxTicksLimit:5,font:{size:10},color:'#6b6b6b'}}, y:{grid:{color:'rgba(0,0,0,0.05)'},ticks:{font:{size:10},color:'#6b6b6b'}} } };
-    new Chart(document.getElementById('aqiChart').getContext('2d'),{type:'line',data:{labels,datasets:[{data:s.map(r=>r.aqi),borderColor:'#214332',backgroundColor:'rgba(33,67,50,0.07)',tension:0.4,pointRadius:0,borderWidth:2,fill:true}]},options:opts});
-    new Chart(document.getElementById('tempChart').getContext('2d'),{type:'line',data:{labels,datasets:[{data:s.map(r=>r.temperature),borderColor:'#BF9B7B',backgroundColor:'rgba(191,155,123,0.08)',tension:0.4,pointRadius:0,borderWidth:2,fill:true}]},options:opts});
+    const weekAgo=new Date(Date.now()-7*86400000).toISOString();
+    const res=await fetch(`${SUPABASE_URL}/rest/v1/climate_readings?select=recorded_at,aqi,google_aqi_india,temperature&recorded_at=gte.${weekAgo}&order=recorded_at.asc`,{headers:HDR});
+    const rows=await res.json();
+    if(!Array.isArray(rows)||!rows.length)return;
+    const step=Math.max(1,Math.floor(rows.length/60));
+    const s=rows.filter((_,i)=>i%step===0);
+    // Date label: "31st 2am" format
+    const labels=s.map(r=>{
+      const d=new Date(r.recorded_at);
+      const day=d.toLocaleDateString('en-IN',{day:'numeric',timeZone:'Asia/Kolkata'});
+      const hr=d.toLocaleTimeString('en-IN',{hour:'2-digit',hour12:true,timeZone:'Asia/Kolkata'});
+      return `${day} ${hr}`;
+    });
+    const sharedX={grid:{display:false},ticks:{maxTicksLimit:6,font:{size:10},color:'#6b6b6b'}};
+    const sharedY={grid:{color:'rgba(0,0,0,0.05)'},ticks:{font:{size:10},color:'#6b6b6b'}};
+
+    new Chart(document.getElementById('aqiChart').getContext('2d'),{
+      type:'line',
+      data:{labels,datasets:[
+        {label:'AQI (EU)',   data:s.map(r=>r.aqi),             borderColor:'#214332',backgroundColor:'rgba(33,67,50,0.07)',tension:0.4,pointRadius:0,borderWidth:2,fill:true},
+        {label:'AQI (India)',data:s.map(r=>r.google_aqi_india),borderColor:'#BF9B7B',backgroundColor:'transparent',        tension:0.4,pointRadius:0,borderWidth:1.5,borderDash:[5,3]},
+      ]},
+      options:{responsive:true,interaction:{mode:'index',intersect:false},plugins:{legend:{position:'top',labels:{font:{family:'DM Sans',size:11},boxWidth:10,padding:12}}},scales:{x:sharedX,y:sharedY}}
+    });
+    new Chart(document.getElementById('tempChart').getContext('2d'),{
+      type:'line',
+      data:{labels,datasets:[{label:'°C',data:s.map(r=>r.temperature),borderColor:'#BF9B7B',backgroundColor:'rgba(191,155,123,0.08)',tension:0.4,pointRadius:0,borderWidth:2,fill:true}]},
+      options:{responsive:true,plugins:{legend:{display:false}},scales:{x:sharedX,y:sharedY}}
+    });
   } catch(e){console.warn('Chart error:',e);}
+}
+
+// ── THIS YEAR IN BANER ────────────────────────────────────────────────────────
+async function loadYearStats() {
+  try {
+    const yearStart=`${new Date().getFullYear()}-01-01T00:00:00Z`;
+    const res=await fetch(`${SUPABASE_URL}/rest/v1/climate_readings?select=recorded_at,precipitation,cloudcover,temperature,aqi&recorded_at=gte.${yearStart}&order=recorded_at.asc`,{headers:HDR});
+    const rows=await res.json();
+    if(!Array.isArray(rows)||!rows.length)return;
+
+    // Bucket hourly readings into calendar days (IST)
+    const days={};
+    for(const r of rows){
+      const dk=new Date(r.recorded_at).toLocaleDateString('en-CA',{timeZone:'Asia/Kolkata'}); // YYYY-MM-DD
+      if(!days[dk]) days[dk]={rain:0,cloudSum:0,tempSum:0,aqiSum:0,n:0};
+      days[dk].rain    +=(r.precipitation||0);
+      days[dk].cloudSum+=(r.cloudcover||0);
+      days[dk].tempSum +=(r.temperature||0);
+      days[dk].aqiSum  +=(r.aqi||0);
+      days[dk].n++;
+    }
+
+    let totalRain=0,sunnyDays=0,cloudyDays=0,rainyDays=0;
+    let hotDays=0,   // days where avg temp > 35°C
+        coldDays=0,  // days where avg temp < 15°C
+        goodAqi=0;   // days where avg AQI ≤ 40
+
+    for(const d of Object.values(days)){
+      totalRain+=d.rain;
+      const avgCloud=d.cloudSum/d.n;
+      const avgTemp =d.tempSum/d.n;
+      const avgAqi  =d.aqiSum/d.n;
+      if(d.rain>=1)          rainyDays++;
+      else if(avgCloud>=60)  cloudyDays++;
+      else                   sunnyDays++;
+      if(avgTemp>35)         hotDays++;
+      if(avgTemp<15)         coldDays++;
+      if(avgAqi>0&&avgAqi<=40) goodAqi++;
+    }
+
+    const totalDays=Object.keys(days).length;
+    const stats=[
+      {icon:'🌧️', val:totalRain.toFixed(0),  label:'mm rainfall this year'},
+      {icon:'☀️', val:sunnyDays,              label:'sunny days'},
+      {icon:'⛅', val:cloudyDays,             label:'cloudy days'},
+      {icon:'🌦️', val:rainyDays,              label:'rainy days'},
+      {icon:'🔥', val:hotDays,                label:'hot days (>35°C)'},
+      {icon:'🍃', val:goodAqi,                label:'clean air days (AQI≤40)'},
+    ];
+
+    document.getElementById('year-stats-grid').innerHTML=stats.map(s=>`
+      <div class="year-stat">
+        <div class="year-stat-icon">${s.icon}</div>
+        <div class="year-stat-val">${s.val}</div>
+        <div class="year-stat-label">${s.label}</div>
+      </div>`).join('');
+  } catch(e){console.warn('Year stats error:',e);}
 }
 
 // ── NEWSLETTER ────────────────────────────────────────────────────────────────
 async function handleNewsletter(e) {
   e.preventDefault();
-  const email = e.target.querySelector('input').value;
-  const btn = e.target.querySelector('button');
-  btn.textContent = 'Subscribing…';
+  const email=e.target.querySelector('input').value;
+  const btn=e.target.querySelector('button');
+  btn.textContent='Subscribing…';
   try {
-    const r = await fetch(`${SUPABASE_URL}/rest/v1/newsletter_signups`,{method:'POST',headers:{...HDR,'Content-Type':'application/json','Prefer':'return=minimal'},body:JSON.stringify({email})});
-    if (r.ok||r.status===409) { btn.textContent='Subscribed!'; btn.style.background='var(--ep-green-mid)'; btn.disabled=true; }
+    const r=await fetch(`${SUPABASE_URL}/rest/v1/newsletter_signups`,{method:'POST',headers:{...HDR,'Content-Type':'application/json','Prefer':'return=minimal'},body:JSON.stringify({email})});
+    if(r.ok||r.status===409){btn.textContent='Subscribed!';btn.style.background='var(--ep-green-mid)';btn.disabled=true;}
     else throw new Error();
-  } catch { btn.textContent='Try again'; btn.disabled=false; }
+  } catch{btn.textContent='Try again';btn.disabled=false;}
 }
 
 // ── INIT ──────────────────────────────────────────────────────────────────────
-(async function() {
+(async function(){
   await loadClimate();
   loadChanges();
   loadBirds();
   loadInsights();
+  loadHillPhotos();
   loadMonsoon();
   loadCharts();
+  loadYearStats();
 })();
 </script>
 </body>

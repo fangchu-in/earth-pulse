@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Hill — Earth Pulse, Baner, Pune</title>
+  <meta name="description" content="Time-lapse photo gallery of the Baner hills and Sahyadri foothills. Every photo annotated with AQI, temperature, rainfall and weather at time of capture.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://earthpulse.pages.dev/hill.html">
+  <meta property="og:title" content="The Hill — Earth Pulse">
+  <meta property="og:image" content="https://earthpulse.pages.dev/earth-pulse-logo.png">
+  <link rel="icon" type="image/png" href="earth-pulse-logo.png">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    /* ── Filter bar ── */
+    .filter-bar {
+      background:var(--bg-card); border-bottom:1px solid var(--border);
+      padding:1rem 2rem; display:flex; gap:1rem; align-items:center;
+      flex-wrap:wrap; position:sticky; top:62px; z-index:90;
+    }
+    .filter-group { display:flex; align-items:center; gap:0.5rem; }
+    .filter-label { font-size:0.72rem; font-weight:600; text-transform:uppercase; letter-spacing:0.08em; color:var(--text-muted); white-space:nowrap; }
+
+    /* Clean native select styled to match brand */
+    .filter-select {
+      appearance:none; -webkit-appearance:none;
+      background:var(--ep-cream) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M2 4l4 4 4-4' fill='none' stroke='%23214332' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat right 0.65rem center;
+      border:1px solid var(--border-strong); border-radius:var(--radius-sm);
+      padding:0.38rem 2rem 0.38rem 0.75rem;
+      font-family:var(--sans); font-size:0.82rem; color:var(--ep-green);
+      cursor:pointer; transition:border-color 0.15s; min-width:150px;
+    }
+    .filter-select:focus { outline:none; border-color:var(--ep-green); }
+
+    /* Season quick-filter pills */
+    .season-pills { display:flex; gap:0.4rem; }
+    .season-pill { padding:0.3rem 0.8rem; border-radius:2rem; border:1px solid var(--border-strong); background:transparent; font-family:var(--sans); font-size:0.76rem; cursor:pointer; color:var(--text-secondary); transition:all 0.15s; white-space:nowrap; }
+    .season-pill:hover { border-color:var(--ep-tan); color:var(--ep-green); }
+    .season-pill.active { background:var(--ep-green); color:var(--ep-cream); border-color:var(--ep-green); }
+
+    .filter-count { font-family:var(--mono); font-size:0.78rem; color:var(--text-muted); margin-left:auto; white-space:nowrap; }
+
+    /* ── Stats strip ── */
+    .stats-strip { display:grid; grid-template-columns:repeat(auto-fill,minmax(140px,1fr)); gap:0.75rem; margin-bottom:2rem; }
+    .stat-box { background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-md); padding:0.85rem 1rem; text-align:center; }
+    .stat-box-val { font-family:var(--serif); font-size:1.7rem; color:var(--ep-green); line-height:1; }
+    .stat-box-label { font-size:0.66rem; font-weight:600; text-transform:uppercase; letter-spacing:0.07em; color:var(--text-muted); margin-top:0.3rem; }
+
+    /* ── Photo grid ── */
+    .photo-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:1.25rem; }
+    @media(max-width:700px){ .photo-grid { grid-template-columns:1fr 1fr; gap:0.75rem; } }
+    @media(max-width:440px){ .photo-grid { grid-template-columns:1fr; } }
+
+    /* ── Photo card ── */
+    .photo-card { background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-lg); overflow:hidden; cursor:pointer; transition:box-shadow 0.2s, transform 0.2s; }
+    .photo-card:hover { box-shadow:0 8px 32px rgba(33,67,50,0.14); transform:translateY(-3px); }
+    .photo-img { width:100%; aspect-ratio:16/10; object-fit:cover; display:block; background:var(--ep-cream-dark); }
+    .photo-body { padding:0.85rem 1rem 1rem; }
+    .photo-date { font-weight:600; font-size:0.88rem; color:var(--ep-green); }
+    .photo-time { font-family:var(--mono); font-size:0.72rem; color:var(--text-muted); margin-bottom:0.6rem; }
+
+    /* Climate data row under each photo */
+    .photo-climate { display:flex; flex-wrap:wrap; gap:4px; margin-top:4px; }
+    .climate-chip { font-size:0.66rem; font-family:var(--mono); padding:2px 7px; border-radius:20px; white-space:nowrap; }
+    .chip-temp    { background:rgba(191,155,123,0.18); color:#7c4a1a; }
+    .chip-hum     { background:rgba(59,130,246,0.1);   color:#1e3a5f; }
+    .chip-aqi-good     { background:rgba(34,197,94,0.12);  color:#166534; }
+    .chip-aqi-fair     { background:rgba(132,204,22,0.12); color:#365314; }
+    .chip-aqi-moderate { background:rgba(202,138,4,0.14);  color:#713f12; }
+    .chip-aqi-poor     { background:rgba(234,88,12,0.12);  color:#7c2d12; }
+    .chip-aqi-bad      { background:rgba(220,38,38,0.12);  color:#7f1d1d; }
+    .chip-rain    { background:rgba(59,130,246,0.12);  color:#1e3a5f; }
+    .chip-cloud   { background:rgba(107,114,128,0.1);  color:#374151; }
+    .chip-source  { background:rgba(33,67,50,0.07);    color:var(--ep-green); }
+
+    /* ── Lightbox ── */
+    .lightbox { position:fixed; inset:0; background:rgba(0,0,0,0.93); z-index:2000; display:none; }
+    .lightbox.open { display:flex; align-items:center; justify-content:center; padding:1.5rem; }
+    .lb-inner { max-width:960px; width:100%; }
+    .lb-img { width:100%; display:block; border-radius:var(--radius-md); max-height:65vh; object-fit:contain; background:rgba(0,0,0,0.5); }
+    .lb-meta { margin-top:1rem; }
+    .lb-date { font-family:var(--serif); font-size:1.1rem; color:var(--ep-cream); margin-bottom:0.5rem; }
+    .lb-chips { display:flex; flex-wrap:wrap; gap:5px; margin-bottom:0.75rem; }
+    .lb-nav { display:flex; justify-content:space-between; align-items:center; }
+    .lb-nav-btn { background:rgba(242,240,230,0.1); border:1px solid rgba(242,240,230,0.2); color:rgba(242,240,230,0.85); padding:0.5rem 1.2rem; border-radius:var(--radius-sm); font-family:var(--sans); font-size:0.85rem; cursor:pointer; transition:background 0.15s; }
+    .lb-nav-btn:hover { background:rgba(242,240,230,0.2); }
+    .lb-counter { font-family:var(--mono); font-size:0.78rem; color:rgba(242,240,230,0.5); }
+    .lb-close { position:fixed; top:1.25rem; right:1.5rem; background:none; border:none; color:rgba(242,240,230,0.55); font-size:2rem; cursor:pointer; line-height:1; z-index:2001; }
+    .lb-close:hover { color:var(--ep-cream); }
+
+    /* ── Empty state ── */
+    .empty-state { text-align:center; padding:5rem 2rem; color:var(--text-muted); grid-column:1/-1; }
+    .empty-icon { font-size:3rem; margin-bottom:1rem; }
+    .empty-state h3 { font-family:var(--serif); font-size:1.4rem; color:var(--ep-green); margin-bottom:0.5rem; }
+    .empty-state p { font-size:0.88rem; max-width:380px; margin:0 auto 1.5rem; line-height:1.7; }
+  </style>
+</head>
+<body>
+<div id="ep-nav"></div>
+
+<!-- HERO -->
+<div class="ep-hero">
+  <div class="ep-hero-tag">Hill photos · Sahyadri foothills · Baner, Pune</div>
+  <h1>The hill,<br>over time</h1>
+  <p class="ep-hero-sub">Every photo of the Baner hills — annotated with air quality, temperature, rainfall and weather at the exact moment it was taken.</p>
+  <p class="ep-hero-meta">
+    <strong id="total-photos">—</strong> photos ·
+    <strong id="date-range">—</strong> ·
+    <a href="upload.html" style="color:var(--ep-tan);">Upload a photo →</a>
+  </p>
+</div>
+
+<!-- FILTER BAR -->
+<div class="filter-bar">
+  <!-- Year → Month grouped select -->
+  <div class="filter-group">
+    <span class="filter-label">Period</span>
+    <select class="filter-select" id="period-select" onchange="applyFilters()">
+      <option value="all">All time</option>
+      <!-- Populated by JS with optgroups per year -->
+    </select>
+  </div>
+
+  <!-- Season pills -->
+  <div class="filter-group">
+    <span class="filter-label">Season</span>
+    <div class="season-pills">
+      <button class="season-pill active" data-season="all"     onclick="setSeason('all',this)">All</button>
+      <button class="season-pill"        data-season="summer"  onclick="setSeason('summer',this)">Summer</button>
+      <button class="season-pill"        data-season="monsoon" onclick="setSeason('monsoon',this)">Monsoon</button>
+      <button class="season-pill"        data-season="winter"  onclick="setSeason('winter',this)">Winter</button>
+      <button class="season-pill"        data-season="rain"    onclick="setSeason('rain',this)">🌧️ Rain only</button>
+    </div>
+  </div>
+
+  <span class="filter-count" id="filter-count"></span>
+</div>
+
+<!-- CONTENT -->
+<div class="ep-section">
+  <div class="ep-section-inner">
+
+    <!-- Stats -->
+    <div class="stats-strip" id="stats-strip">
+      <div class="ep-skeleton" style="height:80px"></div>
+      <div class="ep-skeleton" style="height:80px"></div>
+      <div class="ep-skeleton" style="height:80px"></div>
+      <div class="ep-skeleton" style="height:80px"></div>
+    </div>
+
+    <!-- Photo grid -->
+    <div class="photo-grid" id="photo-grid">
+      <div class="ep-skeleton" style="height:260px"></div>
+      <div class="ep-skeleton" style="height:260px"></div>
+      <div class="ep-skeleton" style="height:260px"></div>
+      <div class="ep-skeleton" style="height:260px"></div>
+      <div class="ep-skeleton" style="height:260px"></div>
+      <div class="ep-skeleton" style="height:260px"></div>
+    </div>
+  </div>
+</div>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox">
+  <button class="lb-close" onclick="closeLb()">✕</button>
+  <div class="lb-inner">
+    <img class="lb-img" id="lb-img" src="" alt="">
+    <div class="lb-meta">
+      <div class="lb-date" id="lb-date"></div>
+      <div class="lb-chips" id="lb-chips"></div>
+      <div class="lb-nav">
+        <button class="lb-nav-btn" onclick="lbStep(-1)">← Previous</button>
+        <span class="lb-counter" id="lb-counter"></span>
+        <button class="lb-nav-btn" onclick="lbStep(1)">Next →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="ep-footer"></div>
+<script src="analytics.js"></script>
+<script src="nav.js"></script>
+<script>
+const SUPABASE_URL = 'https://krmczyqwblsoekceanlj.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_DrHFT5J0vmrkYraUXIlpQQ_gsk1rdq6';
+const HDR = { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` };
+
+let allPhotos = [];
+let filtered  = [];
+let lbIdx     = 0;
+let activeSeason = 'all';
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
+function aqiChipClass(v) {
+  if (!v) return '';
+  if (v<=20) return 'chip-aqi-good'; if (v<=40) return 'chip-aqi-fair';
+  if (v<=60) return 'chip-aqi-moderate'; if (v<=80) return 'chip-aqi-poor';
+  return 'chip-aqi-bad';
+}
+function aqiWord(v) {
+  if (!v) return '—';
+  if (v<=20) return 'Good'; if (v<=40) return 'Fair';
+  if (v<=60) return 'Moderate'; if (v<=80) return 'Poor';
+  if (v<=100) return 'Very Poor'; return 'Severe';
+}
+function indiaWord(v) {
+  if (!v) return '—';
+  if (v<=50) return 'Good'; if (v<=100) return 'Satisfactory';
+  if (v<=200) return 'Moderate'; if (v<=300) return 'Poor';
+  if (v<=400) return 'Very Poor'; return 'Severe';
+}
+function istDate(ts) {
+  const d = new Date(ts);
+  return {
+    d,
+    full:  d.toLocaleDateString('en-IN',{weekday:'short',day:'numeric',month:'long',year:'numeric',timeZone:'Asia/Kolkata'}),
+    short: d.toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric',timeZone:'Asia/Kolkata'}),
+    time:  d.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit',hour12:true,timeZone:'Asia/Kolkata'}),
+    month: d.toLocaleDateString('en-IN',{month:'long',timeZone:'Asia/Kolkata'}),
+    year:  d.toLocaleDateString('en-IN',{year:'numeric',timeZone:'Asia/Kolkata'}),
+    monthNum: d.toLocaleDateString('en-CA',{timeZone:'Asia/Kolkata'}).slice(0,7), // YYYY-MM
+    season: getSeason(d),
+  };
+}
+function getSeason(d) {
+  const m = new Date(d).toLocaleDateString('en-IN',{month:'numeric',timeZone:'Asia/Kolkata'});
+  const mn = parseInt(m);
+  if (mn>=3&&mn<=5)  return 'summer';
+  if (mn>=6&&mn<=9)  return 'monsoon';
+  return 'winter';
+}
+
+// ── Build climate chips for a photo ──────────────────────────────────────────
+function buildChips(p, large=false) {
+  const chips = [];
+  const s = large ? 'font-size:0.76rem;padding:3px 10px;' : '';
+
+  if (p.temperature != null)
+    chips.push(`<span class="climate-chip chip-temp" style="${s}">🌡️ ${p.temperature.toFixed(1)}°C</span>`);
+  if (p.humidity != null)
+    chips.push(`<span class="climate-chip chip-hum" style="${s}">💧 ${p.humidity}%</span>`);
+  if (p.aqi != null)
+    chips.push(`<span class="climate-chip ${aqiChipClass(p.aqi)}" style="${s}">EU AQI ${p.aqi} · ${aqiWord(p.aqi)}</span>`);
+  if (p.google_aqi_india)
+    chips.push(`<span class="climate-chip ${aqiChipClass(p.google_aqi_india)}" style="${s}">India AQI ${p.google_aqi_india} · ${indiaWord(p.google_aqi_india)}</span>`);
+  if (p.dominant_pollutant)
+    chips.push(`<span class="climate-chip chip-cloud" style="${s}">${p.dominant_pollutant}</span>`);
+  if (p.precipitation > 0)
+    chips.push(`<span class="climate-chip chip-rain" style="${s}">🌧️ ${p.precipitation}mm rain</span>`);
+  if (p.cloudcover != null)
+    chips.push(`<span class="climate-chip chip-cloud" style="${s}">☁️ ${p.cloudcover}%</span>`);
+  if (p.wind_speed != null)
+    chips.push(`<span class="climate-chip chip-cloud" style="${s}">💨 ${p.wind_speed.toFixed(1)} km/h</span>`);
+
+  if (!chips.length)
+    chips.push(`<span class="climate-chip chip-source" style="${s}">No climate data for this time</span>`);
+
+  return chips.join('');
+}
+
+// ── Load data ─────────────────────────────────────────────────────────────────
+async function loadPhotos() {
+  try {
+    const res = await fetch(
+      `${SUPABASE_URL}/rest/v1/timelapse_frames?select=*&order=captured_at.desc&limit=2000`,
+      { headers: HDR }
+    );
+    const data = await res.json();
+    if (!Array.isArray(data)) { console.error('Error:', data); return; }
+    allPhotos = data;
+    buildStats();
+    buildPeriodSelect();
+    applyFilters();
+  } catch(e) { console.error('Load error:', e); }
+}
+
+// ── Stats ─────────────────────────────────────────────────────────────────────
+function buildStats() {
+  const n = allPhotos.length;
+  document.getElementById('total-photos').textContent = n;
+  if (!n) {
+    document.getElementById('date-range').textContent = 'No photos yet';
+    document.getElementById('stats-strip').innerHTML = '';
+    return;
+  }
+  const oldest = allPhotos[allPhotos.length-1];
+  const newest = allPhotos[0];
+  document.getElementById('date-range').textContent =
+    `${istDate(oldest.captured_at).short} – ${istDate(newest.captured_at).short}`;
+
+  const withRain = allPhotos.filter(p => (p.precipitation||0) >= 1).length;
+  const temps    = allPhotos.filter(p => p.temperature != null);
+  const aqis     = allPhotos.filter(p => p.aqi != null);
+  const avgTemp  = temps.length ? (temps.reduce((s,p)=>s+p.temperature,0)/temps.length).toFixed(1) : '—';
+  const avgAqi   = aqis.length  ? Math.round(aqis.reduce((s,p)=>s+p.aqi,0)/aqis.length) : '—';
+  const months   = new Set(allPhotos.map(p=>istDate(p.captured_at).monthNum)).size;
+
+  document.getElementById('stats-strip').innerHTML = [
+    { icon:'📸', val:n,          label:'photos archived' },
+    { icon:'📅', val:months,     label:'months covered' },
+    { icon:'🌧️', val:withRain,  label:'rainy-day shots' },
+    { icon:'🌡️', val:avgTemp+'°C', label:'avg temperature' },
+    { icon:'🍃', val:avgAqi,    label:'avg EU AQI' },
+  ].map(s=>`<div class="stat-box"><div style="font-size:1.4rem;margin-bottom:0.3rem;">${s.icon}</div><div class="stat-box-val">${s.val}</div><div class="stat-box-label">${s.label}</div></div>`).join('');
+}
+
+// ── Period select: grouped by year, one option per month ─────────────────────
+function buildPeriodSelect() {
+  const select = document.getElementById('period-select');
+  // Gather unique year→months
+  const byYear = {};
+  for (const p of allPhotos) {
+    const i = istDate(p.captured_at);
+    if (!byYear[i.year]) byYear[i.year] = new Set();
+    byYear[i.year].add(i.monthNum);
+  }
+  // Build optgroups newest year first
+  for (const year of Object.keys(byYear).sort().reverse()) {
+    const grp = document.createElement('optgroup');
+    grp.label = year;
+    // Sort months newest first
+    for (const mn of [...byYear[year]].sort().reverse()) {
+      const opt = document.createElement('option');
+      opt.value = mn;
+      // Format: "March 2026"
+      const [y, m] = mn.split('-');
+      const label = new Date(+y, +m-1, 1).toLocaleDateString('en-IN',{month:'long',year:'numeric'});
+      opt.textContent = label;
+      grp.appendChild(opt);
+    }
+    select.appendChild(grp);
+  }
+}
+
+// ── Filtering ─────────────────────────────────────────────────────────────────
+function setSeason(season, btn) {
+  document.querySelectorAll('.season-pill').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  activeSeason = season;
+  applyFilters();
+}
+
+function applyFilters() {
+  const period = document.getElementById('period-select').value;
+  filtered = allPhotos.filter(p => {
+    const i = istDate(p.captured_at);
+    // Period filter
+    if (period !== 'all' && i.monthNum !== period) return false;
+    // Season filter
+    if (activeSeason === 'summer'  && i.season !== 'summer')  return false;
+    if (activeSeason === 'monsoon' && i.season !== 'monsoon') return false;
+    if (activeSeason === 'winter'  && i.season !== 'winter')  return false;
+    if (activeSeason === 'rain'    && (p.precipitation||0) < 1) return false;
+    return true;
+  });
+  document.getElementById('filter-count').textContent =
+    `${filtered.length} photo${filtered.length!==1?'s':''}`;
+  renderGrid();
+}
+
+// ── Render grid ───────────────────────────────────────────────────────────────
+function renderGrid() {
+  const grid = document.getElementById('photo-grid');
+  if (!filtered.length) {
+    grid.innerHTML = `<div class="empty-state">
+      <div class="empty-icon">🏔️</div>
+      <h3>No photos for this filter</h3>
+      <p>Try a different month or season, or <a href="upload.html" style="color:var(--ep-green)">upload a photo</a> to get started.</p>
+    </div>`;
+    return;
+  }
+  grid.innerHTML = filtered.map((p, i) => {
+    const { full, short, time } = istDate(p.captured_at);
+    const src = p.r2_url || p.image_url || '';
+    const sourceTag = p.source === 'upload' ? '📤 Uploaded' : '📷 Pi camera';
+    return `<div class="photo-card" onclick="openLb(${i})" aria-label="${full}">
+      <img class="photo-img" src="${src}" alt="Baner hills — ${short}" loading="lazy"
+        onerror="this.style.background='var(--ep-cream-dark)';this.removeAttribute('src')">
+      <div class="photo-body">
+        <div class="photo-date">${short}</div>
+        <div class="photo-time">${time} · <span style="opacity:0.7">${sourceTag}</span></div>
+        <div class="photo-climate">${buildChips(p)}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ── Lightbox ──────────────────────────────────────────────────────────────────
+function openLb(idx) {
+  lbIdx = idx;
+  drawLb();
+  document.getElementById('lightbox').classList.add('open');
+  document.addEventListener('keydown', lbKey);
+}
+function drawLb() {
+  const p = filtered[lbIdx];
+  if (!p) return;
+  const { full, time } = istDate(p.captured_at);
+  const src = p.r2_url || p.image_url || '';
+  document.getElementById('lb-img').src = src;
+  document.getElementById('lb-img').alt = `Baner hills — ${full}`;
+  document.getElementById('lb-date').textContent = `${full} · ${time}`;
+  document.getElementById('lb-chips').innerHTML = buildChips(p, true);
+  document.getElementById('lb-counter').textContent = `${lbIdx+1} / ${filtered.length}`;
+}
+function lbStep(dir) {
+  lbIdx = (lbIdx + dir + filtered.length) % filtered.length;
+  drawLb();
+}
+function closeLb() {
+  document.getElementById('lightbox').classList.remove('open');
+  document.removeEventListener('keydown', lbKey);
+}
+function lbKey(e) {
+  if (e.key==='ArrowRight'||e.key==='ArrowDown') lbStep(1);
+  if (e.key==='ArrowLeft'||e.key==='ArrowUp')    lbStep(-1);
+  if (e.key==='Escape') closeLb();
+}
+// Click outside image to close
+document.getElementById('lightbox').addEventListener('click', e=>{
+  if (e.target.id==='lightbox') closeLb();
+});
+
+loadPhotos();
+</script>
+</body>
+</html>
