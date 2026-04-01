@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Page Not Found — Earth Pulse</title>
+  <meta name="robots" content="noindex">
+  <link rel="icon" type="image/png" href="earth-pulse-logo.png">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    body { min-height:100vh; display:flex; flex-direction:column; }
+    .not-found-wrap {
+      flex:1; display:flex; flex-direction:column;
+      align-items:center; justify-content:center;
+      text-align:center; padding:3rem 2rem;
+    }
+    .nf-code {
+      font-family:var(--serif); font-size:clamp(5rem,18vw,10rem);
+      color:var(--ep-green); line-height:1; opacity:0.12;
+      position:absolute; top:50%; left:50%;
+      transform:translate(-50%,-60%); pointer-events:none;
+      user-select:none;
+    }
+    .nf-inner { position:relative; z-index:1; max-width:520px; }
+    .nf-icon { font-size:3rem; margin-bottom:1rem; }
+    .nf-title { font-family:var(--serif); font-size:2rem; color:var(--ep-green); margin-bottom:0.5rem; }
+    .nf-sub { font-size:0.9rem; color:var(--text-muted); line-height:1.7; margin-bottom:2.5rem; }
+    .nf-links { display:flex; flex-wrap:wrap; gap:0.6rem; justify-content:center; margin-bottom:2rem; }
+    .nf-link {
+      padding:0.45rem 1.1rem; border-radius:2rem;
+      border:1.5px solid var(--border-strong);
+      background:transparent; color:var(--ep-green);
+      text-decoration:none; font-size:0.85rem; font-weight:500;
+      transition:all 0.15s;
+    }
+    .nf-link:hover { background:var(--ep-green); color:var(--ep-cream); border-color:var(--ep-green); }
+    .nf-link.primary { background:var(--ep-green); color:var(--ep-cream); border-color:var(--ep-green); }
+    .nf-search {
+      display:flex; gap:0.5rem; max-width:380px; margin:0 auto;
+    }
+    .nf-search input {
+      flex:1; padding:0.65rem 1rem; border:1px solid var(--border-strong);
+      border-radius:var(--radius-sm); font-family:var(--sans); font-size:0.9rem;
+      background:white; outline:none; color:var(--text-primary);
+      transition:border-color 0.2s;
+    }
+    .nf-search input:focus { border-color:var(--ep-green); }
+    .nf-search button {
+      background:var(--ep-green); color:var(--ep-cream);
+      padding:0.65rem 1.2rem; border:none; border-radius:var(--radius-sm);
+      font-family:var(--sans); font-size:0.9rem; cursor:pointer;
+      transition:background 0.2s; white-space:nowrap;
+    }
+    .nf-search button:hover { background:var(--ep-green-mid); }
+    .nf-hint { font-size:0.75rem; color:var(--text-muted); margin-top:0.75rem; }
+  </style>
+</head>
+<body>
+<div id="ep-nav"></div>
+
+<div class="not-found-wrap">
+  <div class="nf-code" aria-hidden="true">404</div>
+  <div class="nf-inner">
+    <div class="nf-icon">🏔️</div>
+    <h1 class="nf-title">Lost in the foothills</h1>
+    <p class="nf-sub">This page doesn't exist — it may have moved, or the link may be incorrect. Try searching or use one of the links below to find what you're looking for.</p>
+
+    <!-- Quick search -->
+    <div class="nf-search">
+      <input type="text" id="search-input" placeholder="Search species, climate, hill…"
+        onkeydown="if(event.key==='Enter')doSearch()">
+      <button onclick="doSearch()">Search →</button>
+    </div>
+    <p class="nf-hint">Try: "Kestrel", "monsoon", "AQI", "Diwali", "compare"</p>
+
+    <!-- Quick links — same source as nav.js -->
+    <div class="nf-links" style="margin-top:2rem;">
+      <a href="index.html"    class="nf-link primary">Home</a>
+      <a href="birds.html"    class="nf-link">Birds</a>
+      <a href="species.html"  class="nf-link">Species</a>
+      <a href="climate.html"  class="nf-link">Climate</a>
+      <a href="hill.html"     class="nf-link">Baner Hill</a>
+      <a href="monsoon.html"  class="nf-link">Monsoon</a>
+      <a href="compare.html"  class="nf-link">Compare</a>
+      <a href="about.html"    class="nf-link">About</a>
+      <a href="contact.html"  class="nf-link">Contact</a>
+      <a href="register.html" class="nf-link">Register</a>
+    </div>
+  </div>
+</div>
+
+<div id="ep-footer"></div>
+<script src="nav.js"></script>
+<script>
+function doSearch() {
+  const q = document.getElementById('search-input').value.trim().toLowerCase();
+  if (!q) return;
+  // Map common search terms to pages
+  const routes = [
+    { terms:['bird','species','kestrel','heron','bulbul','myna','sparrow','owl','swift','warbler','pipit','nightjar','crow','kite','hawk','eagle','pigeon','drongo','martin','bee-eater','kingfisher','sunbird'], page:'species.html' },
+    { terms:['monsoon','rain','rainfall','flood','weather','season'], page:'monsoon.html' },
+    { terms:['compare','comparison','diwali','holi','festival','versus','vs'], page:'compare.html' },
+    { terms:['climate','aqi','air','quality','temperature','humidity','wind','pressure','solar','pollution'], page:'climate.html' },
+    { terms:['hill','baner','photo','picture','timelapse','time-lapse','sahyadri'], page:'hill.html' },
+    { terms:['about','project','methodology','tech','stack','hardware','sensor'], page:'about.html' },
+    { terms:['contact','research','data','csv','api','access'], page:'contact.html' },
+    { terms:['register','login','sign','account','signup'], page:'register.html' },
+  ];
+  for (const r of routes) {
+    if (r.terms.some(t => q.includes(t) || t.includes(q))) {
+      window.location.href = r.page;
+      return;
+    }
+  }
+  // If the query looks like a species name, try species page
+  if (q.length > 4 && /^[a-z\s]+$/.test(q)) {
+    const slug = q.replace(/\s+/g,'_');
+    window.location.href = `species.html?bird=${slug}`;
+    return;
+  }
+  // Default: go to birds page
+  window.location.href = 'birds.html';
+}
+</script>
+</body>
+</html>

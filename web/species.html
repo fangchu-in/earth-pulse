@@ -121,7 +121,10 @@ const birdParam = params.get('bird');
 if (!birdParam) {
   renderIndex();
 } else {
-  renderSpeciesPage(decodeURIComponent(birdParam));
+  // Normalise: replace underscores back to spaces for the actual scientific name
+  // URLs use underscores (e.g. ?bird=Falco_tinnunculus), DB stores spaces
+  const scientificName = birdParam.replace(/_/g, ' ');
+  renderSpeciesPage(scientificName);
 }
 
 // ── INDEX: list all detected species ─────────────────────────────────────────
@@ -157,7 +160,7 @@ async function renderIndex() {
     // Render cards, load Wikipedia thumbnails async
     const grid = document.getElementById('species-index');
     grid.innerHTML = species.map((s,i) =>
-      `<a class="ep-bird-card" href="species.html?bird=${encodeURIComponent(s.species_scientific)}" style="flex-direction:column;padding:0;overflow:hidden;text-decoration:none;">
+      `<a class="ep-bird-card" href="species.html?bird=${s.species_scientific.replace(/ /g,'_')}" style="flex-direction:column;padding:0;overflow:hidden;text-decoration:none;">
         <div style="width:100%;height:120px;background:var(--ep-cream-dark);display:flex;align-items:center;justify-content:center;font-size:2.5rem;" id="si-img-${i}">🦜</div>
         <div style="padding:0.85rem 1rem;">
           <div class="ep-bird-name">${s.species_common}</div>
@@ -181,8 +184,10 @@ async function renderIndex() {
 async function renderSpeciesPage(scientificName) {
   try {
     // Fetch in parallel: all detections for this species + Wikipedia
+    // Note: PostgREST eq. filter needs the value URL-encoded in the query string
+    const encodedName = encodeURIComponent(scientificName);
     const [detectRes, wikiRes] = await Promise.all([
-      fetch(`${SUPABASE_URL}/rest/v1/bird_detections?select=*&species_scientific=eq.${encodeURIComponent(scientificName)}&order=detected_at.desc`, {headers:HDR}),
+      fetch(`${SUPABASE_URL}/rest/v1/bird_detections?select=*&species_scientific=eq.${encodedName}&order=detected_at.desc`, {headers:HDR}),
       fetchWikiData(scientificName),
     ]);
     const detections = await detectRes.json();
@@ -438,7 +443,7 @@ async function loadRelated(currentSci) {
     const related = Array.from(map.values()).slice(0,8);
     const grid = document.getElementById('related-grid');
     grid.innerHTML = related.map((s,i) =>
-      `<a class="related-card" href="species.html?bird=${encodeURIComponent(s.species_scientific)}">
+      `<a class="related-card" href="species.html?bird=${s.species_scientific.replace(/ /g,'_')}">
         <div id="rel-img-${i}" style="width:48px;height:48px;border-radius:50%;background:var(--ep-cream-dark);margin:0 auto 0.4rem;display:flex;align-items:center;justify-content:center;font-size:1.4rem;">🦜</div>
         <div class="related-card-name">${s.species_common}</div>
         <div class="related-card-sci">${s.species_scientific}</div>

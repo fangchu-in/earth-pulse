@@ -27,11 +27,15 @@
   const FOOTER_LINKS = [
     { href:'index.html',    label:'Home' },
     { href:'birds.html',    label:'Birds' },
+    { href:'species.html',  label:'Species' },
     { href:'climate.html',  label:'Climate' },
-    { href:'hill.html', label:'Baner Hill' },
+    { href:'hill.html',     label:'Baner Hill' },
+    { href:'monsoon.html',  label:'Monsoon' },
+    { href:'compare.html',  label:'Compare' },
     { href:'register.html', label:'Register' },
     { href:'about.html',    label:'About' },
     { href:'contact.html',  label:'Contact' },
+    { href:'https://github.com/fangchu-in/earth-pulse', label:'GitHub', ext:true },
   ];
 
   function page() {
@@ -52,7 +56,12 @@
         <span class="ep-nav-brand-text">${SITE}</span>
       </a>
       <ul class="ep-nav-links">${links}</ul>
-      <a href="register.html" class="ep-nav-cta">Register</a>
+      <div style="display:flex;gap:0.5rem;align-items:center;">
+        <a href="search.html" aria-label="Search" style="display:flex;align-items:center;padding:0.4rem 0.6rem;border-radius:var(--radius-sm);color:var(--text-muted);text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='var(--ep-green)'" onmouseout="this.style.color='var(--text-muted)'">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        </a>
+        <a href="register.html" class="ep-nav-cta">Register</a>
+      </div>
     </nav>`;
   }
 

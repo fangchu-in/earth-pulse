@@ -326,8 +326,8 @@ async function renderBirds(detections, label) {
   list.innerHTML = unique.map((b, i) => {
     const count   = detections.filter(d=>d.species_scientific===b.species_scientific).length;
     const time    = new Date(b.detected_at).toLocaleString('en-IN',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit',hour12:true,timeZone:'Asia/Kolkata'});
-    /* ── KEY CHANGE: link to species.html instead of Wikipedia ── */
-    const speciesUrl = `species.html?bird=${encodeURIComponent(b.species_scientific)}`;
+    /* ── KEY CHANGE: link to species.html with underscores (clean URL) ── */
+    const speciesUrl = `species.html?bird=${b.species_scientific.replace(/ /g,'_')}`;
     const newStar = b.is_new_species_this_year ? `<span class="bird-new-star">★ First this year</span>` : '';
     const dawnCount = detections.filter(d=>d.species_scientific===b.species_scientific&&isDawn(d.detected_at)).length;
     const dawnChip  = dawnCount > 0 ? `<span class="ep-badge ep-badge-common" style="background:rgba(234,179,8,0.12);color:#713f12;">🌅 ${dawnCount}× at dawn</span>` : '';
