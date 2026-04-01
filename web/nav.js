@@ -21,7 +21,7 @@
     { href:'climate.html',        label:'Climate' },
     { href:'hill.html', label:'Baner Hill' },
     { href:'index.html#insights', label:'Insights' },
-    { href:'index.html#about',    label:'About' },
+    { href:'about.html',    label:'About' },
   ];
 
   const FOOTER_LINKS = [
@@ -30,8 +30,8 @@
     { href:'climate.html',  label:'Climate' },
     { href:'hill.html', label:'Baner Hill' },
     { href:'register.html', label:'Register' },
+    { href:'about.html',    label:'About' },
     { href:'contact.html',  label:'Contact' },
-    { href:GITHUB,          label:'GitHub', ext:true },
   ];
 
   function page() {

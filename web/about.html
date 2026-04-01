@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About Earth Pulse — Hyperlocal Environmental Observatory, Baner, Pune</title>
+  <meta name="description" content="Earth Pulse is an independent environmental observatory monitoring air quality, climate, biodiversity and bird species in Baner, Pune since January 2022. Open data, citizen science.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://earthpulse.pages.dev/about.html">
+  <meta property="og:title" content="About Earth Pulse — Baner, Pune">
+  <meta property="og:description" content="An independent, ground-level environmental observatory on the edge of the Western Ghats. Open data since 2022.">
+  <meta property="og:image" content="https://earthpulse.pages.dev/earth-pulse-logo.png">
+  <link rel="icon" type="image/png" href="earth-pulse-logo.png">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    /* Impact numbers */
+    .impact-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(180px,1fr)); gap:1rem; margin-bottom:2.5rem; }
+    .impact-card { background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-lg); padding:1.4rem 1.2rem; text-align:center; transition:box-shadow 0.2s; }
+    .impact-card:hover { box-shadow:0 6px 24px rgba(33,67,50,0.1); }
+    .impact-icon { font-size:1.6rem; margin-bottom:0.4rem; }
+    .impact-val { font-family:var(--serif); font-size:2rem; color:var(--ep-green); line-height:1; margin-bottom:0.2rem; }
+    .impact-label { font-size:0.68rem; font-weight:600; text-transform:uppercase; letter-spacing:0.08em; color:var(--text-muted); }
+    .impact-sub { font-size:0.72rem; color:var(--ep-tan); font-family:var(--mono); margin-top:0.2rem; }
+
+    /* Section divider */
+    .section-tag { font-size:0.72rem; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; color:var(--ep-tan); display:block; margin-bottom:0.5rem; }
+
+    /* Records table */
+    .records-table { width:100%; border-collapse:collapse; font-size:0.88rem; }
+    .records-table th { text-align:left; font-size:0.7rem; font-weight:600; text-transform:uppercase; letter-spacing:0.08em; color:var(--text-muted); padding:0.5rem 1rem; border-bottom:2px solid var(--border); }
+    .records-table td { padding:0.7rem 1rem; border-bottom:1px solid var(--border); color:var(--text-secondary); }
+    .records-table td:first-child { font-weight:600; color:var(--ep-green); }
+    .records-table td.val { font-family:var(--serif); font-size:1.1rem; color:var(--ep-green); }
+    .records-table tr:last-child td { border-bottom:none; }
+    .locked-row td { filter:blur(5px); user-select:none; pointer-events:none; }
+    .lock-overlay { text-align:center; padding:1.5rem; background:linear-gradient(to bottom, transparent, var(--bg-card)); position:relative; margin-top:-3rem; }
+    .lock-msg { font-size:0.85rem; color:var(--text-muted); margin-bottom:0.75rem; }
+
+    /* Tech stack */
+    .tech-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:1rem; }
+    .tech-card { background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-md); padding:1.1rem 1.2rem; }
+    .tech-name { font-weight:600; font-size:0.9rem; color:var(--ep-green); margin-bottom:0.2rem; }
+    .tech-role { font-size:0.78rem; color:var(--text-muted); line-height:1.6; }
+    .tech-badge { display:inline-block; font-size:0.62rem; font-weight:600; padding:1px 7px; border-radius:20px; background:rgba(33,67,50,0.08); color:var(--ep-green); margin-bottom:0.4rem; }
+
+    /* Objective section */
+    .objective-block { background:var(--ep-green); border-radius:var(--radius-xl); padding:2.5rem 3rem; }
+    .objective-block h2 { font-family:var(--serif); font-size:2rem; color:var(--ep-cream); margin-bottom:1rem; }
+    .objective-block p { font-size:0.95rem; color:rgba(242,240,230,0.75); line-height:1.8; margin-bottom:0.75rem; }
+    .objective-block p:last-child { margin-bottom:0; }
+    @media(max-width:600px){ .objective-block { padding:1.75rem; } }
+
+    /* Team / origin */
+    .origin-grid { display:grid; grid-template-columns:1fr 1fr; gap:2rem; }
+    @media(max-width:650px){ .origin-grid { grid-template-columns:1fr; } }
+
+    /* Skeleton */
+    .val-loading { display:inline-block; width:60px; height:2rem; border-radius:4px; vertical-align:middle; }
+
+    /* Cite */
+    .cite-block { background:var(--ep-cream-dark); border-radius:var(--radius-md); padding:1rem 1.25rem; font-family:var(--mono); font-size:0.8rem; color:var(--text-secondary); border-left:3px solid var(--ep-green); }
+  </style>
+</head>
+<body>
+<div id="ep-nav"></div>
+
+<!-- HERO -->
+<div class="ep-hero">
+  <div class="ep-hero-tag">Independent · Open data · Baner, Pune · Since January 2022</div>
+  <h1>Observing the Earth,<br><em>over time</em></h1>
+  <p class="ep-hero-sub">Earth Pulse is a ground-level environmental observatory on the edge of the Western Ghats — tracking air, climate, sound, and biodiversity from one location, continuously, since January 2022.</p>
+</div>
+
+<!-- OBJECTIVE -->
+<section class="ep-section">
+  <div class="ep-section-inner">
+    <div class="objective-block">
+      <h2>The objective</h2>
+      <p>To build the most detailed, long-term, freely accessible environmental record of a single location in urban India — combining air quality, microclimate, acoustic biodiversity, and visual documentation into one continuous, open dataset.</p>
+      <p>Most environmental data is regional and aggregated. Earth Pulse is hyperlocal and hourly. The goal is to reveal patterns that regional data cannot — the morning AQI spike before traffic, the temperature drop when the first monsoon cloud passes, the exact day a migratory bird arrives.</p>
+      <p>Over time this becomes more than data. It becomes memory, evidence, and a foundation for understanding how a place changes — accessible not just to researchers, but to anyone curious about the world around them.</p>
+    </div>
+  </div>
+</section>
+
+<!-- IMPACT NUMBERS -->
+<section class="ep-section" style="background:white;">
+  <div class="ep-section-inner">
+    <span class="section-tag">Impact — updated in real time</span>
+    <h2 class="ep-section-title">What we've measured so far</h2>
+    <div class="impact-grid" id="impact-grid">
+      <div class="ep-skeleton" style="height:120px"></div>
+      <div class="ep-skeleton" style="height:120px"></div>
+      <div class="ep-skeleton" style="height:120px"></div>
+      <div class="ep-skeleton" style="height:120px"></div>
+      <div class="ep-skeleton" style="height:120px"></div>
+      <div class="ep-skeleton" style="height:120px"></div>
+      <div class="ep-skeleton" style="height:120px"></div>
+      <div class="ep-skeleton" style="height:120px"></div>
+    </div>
+  </div>
+</section>
+
+<!-- RECORDS TABLE -->
+<section class="ep-section">
+  <div class="ep-section-inner">
+    <span class="section-tag">All-time records</span>
+    <h2 class="ep-section-title">Extremes from Baner</h2>
+    <p class="ep-section-sub">The most significant readings in our dataset since January 2022. <a href="register.html" style="color:var(--ep-green)">Register free</a> to access the full records table with timestamps and context.</p>
+
+    <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;">
+      <table class="records-table">
+        <thead>
+          <tr><th>Record</th><th>Value</th><th>When</th></tr>
+        </thead>
+        <tbody id="records-tbody">
+          <tr><td colspan="3" style="text-align:center;padding:2rem;color:var(--text-muted);">Loading records…</td></tr>
+        </tbody>
+      </table>
+      <!-- Blur overlay for locked rows -->
+      <div id="lock-overlay" style="display:none;" class="lock-overlay">
+        <p class="lock-msg">Register free to see the full records table — 20+ data points, timestamps, and seasonal context.</p>
+        <a href="register.html" class="ep-btn-primary" style="font-size:0.85rem;">Create free account →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- METHODOLOGY -->
+<section class="ep-section" style="background:white;">
+  <div class="ep-section-inner">
+    <span class="section-tag">How it works</span>
+    <h2 class="ep-section-title">Methodology</h2>
+    <div class="origin-grid">
+      <div>
+        <h3 style="font-family:var(--serif);font-size:1.1rem;color:var(--ep-tan);margin-bottom:0.75rem;">Climate & air quality</h3>
+        <p style="font-size:0.88rem;color:var(--text-muted);line-height:1.8;margin-bottom:0.75rem;">Hourly data is fetched from the <strong>Copernicus Atmosphere Monitoring Service (CAMS)</strong> via Open-Meteo — the same data used by European environmental agencies. Parameters include PM2.5, PM10, NO₂, ozone, CO, SO₂, ammonia, and European AQI.</p>
+        <p style="font-size:0.88rem;color:var(--text-muted);line-height:1.8;">India AQI is independently sourced from the <strong>Google Air Quality API</strong>, which applies India's own national standard (0–500 scale). Both are stored side by side for every hour.</p>
+      </div>
+      <div>
+        <h3 style="font-family:var(--serif);font-size:1.1rem;color:var(--ep-tan);margin-bottom:0.75rem;">Bird detection</h3>
+        <p style="font-size:0.88rem;color:var(--text-muted);line-height:1.8;margin-bottom:0.75rem;"><strong>BirdNET</strong> — the neural network developed by the K. Lisa Yang Center for Conservation Bioacoustics at Cornell Lab of Ornithology — runs continuously on a Raspberry Pi facing the Sahyadri foothills. It listens during dawn chorus, evening chorus, and overnight.</p>
+        <p style="font-size:0.88rem;color:var(--text-muted);line-height:1.8;">Each detection is logged with its confidence score and matched with the climate reading at that exact hour — enabling correlations between air quality, weather, and bird activity.</p>
+      </div>
+      <div>
+        <h3 style="font-family:var(--serif);font-size:1.1rem;color:var(--ep-tan);margin-bottom:0.75rem;">Visual documentation</h3>
+        <p style="font-size:0.88rem;color:var(--text-muted);line-height:1.8;">Photographs of Baner Hill are archived with their original EXIF timestamps, resized to 1280×720, and stored alongside the climate reading recorded at that exact moment. This links every visual observation to a precise environmental context.</p>
+      </div>
+      <div>
+        <h3 style="font-family:var(--serif);font-size:1.1rem;color:var(--ep-tan);margin-bottom:0.75rem;">Data quality</h3>
+        <p style="font-size:0.88rem;color:var(--text-muted);line-height:1.8;margin-bottom:0.75rem;">Gaps caused by power outages are automatically filled on the next system boot using historical archive APIs. The database uses upsert logic — re-running any script is always safe and never creates duplicates.</p>
+        <p style="font-size:0.88rem;color:var(--text-muted);line-height:1.8;">All data is stored in UTC and displayed in IST (Asia/Kolkata). Backfill covers January 2022 to present.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TECH STACK -->
+<section class="ep-section">
+  <div class="ep-section-inner">
+    <span class="section-tag">The hardware & software</span>
+    <h2 class="ep-section-title">Built from scratch, on a balcony</h2>
+    <div class="tech-grid">
+      <div class="tech-card">
+        <div class="tech-badge">Hardware</div>
+        <div class="tech-name">Raspberry Pi 3B+</div>
+        <div class="tech-role">Indoors. Runs the hourly AQI cron job, manages the database pipeline, and orchestrates all data collection.</div>
+      </div>
+      <div class="tech-card">
+        <div class="tech-badge">Hardware</div>
+        <div class="tech-name">Raspberry Pi 3B</div>
+        <div class="tech-role">On the balcony. Runs BirdNET acoustic inference with a USB microphone facing the Sahyadri hills. Dawn, evening, and night sessions.</div>
+      </div>
+      <div class="tech-card">
+        <div class="tech-badge">Hardware · Phase 3</div>
+        <div class="tech-name">Raspberry Pi Zero 2W</div>
+        <div class="tech-role">Solar-powered. Will capture hourly time-lapse photos of the hill. 3× Waaree WE-3 panels (9W) for off-grid operation.</div>
+      </div>
+      <div class="tech-card">
+        <div class="tech-badge">Data source</div>
+        <div class="tech-name">Open-Meteo + CAMS</div>
+        <div class="tech-role">Copernicus Atmosphere Monitoring Service for EU AQI and all pollutant concentrations. Free, no key required. Historical archive from 2022.</div>
+      </div>
+      <div class="tech-card">
+        <div class="tech-badge">Data source</div>
+        <div class="tech-name">Google Air Quality API</div>
+        <div class="tech-role">India's national AQI standard (0–500 scale), dominant pollutant, and health recommendations. 30-day history available.</div>
+      </div>
+      <div class="tech-card">
+        <div class="tech-badge">AI model</div>
+        <div class="tech-name">BirdNET v2.4</div>
+        <div class="tech-role">Cornell Lab of Ornithology. Neural network trained on 6,000+ species. Runs locally on Pi — no internet required for inference. 228 species predicted for our coordinates.</div>
+      </div>
+      <div class="tech-card">
+        <div class="tech-badge">Database</div>
+        <div class="tech-name">Supabase (PostgreSQL)</div>
+        <div class="tech-role">37,000+ hourly climate rows. Bird detections, timelapse frames, newsletter signups, contact messages — all in one hosted Postgres instance with public read access.</div>
+      </div>
+      <div class="tech-card">
+        <div class="tech-badge">Storage</div>
+        <div class="tech-name">Cloudflare R2 + Supabase</div>
+        <div class="tech-role">Hill photos and bird audio clips. R2 for Pi camera output (S3-compatible, zero egress cost). Supabase Storage for browser uploads.</div>
+      </div>
+      <div class="tech-card">
+        <div class="tech-badge">Frontend</div>
+        <div class="tech-name">Cloudflare Pages</div>
+        <div class="tech-role">Static HTML/CSS/JS. No framework. Deploys from GitHub on every push. Global CDN, zero cost. earthpulse.pages.dev.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CITE & LICENCE -->
+<section class="ep-section" style="background:white;">
+  <div class="ep-section-inner">
+    <span class="section-tag">Open data · CC BY 4.0</span>
+    <h2 class="ep-section-title">Use this data</h2>
+    <p style="font-size:0.9rem;color:var(--text-muted);line-height:1.8;margin-bottom:1.5rem;">All Earth Pulse data is freely available for research, journalism, education, and personal use under the <strong>Creative Commons Attribution 4.0</strong> licence. You may use, share, and adapt the data for any purpose — including commercial — with attribution.</p>
+    <div class="cite-block">
+      Earth Pulse Project (2026). Hyperlocal environmental and biodiversity observatory, Baner, Pune, Maharashtra, India. Data collected continuously since January 2022. Available at: earthpulse.pages.dev
+    </div>
+    <p style="font-size:0.82rem;color:var(--text-muted);margin-top:1rem;">For research collaboration, data access requests, or press enquiries: <a href="contact.html" style="color:var(--ep-green);">contact us →</a></p>
+  </div>
+</section>
+
+<div id="ep-footer"></div>
+<script src="analytics.js"></script>
+<script src="nav.js"></script>
+<script>
+const SUPABASE_URL = 'https://krmczyqwblsoekceanlj.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_DrHFT5J0vmrkYraUXIlpQQ_gsk1rdq6';
+const HDR = { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` };
+
+function fmtDate(ts) {
+  if (!ts) return '—';
+  return new Date(ts).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric',timeZone:'Asia/Kolkata'});
+}
+
+async function loadImpact() {
+  try {
+    const yearStart = `${new Date().getFullYear()}-01-01T00:00:00Z`;
+    const [
+      countRes, birdsRes, totalBirdsRes,
+      maxAqiRes, minAqiRes, maxTempRes, minTempRes,
+      maxRainRes, maxGAqiRes, minGAqiRes, framesRes
+    ] = await Promise.all([
+      fetch(`${SUPABASE_URL}/rest/v1/climate_readings?select=id&limit=1`,{headers:{...HDR,'Prefer':'count=exact'}}),
+      fetch(`${SUPABASE_URL}/rest/v1/bird_detections?select=species_scientific`,{headers:HDR}),
+      fetch(`${SUPABASE_URL}/rest/v1/bird_detections?select=id&limit=1`,{headers:{...HDR,'Prefer':'count=exact'}}),
+      fetch(`${SUPABASE_URL}/rest/v1/climate_readings?select=aqi,recorded_at&order=aqi.desc&limit=1`,{headers:HDR}),
+      fetch(`${SUPABASE_URL}/rest/v1/climate_readings?select=aqi,recorded_at&aqi=gt.0&order=aqi.asc&limit=1`,{headers:HDR}),
+      fetch(`${SUPABASE_URL}/rest/v1/climate_readings?select=temperature,recorded_at&order=temperature.desc&limit=1`,{headers:HDR}),
+      fetch(`${SUPABASE_URL}/rest/v1/climate_readings?select=temperature,recorded_at&order=temperature.asc&limit=1`,{headers:HDR}),
+      fetch(`${SUPABASE_URL}/rest/v1/climate_readings?select=precipitation,recorded_at&order=precipitation.desc&limit=1`,{headers:HDR}),
+      fetch(`${SUPABASE_URL}/rest/v1/climate_readings?select=google_aqi_india,recorded_at&google_aqi_india=gt.0&order=google_aqi_india.desc&limit=1`,{headers:HDR}),
+      fetch(`${SUPABASE_URL}/rest/v1/climate_readings?select=google_aqi_india,recorded_at&google_aqi_india=gt.0&order=google_aqi_india.asc&limit=1`,{headers:HDR}),
+      fetch(`${SUPABASE_URL}/rest/v1/timelapse_frames?select=id&limit=1`,{headers:{...HDR,'Prefer':'count=exact'}}),
+    ]);
+
+    // Parse counts from headers
+    const climateCount = parseInt(countRes.headers.get('content-range')?.split('/')[1] || '0');
+    const birdDetCount = parseInt(totalBirdsRes.headers.get('content-range')?.split('/')[1] || '0');
+    const frameCount   = parseInt(framesRes.headers.get('content-range')?.split('/')[1] || '0');
+
+    const birds   = await birdsRes.json();
+    const species = new Set(birds.map(b=>b.species_scientific)).size;
+
+    const [maxAqi]  = await maxAqiRes.json();
+    const [minAqi]  = await minAqiRes.json();
+    const [maxTemp] = await maxTempRes.json();
+    const [minTemp] = await minTempRes.json();
+    const [maxRain] = await maxRainRes.json();
+    const [maxGAqi] = await maxGAqiRes.json();
+    const [minGAqi] = await minGAqiRes.json();
+
+    // Calculate monitoring duration
+    const daysSince = Math.floor((Date.now() - new Date('2022-01-01').getTime()) / 86400000);
+
+    // Render impact cards
+    document.getElementById('impact-grid').innerHTML = [
+      { icon:'📊', val:climateCount.toLocaleString(), label:'hourly climate records',        sub:'since January 2022' },
+      { icon:'🐦', val:species,                        label:'bird species detected',          sub:`from ${birdDetCount.toLocaleString()} total detections` },
+      { icon:'📅', val:daysSince,                      label:'days of continuous monitoring',  sub:'no missed hours after auto-fill' },
+      { icon:'📸', val:frameCount,                     label:'hill photos archived',            sub:'with climate annotations' },
+      { icon:'🌡️', val:`${maxTemp?.temperature?.toFixed(1)||'—'}°C`, label:'highest temperature ever', sub:fmtDate(maxTemp?.recorded_at) },
+      { icon:'❄️', val:`${minTemp?.temperature?.toFixed(1)||'—'}°C`, label:'lowest temperature ever',  sub:fmtDate(minTemp?.recorded_at) },
+      { icon:'💨', val:maxAqi?.aqi||'—',               label:'worst EU AQI recorded',          sub:fmtDate(maxAqi?.recorded_at) },
+      { icon:'🍃', val:minAqi?.aqi||'—',               label:'best EU AQI recorded',           sub:fmtDate(minAqi?.recorded_at) },
+    ].map(c=>`
+      <div class="impact-card">
+        <div class="impact-icon">${c.icon}</div>
+        <div class="impact-val">${c.val}</div>
+        <div class="impact-label">${c.label}</div>
+        <div class="impact-sub">${c.sub}</div>
+      </div>`).join('');
+
+    // Records table — show first 6 publicly, blur the rest
+    const publicRows = [
+      { record:'Highest EU AQI',      val:maxAqi?.aqi||'—',                  when:fmtDate(maxAqi?.recorded_at) },
+      { record:'Lowest EU AQI',       val:minAqi?.aqi||'—',                   when:fmtDate(minAqi?.recorded_at) },
+      { record:'Highest India AQI',   val:maxGAqi?.google_aqi_india||'—',     when:fmtDate(maxGAqi?.recorded_at) },
+      { record:'Lowest India AQI',    val:minGAqi?.google_aqi_india||'—',     when:fmtDate(minGAqi?.recorded_at) },
+      { record:'Highest temperature', val:(maxTemp?.temperature?.toFixed(1)||'—')+'°C', when:fmtDate(maxTemp?.recorded_at) },
+      { record:'Lowest temperature',  val:(minTemp?.temperature?.toFixed(1)||'—')+'°C', when:fmtDate(minTemp?.recorded_at) },
+    ];
+    const lockedRows = [
+      { record:'Highest single-hour rainfall', val:'—', when:'Register to view' },
+      { record:'Most rain in one month',        val:'—', when:'Register to view' },
+      { record:'Most consecutive rainy days',   val:'—', when:'Register to view' },
+      { record:'Highest PM2.5 recorded',        val:'—', when:'Register to view' },
+      { record:'Lowest visibility',             val:'—', when:'Register to view' },
+      { record:'Highest wind speed',            val:'—', when:'Register to view' },
+    ];
+
+    document.getElementById('records-tbody').innerHTML =
+      publicRows.map(r=>`<tr><td>${r.record}</td><td class="val">${r.val}</td><td>${r.when}</td></tr>`).join('') +
+      lockedRows.map(r=>`<tr class="locked-row"><td>${r.record}</td><td class="val">—</td><td>${r.when}</td></tr>`).join('');
+
+    document.getElementById('lock-overlay').style.display = 'block';
+
+  } catch(e) { console.error('Impact load error:', e); }
+}
+
+loadImpact();
+</script>
+</body>
+</html>

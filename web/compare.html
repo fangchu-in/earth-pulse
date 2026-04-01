@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Compare Periods — Earth Pulse, Baner, Pune</title>
+  <meta name="description" content="Compare any two time periods from the Earth Pulse dataset. AQI, temperature, rainfall, humidity side by side. Diwali vs normal, this year vs last year.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://earthpulse.pages.dev/compare.html">
+  <link rel="icon" type="image/png" href="earth-pulse-logo.png">
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+  <style>
+    .compare-setup { background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-xl); padding:2rem; margin-bottom:2rem; }
+    .compare-setup h2 { font-family:var(--serif); font-size:1.4rem; color:var(--ep-green); margin-bottom:1.25rem; }
+    .periods-row { display:grid; grid-template-columns:1fr auto 1fr; gap:1rem; align-items:end; }
+    @media(max-width:700px){ .periods-row { grid-template-columns:1fr; } .vs-label { text-align:center; } }
+    .period-block h3 { font-size:0.78rem; font-weight:600; text-transform:uppercase; letter-spacing:0.08em; color:var(--text-muted); margin-bottom:0.75rem; }
+    .period-a h3 { color:#214332; } .period-b h3 { color:#BF9B7B; }
+    .date-row { display:grid; grid-template-columns:1fr 1fr; gap:0.6rem; }
+    .date-label { font-size:0.75rem; color:var(--text-muted); margin-bottom:0.25rem; }
+    input[type=date] { width:100%; padding:0.6rem 0.8rem; border:1px solid var(--border-strong); border-radius:var(--radius-sm); font-family:var(--sans); font-size:0.88rem; color:var(--ep-green); background:var(--ep-cream); box-sizing:border-box; }
+    input[type=date]:focus { outline:none; border-color:var(--ep-green); }
+    .vs-label { font-family:var(--serif); font-size:1.4rem; color:var(--text-muted); text-align:center; padding-bottom:0.5rem; }
+
+    /* Preset buttons */
+    .preset-row { display:flex; flex-wrap:wrap; gap:0.4rem; margin-top:1.25rem; }
+    .preset-btn { padding:0.3rem 0.85rem; border-radius:2rem; border:1px solid var(--border-strong); background:transparent; font-family:var(--sans); font-size:0.75rem; cursor:pointer; color:var(--text-secondary); transition:all 0.15s; }
+    .preset-btn:hover { border-color:var(--ep-green); color:var(--ep-green); }
+
+    .compare-btn { width:100%; margin-top:1.25rem; }
+
+    /* Results */
+    .results-area { display:none; }
+
+    /* Head-to-head stat cards */
+    .h2h-grid { display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-bottom:1.5rem; }
+    @media(max-width:600px){ .h2h-grid { grid-template-columns:1fr; } }
+    .h2h-card { background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-lg); padding:1.25rem; }
+    .h2h-title { font-size:0.72rem; font-weight:600; text-transform:uppercase; letter-spacing:0.08em; color:var(--text-muted); margin-bottom:1rem; }
+    .h2h-row { display:flex; justify-content:space-between; align-items:baseline; padding:0.5rem 0; border-bottom:1px solid var(--border); }
+    .h2h-row:last-child { border-bottom:none; }
+    .h2h-label { font-size:0.82rem; color:var(--text-muted); }
+    .h2h-vals { display:flex; gap:1rem; }
+    .h2h-val-a { font-family:var(--mono); font-weight:700; color:#214332; font-size:0.85rem; }
+    .h2h-val-b { font-family:var(--mono); font-weight:700; color:#BF9B7B; font-size:0.85rem; }
+    .h2h-winner { font-size:0.65rem; color:var(--text-muted); }
+
+    /* Period labels */
+    .period-label-a { color:#214332; font-weight:600; font-size:0.78rem; }
+    .period-label-b { color:#BF9B7B; font-weight:600; font-size:0.78rem; }
+
+    /* No data message */
+    .no-data { text-align:center; padding:3rem; color:var(--text-muted); }
+  </style>
+</head>
+<body>
+<div id="ep-nav"></div>
+
+<div class="ep-hero">
+  <div class="ep-hero-tag">Date range comparison · Earth Pulse dataset · Since January 2022</div>
+  <h1>Compare any two<br>time periods</h1>
+  <p class="ep-hero-sub">Pick two date ranges and compare AQI, temperature, rainfall, humidity and bird activity side by side. This year vs last year, Diwali vs normal, monsoon vs summer.</p>
+</div>
+
+<div class="ep-section">
+  <div class="ep-section-inner">
+
+    <!-- Setup panel -->
+    <div class="compare-setup">
+      <h2>Select two periods to compare</h2>
+      <div class="periods-row">
+        <div class="period-block period-a">
+          <h3>Period A (green)</h3>
+          <div class="date-row">
+            <div><div class="date-label">From</div><input type="date" id="a-from"></div>
+            <div><div class="date-label">To</div><input type="date" id="a-to"></div>
+          </div>
+        </div>
+        <div class="vs-label">vs</div>
+        <div class="period-block period-b">
+          <h3>Period B (tan)</h3>
+          <div class="date-row">
+            <div><div class="date-label">From</div><input type="date" id="b-from"></div>
+            <div><div class="date-label">To</div><input type="date" id="b-to"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Presets -->
+      <div>
+        <div style="font-size:0.72rem;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);margin-top:1.25rem;margin-bottom:0.5rem;">Quick presets</div>
+        <div class="preset-row" id="preset-row"></div>
+      </div>
+
+      <button class="ep-submit compare-btn" id="compare-btn" onclick="runCompare()">Compare periods →</button>
+    </div>
+
+    <!-- Results -->
+    <div class="results-area" id="results-area">
+      <!-- Period labels -->
+      <div style="display:flex;gap:1.5rem;margin-bottom:1.25rem;flex-wrap:wrap;">
+        <span class="period-label-a" id="label-a">Period A</span>
+        <span style="color:var(--text-muted);font-size:0.82rem;">vs</span>
+        <span class="period-label-b" id="label-b">Period B</span>
+      </div>
+
+      <!-- Head-to-head stats -->
+      <div class="h2h-grid">
+        <div class="h2h-card">
+          <div class="h2h-title">Air quality</div>
+          <div id="h2h-aqi"></div>
+        </div>
+        <div class="h2h-card">
+          <div class="h2h-title">Temperature</div>
+          <div id="h2h-temp"></div>
+        </div>
+        <div class="h2h-card">
+          <div class="h2h-title">Precipitation & humidity</div>
+          <div id="h2h-rain"></div>
+        </div>
+        <div class="h2h-card">
+          <div class="h2h-title">Bird activity</div>
+          <div id="h2h-birds"></div>
+        </div>
+      </div>
+
+      <!-- AQI comparison chart -->
+      <div class="ep-chart-block" style="margin-bottom:1rem;">
+        <div class="ep-chart-title">AQI comparison</div>
+        <div class="ep-chart-sub">EU AQI — both periods normalised to same horizontal scale (0% = start, 100% = end)</div>
+        <canvas id="aqiCompChart" height="90"></canvas>
+      </div>
+
+      <!-- Temperature comparison chart -->
+      <div class="ep-chart-block" style="margin-bottom:1rem;">
+        <div class="ep-chart-title">Temperature comparison</div>
+        <div class="ep-chart-sub">°C — normalised scale</div>
+        <canvas id="tempCompChart" height="90"></canvas>
+      </div>
+
+      <!-- Precipitation comparison chart -->
+      <div class="ep-chart-block">
+        <div class="ep-chart-title">Daily rainfall</div>
+        <div class="ep-chart-sub">mm per day across both periods</div>
+        <canvas id="rainCompChart" height="90"></canvas>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div id="ep-footer"></div>
+<script src="analytics.js"></script>
+<script src="nav.js"></script>
+<script>
+const SUPABASE_URL = 'https://krmczyqwblsoekceanlj.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_DrHFT5J0vmrkYraUXIlpQQ_gsk1rdq6';
+const HDR = { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` };
+
+let aqiChart, tempChart, rainChart;
+
+// ── Presets ───────────────────────────────────────────────────────────────────
+const thisYear = new Date().getFullYear();
+const PRESETS = [
+  { label:'This month vs last month', fn:()=>{
+    const now=new Date(); const y=now.getFullYear(); const m=now.getMonth();
+    const thisStart=new Date(y,m,1); const thisEnd=new Date(y,m+1,0);
+    const lastStart=new Date(y,m-1,1); const lastEnd=new Date(y,m,0);
+    return [fmt(thisStart),fmt(thisEnd),fmt(lastStart),fmt(lastEnd)];
+  }},
+  { label:`${thisYear} vs ${thisYear-1}`, fn:()=>[`${thisYear}-01-01`,`${thisYear}-12-31`,`${thisYear-1}-01-01`,`${thisYear-1}-12-31`] },
+  { label:'Diwali 2024 ± 3 days', fn:()=>['2024-10-29','2024-11-04','2024-10-22','2024-10-28'] },
+  { label:'Holi 2024 ± 3 days',   fn:()=>['2024-03-22','2024-03-28','2024-03-15','2024-03-21'] },
+  { label:'Monsoon 2024 vs 2023', fn:()=>['2024-06-01','2024-09-30','2023-06-01','2023-09-30'] },
+  { label:'Summer 2025 vs 2024',  fn:()=>['2025-03-01','2025-05-31','2024-03-01','2024-05-31'] },
+];
+
+function fmt(d) { return d.toISOString ? d.toISOString().split('T')[0] : d; }
+
+document.getElementById('preset-row').innerHTML = PRESETS.map((p,i) =>
+  `<button class="preset-btn" onclick="applyPreset(${i})">${p.label}</button>`
+).join('');
+
+function applyPreset(i) {
+  const [aFrom,aTo,bFrom,bTo] = PRESETS[i].fn();
+  document.getElementById('a-from').value = aFrom;
+  document.getElementById('a-to').value   = aTo;
+  document.getElementById('b-from').value = bFrom;
+  document.getElementById('b-to').value   = bTo;
+}
+
+// Default dates
+document.getElementById('a-from').value = `${thisYear}-01-01`;
+document.getElementById('a-to').value   = new Date().toISOString().split('T')[0];
+document.getElementById('b-from').value = `${thisYear-1}-01-01`;
+document.getElementById('b-to').value   = `${thisYear-1}-12-31`;
+
+// ── Fetch period data ─────────────────────────────────────────────────────────
+async function fetchPeriod(from, to) {
+  const [climateRes, birdsRes] = await Promise.all([
+    fetch(`${SUPABASE_URL}/rest/v1/climate_readings?select=recorded_at,aqi,temperature,humidity,precipitation&recorded_at=gte.${from}T00:00:00Z&recorded_at=lte.${to}T23:59:59Z&order=recorded_at.asc`,{headers:HDR}),
+    fetch(`${SUPABASE_URL}/rest/v1/bird_detections?select=species_scientific&detected_at=gte.${from}T00:00:00Z&detected_at=lte.${to}T23:59:59Z`,{headers:HDR}),
+  ]);
+  const climate = await climateRes.json();
+  const birds   = await birdsRes.json();
+  return { climate: Array.isArray(climate)?climate:[], birds: Array.isArray(birds)?birds:[] };
+}
+
+function periodStats(data) {
+  const { climate, birds } = data;
+  const aqis  = climate.filter(r=>r.aqi!=null).map(r=>r.aqi);
+  const temps = climate.filter(r=>r.temperature!=null).map(r=>r.temperature);
+  const hums  = climate.filter(r=>r.humidity!=null).map(r=>r.humidity);
+  const rains = climate.reduce((s,r)=>s+(r.precipitation||0),0);
+  const rainyDays = new Set(climate.filter(r=>r.precipitation>=1).map(r=>r.recorded_at.slice(0,10))).size;
+  const species = new Set(birds.map(b=>b.species_scientific)).size;
+
+  return {
+    avgAqi:   aqis.length  ? (aqis.reduce((s,v)=>s+v,0)/aqis.length).toFixed(1) : '—',
+    maxAqi:   aqis.length  ? Math.max(...aqis) : '—',
+    minAqi:   aqis.length  ? Math.min(...aqis) : '—',
+    avgTemp:  temps.length ? (temps.reduce((s,v)=>s+v,0)/temps.length).toFixed(1) : '—',
+    maxTemp:  temps.length ? Math.max(...temps).toFixed(1) : '—',
+    minTemp:  temps.length ? Math.min(...temps).toFixed(1) : '—',
+    avgHum:   hums.length  ? (hums.reduce((s,v)=>s+v,0)/hums.length).toFixed(0) : '—',
+    totalRain:rains.toFixed(1),
+    rainyDays,
+    species,
+    birdDets: birds.length,
+    hours:    climate.length,
+  };
+}
+
+function h2hRow(label, a, b, lowerIsBetter=true) {
+  const aNum = parseFloat(a); const bNum = parseFloat(b);
+  let winner = '';
+  if (!isNaN(aNum)&&!isNaN(bNum)&&aNum!==bNum) {
+    const aBetter = lowerIsBetter ? aNum<bNum : aNum>bNum;
+    winner = aBetter ? '← A better' : 'B better →';
+  }
+  return `<div class="h2h-row"><span class="h2h-label">${label}</span><div class="h2h-vals"><span class="h2h-val-a">${a}</span><span class="h2h-val-b">${b}</span></div></div>`;
+}
+
+// ── Run comparison ────────────────────────────────────────────────────────────
+async function runCompare() {
+  const aFrom = document.getElementById('a-from').value;
+  const aTo   = document.getElementById('a-to').value;
+  const bFrom = document.getElementById('b-from').value;
+  const bTo   = document.getElementById('b-to').value;
+  if (!aFrom||!aTo||!bFrom||!bTo) { alert('Please fill in all four dates.'); return; }
+
+  const btn = document.getElementById('compare-btn');
+  btn.disabled=true; btn.textContent='Loading data…';
+
+  try {
+    const [dataA, dataB] = await Promise.all([fetchPeriod(aFrom,aTo), fetchPeriod(bFrom,bTo)]);
+    const sA = periodStats(dataA); const sB = periodStats(dataB);
+
+    const labelA = `${aFrom} – ${aTo}`;
+    const labelB = `${bFrom} – ${bTo}`;
+    document.getElementById('label-a').textContent = `A: ${labelA}`;
+    document.getElementById('label-b').textContent = `B: ${labelB}`;
+
+    // H2H cards
+    document.getElementById('h2h-aqi').innerHTML =
+      h2hRow('Avg AQI (EU)', sA.avgAqi, sB.avgAqi, true) +
+      h2hRow('Best AQI', sA.minAqi, sB.minAqi, true) +
+      h2hRow('Worst AQI', sA.maxAqi, sB.maxAqi, true);
+
+    document.getElementById('h2h-temp').innerHTML =
+      h2hRow('Avg temperature', sA.avgTemp+'°C', sB.avgTemp+'°C', true) +
+      h2hRow('Hottest reading', sA.maxTemp+'°C', sB.maxTemp+'°C', true) +
+      h2hRow('Coolest reading', sA.minTemp+'°C', sB.minTemp+'°C', false);
+
+    document.getElementById('h2h-rain').innerHTML =
+      h2hRow('Total rainfall', sA.totalRain+'mm', sB.totalRain+'mm', false) +
+      h2hRow('Rainy days', sA.rainyDays, sB.rainyDays, false) +
+      h2hRow('Avg humidity', sA.avgHum+'%', sB.avgHum+'%', false);
+
+    document.getElementById('h2h-birds').innerHTML =
+      h2hRow('Species detected', sA.species, sB.species, false) +
+      h2hRow('Total detections', sA.birdDets, sB.birdDets, false) +
+      h2hRow('Hours of data', sA.hours, sB.hours, false);
+
+    // Charts — normalise both series to 0–100% of their time range
+    function normalise(rows, key) {
+      const valid = rows.filter(r=>r[key]!=null);
+      if (!valid.length) return [];
+      const total = valid.length;
+      return valid.map((r,i)=>({ x: Math.round(i/total*100), y: r[key] }));
+    }
+
+    const chartOpts = yLabel => ({
+      responsive:true, interaction:{mode:'index',intersect:false},
+      plugins:{legend:{position:'top',labels:{font:{family:'DM Sans',size:11},boxWidth:10}}},
+      scales:{x:{title:{display:true,text:'% through period'},ticks:{font:{size:10},color:'#6b6b6b'},grid:{display:false}},y:{title:{display:true,text:yLabel},ticks:{font:{size:10},color:'#6b6b6b'},grid:{color:'rgba(0,0,0,0.04)'}}}
+    });
+
+    if(aqiChart)aqiChart.destroy();
+    aqiChart=new Chart(document.getElementById('aqiCompChart').getContext('2d'),{
+      type:'line',
+      data:{datasets:[
+        {label:`A: ${labelA}`,data:normalise(dataA.climate,'aqi'),borderColor:'#214332',backgroundColor:'transparent',pointRadius:0,tension:0.3,borderWidth:1.5},
+        {label:`B: ${labelB}`,data:normalise(dataB.climate,'aqi'),borderColor:'#BF9B7B',backgroundColor:'transparent',pointRadius:0,tension:0.3,borderWidth:1.5,borderDash:[4,3]},
+      ]},
+      options:{...chartOpts('AQI'),parsing:false}
+    });
+
+    if(tempChart)tempChart.destroy();
+    tempChart=new Chart(document.getElementById('tempCompChart').getContext('2d'),{
+      type:'line',
+      data:{datasets:[
+        {label:`A: ${labelA}`,data:normalise(dataA.climate,'temperature'),borderColor:'#214332',backgroundColor:'transparent',pointRadius:0,tension:0.3,borderWidth:1.5},
+        {label:`B: ${labelB}`,data:normalise(dataB.climate,'temperature'),borderColor:'#BF9B7B',backgroundColor:'transparent',pointRadius:0,tension:0.3,borderWidth:1.5,borderDash:[4,3]},
+      ]},
+      options:{...chartOpts('°C'),parsing:false}
+    });
+
+    // Daily rain buckets
+    function dailyRain(rows) {
+      const d={};
+      for(const r of rows){
+        const dk=r.recorded_at.slice(0,10);
+        if(!d[dk])d[dk]=0; d[dk]+=(r.precipitation||0);
+      }
+      return Object.entries(d).sort().map(([dk,v])=>({x:dk,y:parseFloat(v.toFixed(1))}));
+    }
+    const rainA=dailyRain(dataA.climate); const rainB=dailyRain(dataB.climate);
+    if(rainChart)rainChart.destroy();
+    rainChart=new Chart(document.getElementById('rainCompChart').getContext('2d'),{
+      type:'bar',
+      data:{datasets:[
+        {label:`A: ${labelA}`,data:rainA,backgroundColor:'rgba(33,67,50,0.6)',borderRadius:2},
+        {label:`B: ${labelB}`,data:rainB,backgroundColor:'rgba(191,155,123,0.6)',borderRadius:2},
+      ]},
+      options:{responsive:true,interaction:{mode:'index',intersect:false},plugins:{legend:{position:'top',labels:{font:{family:'DM Sans',size:11},boxWidth:10}}},scales:{x:{type:'category',grid:{display:false},ticks:{maxTicksLimit:10,font:{size:9},color:'#6b6b6b'}},y:{ticks:{callback:v=>v+'mm',font:{size:10},color:'#6b6b6b'},grid:{color:'rgba(0,0,0,0.04)'}}}}
+    });
+
+    document.getElementById('results-area').style.display='block';
+    document.getElementById('results-area').scrollIntoView({behavior:'smooth'});
+
+  } catch(e){ console.error(e); alert('Error loading data. Please try again.'); }
+  finally { btn.disabled=false; btn.textContent='Compare periods →'; }
+}
+</script>
+</body>
+</html>

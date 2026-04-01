@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Monsoon Tracker — Earth Pulse, Baner, Pune</title>
+  <meta name="description" content="Live monsoon arrival tracker for Baner, Pune. Historical first-rain dates, cumulative rainfall, rainy day counts and seasonal patterns since 2022. Computed from local data.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://earthpulse.pages.dev/monsoon.html">
+  <meta property="og:title" content="Monsoon Tracker — Earth Pulse, Baner, Pune">
+  <meta property="og:description" content="When does monsoon arrive in Baner? Our local data answers that. Live rainfall tracker with historical patterns since 2022.">
+  <meta property="og:image" content="https://earthpulse.pages.dev/earth-pulse-logo.png">
+  <link rel="icon" type="image/png" href="earth-pulse-logo.png">
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+  <style>
+    /* Countdown banner */
+    .countdown-banner {
+      background:var(--ep-green); border-radius:var(--radius-xl);
+      padding:2.5rem 3rem; display:grid;
+      grid-template-columns:1fr auto; gap:2rem; align-items:center;
+      margin-bottom:1.5rem;
+    }
+    @media(max-width:600px){ .countdown-banner { grid-template-columns:1fr; text-align:center; } }
+    .countdown-label { font-size:0.72rem; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; color:var(--ep-tan); margin-bottom:0.4rem; }
+    .countdown-title { font-family:var(--serif); font-size:1.8rem; color:var(--ep-cream); margin-bottom:0.4rem; line-height:1.2; }
+    .countdown-detail { font-size:0.85rem; color:rgba(242,240,230,0.6); line-height:1.7; }
+    .countdown-days { text-align:center; }
+    .countdown-num { font-family:var(--serif); font-size:5rem; line-height:1; color:var(--ep-tan); }
+    .countdown-unit { font-size:0.75rem; text-transform:uppercase; letter-spacing:0.08em; color:rgba(242,240,230,0.5); }
+
+    /* Monsoon active state */
+    .monsoon-active { background:rgba(59,130,246,0.12); border:2px solid rgba(59,130,246,0.3); border-radius:var(--radius-xl); padding:2rem 2.5rem; text-align:center; margin-bottom:1.5rem; }
+    .monsoon-active h2 { font-family:var(--serif); font-size:2rem; color:#1e3a5f; margin-bottom:0.5rem; }
+    .monsoon-active p  { font-size:0.9rem; color:#374151; }
+
+    /* Stats grid */
+    .rain-stats { display:grid; grid-template-columns:repeat(auto-fill,minmax(155px,1fr)); gap:0.85rem; margin-bottom:1.5rem; }
+    .rain-stat { background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-md); padding:1rem; text-align:center; }
+    .rain-stat-val { font-family:var(--serif); font-size:1.8rem; color:var(--ep-green); line-height:1; }
+    .rain-stat-label { font-size:0.67rem; font-weight:600; text-transform:uppercase; letter-spacing:0.07em; color:var(--text-muted); margin-top:0.25rem; }
+
+    /* Year cards */
+    .year-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:1rem; margin-bottom:1.5rem; }
+    .year-card { background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-lg); padding:1.25rem; }
+    .year-card h3 { font-family:var(--serif); font-size:1.3rem; color:var(--ep-green); margin-bottom:0.75rem; }
+    .year-row { display:flex; justify-content:space-between; font-size:0.82rem; padding:0.3rem 0; border-bottom:1px solid var(--border); }
+    .year-row:last-child { border-bottom:none; }
+    .year-row-label { color:var(--text-muted); }
+    .year-row-val { font-family:var(--mono); font-size:0.78rem; color:var(--ep-green); font-weight:600; }
+
+    /* Live rain indicator */
+    .rain-live { display:inline-flex; align-items:center; gap:8px; background:rgba(59,130,246,0.1); color:#1e3a5f; padding:0.4rem 1rem; border-radius:2rem; font-size:0.82rem; margin-bottom:1rem; }
+    .rain-dot { width:8px; height:8px; border-radius:50%; background:#3b82f6; animation:pulse 2s ease infinite; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+  </style>
+</head>
+<body>
+<div id="ep-nav"></div>
+
+<div class="ep-hero">
+  <div class="ep-hero-tag">🌧️ Live · Computed from local Baner data since 2022</div>
+  <h1>Monsoon tracker</h1>
+  <p class="ep-hero-sub">When does the monsoon arrive in Baner? How much rain falls? Our four years of hourly data answer this with precision no regional forecast can match.</p>
+</div>
+
+<div class="ep-section">
+  <div class="ep-section-inner">
+
+    <!-- Live rain status -->
+    <div id="live-status"></div>
+
+    <!-- Countdown / active banner -->
+    <div id="main-banner">
+      <div class="ep-skeleton" style="height:160px;border-radius:var(--radius-xl);margin-bottom:1.5rem;"></div>
+    </div>
+
+    <!-- This year stats -->
+    <span class="ep-section-tag" id="year-label">This year's rain</span>
+    <div class="rain-stats" id="rain-stats">
+      <div class="ep-skeleton" style="height:90px"></div>
+      <div class="ep-skeleton" style="height:90px"></div>
+      <div class="ep-skeleton" style="height:90px"></div>
+      <div class="ep-skeleton" style="height:90px"></div>
+      <div class="ep-skeleton" style="height:90px"></div>
+    </div>
+
+    <!-- Cumulative rainfall chart -->
+    <div class="ep-chart-block" style="margin-bottom:1.5rem;">
+      <div class="ep-chart-title">Cumulative rainfall this year</div>
+      <div class="ep-chart-sub">Running total of mm recorded since January 1st · IST · Baner, Pune</div>
+      <canvas id="cumulChart" height="80"></canvas>
+    </div>
+
+    <!-- Daily rainfall chart -->
+    <div class="ep-chart-block" style="margin-bottom:1.5rem;">
+      <div class="ep-chart-title">Daily rainfall (last 90 days)</div>
+      <div class="ep-chart-sub">mm per day · shows monsoon onset and individual rain events</div>
+      <canvas id="dailyChart" height="80"></canvas>
+    </div>
+
+    <!-- Historical year comparison -->
+    <h2 class="ep-section-title" style="margin-bottom:1rem;">Year by year</h2>
+    <p class="ep-section-sub">Monsoon arrival dates, total rainfall, and rainy day counts for each year Earth Pulse has been running.</p>
+    <div class="year-grid" id="year-grid">
+      <div class="ep-skeleton" style="height:180px"></div>
+      <div class="ep-skeleton" style="height:180px"></div>
+      <div class="ep-skeleton" style="height:180px"></div>
+    </div>
+
+    <!-- Annual comparison chart -->
+    <div class="ep-chart-block">
+      <div class="ep-chart-title">Annual rainfall comparison</div>
+      <div class="ep-chart-sub">Total mm per year · based on local Baner measurements</div>
+      <canvas id="annualChart" height="70"></canvas>
+    </div>
+
+  </div>
+</div>
+
+<div id="ep-footer"></div>
+<script src="analytics.js"></script>
+<script src="nav.js"></script>
+<script>
+const SUPABASE_URL = 'https://krmczyqwblsoekceanlj.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_DrHFT5J0vmrkYraUXIlpQQ_gsk1rdq6';
+const HDR = { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` };
+
+const THIS_YEAR = new Date().getFullYear();
+const YEARS = [2022, 2023, 2024, 2025, THIS_YEAR].filter((y,i,a)=>a.indexOf(y)===i);
+
+function fmtDate(ts) {
+  return new Date(ts).toLocaleDateString('en-IN',{day:'numeric',month:'long',timeZone:'Asia/Kolkata'});
+}
+function fmtShort(ts) {
+  return new Date(ts).toLocaleDateString('en-IN',{day:'numeric',month:'short',timeZone:'Asia/Kolkata'});
+}
+
+async function loadMonsoon() {
+  const yearStart = `${THIS_YEAR}-01-01T00:00:00Z`;
+  const ninetyDaysAgo = new Date(Date.now()-90*86400000).toISOString();
+
+  const [latestRes, yearRes, ninetyRes, allYearsData] = await Promise.all([
+    // Latest reading for live rain status
+    fetch(`${SUPABASE_URL}/rest/v1/climate_readings?select=precipitation,recorded_at&order=recorded_at.desc&limit=1`,{headers:HDR}),
+    // This year's full data
+    fetch(`${SUPABASE_URL}/rest/v1/climate_readings?select=recorded_at,precipitation&recorded_at=gte.${yearStart}&order=recorded_at.asc`,{headers:HDR}),
+    // Last 90 days for daily chart
+    fetch(`${SUPABASE_URL}/rest/v1/climate_readings?select=recorded_at,precipitation&recorded_at=gte.${ninetyDaysAgo}&order=recorded_at.asc`,{headers:HDR}),
+    // Historical: first rain each year + annual totals
+    Promise.all(YEARS.map(y =>
+      fetch(`${SUPABASE_URL}/rest/v1/climate_readings?select=recorded_at,precipitation&recorded_at=gte.${y}-01-01&recorded_at=lte.${y}-12-31T23:59:59&order=recorded_at.asc`,{headers:HDR}).then(r=>r.json())
+    ))
+  ]);
+
+  const [latest] = await latestRes.json();
+  const yearRows  = await yearRes.json();
+  const ninetyRows= await ninetyRes.json();
+
+  // Live rain status
+  const isRainingNow = (latest?.precipitation || 0) > 0;
+  if (isRainingNow) {
+    document.getElementById('live-status').innerHTML = `
+      <div class="rain-live">
+        <div class="rain-dot"></div>
+        It is raining in Baner right now — ${latest.precipitation.toFixed(1)}mm this hour
+      </div>`;
+  }
+
+  // ── This year stats ───────────────────────────────────────────────────────
+  const days = {};
+  for (const r of yearRows) {
+    const dk = new Date(r.recorded_at).toLocaleDateString('en-CA',{timeZone:'Asia/Kolkata'});
+    if (!days[dk]) days[dk] = 0;
+    days[dk] += (r.precipitation || 0);
+  }
+  const totalRain   = Object.values(days).reduce((s,v)=>s+v, 0);
+  const rainyDays   = Object.values(days).filter(v=>v>=1).length;
+  const heavyDays   = Object.values(days).filter(v=>v>=20).length;
+  const maxDayRain  = Math.max(...Object.values(days), 0);
+  const maxDayDate  = Object.entries(days).find(([,v])=>v===maxDayRain)?.[0];
+
+  // Monsoon window analysis (June–October)
+  const monsoonRows = yearRows.filter(r => {
+    const m = parseInt(new Date(r.recorded_at).toLocaleDateString('en-IN',{month:'numeric',timeZone:'Asia/Kolkata'}));
+    return m >= 6 && m <= 10;
+  });
+  const monsoonRain = monsoonRows.reduce((s,r)=>s+(r.precipitation||0),0);
+
+  document.getElementById('year-label').textContent = `${THIS_YEAR} rainfall summary`;
+  document.getElementById('rain-stats').innerHTML = [
+    { icon:'🌧️', val:`${totalRain.toFixed(0)}mm`, label:`total rain ${THIS_YEAR}` },
+    { icon:'📅', val:rainyDays,                    label:'rainy days' },
+    { icon:'⛈️', val:heavyDays,                    label:'heavy rain days (≥20mm)' },
+    { icon:'💧', val:`${maxDayRain.toFixed(1)}mm`, label:`most in one day · ${maxDayDate ? fmtShort(maxDayDate+'T12:00:00Z') : '—'}` },
+    { icon:'🌊', val:`${monsoonRain.toFixed(0)}mm`,label:'monsoon season total (Jun–Oct)' },
+  ].map(s=>`<div class="rain-stat"><div style="font-size:1.4rem;margin-bottom:0.3rem;">${s.icon}</div><div class="rain-stat-val">${s.val}</div><div class="rain-stat-label">${s.label}</div></div>`).join('');
+
+  // ── Countdown / active banner ─────────────────────────────────────────────
+  // Compute average first-rain date from historical data
+  const firstRains = allYearsData.slice(0,-1).map((rows,i) => {
+    const y = YEARS[i];
+    const monsoonRows = rows.filter(r => {
+      const m = parseInt(new Date(r.recorded_at).toLocaleDateString('en-IN',{month:'numeric',timeZone:'Asia/Kolkata'}));
+      return m >= 6 && m <= 8;
+    });
+    const first = monsoonRows.find(r => r.precipitation >= 2);
+    if (first) return Math.floor((new Date(first.recorded_at) - new Date(y,0,0)) / 86400000);
+    return null;
+  }).filter(Boolean);
+
+  const avgDay = firstRains.length ? Math.round(firstRains.reduce((s,d)=>s+d,0)/firstRains.length) : 162; // June 11 fallback
+  const monsoonDate = new Date(THIS_YEAR, 0, avgDay);
+  const daysAway = Math.round((monsoonDate - new Date()) / 86400000);
+  const now = new Date();
+  const nowMonth = parseInt(now.toLocaleDateString('en-IN',{month:'numeric',timeZone:'Asia/Kolkata'}));
+  const isMonsoonSeason = nowMonth >= 6 && nowMonth <= 9;
+
+  if (isMonsoonSeason && monsoonRain > 50) {
+    document.getElementById('main-banner').innerHTML = `
+      <div class="monsoon-active">
+        <div style="font-size:3rem;margin-bottom:0.5rem;">🌧️</div>
+        <h2>Monsoon is here in Baner</h2>
+        <p>${monsoonRain.toFixed(0)}mm recorded this monsoon season · ${rainyDays} rainy days so far</p>
+      </div>`;
+  } else {
+    document.getElementById('main-banner').innerHTML = `
+      <div class="countdown-banner">
+        <div>
+          <div class="countdown-label">Based on ${firstRains.length} years of local Baner data</div>
+          <div class="countdown-title">Monsoon expected around ${monsoonDate.toLocaleDateString('en-IN',{day:'numeric',month:'long'})}</div>
+          <div class="countdown-detail">Historical range: June 5 – July 2 · Average first rain: Day ${avgDay} of the year · Data from Earth Pulse since 2022.</div>
+        </div>
+        <div class="countdown-days">
+          <div class="countdown-num">${daysAway > 0 ? daysAway : '🌧️'}</div>
+          <div class="countdown-unit">${daysAway > 0 ? 'days away' : 'monsoon season'}</div>
+        </div>
+      </div>`;
+  }
+
+  // ── Cumulative rainfall chart ─────────────────────────────────────────────
+  const cumul = []; let running = 0;
+  const cumulLabels = [];
+  for (const [dk, mm] of Object.entries(days).sort()) {
+    running += mm;
+    cumul.push(running);
+    cumulLabels.push(fmtShort(dk+'T12:00:00Z'));
+  }
+  new Chart(document.getElementById('cumulChart').getContext('2d'), {
+    type:'line',
+    data:{labels:cumulLabels,datasets:[{data:cumul,borderColor:'#214332',backgroundColor:'rgba(33,67,50,0.08)',tension:0.3,pointRadius:0,borderWidth:2,fill:true}]},
+    options:{responsive:true,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{maxTicksLimit:8,font:{size:10},color:'#6b6b6b'}},y:{ticks:{callback:v=>v+'mm',font:{size:10},color:'#6b6b6b'},grid:{color:'rgba(0,0,0,0.04)'}}}}
+  });
+
+  // ── Daily rainfall (90 days) ──────────────────────────────────────────────
+  const daily90 = {};
+  for (const r of ninetyRows) {
+    const dk = new Date(r.recorded_at).toLocaleDateString('en-CA',{timeZone:'Asia/Kolkata'});
+    if (!daily90[dk]) daily90[dk] = 0;
+    daily90[dk] += (r.precipitation||0);
+  }
+  const dailyEntries = Object.entries(daily90).sort();
+  new Chart(document.getElementById('dailyChart').getContext('2d'), {
+    type:'bar',
+    data:{
+      labels:dailyEntries.map(([dk])=>fmtShort(dk+'T12:00:00Z')),
+      datasets:[{data:dailyEntries.map(([,v])=>parseFloat(v.toFixed(1))),backgroundColor:'rgba(59,130,246,0.6)',borderRadius:2}]
+    },
+    options:{responsive:true,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{maxTicksLimit:10,font:{size:10},color:'#6b6b6b'}},y:{ticks:{callback:v=>v+'mm',font:{size:10},color:'#6b6b6b'},grid:{color:'rgba(0,0,0,0.04)'}}}}
+  });
+
+  // ── Year-by-year cards + annual chart ────────────────────────────────────
+  const yearStats = allYearsData.map((rows, i) => {
+    const y = YEARS[i];
+    const dayBuckets = {};
+    for (const r of rows) {
+      const dk = new Date(r.recorded_at).toLocaleDateString('en-CA',{timeZone:'Asia/Kolkata'});
+      if (!dayBuckets[dk]) dayBuckets[dk] = 0;
+      dayBuckets[dk] += (r.precipitation||0);
+    }
+    const total = Object.values(dayBuckets).reduce((s,v)=>s+v,0);
+    const rainy  = Object.values(dayBuckets).filter(v=>v>=1).length;
+    // First monsoon rain (≥2mm in Jun–Aug)
+    const firstRainRow = rows.find(r => {
+      const m = parseInt(new Date(r.recorded_at).toLocaleDateString('en-IN',{month:'numeric',timeZone:'Asia/Kolkata'}));
+      return m>=6 && m<=8 && r.precipitation >= 2;
+    });
+    return { year:y, total:total.toFixed(0), rainy, firstRain: firstRainRow ? fmtDate(firstRainRow.recorded_at) : 'Not yet' };
+  });
+
+  document.getElementById('year-grid').innerHTML = yearStats.map(s => `
+    <div class="year-card">
+      <h3>${s.year}${s.year===THIS_YEAR?' (ongoing)':''}</h3>
+      <div class="year-row"><span class="year-row-label">Total rainfall</span><span class="year-row-val">${s.total}mm</span></div>
+      <div class="year-row"><span class="year-row-label">Rainy days</span><span class="year-row-val">${s.rainy} days</span></div>
+      <div class="year-row"><span class="year-row-label">First monsoon rain</span><span class="year-row-val">${s.firstRain}</span></div>
+    </div>`).join('');
+
+  new Chart(document.getElementById('annualChart').getContext('2d'), {
+    type:'bar',
+    data:{
+      labels:yearStats.map(s=>String(s.year)),
+      datasets:[{data:yearStats.map(s=>parseFloat(s.total)),backgroundColor:'rgba(33,67,50,0.75)',borderRadius:4}]
+    },
+    options:{responsive:true,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{font:{size:11},color:'#6b6b6b'}},y:{ticks:{callback:v=>v+'mm',font:{size:10},color:'#6b6b6b'},grid:{color:'rgba(0,0,0,0.04)'}}}}
+  });
+}
+
+loadMonsoon().catch(console.error);
+</script>
+</body>
+</html>
