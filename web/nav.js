@@ -19,6 +19,7 @@
     { href:'index.html',          label:'Home' },
     { href:'birds.html',          label:'Birds' },
     { href:'climate.html',        label:'Climate' },
+    { href:'hill.html', label:'Baner Hill' },
     { href:'index.html#insights', label:'Insights' },
     { href:'index.html#about',    label:'About' },
   ];
@@ -27,6 +28,7 @@
     { href:'index.html',    label:'Home' },
     { href:'birds.html',    label:'Birds' },
     { href:'climate.html',  label:'Climate' },
+    { href:'hill.html', label:'Baner Hill' },
     { href:'register.html', label:'Register' },
     { href:'contact.html',  label:'Contact' },
     { href:GITHUB,          label:'GitHub', ext:true },

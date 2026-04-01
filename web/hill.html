@@ -3,12 +3,25 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>The Hill — Earth Pulse, Baner, Pune</title>
-  <meta name="description" content="Time-lapse photo gallery of the Baner hills and Sahyadri foothills. Every photo annotated with AQI, temperature, rainfall and weather at time of capture.">
+  <title>Baner Hill — Watching a Biodiversity Hotspot Change | Earth Pulse, Pune</title>
+  <meta name="description" content="Baner Hill (678m) sits on the edge of the Western Ghats — one of the world's 8 biodiversity hotspots. Every photo annotated with live AQI, temperature and weather. A citizen science project from Pune, India.">
+  <meta name="keywords" content="Baner Hill Pune, Western Ghats biodiversity, Sahyadri hills photos, Pune AQI timelapse, Baner nature, citizen science Pune, hill greenery monsoon">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://earthpulse.pages.dev/hill.html">
-  <meta property="og:title" content="The Hill — Earth Pulse">
+  <!-- Open Graph / WhatsApp sharing -->
+  <meta property="og:title" content="Baner Hill — A Biodiversity Hotspot, Over Time">
+  <meta property="og:description" content="Baner Hill sits at 678m on the edge of the Western Ghats — older than the Himalayas, home to 30% of India's species. Watch it change through seasons, with live AQI and weather data on every photo.">
   <meta property="og:image" content="https://earthpulse.pages.dev/earth-pulse-logo.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:url" content="https://earthpulse.pages.dev/hill.html">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Earth Pulse · Baner, Pune">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Baner Hill — A Biodiversity Hotspot, Over Time">
+  <meta name="twitter:description" content="Watching the Western Ghats change through seasons. Every photo annotated with AQI, temperature and weather.">
+  <meta name="twitter:image" content="https://earthpulse.pages.dev/earth-pulse-logo.png">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"ImageGallery","name":"Baner Hill Photo Archive — Earth Pulse","description":"Time-lapse photo record of Baner Hill (678m), part of the Western Ghats UNESCO World Heritage ecosystem. Photos annotated with real-time AQI, temperature, humidity and precipitation data from Earth Pulse citizen science observatory.","url":"https://earthpulse.pages.dev/hill.html","locationCreated":{"@type":"Place","name":"Baner Hill, Pune, Maharashtra, India","geo":{"@type":"GeoCoordinates","latitude":18.5526156,"longitude":73.7818663},"elevation":"678 meters"}}</script>
   <link rel="icon" type="image/png" href="earth-pulse-logo.png">
   <link rel="stylesheet" href="styles.css">
   <style>
@@ -100,14 +113,30 @@
 
 <!-- HERO -->
 <div class="ep-hero">
-  <div class="ep-hero-tag">Hill photos · Sahyadri foothills · Baner, Pune</div>
+  <div class="ep-hero-tag">Baner Hill · 678m · Western Ghats · Pune, India</div>
   <h1>The hill,<br>over time</h1>
-  <p class="ep-hero-sub">Every photo of the Baner hills — annotated with air quality, temperature, rainfall and weather at the exact moment it was taken.</p>
+  <p class="ep-hero-sub">Baner Hill stands at 678 metres — the third highest point within Pune city limits — on the edge of the Western Ghats, one of the world's eight "hottest hotspots" of biodiversity and a UNESCO World Heritage ecosystem older than the Himalayas.</p>
   <p class="ep-hero-meta">
     <strong id="total-photos">—</strong> photos ·
     <strong id="date-range">—</strong> ·
     <a href="upload.html" style="color:var(--ep-tan);">Upload a photo →</a>
   </p>
+</div>
+
+<!-- ABOUT THE HILL -->
+<div style="background:white;border-bottom:1px solid var(--border);">
+  <div style="max-width:1100px;margin:0 auto;padding:2rem 2rem;display:grid;grid-template-columns:1fr 1fr;gap:2.5rem;">
+    <div>
+      <div style="font-size:0.72rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--ep-tan);margin-bottom:0.5rem;">Why this hill matters</div>
+      <p style="font-size:0.9rem;color:var(--text-muted);line-height:1.8;margin-bottom:0.85rem;">The Western Ghats — of which Baner Hill is an outlier spur — harbour 30% of India's plant, fish, herpetofauna, bird, and mammal species on less than 6% of the country's land. These mountains pre-date the Himalayas and represent ancient, unique biophysical and ecological processes that have evolved over hundreds of millions of years.</p>
+      <p style="font-size:0.9rem;color:var(--text-muted);line-height:1.8;">Despite their ecological significance, the Ghats face rapid urban pressure. Baner Hill, rising just above one of Pune's fastest-growing suburbs, is a front-row seat to that tension.</p>
+    </div>
+    <div>
+      <div style="font-size:0.72rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--ep-tan);margin-bottom:0.5rem;">What Earth Pulse is doing</div>
+      <p style="font-size:0.9rem;color:var(--text-muted);line-height:1.8;margin-bottom:0.85rem;">Every photo in this archive is timestamped and matched with the air quality, temperature, humidity, rainfall, and wind recorded by Earth Pulse sensors at that exact moment. Over time this builds a long-term visual and environmental record of the hill.</p>
+      <p style="font-size:0.9rem;color:var(--text-muted);line-height:1.8;">Green in monsoon, brown in summer, shrouded in fog at dawn — the hill tells a story that numbers alone cannot. Earth Pulse has so far detected <strong id="bird-species-count" style="color:var(--ep-green);">—</strong> bird species from this hillside using acoustic AI, contributing to our understanding of biodiversity in a rapidly urbanising landscape.</p>
+    </div>
+  </div>
 </div>
 
 <!-- FILTER BAR -->
@@ -261,16 +290,34 @@ function buildChips(p, large=false) {
 // ── Load data ─────────────────────────────────────────────────────────────────
 async function loadPhotos() {
   try {
-    const res = await fetch(
-      `${SUPABASE_URL}/rest/v1/timelapse_frames?select=*&order=captured_at.desc&limit=2000`,
-      { headers: HDR }
-    );
-    const data = await res.json();
+    // Fetch photos and bird species count in parallel
+    const [photoRes, birdRes] = await Promise.all([
+      fetch(`${SUPABASE_URL}/rest/v1/timelapse_frames?select=*&order=captured_at.desc&limit=2000`, {headers:HDR}),
+      fetch(`${SUPABASE_URL}/rest/v1/bird_detections?select=species_scientific`, {headers:HDR}),
+    ]);
+    const data  = await photoRes.json();
+    const birds = await birdRes.json();
+
     if (!Array.isArray(data)) { console.error('Error:', data); return; }
     allPhotos = data;
+
+    // Count unique species
+    const speciesCount = Array.isArray(birds)
+      ? new Set(birds.map(b=>b.species_scientific)).size
+      : 0;
+
+    // Update bird count in both locations (hero "about" text + stats strip)
+    const heroEl = document.getElementById('bird-species-count');
+    if (heroEl) heroEl.textContent = speciesCount || '—';
+
     buildStats();
     buildPeriodSelect();
     applyFilters();
+
+    // Update stat strip bird count after buildStats renders it
+    const statEl = document.getElementById('stat-bird-species');
+    if (statEl) statEl.textContent = speciesCount || '—';
+
   } catch(e) { console.error('Load error:', e); }
 }
 
@@ -288,19 +335,23 @@ function buildStats() {
   document.getElementById('date-range').textContent =
     `${istDate(oldest.captured_at).short} – ${istDate(newest.captured_at).short}`;
 
-  const withRain = allPhotos.filter(p => (p.precipitation||0) >= 1).length;
-  const temps    = allPhotos.filter(p => p.temperature != null);
-  const aqis     = allPhotos.filter(p => p.aqi != null);
-  const avgTemp  = temps.length ? (temps.reduce((s,p)=>s+p.temperature,0)/temps.length).toFixed(1) : '—';
-  const avgAqi   = aqis.length  ? Math.round(aqis.reduce((s,p)=>s+p.aqi,0)/aqis.length) : '—';
-  const months   = new Set(allPhotos.map(p=>istDate(p.captured_at).monthNum)).size;
+  const withRain  = allPhotos.filter(p => (p.precipitation||0) >= 1).length;
+  const temps     = allPhotos.filter(p => p.temperature != null);
+  const aqis      = allPhotos.filter(p => p.aqi != null);
+  const indiaAqis = allPhotos.filter(p => p.google_aqi_india != null);
+  const avgTemp   = temps.length ? (temps.reduce((s,p)=>s+p.temperature,0)/temps.length).toFixed(1) : '—';
+  const avgAqi    = aqis.length  ? Math.round(aqis.reduce((s,p)=>s+p.aqi,0)/aqis.length) : '—';
+  const avgIndia  = indiaAqis.length ? Math.round(indiaAqis.reduce((s,p)=>s+p.google_aqi_india,0)/indiaAqis.length) : '—';
+  const months    = new Set(allPhotos.map(p=>istDate(p.captured_at).monthNum)).size;
 
   document.getElementById('stats-strip').innerHTML = [
-    { icon:'📸', val:n,          label:'photos archived' },
-    { icon:'📅', val:months,     label:'months covered' },
-    { icon:'🌧️', val:withRain,  label:'rainy-day shots' },
-    { icon:'🌡️', val:avgTemp+'°C', label:'avg temperature' },
-    { icon:'🍃', val:avgAqi,    label:'avg EU AQI' },
+    { icon:'📸', val:n,                label:'photos archived' },
+    { icon:'📅', val:months,           label:'months covered' },
+    { icon:'🌧️', val:withRain,        label:'rainy-day shots' },
+    { icon:'🌡️', val:avgTemp+'°C',    label:'avg temperature' },
+    { icon:'🍃', val:avgAqi,           label:'avg EU AQI' },
+    { icon:'🇮🇳', val:avgIndia,       label:'avg India AQI' },
+    { icon:'🐦', val:'<span id="stat-bird-species">—</span>', label:'bird species heard' },
   ].map(s=>`<div class="stat-box"><div style="font-size:1.4rem;margin-bottom:0.3rem;">${s.icon}</div><div class="stat-box-val">${s.val}</div><div class="stat-box-label">${s.label}</div></div>`).join('');
 }
 
