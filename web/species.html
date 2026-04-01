@@ -3,7 +3,6 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <!-- Title and meta are set dynamically by JS after loading species data -->
   <title>Bird Species — Earth Pulse, Baner, Pune</title>
   <meta name="description" content="Bird species detected acoustically at Baner, Pune using BirdNET AI.">
   <meta name="robots" content="index, follow">
@@ -11,476 +10,418 @@
   <link rel="stylesheet" href="styles.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
   <style>
-    /* Species hero with photo */
-    .species-hero {
-      position:relative; background:var(--ep-green);
-      min-height:340px; display:flex; align-items:flex-end;
-      overflow:hidden;
-    }
-    .species-hero-bg {
-      position:absolute; inset:0; background-size:cover; background-position:center;
-      filter:brightness(0.45); transition:opacity 0.5s;
-    }
+    .species-hero { position:relative; background:var(--ep-green); min-height:320px; display:flex; align-items:flex-end; overflow:hidden; }
+    .species-hero-bg { position:absolute; inset:0; background-size:cover; background-position:center; filter:brightness(0.4); }
     .species-hero-content { position:relative; z-index:1; padding:2.5rem 2rem; max-width:1100px; width:100%; margin:0 auto; }
     .species-tag { font-size:0.72rem; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; color:var(--ep-tan); margin-bottom:0.5rem; }
-    .species-name { font-family:var(--serif); font-size:clamp(2rem,5vw,3.5rem); color:var(--ep-cream); line-height:1.1; margin-bottom:0.3rem; }
-    .species-sci  { font-style:italic; font-size:1.1rem; color:rgba(242,240,230,0.6); margin-bottom:1rem; }
-    .species-badges { display:flex; gap:0.5rem; flex-wrap:wrap; }
+    .species-name { font-family:var(--serif); font-size:clamp(2rem,5vw,3.2rem); color:var(--ep-cream); line-height:1.1; margin-bottom:0.25rem; }
+    .species-sci  { font-style:italic; font-size:1rem; color:rgba(242,240,230,0.6); margin-bottom:1rem; }
+    .species-badges { display:flex; gap:0.5rem; flex-wrap:wrap; align-items:center; }
     .species-badge { font-size:0.72rem; font-weight:600; padding:4px 12px; border-radius:20px; }
     .badge-detected { background:rgba(242,240,230,0.15); color:var(--ep-cream); }
     .badge-conf { background:rgba(191,155,123,0.3); color:#ffe0c0; }
-
-    /* Back link */
-    .back-link { display:inline-flex; align-items:center; gap:6px; color:var(--ep-green); font-size:0.85rem; font-weight:500; text-decoration:none; margin-bottom:1.5rem; }
-    .back-link:hover { text-decoration:underline; }
-
-    /* Two-column layout */
+    .share-btn { display:inline-flex; align-items:center; gap:5px; background:rgba(191,155,123,0.25); color:var(--ep-cream); border:1px solid rgba(191,155,123,0.4); padding:4px 14px; border-radius:20px; font-size:0.75rem; font-weight:600; cursor:pointer; font-family:var(--sans); transition:background 0.15s; }
+    .share-btn:hover { background:rgba(191,155,123,0.45); }
+    .share-toast { position:fixed; bottom:2rem; left:50%; transform:translateX(-50%); background:var(--ep-green); color:var(--ep-cream); padding:0.65rem 1.5rem; border-radius:2rem; font-size:0.85rem; font-weight:500; z-index:9999; opacity:0; transition:opacity 0.3s; pointer-events:none; white-space:nowrap; }
+    .share-toast.show { opacity:1; }
     .species-layout { display:grid; grid-template-columns:1fr 1.8fr; gap:2rem; }
     @media(max-width:800px){ .species-layout { grid-template-columns:1fr; } }
-
-    /* Sidebar */
     .sidebar-card { background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-lg); padding:1.25rem; margin-bottom:1rem; }
     .sidebar-card h3 { font-family:var(--serif); font-size:1rem; color:var(--ep-green); margin-bottom:0.75rem; }
-    .fact-row { display:flex; justify-content:space-between; align-items:baseline; padding:0.4rem 0; border-bottom:1px solid var(--border); font-size:0.82rem; }
+    .fact-row { display:flex; justify-content:space-between; align-items:baseline; padding:0.4rem 0; border-bottom:1px solid var(--border); font-size:0.82rem; gap:0.5rem; }
     .fact-row:last-child { border-bottom:none; }
-    .fact-label { color:var(--text-muted); }
-    .fact-val { font-weight:600; color:var(--ep-green); font-family:var(--mono); font-size:0.8rem; }
-
-    /* Wikipedia extract */
-    .wiki-extract { font-size:0.88rem; color:var(--text-muted); line-height:1.8; }
+    .fact-label { color:var(--text-muted); white-space:nowrap; }
+    .fact-val { font-weight:600; color:var(--ep-green); font-family:var(--mono); font-size:0.8rem; text-align:right; }
+    .wiki-extract { font-size:0.87rem; color:var(--text-muted); line-height:1.8; }
     .wiki-link { display:inline-flex; align-items:center; gap:5px; color:var(--ep-green); font-size:0.8rem; margin-top:0.75rem; text-decoration:none; }
-
-    /* Charts */
     .chart-block { background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-lg); padding:1.25rem; margin-bottom:1rem; }
     .chart-title { font-family:var(--serif); font-size:1rem; color:var(--ep-green); margin-bottom:0.2rem; }
     .chart-sub { font-size:0.78rem; color:var(--text-muted); margin-bottom:1rem; }
-
-    /* Detection timeline */
-    .timeline { display:flex; flex-direction:column; gap:0.5rem; max-height:320px; overflow-y:auto; }
-    .timeline-row { display:flex; align-items:center; gap:0.75rem; padding:0.5rem 0; border-bottom:1px solid var(--border); font-size:0.8rem; }
-    .timeline-row:last-child { border-bottom:none; }
-    .tl-time { font-family:var(--mono); color:var(--text-muted); min-width:130px; }
-    .tl-conf { font-family:var(--mono); font-size:0.72rem; }
-    .tl-aqi  { font-size:0.72rem; color:var(--text-muted); }
-    .tl-new  { font-size:0.62rem; background:#fef08a; color:#713f12; font-weight:700; padding:1px 6px; border-radius:10px; }
-
-    /* Hour heatmap */
-    .hour-grid { display:grid; grid-template-columns:repeat(24,1fr); gap:2px; }
-    .hour-cell { aspect-ratio:1; border-radius:2px; background:var(--ep-cream-dark); position:relative; }
-    .hour-cell.has-data { cursor:default; }
-    .hour-label { display:grid; grid-template-columns:repeat(8,1fr); margin-top:4px; }
-    .hour-label span { font-family:var(--mono); font-size:0.55rem; color:var(--text-muted); text-align:center; }
-
-    /* Month activity */
-    .month-bars { display:flex; gap:4px; align-items:flex-end; height:60px; margin-top:0.5rem; }
-    .month-bar-wrap { flex:1; display:flex; flex-direction:column; align-items:center; gap:3px; }
-    .month-bar { width:100%; border-radius:3px 3px 0 0; background:var(--ep-green); min-height:3px; transition:height 0.5s; }
-    .month-bar-label { font-size:0.58rem; font-family:var(--mono); color:var(--text-muted); }
-
-    /* Related species */
+    .timeline { display:flex; flex-direction:column; max-height:320px; overflow-y:auto; }
+    .tl-row { display:flex; align-items:center; gap:0.75rem; padding:0.45rem 0; border-bottom:1px solid var(--border); font-size:0.79rem; }
+    .tl-row:last-child { border-bottom:none; }
+    .tl-time { font-family:var(--mono); color:var(--text-muted); flex:1; min-width:140px; }
+    .tl-conf { font-family:var(--mono); font-size:0.72rem; white-space:nowrap; }
+    .tl-aqi  { font-size:0.7rem; color:var(--text-muted); }
+    .tl-new  { font-size:0.6rem; background:#fef08a; color:#713f12; font-weight:700; padding:1px 6px; border-radius:10px; }
+    .hour-grid { display:grid; grid-template-columns:repeat(24,1fr); gap:2px; margin-bottom:4px; }
+    .hour-cell { aspect-ratio:1; border-radius:2px; }
+    .hour-label-row { display:flex; justify-content:space-between; margin-top:2px; }
+    .hour-label-row span { font-family:var(--mono); font-size:0.55rem; color:var(--text-muted); }
     .related-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(140px,1fr)); gap:0.75rem; }
-    .related-card { background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-md); padding:0.75rem; text-align:center; text-decoration:none; transition:box-shadow 0.15s; }
+    .related-card { background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-md); padding:0.75rem; text-align:center; text-decoration:none; transition:box-shadow 0.15s; display:block; }
     .related-card:hover { box-shadow:0 4px 16px rgba(33,67,50,0.1); }
-    .related-card img { width:48px; height:48px; border-radius:50%; object-fit:cover; background:var(--ep-cream-dark); margin:0 auto 0.4rem; display:block; }
+    .related-thumb { width:48px; height:48px; border-radius:50%; object-fit:cover; background:var(--ep-cream-dark); margin:0 auto 0.4rem; display:flex; align-items:center; justify-content:center; font-size:1.4rem; }
+    .related-thumb img { width:48px; height:48px; border-radius:50%; object-fit:cover; display:block; }
     .related-card-name { font-size:0.75rem; font-weight:600; color:var(--ep-green); }
-    .related-card-sci  { font-size:0.65rem; font-style:italic; color:var(--text-muted); margin-top:1px; }
-
-    /* Empty / error states */
-    .not-found { text-align:center; padding:6rem 2rem; }
+    .related-card-sci  { font-size:0.63rem; font-style:italic; color:var(--text-muted); margin-top:1px; }
+    .not-found { text-align:center; padding:5rem 2rem; }
     .not-found h2 { font-family:var(--serif); font-size:1.8rem; color:var(--ep-green); margin-bottom:0.5rem; }
-    .not-found p { color:var(--text-muted); }
-
-    /* All species index (shown when no ?bird= param) */
-    .species-index-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:1rem; }
+    .not-found p { color:var(--text-muted); line-height:1.7; }
+    .species-index-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:1rem; }
+    .si-card { background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-lg); overflow:hidden; text-decoration:none; display:block; transition:box-shadow 0.2s,transform 0.2s; color:inherit; }
+    .si-card:hover { box-shadow:0 6px 24px rgba(33,67,50,0.12); transform:translateY(-2px); }
+    .si-photo { width:100%; height:130px; object-fit:cover; display:block; background:var(--ep-cream-dark); }
+    .si-emoji { width:100%; height:130px; display:flex; align-items:center; justify-content:center; font-size:3rem; background:linear-gradient(135deg,rgba(33,67,50,0.07),rgba(191,155,123,0.1)); }
+    .si-body { padding:0.85rem 1rem; }
+    .error-msg { background:rgba(220,38,38,0.07); border:1px solid rgba(220,38,38,0.2); border-radius:var(--radius-md); padding:1rem 1.25rem; margin:2rem; color:#991b1b; font-size:0.88rem; font-family:var(--mono); }
   </style>
 </head>
 <body>
 <div id="ep-nav"></div>
-
-<!-- Content injected by JS -->
 <div id="main-content">
-  <div style="text-align:center;padding:6rem 2rem;">
-    <div class="ep-skeleton" style="height:340px;border-radius:0;"></div>
+  <div style="padding:3rem 2rem;text-align:center;">
+    <div class="ep-skeleton" style="height:320px;border-radius:0;margin-bottom:2rem;"></div>
+    <div style="max-width:900px;margin:0 auto;">
+      <div class="ep-skeleton" style="height:80px;border-radius:var(--radius-lg);margin-bottom:1rem;"></div>
+      <div class="ep-skeleton" style="height:300px;border-radius:var(--radius-lg);"></div>
+    </div>
   </div>
 </div>
-
+<div class="share-toast" id="share-toast">Copied!</div>
 <div id="ep-footer"></div>
 <script src="analytics.js"></script>
 <script src="nav.js"></script>
 <script>
-const SUPABASE_URL = 'https://krmczyqwblsoekceanlj.supabase.co';
-const SUPABASE_KEY = 'sb_publishable_DrHFT5J0vmrkYraUXIlpQQ_gsk1rdq6';
-const HDR = { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` };
+const SB  = 'https://krmczyqwblsoekceanlj.supabase.co';
+const KEY = 'sb_publishable_DrHFT5J0vmrkYraUXIlpQQ_gsk1rdq6';
+const H   = { 'apikey': KEY, 'Authorization': 'Bearer ' + KEY };
+const MO  = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 
-const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+/* Safe helpers — never rely on locale string parsing */
+function istHour(ts) {
+  var d = new Date(ts);
+  var utcMs = d.getTime() + d.getTimezoneOffset() * 60000;
+  return Math.floor((utcMs + 5.5 * 3600000) / 3600000) % 24;
+}
+function istMonth(ts) {
+  var d = new Date(ts);
+  var utcMs = d.getTime() + d.getTimezoneOffset() * 60000;
+  var ist = new Date(utcMs + 5.5 * 3600000);
+  return ist.getMonth();
+}
+function fmtIST(ts, opts) {
+  return new Date(ts).toLocaleString('en-IN', Object.assign({}, opts, { timeZone: 'Asia/Kolkata' }));
+}
+function ge(id) { return document.getElementById(id); }
 
-// ── Get species from URL ?bird=Falco_tinnunculus ──────────────────────────────
-const params = new URLSearchParams(window.location.search);
-const birdParam = params.get('bird');
+async function fetchJSON(url) {
+  var r = await fetch(SB + url, { headers: H });
+  if (!r.ok) throw new Error('HTTP ' + r.status + ' for ' + url);
+  return r.json();
+}
 
+async function wiki(sci) {
+  try {
+    var slug = encodeURIComponent(sci.replace(/ /g, '_'));
+    var r = await fetch('https://en.wikipedia.org/api/rest_v1/page/summary/' + slug, { headers: { 'Accept': 'application/json' } });
+    if (!r.ok) return null;
+    var d = await r.json();
+    return { extract: d.extract || '', thumb: d.thumbnail ? d.thumbnail.source : null, url: d.content_urls && d.content_urls.desktop ? d.content_urls.desktop.page : 'https://en.wikipedia.org/wiki/' + slug };
+  } catch(e) { return null; }
+}
+
+function showToast(msg) {
+  var el = ge('share-toast');
+  el.textContent = msg;
+  el.className = 'share-toast show';
+  setTimeout(function() { el.className = 'share-toast'; }, 2500);
+}
+
+function shareSpecies(name, sci, count, conf) {
+  var url = window.location.href;
+  var text = String.fromCharCode(128038) + ' ' + name + ' (' + sci + ') heard ' + count + ' times in Baner, Pune. Best confidence: ' + Math.round(conf*100) + '%. Tracked by Earth Pulse acoustic monitoring. ' + url;
+  if (navigator.share) {
+    navigator.share({ title: name + ' — Earth Pulse', url: url, text: text }).catch(function(){});
+  } else if (navigator.clipboard) {
+    navigator.clipboard.writeText(text).then(function(){ showToast('Share text copied!'); }).catch(function(){ navigator.clipboard.writeText(url).then(function(){ showToast('Link copied!'); }); });
+  } else {
+    showToast('Copy: ' + url);
+  }
+}
+
+function showError(heading, detail) {
+  ge('main-content').innerHTML = '<div class="not-found"><div style="font-size:3rem;margin-bottom:1rem;">🔍</div><h2>' + heading + '</h2><p>' + detail + '</p><a href="birds.html" class="ep-btn-primary" style="display:inline-block;margin-top:1.5rem;">← Birds of Baner</a></div>';
+}
+
+/* ── ROUTER ── */
+var birdParam = new URLSearchParams(window.location.search).get('bird');
 if (!birdParam) {
   renderIndex();
 } else {
-  // Normalise: replace underscores back to spaces for the actual scientific name
-  // URLs use underscores (e.g. ?bird=Falco_tinnunculus), DB stores spaces
-  const scientificName = birdParam.replace(/_/g, ' ');
-  renderSpeciesPage(scientificName);
+  renderSpeciesPage(birdParam.replace(/_/g, ' ').trim());
 }
 
-// ── INDEX: list all detected species ─────────────────────────────────────────
+/* ── INDEX ── */
 async function renderIndex() {
   document.title = 'Bird Species — Earth Pulse, Baner, Pune';
   try {
-    const res = await fetch(
-      `${SUPABASE_URL}/rest/v1/bird_detections?select=species_common,species_scientific,confidence&order=confidence.desc`,
-      { headers: HDR }
-    );
-    const rows = await res.json();
-    // Deduplicate, keep highest confidence
-    const map = new Map();
-    for (const r of rows) {
+    var rows = await fetchJSON('/rest/v1/bird_detections?select=species_common,species_scientific,confidence&order=detected_at.desc&limit=5000');
+    if (!Array.isArray(rows)) { showError('Could not load species', JSON.stringify(rows)); return; }
+
+    var map = new Map();
+    rows.forEach(function(r) {
       if (!map.has(r.species_scientific) || r.confidence > map.get(r.species_scientific).confidence)
         map.set(r.species_scientific, r);
-    }
-    const species = Array.from(map.values()).sort((a,b)=>a.species_common.localeCompare(b.species_common));
-
-    document.getElementById('main-content').innerHTML = `
-      <div class="ep-hero">
-        <div class="ep-hero-tag">Acoustic monitoring · BirdNET AI · Baner, Pune</div>
-        <h1>Birds of Baner</h1>
-        <p class="ep-hero-sub">Every species detected from the Sahyadri foothills — click any bird for the full profile.</p>
-        <p class="ep-hero-meta"><strong>${species.length}</strong> species detected · <strong>${rows.length}</strong> total detections</p>
-      </div>
-      <div class="ep-section">
-        <div class="ep-section-inner">
-          <div class="species-index-grid" id="species-index"></div>
-        </div>
-      </div>`;
-
-    // Render cards, load Wikipedia thumbnails async
-    const grid = document.getElementById('species-index');
-    grid.innerHTML = species.map((s,i) =>
-      `<a class="ep-bird-card" href="species.html?bird=${s.species_scientific.replace(/ /g,'_')}" style="flex-direction:column;padding:0;overflow:hidden;text-decoration:none;">
-        <div style="width:100%;height:120px;background:var(--ep-cream-dark);display:flex;align-items:center;justify-content:center;font-size:2.5rem;" id="si-img-${i}">🦜</div>
-        <div style="padding:0.85rem 1rem;">
-          <div class="ep-bird-name">${s.species_common}</div>
-          <div class="ep-bird-sci">${s.species_scientific}</div>
-          <div class="ep-bird-conf">${(s.confidence*100).toFixed(0)}% best confidence</div>
-        </div>
-      </a>`
-    ).join('');
-
-    // Load wiki photos async
-    species.forEach(async (s,i) => {
-      const photo = await getWikiThumbnail(s.species_scientific);
-      const el = document.getElementById(`si-img-${i}`);
-      if (el && photo) el.innerHTML = `<img src="${photo}" style="width:100%;height:120px;object-fit:cover;" alt="${s.species_common}" loading="lazy">`;
     });
+    var species = Array.from(map.values()).sort(function(a,b){ return a.species_common.localeCompare(b.species_common); });
 
-  } catch(e) { console.error(e); }
-}
-
-// ── SPECIES PAGE ──────────────────────────────────────────────────────────────
-async function renderSpeciesPage(scientificName) {
-  try {
-    // Fetch in parallel: all detections for this species + Wikipedia
-    // Note: PostgREST eq. filter needs the value URL-encoded in the query string
-    const encodedName = encodeURIComponent(scientificName);
-    const [detectRes, wikiRes] = await Promise.all([
-      fetch(`${SUPABASE_URL}/rest/v1/bird_detections?select=*&species_scientific=eq.${encodedName}&order=detected_at.desc`, {headers:HDR}),
-      fetchWikiData(scientificName),
-    ]);
-    const detections = await detectRes.json();
-
-    if (!Array.isArray(detections) || !detections.length) {
-      document.getElementById('main-content').innerHTML = `
-        <div class="not-found">
-          <div style="font-size:3rem;margin-bottom:1rem;">🔍</div>
-          <h2>Species not found</h2>
-          <p>No detections found for <em>${scientificName}</em> in the Earth Pulse database.</p>
-          <a href="species.html" class="ep-btn-primary" style="display:inline-block;margin-top:1.5rem;">← All species</a>
-        </div>`;
-      return;
-    }
-
-    const d = detections[0]; // most recent
-    const commonName = d.species_common;
-    const totalDets  = detections.length;
-    const bestConf   = Math.max(...detections.map(x=>x.confidence));
-    const avgConf    = detections.reduce((s,x)=>s+x.confidence,0)/totalDets;
-    const firstSeen  = new Date(detections[detections.length-1].detected_at);
-    const lastSeen   = new Date(detections[0].detected_at);
-    const newThisYear = detections.some(x=>x.is_new_species_this_year);
-
-    // Update page meta
-    document.title = `${commonName} (${scientificName}) — Earth Pulse, Baner, Pune`;
-    document.querySelector('meta[name="description"]').content =
-      `${commonName} detected ${totalDets} times at Baner, Pune using BirdNET acoustic AI. First heard ${firstSeen.toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'})}. ${wikiRes?.extract?.slice(0,120)||''}`;
-
-    // Hour distribution (0–23)
-    const hourCounts = Array(24).fill(0);
-    detections.forEach(x => {
-      const h = new Date(x.detected_at).toLocaleString('en-IN',{hour:'numeric',hour12:false,timeZone:'Asia/Kolkata'});
-      hourCounts[parseInt(h)]++;
-    });
-    const maxHour = Math.max(...hourCounts, 1);
-
-    // Month distribution
-    const monthCounts = Array(12).fill(0);
-    detections.forEach(x => {
-      const m = parseInt(new Date(x.detected_at).toLocaleDateString('en-IN',{month:'numeric',timeZone:'Asia/Kolkata'}))-1;
-      monthCounts[m]++;
-    });
-    const maxMonth = Math.max(...monthCounts, 1);
-
-    // Peak hour
-    const peakHour = hourCounts.indexOf(maxHour);
-    const peakHourStr = `${String(peakHour).padStart(2,'0')}:00–${String(peakHour+1).padStart(2,'0')}:00 IST`;
-
-    // Active months
-    const activeMonths = MONTHS.filter((_,i)=>monthCounts[i]>0).join(', ');
-
-    // Season
-    function getSeason(m) {
-      if(m>=2&&m<=4) return 'Summer (Mar–May)';
-      if(m>=5&&m<=8) return 'Monsoon (Jun–Sep)';
-      return 'Winter (Oct–Feb)';
-    }
-    const peakMonth = monthCounts.indexOf(maxMonth);
-    const peakSeason = getSeason(peakMonth);
-
-    // Render page
-    document.getElementById('main-content').innerHTML = `
-      <!-- HERO with Wikipedia photo -->
-      <div class="species-hero">
-        <div class="species-hero-bg" id="hero-bg"></div>
-        <div class="species-hero-content">
-          <a href="species.html" class="back-link" style="color:rgba(242,240,230,0.7);margin-bottom:1rem;display:inline-flex;gap:6px;align-items:center;font-size:0.82rem;">← All species</a>
-          <div class="species-tag">Earth Pulse · Baner, Pune · BirdNET Detection</div>
-          <div class="species-name">${commonName}</div>
-          <div class="species-sci">${scientificName}</div>
-          <div class="species-badges">
-            <span class="species-badge badge-detected">${totalDets} detections</span>
-            <span class="species-badge badge-conf">Best: ${(bestConf*100).toFixed(0)}% confidence</span>
-            ${newThisYear ? '<span class="species-badge" style="background:rgba(254,240,138,0.3);color:#fef08a;">★ New this year</span>' : ''}
-          </div>
-        </div>
-      </div>
-
-      <div class="ep-section">
-        <div class="ep-section-inner">
-          <div class="species-layout">
-
-            <!-- SIDEBAR -->
-            <div>
-              <!-- Quick facts -->
-              <div class="sidebar-card">
-                <h3>At a glance</h3>
-                <div class="fact-row"><span class="fact-label">Total detections</span><span class="fact-val">${totalDets}</span></div>
-                <div class="fact-row"><span class="fact-label">Best confidence</span><span class="fact-val">${(bestConf*100).toFixed(0)}%</span></div>
-                <div class="fact-row"><span class="fact-label">Avg confidence</span><span class="fact-val">${(avgConf*100).toFixed(0)}%</span></div>
-                <div class="fact-row"><span class="fact-label">First heard</span><span class="fact-val">${firstSeen.toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric',timeZone:'Asia/Kolkata'})}</span></div>
-                <div class="fact-row"><span class="fact-label">Last heard</span><span class="fact-val">${lastSeen.toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric',timeZone:'Asia/Kolkata'})}</span></div>
-                <div class="fact-row"><span class="fact-label">Peak hour</span><span class="fact-val">${peakHourStr}</span></div>
-                <div class="fact-row"><span class="fact-label">Peak season</span><span class="fact-val">${peakSeason}</span></div>
-                <div class="fact-row"><span class="fact-label">Active months</span><span class="fact-val" style="font-size:0.7rem;">${activeMonths||'—'}</span></div>
-              </div>
-
-              <!-- Wikipedia info -->
-              ${wikiRes ? `
-              <div class="sidebar-card">
-                <h3>About this species</h3>
-                ${wikiRes.thumbnail ? `<img src="${wikiRes.thumbnail}" alt="${commonName}" style="width:100%;border-radius:8px;margin-bottom:0.75rem;object-fit:cover;max-height:180px;">` : ''}
-                <p class="wiki-extract">${wikiRes.extract || ''}</p>
-                <a class="wiki-link" href="${wikiRes.pageUrl}" target="_blank" rel="noopener">
-                  Read more on Wikipedia →
-                </a>
-              </div>` : ''}
-
-              <!-- AQI context -->
-              <div class="sidebar-card" id="aqi-context">
-                <h3>Air quality when detected</h3>
-                <div id="aqi-context-content"><div class="ep-skeleton" style="height:60px;border-radius:6px;"></div></div>
-              </div>
-            </div>
-
-            <!-- MAIN COLUMN -->
-            <div>
-              <!-- Hour of day heatmap -->
-              <div class="chart-block">
-                <div class="chart-title">Time of day activity</div>
-                <div class="chart-sub">Number of detections by hour (IST) — shows dawn and dusk chorus patterns</div>
-                <div class="hour-grid" id="hour-grid"></div>
-                <div class="hour-label">
-                  ${['00','03','06','09','12','15','18','21'].map(h=>`<span>${h}h</span>`).join('')}
-                </div>
-              </div>
-
-              <!-- Monthly activity bar chart -->
-              <div class="chart-block">
-                <div class="chart-title">Monthly detection pattern</div>
-                <div class="chart-sub">Seasonal presence — when is this species heard most in Baner?</div>
-                <canvas id="monthChart" height="80"></canvas>
-              </div>
-
-              <!-- Confidence over time -->
-              <div class="chart-block">
-                <div class="chart-title">Detection confidence over time</div>
-                <div class="chart-sub">Higher confidence = clearer, more distinctive call</div>
-                <canvas id="confChart" height="80"></canvas>
-              </div>
-
-              <!-- Detection timeline -->
-              <div class="chart-block">
-                <div class="chart-title">Detection log</div>
-                <div class="chart-sub">Most recent ${Math.min(totalDets,50)} detections · scroll to see more</div>
-                <div class="timeline">
-                  ${detections.slice(0,50).map(x=>{
-                    const dt = new Date(x.detected_at);
-                    const dateStr = dt.toLocaleString('en-IN',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit',hour12:true,timeZone:'Asia/Kolkata'});
-                    return `<div class="timeline-row">
-                      <span class="tl-time">${dateStr}</span>
-                      <span class="tl-conf" style="color:${x.confidence>=0.8?'var(--ep-green)':'var(--ep-tan)'}">${(x.confidence*100).toFixed(0)}%</span>
-                      ${x.aqi_at_detection ? `<span class="tl-aqi">AQI ${x.aqi_at_detection}</span>` : ''}
-                      ${x.is_new_species_this_year ? `<span class="tl-new">★ First this year</span>` : ''}
-                    </div>`;
-                  }).join('')}
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Related species -->
-          <div style="margin-top:2rem;">
-            <h2 class="ep-section-title">Other species detected in Baner</h2>
-            <div class="related-grid" id="related-grid">
-              <div class="ep-skeleton" style="height:100px"></div>
-              <div class="ep-skeleton" style="height:100px"></div>
-              <div class="ep-skeleton" style="height:100px"></div>
-              <div class="ep-skeleton" style="height:100px"></div>
-            </div>
-          </div>
-        </div>
-      </div>`;
-
-    // Set hero background
-    if (wikiRes?.thumbnail) {
-      document.getElementById('hero-bg').style.backgroundImage = `url('${wikiRes.thumbnail}')`;
-    }
-
-    // Render hour heatmap
-    const hourGrid = document.getElementById('hour-grid');
-    hourGrid.innerHTML = hourCounts.map((count,h) => {
-      const intensity = count ? Math.max(0.15, count/maxHour) : 0;
-      const bg = count
-        ? `rgba(33,67,50,${intensity})`
-        : 'var(--ep-cream-dark)';
-      const title = `${String(h).padStart(2,'0')}:00 — ${count} detection${count!==1?'s':''}`;
-      return `<div class="hour-cell${count?' has-data':''}" style="background:${bg}" title="${title}"></div>`;
+    var cards = species.map(function(s, i) {
+      return '<a class="si-card" href="species.html?bird=' + s.species_scientific.replace(/ /g,'_') + '">' +
+        '<div class="si-emoji" id="si-' + i + '">🦜</div>' +
+        '<div class="si-body">' +
+        '<div class="ep-bird-name">' + s.species_common + '</div>' +
+        '<div class="ep-bird-sci">' + s.species_scientific + '</div>' +
+        '<div class="ep-bird-conf">' + (s.confidence*100).toFixed(0) + '% best confidence</div>' +
+        '</div></a>';
     }).join('');
 
-    // Monthly chart
-    new Chart(document.getElementById('monthChart').getContext('2d'), {
-      type:'bar',
-      data:{
-        labels: MONTHS,
-        datasets:[{ data:monthCounts, backgroundColor:'rgba(33,67,50,0.75)', borderRadius:4 }]
-      },
-      options:{ responsive:true, plugins:{legend:{display:false}}, scales:{x:{grid:{display:false},ticks:{font:{size:10},color:'#6b6b6b'}},y:{grid:{color:'rgba(0,0,0,0.05)'},ticks:{font:{size:10},color:'#6b6b6b',stepSize:1}}}}
+    ge('main-content').innerHTML =
+      '<div class="ep-hero"><div class="ep-hero-tag">Acoustic monitoring · BirdNET AI · Baner, Pune</div>' +
+      '<h1>Birds of Baner</h1>' +
+      '<p class="ep-hero-sub">Every species identified by sound from the Sahyadri foothills. Click any bird for the full profile.</p>' +
+      '<p class="ep-hero-meta"><strong>' + species.length + '</strong> species · <strong>' + rows.length + '</strong> total detections</p></div>' +
+      '<div class="ep-section"><div class="ep-section-inner"><div class="species-index-grid">' + cards + '</div></div></div>';
+
+    species.forEach(async function(s, i) {
+      var w = await wiki(s.species_scientific);
+      var el = ge('si-' + i);
+      if (el && w && w.thumb) el.outerHTML = '<img class="si-photo" src="' + w.thumb + '" alt="' + s.species_common + '" loading="lazy">';
     });
-
-    // Confidence over time chart
-    const timeDetections = [...detections].sort((a,b)=>new Date(a.detected_at)-new Date(b.detected_at));
-    new Chart(document.getElementById('confChart').getContext('2d'), {
-      type:'scatter',
-      data:{datasets:[{
-        data:timeDetections.map(x=>({
-          x:new Date(x.detected_at).getTime(),
-          y:Math.round(x.confidence*100)
-        })),
-        backgroundColor:'rgba(191,155,123,0.6)', pointRadius:4
-      }]},
-      options:{
-        responsive:true, plugins:{legend:{display:false}},
-        scales:{
-          x:{type:'linear',ticks:{callback:v=>new Date(v).toLocaleDateString('en-IN',{month:'short',year:'2-digit'}),maxTicksLimit:6,font:{size:10},color:'#6b6b6b'},grid:{display:false}},
-          y:{min:0,max:100,ticks:{callback:v=>v+'%',font:{size:10},color:'#6b6b6b'},grid:{color:'rgba(0,0,0,0.05)'}}
-        }
-      }
-    });
-
-    // AQI context
-    const aqiDetections = detections.filter(x=>x.aqi_at_detection);
-    if (aqiDetections.length) {
-      const avgAqi = Math.round(aqiDetections.reduce((s,x)=>s+x.aqi_at_detection,0)/aqiDetections.length);
-      document.getElementById('aqi-context-content').innerHTML = `
-        <div class="fact-row"><span class="fact-label">Avg AQI when heard</span><span class="fact-val">${avgAqi}</span></div>
-        <div class="fact-row"><span class="fact-label">Best AQI when heard</span><span class="fact-val">${Math.min(...aqiDetections.map(x=>x.aqi_at_detection))}</span></div>
-        <div class="fact-row"><span class="fact-label">Worst AQI when heard</span><span class="fact-val">${Math.max(...aqiDetections.map(x=>x.aqi_at_detection))}</span></div>
-        <p style="font-size:0.74rem;color:var(--text-muted);margin-top:0.6rem;">Data shows the air quality at the time each detection was made.</p>`;
-    } else {
-      document.getElementById('aqi-context-content').innerHTML = `<p style="font-size:0.8rem;color:var(--text-muted);">No AQI correlation data available for this species yet.</p>`;
-    }
-
-    // Load related species
-    loadRelated(scientificName);
-
-  } catch(e) { console.error('Species page error:', e); }
+  } catch(e) { showError('Failed to load species index', e.message); }
 }
 
-// ── Load related species (other detected species) ─────────────────────────────
-async function loadRelated(currentSci) {
+/* ── SPECIES PAGE ── */
+async function renderSpeciesPage(sci) {
+  var detections, w;
   try {
-    const res = await fetch(
-      `${SUPABASE_URL}/rest/v1/bird_detections?select=species_common,species_scientific&species_scientific=neq.${encodeURIComponent(currentSci)}&order=detected_at.desc&limit=200`,
-      {headers:HDR}
-    );
-    const rows = await res.json();
-    const map = new Map();
-    for (const r of rows) {
-      if (!map.has(r.species_scientific)) map.set(r.species_scientific, r);
-    }
-    const related = Array.from(map.values()).slice(0,8);
-    const grid = document.getElementById('related-grid');
-    grid.innerHTML = related.map((s,i) =>
-      `<a class="related-card" href="species.html?bird=${s.species_scientific.replace(/ /g,'_')}">
-        <div id="rel-img-${i}" style="width:48px;height:48px;border-radius:50%;background:var(--ep-cream-dark);margin:0 auto 0.4rem;display:flex;align-items:center;justify-content:center;font-size:1.4rem;">🦜</div>
-        <div class="related-card-name">${s.species_common}</div>
-        <div class="related-card-sci">${s.species_scientific}</div>
-      </a>`
-    ).join('');
-    // Load thumbnails
-    related.forEach(async (s,i) => {
-      const photo = await getWikiThumbnail(s.species_scientific);
-      const el = document.getElementById(`rel-img-${i}`);
-      if (el && photo) el.innerHTML = `<img src="${photo}" style="width:48px;height:48px;border-radius:50%;object-fit:cover;" alt="${s.species_common}">`;
+    var results = await Promise.all([
+      fetchJSON('/rest/v1/bird_detections?select=*&species_scientific=eq.' + encodeURIComponent(sci) + '&order=detected_at.desc&limit=2000'),
+      wiki(sci)
+    ]);
+    detections = results[0];
+    w = results[1];
+  } catch(e) {
+    showError('Network error', e.message);
+    return;
+  }
+
+  if (!Array.isArray(detections)) {
+    showError('Database error', 'Unexpected response: ' + JSON.stringify(detections).slice(0,200));
+    return;
+  }
+  if (detections.length === 0) {
+    showError('Species not found', 'No detections found for <em>' + sci + '</em> in the Earth Pulse database. The name may be slightly different from what is stored — try <a href="birds.html" style="color:var(--ep-green)">browsing all birds</a>.');
+    return;
+  }
+
+  /* Stats */
+  var name      = detections[0].species_common;
+  var total     = detections.length;
+  var best      = Math.max.apply(null, detections.map(function(x){ return x.confidence; }));
+  var avg       = detections.reduce(function(s,x){ return s+x.confidence; }, 0) / total;
+  var first     = new Date(detections[detections.length-1].detected_at);
+  var last      = new Date(detections[0].detected_at);
+  var isNew     = detections.some(function(x){ return x.is_new_species_this_year; });
+
+  /* Hour counts — safe arithmetic, no locale parsing */
+  var hourC = new Array(24).fill(0);
+  detections.forEach(function(x){ hourC[istHour(x.detected_at)]++; });
+  var maxH   = Math.max.apply(null, hourC.concat([1]));
+  var peakH  = hourC.indexOf(Math.max.apply(null, hourC));
+
+  /* Month counts */
+  var monC = new Array(12).fill(0);
+  detections.forEach(function(x){ monC[istMonth(x.detected_at)]++; });
+  var peakM   = monC.indexOf(Math.max.apply(null, monC));
+  var actMonths = MO.filter(function(_,i){ return monC[i]>0; }).join(', ');
+
+  function season(m) {
+    if (m>=2&&m<=4) return 'Summer (Mar–May)';
+    if (m>=5&&m<=8) return 'Monsoon (Jun–Sep)';
+    return 'Winter (Oct–Feb)';
+  }
+
+  /* AQI */
+  var withAqi = detections.filter(function(x){ return x.aqi_at_detection != null; });
+  var avgAqi = withAqi.length ? Math.round(withAqi.reduce(function(s,x){return s+x.aqi_at_detection;},0)/withAqi.length) : null;
+  var minAqi = withAqi.length ? Math.min.apply(null, withAqi.map(function(x){return x.aqi_at_detection;})) : null;
+  var maxAqi = withAqi.length ? Math.max.apply(null, withAqi.map(function(x){return x.aqi_at_detection;})) : null;
+
+  /* Update meta */
+  document.title = name + ' — Earth Pulse, Baner, Pune';
+  var metaDesc = document.querySelector('meta[name="description"]');
+  if (metaDesc) metaDesc.content = name + ' (' + sci + ') detected ' + total + ' times in Baner, Pune by BirdNET. ' + (w ? w.extract.slice(0,120) : '');
+
+  /* Wiki block */
+  var wikiBlock = '';
+  if (w) {
+    wikiBlock = '<div class="sidebar-card"><h3>About this species</h3>' +
+      (w.thumb ? '<img src="' + w.thumb + '" alt="' + name + '" style="width:100%;border-radius:8px;margin-bottom:0.75rem;object-fit:cover;max-height:180px;" loading="lazy">' : '') +
+      '<p class="wiki-extract">' + w.extract + '</p>' +
+      '<a class="wiki-link" href="' + w.url + '" target="_blank" rel="noopener">Read more on Wikipedia →</a></div>';
+  }
+
+  /* AQI block */
+  var aqiBlock = withAqi.length
+    ? '<div class="fact-row"><span class="fact-label">Avg AQI when heard</span><span class="fact-val">' + avgAqi + '</span></div>' +
+      '<div class="fact-row"><span class="fact-label">Best AQI (lowest)</span><span class="fact-val">' + minAqi + '</span></div>' +
+      '<div class="fact-row"><span class="fact-label">Worst AQI (highest)</span><span class="fact-val">' + maxAqi + '</span></div>' +
+      '<p style="font-size:0.74rem;color:var(--text-muted);margin-top:0.6rem;">EU AQI at the exact time each call was detected.</p>'
+    : '<p style="font-size:0.8rem;color:var(--text-muted);">No AQI data yet for this species.</p>';
+
+  /* Timeline rows */
+  var tlRows = detections.slice(0,100).map(function(x) {
+    var dt  = fmtIST(x.detected_at, {day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit',hour12:true});
+    var col = x.confidence >= 0.8 ? 'var(--ep-green)' : 'var(--ep-tan)';
+    return '<div class="tl-row">' +
+      '<span class="tl-time">' + dt + '</span>' +
+      '<span class="tl-conf" style="color:' + col + '">' + (x.confidence*100).toFixed(0) + '%</span>' +
+      (x.aqi_at_detection != null ? '<span class="tl-aqi">AQI ' + x.aqi_at_detection + '</span>' : '') +
+      (x.is_new_species_this_year ? '<span class="tl-new">★ First this year</span>' : '') +
+      '</div>';
+  }).join('');
+
+  var heroBg = w && w.thumb ? ' style="background-image:url(\'' + w.thumb + '\')"' : '';
+  var newBadge = isNew ? '<span class="species-badge" style="background:rgba(254,240,138,0.3);color:#fef08a;">★ New this year</span>' : '';
+
+  /* Render HTML */
+  ge('main-content').innerHTML =
+    '<div class="species-hero">' +
+      '<div class="species-hero-bg"' + heroBg + '></div>' +
+      '<div class="species-hero-content">' +
+        '<a href="birds.html" style="color:rgba(242,240,230,0.65);font-size:0.8rem;text-decoration:none;display:inline-flex;align-items:center;gap:5px;margin-bottom:0.75rem;">← Birds of Baner</a>' +
+        '<div class="species-tag">Earth Pulse · Baner, Pune · BirdNET Acoustic Detection</div>' +
+        '<div class="species-name">' + name + '</div>' +
+        '<div class="species-sci">' + sci + '</div>' +
+        '<div class="species-badges">' +
+          '<span class="species-badge badge-detected">' + total + ' detections</span>' +
+          '<span class="species-badge badge-conf">Best: ' + (best*100).toFixed(0) + '% confidence</span>' +
+          newBadge +
+          '<button class="share-btn" id="share-btn-main">↗ Share</button>' +
+        '</div>' +
+      '</div>' +
+    '</div>' +
+
+    '<div class="ep-section"><div class="ep-section-inner">' +
+      '<div class="species-layout">' +
+
+        '<div>' +
+          '<div class="sidebar-card"><h3>At a glance</h3>' +
+            '<div class="fact-row"><span class="fact-label">Total detections</span><span class="fact-val">' + total + '</span></div>' +
+            '<div class="fact-row"><span class="fact-label">Best confidence</span><span class="fact-val">' + (best*100).toFixed(0) + '%</span></div>' +
+            '<div class="fact-row"><span class="fact-label">Avg confidence</span><span class="fact-val">' + (avg*100).toFixed(0) + '%</span></div>' +
+            '<div class="fact-row"><span class="fact-label">First heard</span><span class="fact-val">' + fmtIST(first,{day:'numeric',month:'short',year:'numeric'}) + '</span></div>' +
+            '<div class="fact-row"><span class="fact-label">Last heard</span><span class="fact-val">' + fmtIST(last,{day:'numeric',month:'short',year:'numeric'}) + '</span></div>' +
+            '<div class="fact-row"><span class="fact-label">Peak hour</span><span class="fact-val">' + String(peakH).padStart(2,'0') + ':00 IST</span></div>' +
+            '<div class="fact-row"><span class="fact-label">Peak season</span><span class="fact-val">' + season(peakM) + '</span></div>' +
+            '<div class="fact-row"><span class="fact-label">Active months</span><span class="fact-val" style="font-size:0.7rem;">' + (actMonths||'—') + '</span></div>' +
+          '</div>' +
+          wikiBlock +
+          '<div class="sidebar-card"><h3>Air quality when detected</h3>' + aqiBlock + '</div>' +
+        '</div>' +
+
+        '<div>' +
+          '<div class="chart-block">' +
+            '<div class="chart-title">Time of day activity</div>' +
+            '<div class="chart-sub">Detections by hour (IST) — reveals dawn chorus, dusk, and night patterns</div>' +
+            '<div class="hour-grid" id="hour-grid"></div>' +
+            '<div class="hour-label-row"><span>00h</span><span>03h</span><span>06h</span><span>09h</span><span>12h</span><span>15h</span><span>18h</span><span>21h</span><span>24h</span></div>' +
+          '</div>' +
+          '<div class="chart-block">' +
+            '<div class="chart-title">Monthly presence</div>' +
+            '<div class="chart-sub">Which months is this species most active in Baner?</div>' +
+            '<canvas id="monthChart" height="80"></canvas>' +
+          '</div>' +
+          '<div class="chart-block">' +
+            '<div class="chart-title">Confidence over time</div>' +
+            '<div class="chart-sub">Higher = clearer, more distinctive call recorded</div>' +
+            '<canvas id="confChart" height="80"></canvas>' +
+          '</div>' +
+          '<div class="chart-block">' +
+            '<div class="chart-title">Detection log</div>' +
+            '<div class="chart-sub">Most recent ' + Math.min(total,100) + ' of ' + total + ' detections</div>' +
+            '<div class="timeline">' + tlRows + '</div>' +
+          '</div>' +
+        '</div>' +
+      '</div>' +
+
+      '<div style="margin-top:2rem;">' +
+        '<h2 class="ep-section-title">Other species in Baner</h2>' +
+        '<div class="related-grid" id="related-grid">' +
+          [0,1,2,3,4,5,6,7].map(function(){ return '<div class="ep-skeleton" style="height:110px;border-radius:var(--radius-md);"></div>'; }).join('') +
+        '</div>' +
+      '</div>' +
+    '</div></div>';
+
+  /* Wire share button */
+  var shareBtn = ge('share-btn-main');
+  if (shareBtn) shareBtn.onclick = function() { shareSpecies(name, sci, total, best); };
+
+  /* Hour heatmap */
+  var hg = ge('hour-grid');
+  if (hg) {
+    hg.innerHTML = hourC.map(function(count, h) {
+      var alpha = count ? (0.12 + 0.88 * count/maxH).toFixed(2) : 0;
+      var bg    = count ? 'rgba(33,67,50,' + alpha + ')' : 'var(--ep-cream-dark)';
+      return '<div class="hour-cell" style="background:' + bg + '" title="' + String(h).padStart(2,'0') + ':00 — ' + count + ' detection' + (count!==1?'s':'') + '"></div>';
+    }).join('');
+  }
+
+  /* Monthly chart */
+  var mc = ge('monthChart');
+  if (mc) {
+    new Chart(mc, {
+      type: 'bar',
+      data: { labels: MO, datasets: [{ data: monC, backgroundColor: 'rgba(33,67,50,0.75)', borderRadius: 4 }] },
+      options: { responsive: true, plugins: { legend: { display: false } }, scales: {
+        x: { grid: { display: false }, ticks: { font: { size: 10 }, color: '#6b6b6b' } },
+        y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.05)' }, ticks: { font: { size: 10 }, color: '#6b6b6b', stepSize: 1 } }
+      }}
     });
-  } catch(e) { console.error('Related error:', e); }
+  }
+
+  /* Confidence scatter — use sequential index for x-axis, avoids timestamp rendering issues */
+  var cc = ge('confChart');
+  if (cc && total > 0) {
+    var sorted = detections.slice().sort(function(a,b){ return new Date(a.detected_at) - new Date(b.detected_at); });
+    var pts    = sorted.map(function(x, i){ return { x: i, y: Math.round(x.confidence * 100) }; });
+    new Chart(cc, {
+      type: 'scatter',
+      data: { datasets: [{ data: pts, backgroundColor: 'rgba(191,155,123,0.55)', pointRadius: 3 }] },
+      options: { responsive: true, plugins: { legend: { display: false } }, scales: {
+        x: { title: { display: true, text: 'Detection #', font: { size: 10 } }, ticks: { font: { size: 9 }, color: '#6b6b6b' }, grid: { display: false } },
+        y: { min: 0, max: 100, ticks: { callback: function(v){ return v+'%'; }, font: { size: 10 }, color: '#6b6b6b' }, grid: { color: 'rgba(0,0,0,0.05)' } }
+      }}
+    });
+  }
+
+  /* Related species */
+  loadRelated(sci);
 }
 
-// ── Wikipedia helpers ─────────────────────────────────────────────────────────
-const wikiCache = {};
-
-async function fetchWikiData(scientificName) {
-  if (wikiCache[scientificName]) return wikiCache[scientificName];
+async function loadRelated(sci) {
   try {
-    const slug = encodeURIComponent(scientificName.replace(/ /g,'_'));
-    const res  = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${slug}`,{headers:{'Accept':'application/json'}});
-    if (!res.ok) return null;
-    const data = await res.json();
-    const result = {
-      extract:   data.extract || '',
-      thumbnail: data.thumbnail?.source || null,
-      pageUrl:   data.content_urls?.desktop?.page || `https://en.wikipedia.org/wiki/${slug}`,
-    };
-    wikiCache[scientificName] = result;
-    return result;
-  } catch { return null; }
-}
-
-async function getWikiThumbnail(scientificName) {
-  const data = await fetchWikiData(scientificName);
-  return data?.thumbnail || null;
+    var rows = await fetchJSON('/rest/v1/bird_detections?select=species_common,species_scientific&species_scientific=neq.' + encodeURIComponent(sci) + '&order=detected_at.desc&limit=500');
+    if (!Array.isArray(rows)) return;
+    var map = new Map();
+    rows.forEach(function(r){ if(!map.has(r.species_scientific)) map.set(r.species_scientific,r); });
+    var rel  = Array.from(map.values()).slice(0,8);
+    var grid = ge('related-grid');
+    if (!grid) return;
+    grid.innerHTML = rel.map(function(s,i){
+      return '<a class="related-card" href="species.html?bird=' + s.species_scientific.replace(/ /g,'_') + '">' +
+        '<div class="related-thumb" id="rt-' + i + '">🦜</div>' +
+        '<div class="related-card-name">' + s.species_common + '</div>' +
+        '<div class="related-card-sci">' + s.species_scientific + '</div>' +
+        '</a>';
+    }).join('');
+    rel.forEach(async function(s,i) {
+      var w = await wiki(s.species_scientific);
+      var el = ge('rt-' + i);
+      if (el && w && w.thumb) el.innerHTML = '<img src="' + w.thumb + '" alt="' + s.species_common + '" style="width:48px;height:48px;border-radius:50%;object-fit:cover;" loading="lazy">';
+    });
+  } catch(e) { /* silently skip related */ }
 }
 </script>
 </body>
