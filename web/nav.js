@@ -46,8 +46,8 @@
     el.outerHTML = `
     <nav class="ep-nav" role="navigation" aria-label="Main navigation">
       <a href="index.html" class="ep-nav-brand" aria-label="${SITE} Home">
-        ${ICON_LIGHT}
-
+        <img src="earth-pulse-logo.png" alt="${SITE}" class="ep-nav-logo-full" style="height:28px;width:auto;display:block;" onerror="this.style.display='none'">
+        <span class="ep-nav-brand-text" style="display:none;">${SITE}</span>
       </a>
       <ul class="ep-nav-links">${links}</ul>
       <div style="display:flex;align-items:center;gap:0.4rem;">
@@ -56,7 +56,15 @@
         </a>
         <a href="register.html" class="ep-nav-cta">Register</a>
       </div>
-    </nav>`;
+    </nav>
+    <style>
+      /* On small screens show only the emblem part of the logo */
+      @media(max-width:600px){
+        .ep-nav-logo-full { content:url("earth-pulse-logo-emblem.png"); height:32px; }
+        /* Fallback: crop the logo to show just the hills icon */
+        .ep-nav-logo-full { max-width:38px; object-fit:cover; object-position:left center; }
+      }
+    </style>`;
   }
 
   function injectFooter() {
@@ -72,7 +80,7 @@
       <div class="ep-footer-links">${flinks}</div>
       <div class="ep-footer-credits">
         Recording since January 2022 · Data: Open-Meteo (CAMS) · Google Air Quality · BirdNET (Cornell Lab)
-        · Built with curiosity in Pune
+        · Built with curiosity
         · Built with ❤️&amp; <a href="https://claude.ai" target="_blank" rel="noopener">Claude</a>
       </div>
     </footer>`;

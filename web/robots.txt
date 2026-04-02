@@ -1,0 +1,38 @@
+User-agent: *
+Allow: /
+
+# Private / logged-in pages — no crawling needed
+Disallow: /data.html
+Disallow: /profile.html
+Disallow: /admin.html
+Disallow: /upload.html
+
+# Allow all public pages
+Allow: /index.html
+Allow: /birds.html
+Allow: /species.html
+Allow: /climate.html
+Allow: /hill.html
+Allow: /monsoon.html
+Allow: /compare.html
+Allow: /about.html
+Allow: /contact.html
+Allow: /register.html
+Allow: /search.html
+Allow: /404.html
+
+# Sitemaps
+Sitemap: https://earthpulse.pages.dev/sitemap.xml
+
+# Allow all major crawlers explicitly
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: Slurp
+Allow: /
+
+User-agent: DuckDuckBot
+Allow: /
