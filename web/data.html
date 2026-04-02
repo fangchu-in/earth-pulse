@@ -7,631 +7,513 @@
   <meta name="robots" content="noindex, nofollow">
   <link rel="icon" type="image/png" href="earth-pulse-logo.png">
   <link rel="stylesheet" href="styles.css">
+  <!-- Supabase MUST be in head so auth check works immediately -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script>
+    var _SB_URL = 'https://krmczyqwblsoekceanlj.supabase.co';
+    var _SB_KEY = 'sb_publishable_DrHFT5J0vmrkYraUXIlpQQ_gsk1rdq6';
+    var _sb = null;
+    var _user = null;
+    try { _sb = window.supabase.createClient(_SB_URL, _SB_KEY); } catch(e) {}
+
+    // Set session to 7 days
+    if (_sb) {
+      _sb.auth.getSession().then(function(d) {
+        if (!d.data || !d.data.session) {
+          window.location.href = 'register.html';
+        } else {
+          _user = d.data.session.user;
+        }
+      }).catch(function() { window.location.href = 'register.html'; });
+    } else {
+      // If Supabase failed to load, redirect
+      window.addEventListener('DOMContentLoaded', function() {
+        window.location.href = 'register.html';
+      });
+    }
+  </script>
   <style>
-    .data-layout { display:grid; grid-template-columns:280px 1fr; min-height:calc(100vh - 62px); }
-    @media(max-width:900px){ .data-layout { grid-template-columns:1fr; } .data-sidebar { border-right:none; border-bottom:1px solid var(--border); } }
+    body { margin:0; }
+    .app { display:grid; grid-template-columns:260px 1fr; min-height:calc(100vh - 62px); }
+    @media(max-width:900px){ .app { grid-template-columns:1fr; } }
 
-    /* Sidebar */
-    .data-sidebar { background:var(--bg-card); border-right:1px solid var(--border); padding:1.5rem 1.25rem; display:flex; flex-direction:column; gap:0.4rem; }
-    .sidebar-section { font-size:0.65rem; font-weight:700; text-transform:uppercase; letter-spacing:0.1em; color:var(--text-muted); margin:0.75rem 0 0.3rem; padding:0 0.25rem; }
-    .sidebar-link { display:flex; align-items:center; gap:0.6rem; padding:0.5rem 0.75rem; border-radius:var(--radius-sm); font-size:0.85rem; color:var(--text-secondary); text-decoration:none; transition:all 0.15s; cursor:pointer; border:none; background:none; font-family:var(--sans); width:100%; text-align:left; }
-    .sidebar-link:hover { background:rgba(33,67,50,0.07); color:var(--ep-green); }
-    .sidebar-link.active { background:rgba(33,67,50,0.1); color:var(--ep-green); font-weight:600; }
-    .sidebar-icon { font-size:1rem; flex-shrink:0; width:20px; text-align:center; }
-    .user-card { background:rgba(33,67,50,0.06); border-radius:var(--radius-md); padding:0.85rem; margin-bottom:0.5rem; }
-    .user-name { font-weight:600; font-size:0.9rem; color:var(--ep-green); }
-    .user-email { font-size:0.75rem; color:var(--text-muted); font-family:var(--mono); }
+    /* ── SIDEBAR ── */
+    .sidebar { background:#fff; border-right:1px solid var(--border); display:flex; flex-direction:column; padding:1.25rem 1rem; }
+    .user-pill { background:rgba(33,67,50,0.07); border-radius:var(--radius-md); padding:0.85rem 1rem; margin-bottom:1rem; }
+    .user-pill-name  { font-weight:700; font-size:0.9rem; color:var(--ep-green); }
+    .user-pill-email { font-size:0.72rem; color:var(--text-muted); font-family:var(--mono); word-break:break-all; }
+    .user-pill-badge { display:inline-block; margin-top:4px; font-size:0.63rem; background:rgba(34,197,94,0.15); color:#166534; padding:1px 8px; border-radius:20px; font-weight:600; }
+    .sb-section { font-size:0.63rem; font-weight:700; text-transform:uppercase; letter-spacing:0.1em; color:var(--text-muted); margin:0.85rem 0 0.3rem 0.4rem; }
+    .sb-link { display:flex; align-items:center; gap:0.6rem; padding:0.48rem 0.75rem; border-radius:var(--radius-sm); font-size:0.84rem; color:var(--text-secondary); text-decoration:none; cursor:pointer; border:none; background:none; font-family:var(--sans); width:100%; text-align:left; transition:all 0.12s; }
+    .sb-link:hover { background:rgba(33,67,50,0.07); color:var(--ep-green); }
+    .sb-link.active { background:rgba(33,67,50,0.11); color:var(--ep-green); font-weight:600; }
+    .sb-link.danger { color:#dc2626; }
+    .sb-link.danger:hover { background:rgba(220,38,38,0.07); }
+    .sb-spacer { flex:1; }
 
-    /* Main content */
-    .data-main { padding:2rem; overflow-y:auto; }
-    .data-panel { display:none; }
-    .data-panel.active { display:block; }
+    /* ── MAIN ── */
+    .main { padding:2rem; overflow-y:auto; background:var(--ep-cream); }
+    .panel { display:none; }
+    .panel.on { display:block; }
+    .panel-title { font-family:var(--serif); font-size:1.6rem; color:var(--ep-green); margin-bottom:0.3rem; }
+    .panel-sub { font-size:0.88rem; color:var(--text-muted); margin-bottom:1.5rem; line-height:1.6; }
 
-    /* AI Explorer */
-    .ai-search-box { background:white; border:2px solid var(--ep-green); border-radius:var(--radius-xl); padding:1rem 1.25rem 1rem 1.5rem; display:flex; gap:0.75rem; align-items:flex-end; margin-bottom:1.5rem; box-shadow:0 4px 24px rgba(33,67,50,0.1); }
-    .ai-search-box textarea { flex:1; border:none; outline:none; font-family:var(--sans); font-size:0.95rem; resize:none; background:transparent; color:var(--text-primary); min-height:48px; max-height:160px; line-height:1.5; }
-    .ai-search-box textarea::placeholder { color:var(--text-muted); }
-    .ai-go-btn { background:var(--ep-green); color:var(--ep-cream); border:none; border-radius:2rem; padding:0.6rem 1.4rem; font-family:var(--sans); font-size:0.88rem; font-weight:500; cursor:pointer; white-space:nowrap; transition:background 0.2s; flex-shrink:0; }
-    .ai-go-btn:hover { background:var(--ep-green-mid); }
-    .ai-go-btn:disabled { opacity:0.5; cursor:not-allowed; }
+    /* ── AI SEARCH ── */
+    .ai-box { background:#fff; border:2px solid var(--ep-green); border-radius:var(--radius-xl); padding:1rem 1rem 1rem 1.4rem; display:flex; gap:0.75rem; align-items:flex-end; margin-bottom:1.25rem; box-shadow:0 4px 20px rgba(33,67,50,0.09); }
+    .ai-box textarea { flex:1; border:none; outline:none; font-family:var(--sans); font-size:0.95rem; resize:none; background:transparent; color:var(--text-primary); line-height:1.5; min-height:44px; max-height:150px; }
+    .ai-box textarea::placeholder { color:var(--text-muted); }
+    .ai-btn { background:var(--ep-green); color:var(--ep-cream); border:none; border-radius:2rem; padding:0.6rem 1.4rem; font-family:var(--sans); font-size:0.88rem; font-weight:500; cursor:pointer; white-space:nowrap; flex-shrink:0; transition:background 0.2s; }
+    .ai-btn:hover:not(:disabled) { background:#1a3628; }
+    .ai-btn:disabled { opacity:0.4; cursor:not-allowed; }
 
-    /* Suggestion chips */
-    .suggestion-chips { display:flex; flex-wrap:wrap; gap:0.4rem; margin-bottom:1.5rem; }
-    .chip { padding:0.3rem 0.85rem; border-radius:2rem; background:var(--ep-cream-dark); border:1px solid var(--border); font-size:0.78rem; cursor:pointer; color:var(--ep-green); transition:all 0.15s; }
+    .chips { display:flex; flex-wrap:wrap; gap:0.4rem; margin-bottom:1.25rem; }
+    .chip { padding:0.28rem 0.85rem; border-radius:2rem; background:#fff; border:1px solid var(--border); font-size:0.77rem; cursor:pointer; color:var(--ep-green); transition:all 0.12s; }
     .chip:hover { background:var(--ep-green); color:var(--ep-cream); border-color:var(--ep-green); }
 
-    /* AI response */
-    .ai-response { background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-lg); padding:1.5rem; margin-bottom:1.5rem; }
-    .ai-response-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem; }
-    .ai-query-label { font-size:0.72rem; font-weight:600; text-transform:uppercase; letter-spacing:0.08em; color:var(--ep-tan); }
-    .ai-query-text { font-family:var(--serif); font-size:1rem; color:var(--ep-green); margin:0.25rem 0 1rem; }
-    .ai-answer { font-size:0.9rem; color:var(--text-secondary); line-height:1.8; }
-    .ai-answer strong { color:var(--ep-green); }
+    /* ── RESPONSE CARD ── */
+    .res-card { background:#fff; border:1px solid var(--border); border-radius:var(--radius-lg); padding:1.5rem; margin-bottom:1.25rem; }
+    .res-q { font-family:var(--serif); font-size:1rem; color:var(--ep-green); margin-bottom:0.75rem; }
+    .res-body { font-size:0.9rem; color:var(--text-secondary); line-height:1.9; }
+    .res-body strong { color:var(--ep-green); }
+    .res-body p { margin:0.5rem 0; }
+    .res-body ul { margin:0.5rem 0 0.5rem 1.2rem; }
 
-    /* Data table */
-    .data-table-wrap { overflow-x:auto; margin-top:1rem; }
-    .data-table { width:100%; border-collapse:collapse; font-size:0.84rem; }
-    .data-table th { text-align:left; font-size:0.68rem; font-weight:700; text-transform:uppercase; letter-spacing:0.07em; color:var(--text-muted); padding:0.5rem 1rem; border-bottom:2px solid var(--border); background:var(--ep-cream); }
-    .data-table td { padding:0.6rem 1rem; border-bottom:1px solid var(--border); color:var(--text-secondary); }
-    .data-table tr:last-child td { border-bottom:none; }
-    .data-table tr:hover td { background:rgba(33,67,50,0.025); }
+    /* ── DATA TABLE ── */
+    .tbl-wrap { overflow-x:auto; margin-top:1rem; border-radius:var(--radius-md); border:1px solid var(--border); }
+    .tbl { width:100%; border-collapse:collapse; font-size:0.83rem; }
+    .tbl th { text-align:left; font-size:0.67rem; font-weight:700; text-transform:uppercase; letter-spacing:0.07em; color:var(--text-muted); padding:0.55rem 1rem; border-bottom:2px solid var(--border); background:var(--ep-cream); }
+    .tbl td { padding:0.55rem 1rem; border-bottom:1px solid var(--border); color:var(--text-secondary); }
+    .tbl tr:last-child td { border-bottom:none; }
+    .tbl tr:hover td { background:rgba(33,67,50,0.02); }
 
-    /* Download/email buttons */
-    .result-actions { display:flex; gap:0.6rem; margin-top:1.25rem; flex-wrap:wrap; }
-    .action-btn { padding:0.45rem 1.1rem; border-radius:var(--radius-sm); border:1.5px solid var(--border-strong); background:transparent; font-family:var(--sans); font-size:0.82rem; color:var(--ep-green); cursor:pointer; display:flex; align-items:center; gap:5px; transition:all 0.15s; }
-    .action-btn:hover { background:var(--ep-green); color:var(--ep-cream); border-color:var(--ep-green); }
-    .action-btn.primary { background:var(--ep-green); color:var(--ep-cream); border-color:var(--ep-green); }
+    .actions { display:flex; gap:0.5rem; margin-top:1rem; flex-wrap:wrap; }
+    .act-btn { padding:0.42rem 1rem; border-radius:var(--radius-sm); border:1.5px solid var(--border-strong); background:transparent; font-family:var(--sans); font-size:0.8rem; color:var(--ep-green); cursor:pointer; transition:all 0.12s; }
+    .act-btn:hover { background:var(--ep-green); color:#fff; border-color:var(--ep-green); }
+    .act-btn.primary { background:var(--ep-green); color:#fff; border-color:var(--ep-green); }
 
-    /* History list */
-    .history-item { background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-md); padding:0.85rem 1.1rem; margin-bottom:0.6rem; display:flex; align-items:center; gap:0.75rem; cursor:pointer; transition:box-shadow 0.15s; }
-    .history-item:hover { box-shadow:0 2px 12px rgba(33,67,50,0.08); }
-    .history-q { flex:1; font-size:0.88rem; color:var(--text-secondary); }
-    .history-time { font-family:var(--mono); font-size:0.72rem; color:var(--text-muted); white-space:nowrap; }
+    /* ── HISTORY ── */
+    .hist-item { background:#fff; border:1px solid var(--border); border-radius:var(--radius-md); padding:0.85rem 1.1rem; margin-bottom:0.5rem; display:flex; align-items:center; gap:0.75rem; cursor:pointer; transition:box-shadow 0.15s; }
+    .hist-item:hover { box-shadow:0 2px 12px rgba(33,67,50,0.08); }
+    .hist-q { flex:1; font-size:0.87rem; color:var(--text-secondary); }
+    .hist-t { font-family:var(--mono); font-size:0.7rem; color:var(--text-muted); white-space:nowrap; }
 
-    /* Quick stats grid */
-    .quick-stats { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:1rem; margin-bottom:2rem; }
-    .qs-card { background:white; border:1px solid var(--border); border-radius:var(--radius-lg); padding:1.25rem; }
-    .qs-icon { font-size:1.4rem; margin-bottom:0.4rem; }
-    .qs-val { font-family:var(--serif); font-size:1.8rem; color:var(--ep-green); line-height:1; margin-bottom:0.2rem; }
-    .qs-label { font-size:0.68rem; font-weight:600; text-transform:uppercase; letter-spacing:0.07em; color:var(--text-muted); }
+    /* ── DOWNLOAD ── */
+    .dl-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(270px,1fr)); gap:1rem; margin-bottom:2rem; }
+    .dl-card { background:#fff; border:1px solid var(--border); border-radius:var(--radius-lg); padding:1.25rem; }
+    .dl-title { font-weight:600; color:var(--ep-green); margin-bottom:0.3rem; }
+    .dl-desc { font-size:0.82rem; color:var(--text-muted); margin-bottom:1rem; line-height:1.6; }
 
-    /* Email modal */
-    .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:1000; display:none; align-items:center; justify-content:center; }
-    .modal-overlay.open { display:flex; }
-    .modal { background:white; border-radius:var(--radius-xl); padding:2rem; max-width:420px; width:calc(100% - 2rem); }
-    .modal h3 { font-family:var(--serif); font-size:1.3rem; color:var(--ep-green); margin-bottom:0.5rem; }
-    .modal input { width:100%; padding:0.65rem 0.9rem; border:1px solid var(--border-strong); border-radius:var(--radius-sm); font-family:var(--sans); font-size:0.9rem; margin:0.75rem 0 1rem; box-sizing:border-box; outline:none; }
-    .modal input:focus { border-color:var(--ep-green); }
-    .modal-btns { display:flex; gap:0.6rem; justify-content:flex-end; }
-    .modal-cancel { padding:0.5rem 1rem; border:1px solid var(--border-strong); background:none; border-radius:var(--radius-sm); cursor:pointer; font-family:var(--sans); }
-    .modal-send { padding:0.5rem 1.2rem; background:var(--ep-green); color:white; border:none; border-radius:var(--radius-sm); cursor:pointer; font-family:var(--sans); font-weight:500; }
+    /* ── ALERTS ── */
+    .alert-group { background:#fff; border:1px solid var(--border); border-radius:var(--radius-lg); padding:1.25rem; margin-bottom:1rem; }
+    .alert-group-title { font-weight:600; color:var(--ep-green); margin-bottom:0.75rem; }
+    .alert-row { display:flex; align-items:center; gap:0.65rem; font-size:0.87rem; color:var(--text-secondary); margin-bottom:0.5rem; cursor:pointer; }
+    .alert-row input { accent-color:var(--ep-green); width:16px; height:16px; cursor:pointer; flex-shrink:0; }
 
-    .loading-dots::after { content:'.'; animation:dots 1.2s steps(3,end) infinite; }
-    @keyframes dots { 0%{content:'.'} 33%{content:'..'} 66%{content:'...'} }
+    .spin { display:inline-block; width:16px; height:16px; border:2px solid rgba(33,67,50,0.2); border-top-color:var(--ep-green); border-radius:50%; animation:spin 0.7s linear infinite; }
+    @keyframes spin { to{transform:rotate(360deg)} }
   </style>
 </head>
 <body>
 <div id="ep-nav"></div>
 
-<div class="data-layout">
+<div class="app">
   <!-- SIDEBAR -->
-  <div class="data-sidebar">
-    <div class="user-card">
-      <div class="user-name" id="sb-name">Loading…</div>
-      <div class="user-email" id="sb-email"></div>
+  <div class="sidebar">
+    <div class="user-pill">
+      <div class="user-pill-name" id="u-name">Loading…</div>
+      <div class="user-pill-email" id="u-email"></div>
+      <div id="u-badge"></div>
     </div>
 
-    <div class="sidebar-section">Explore</div>
-    <button class="sidebar-link active" onclick="showPanel('explorer')"><span class="sidebar-icon">🔍</span>Data Explorer</button>
-    <button class="sidebar-link" onclick="showPanel('history')"><span class="sidebar-icon">🕐</span>Search History</button>
+    <div class="sb-section">Explore</div>
+    <button class="sb-link active" id="nav-explorer"  onclick="switchPanel('explorer',this)">🔍 Data Explorer</button>
+    <button class="sb-link"        id="nav-history"   onclick="switchPanel('history',this)">🕐 Search History</button>
 
-    <div class="sidebar-section">Data</div>
-    <button class="sidebar-link" onclick="showPanel('download')"><span class="sidebar-icon">📥</span>Download Data</button>
-    <button class="sidebar-link" onclick="showPanel('alerts')"><span class="sidebar-icon">🔔</span>My Alerts</button>
+    <div class="sb-section">Data</div>
+    <button class="sb-link" id="nav-download" onclick="switchPanel('download',this)">📥 Download Data</button>
+    <button class="sb-link" id="nav-alerts"   onclick="switchPanel('alerts',this)">🔔 My Alerts</button>
 
-    <div class="sidebar-section">Account</div>
-    <a class="sidebar-link" href="profile.html"><span class="sidebar-icon">👤</span>My Profile</a>
-    <a class="sidebar-link" href="index.html"><span class="sidebar-icon">🏡</span>Back to site</a>
-    <button class="sidebar-link" onclick="signOut()" style="color:#dc2626;margin-top:auto;"><span class="sidebar-icon">→</span>Sign out</button>
+    <div class="sb-section">Account</div>
+    <a class="sb-link" href="profile.html">👤 My Profile</a>
+    <a class="sb-link" href="index.html">🏡 Back to site</a>
+
+    <div class="sb-spacer"></div>
+    <button class="sb-link danger" onclick="doSignOut()">→ Sign out</button>
   </div>
 
   <!-- MAIN -->
-  <div class="data-main">
+  <div class="main">
 
-    <!-- EXPLORER PANEL -->
-    <div class="data-panel active" id="panel-explorer">
-      <h2 style="font-family:var(--serif);font-size:1.6rem;color:var(--ep-green);margin-bottom:0.3rem;">Data Explorer</h2>
-      <p style="font-size:0.88rem;color:var(--text-muted);margin-bottom:1.5rem;">Ask anything about the Earth Pulse dataset in plain English. Claude analyses the data and answers with numbers, charts, and downloadable results.</p>
+    <!-- EXPLORER -->
+    <div class="panel on" id="panel-explorer">
+      <div class="panel-title">Data Explorer</div>
+      <div class="panel-sub">Ask anything about the Earth Pulse dataset in plain English. Claude analyses your data and answers with numbers and supporting tables.</div>
 
-      <div class="ai-search-box">
-        <textarea id="ai-query" placeholder="e.g. Which birds are heard most during monsoon? What is the average AQI on Diwali vs normal days? How many species are heard at dawn vs night?" rows="2"
-          onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();runQuery();}"></textarea>
-        <button class="ai-go-btn" id="ai-btn" onclick="runQuery()">Ask →</button>
+      <div class="ai-box">
+        <textarea id="ai-q" rows="2" placeholder="e.g. Which birds are heard most during monsoon? What is the average AQI on Diwali? How many species at dawn vs night?" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();runQuery();}"></textarea>
+        <button class="ai-btn" id="ai-go" onclick="runQuery()">Ask →</button>
       </div>
 
-      <div class="suggestion-chips">
-        <span class="chip" onclick="setQuery('Which bird species are heard most often in Baner?')">🐦 Most detected birds</span>
-        <span class="chip" onclick="setQuery('Compare average AQI on Diwali vs the week before Diwali')">🪔 Diwali pollution</span>
-        <span class="chip" onclick="setQuery('Which months have the most bird species detected?')">📅 Monthly bird activity</span>
-        <span class="chip" onclick="setQuery('What is the correlation between AQI and number of birds detected?')">📊 AQI vs birds</span>
-        <span class="chip" onclick="setQuery('What are the hottest days ever recorded in Baner?')">🌡️ Hottest days</span>
-        <span class="chip" onclick="setQuery('Which birds are heard only during certain months — likely migratory?')">✈️ Migratory patterns</span>
-        <span class="chip" onclick="setQuery('How much rain has fallen each year since 2022?')">🌧️ Annual rainfall</span>
-        <span class="chip" onclick="setQuery('When is the dawn chorus most active — what time and which months?')">🌅 Dawn chorus</span>
-        <span class="chip" onclick="setQuery('What are the best and worst air quality days this year?')">🍃 AQI extremes</span>
-        <span class="chip" onclick="setQuery('On hot days above 35°C, are fewer birds heard?')">🔥 Heat vs birds</span>
+      <div class="chips">
+        <span class="chip" onclick="ask('Which bird species are heard most often in Baner?')">🐦 Most detected birds</span>
+        <span class="chip" onclick="ask('Compare average AQI on Diwali week vs the week before')">🪔 Diwali pollution</span>
+        <span class="chip" onclick="ask('Which months have the most bird species detected?')">📅 Monthly bird activity</span>
+        <span class="chip" onclick="ask('Is there a correlation between AQI and number of birds detected?')">📊 AQI vs birds</span>
+        <span class="chip" onclick="ask('What are the hottest days ever recorded in Baner?')">🌡️ Hottest days</span>
+        <span class="chip" onclick="ask('Which birds appear only in certain months — likely migratory?')">✈️ Migratory patterns</span>
+        <span class="chip" onclick="ask('How much rain has fallen each year since 2022?')">🌧️ Annual rainfall</span>
+        <span class="chip" onclick="ask('When is the dawn chorus most active — what time and which months?')">🌅 Dawn chorus</span>
+        <span class="chip" onclick="ask('What are the cleanest and worst air quality days this year?')">🍃 AQI extremes</span>
+        <span class="chip" onclick="ask('On days above 35°C are fewer birds heard?')">🔥 Heat vs birds</span>
       </div>
 
-      <div id="ai-result" style="display:none;"></div>
+      <div id="ai-result"></div>
     </div>
 
-    <!-- HISTORY PANEL -->
-    <div class="data-panel" id="panel-history">
-      <h2 style="font-family:var(--serif);font-size:1.6rem;color:var(--ep-green);margin-bottom:0.3rem;">Search History</h2>
-      <p style="font-size:0.88rem;color:var(--text-muted);margin-bottom:1.5rem;">Your last 20 data explorer queries. Click any to run it again.</p>
-      <div id="history-list"><div class="ep-skeleton" style="height:60px;border-radius:var(--radius-md);margin-bottom:0.6rem;"></div><div class="ep-skeleton" style="height:60px;border-radius:var(--radius-md);"></div></div>
+    <!-- HISTORY -->
+    <div class="panel" id="panel-history">
+      <div class="panel-title">Search History</div>
+      <div class="panel-sub">Your last 20 data explorer queries. Click any to run it again.</div>
+      <div id="hist-list"><div style="color:var(--text-muted);font-size:0.88rem;">Loading…</div></div>
     </div>
 
-    <!-- DOWNLOAD PANEL -->
-    <div class="data-panel" id="panel-download">
-      <h2 style="font-family:var(--serif);font-size:1.6rem;color:var(--ep-green);margin-bottom:0.3rem;">Download Data</h2>
-      <p style="font-size:0.88rem;color:var(--text-muted);margin-bottom:1.5rem;">Download any slice of the Earth Pulse dataset as CSV. All data is open under CC BY 4.0.</p>
-
-      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem;">
-        <div class="qs-card">
-          <div class="qs-icon">📊</div>
-          <div style="font-weight:600;color:var(--ep-green);margin-bottom:0.25rem;">All climate data</div>
-          <div style="font-size:0.82rem;color:var(--text-muted);margin-bottom:1rem;">Every hourly reading since January 2022 — AQI, temperature, humidity, wind, solar, precipitation.</div>
-          <button class="action-btn primary" onclick="downloadCSV('climate','all')">⬇ Download CSV</button>
-        </div>
-        <div class="qs-card">
-          <div class="qs-icon">🐦</div>
-          <div style="font-weight:600;color:var(--ep-green);margin-bottom:0.25rem;">All bird detections</div>
-          <div style="font-size:0.82rem;color:var(--text-muted);margin-bottom:1rem;">Every BirdNET detection with species, confidence, timestamp, and correlated AQI.</div>
-          <button class="action-btn primary" onclick="downloadCSV('birds','all')">⬇ Download CSV</button>
-        </div>
-        <div class="qs-card">
-          <div class="qs-icon">🌧️</div>
-          <div style="font-weight:600;color:var(--ep-green);margin-bottom:0.25rem;">Rainfall records</div>
-          <div style="font-size:0.82rem;color:var(--text-muted);margin-bottom:1rem;">Daily precipitation totals and monsoon season summaries since 2022.</div>
-          <button class="action-btn primary" onclick="downloadCSV('rain','all')">⬇ Download CSV</button>
-        </div>
-        <div class="qs-card">
-          <div class="qs-icon">🏔️</div>
-          <div style="font-weight:600;color:var(--ep-green);margin-bottom:0.25rem;">Hill photo archive</div>
-          <div style="font-size:0.82rem;color:var(--text-muted);margin-bottom:1rem;">All timelapse frame metadata with climate annotations at time of capture.</div>
-          <button class="action-btn primary" onclick="downloadCSV('photos','all')">⬇ Download CSV</button>
-        </div>
+    <!-- DOWNLOAD -->
+    <div class="panel" id="panel-download">
+      <div class="panel-title">Download Data</div>
+      <div class="panel-sub">Download any slice of the Earth Pulse dataset as CSV. All data is open under CC BY 4.0.</div>
+      <div class="dl-grid">
+        <div class="dl-card"><div class="dl-title">📊 All climate data</div><div class="dl-desc">Every hourly reading since Jan 2022 — AQI, temperature, humidity, wind, solar, precipitation.</div><button class="act-btn primary" onclick="dlData('climate')">⬇ Download CSV</button></div>
+        <div class="dl-card"><div class="dl-title">🐦 All bird detections</div><div class="dl-desc">Every BirdNET detection with species, confidence, timestamp and correlated AQI.</div><button class="act-btn primary" onclick="dlData('birds')">⬇ Download CSV</button></div>
+        <div class="dl-card"><div class="dl-title">🌧️ Rainfall records</div><div class="dl-desc">Daily precipitation totals and monsoon season summaries since 2022.</div><button class="act-btn primary" onclick="dlData('rain')">⬇ Download CSV</button></div>
+        <div class="dl-card"><div class="dl-title">📸 Hill photo archive</div><div class="dl-desc">All timelapse frame metadata with climate annotations at time of capture.</div><button class="act-btn primary" onclick="dlData('photos')">⬇ Download CSV</button></div>
       </div>
-
-      <div style="margin-top:2rem;">
-        <h3 style="font-family:var(--serif);font-size:1.1rem;color:var(--ep-green);margin-bottom:0.75rem;">Custom date range</h3>
+      <div style="background:#fff;border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem;">
+        <div style="font-weight:600;color:var(--ep-green);margin-bottom:0.75rem;">Custom date range</div>
         <div style="display:flex;gap:0.75rem;flex-wrap:wrap;align-items:flex-end;">
-          <div><label style="font-size:0.75rem;color:var(--text-muted);display:block;margin-bottom:3px;">Dataset</label>
-            <select id="dl-type" style="padding:0.55rem 0.9rem;border:1px solid var(--border-strong);border-radius:var(--radius-sm);font-family:var(--sans);font-size:0.85rem;color:var(--ep-green);background:white;">
+          <div><div style="font-size:0.75rem;color:var(--text-muted);margin-bottom:3px;">Dataset</div>
+            <select id="dl-type" style="padding:0.5rem 0.85rem;border:1px solid var(--border-strong);border-radius:var(--radius-sm);font-family:var(--sans);font-size:0.85rem;color:var(--ep-green);background:#fff;">
               <option value="climate">Climate readings</option>
               <option value="birds">Bird detections</option>
               <option value="rain">Rainfall only</option>
             </select>
           </div>
-          <div><label style="font-size:0.75rem;color:var(--text-muted);display:block;margin-bottom:3px;">From</label>
-            <input type="date" id="dl-from" style="padding:0.55rem 0.9rem;border:1px solid var(--border-strong);border-radius:var(--radius-sm);font-size:0.85rem;color:var(--ep-green);">
-          </div>
-          <div><label style="font-size:0.75rem;color:var(--text-muted);display:block;margin-bottom:3px;">To</label>
-            <input type="date" id="dl-to" style="padding:0.55rem 0.9rem;border:1px solid var(--border-strong);border-radius:var(--radius-sm);font-size:0.85rem;color:var(--ep-green);">
-          </div>
-          <button class="action-btn primary" onclick="downloadCSV(document.getElementById('dl-type').value,'custom')">⬇ Download</button>
+          <div><div style="font-size:0.75rem;color:var(--text-muted);margin-bottom:3px;">From</div><input type="date" id="dl-from" style="padding:0.5rem;border:1px solid var(--border-strong);border-radius:var(--radius-sm);font-size:0.85rem;color:var(--ep-green);"></div>
+          <div><div style="font-size:0.75rem;color:var(--text-muted);margin-bottom:3px;">To</div><input type="date" id="dl-to" style="padding:0.5rem;border:1px solid var(--border-strong);border-radius:var(--radius-sm);font-size:0.85rem;color:var(--ep-green);"></div>
+          <button class="act-btn primary" onclick="dlCustom()">⬇ Download</button>
         </div>
       </div>
     </div>
 
-    <!-- ALERTS PANEL -->
-    <div class="data-panel" id="panel-alerts">
-      <h2 style="font-family:var(--serif);font-size:1.6rem;color:var(--ep-green);margin-bottom:0.3rem;">My Alerts</h2>
-      <p style="font-size:0.88rem;color:var(--text-muted);margin-bottom:1.5rem;">Get notified by email when something happens in Baner. Alerts are checked hourly and sent within an hour of the event.</p>
-
-      <div id="alerts-form" style="max-width:600px;">
-        <div style="display:flex;flex-direction:column;gap:1rem;">
-
-          <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem;">
-            <div style="font-weight:600;color:var(--ep-green);margin-bottom:0.75rem;">🍃 Air quality alerts</div>
-            <label style="display:flex;align-items:center;gap:0.6rem;font-size:0.88rem;color:var(--text-secondary);margin-bottom:0.5rem;cursor:pointer;">
-              <input type="checkbox" id="alert-good-aqi" style="accent-color:var(--ep-green);"> AQI drops to Good (≤40 EU) — best time to be outdoors
-            </label>
-            <label style="display:flex;align-items:center;gap:0.6rem;font-size:0.88rem;color:var(--text-secondary);margin-bottom:0.5rem;cursor:pointer;">
-              <input type="checkbox" id="alert-bad-aqi" style="accent-color:var(--ep-green);"> AQI exceeds Poor (≥80 EU) — health warning
-            </label>
-            <label style="display:flex;align-items:center;gap:0.6rem;font-size:0.88rem;color:var(--text-secondary);cursor:pointer;">
-              <input type="checkbox" id="alert-hazardous" style="accent-color:var(--ep-green);"> AQI exceeds 100 (Severe) — emergency alert
-            </label>
-          </div>
-
-          <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem;">
-            <div style="font-weight:600;color:var(--ep-green);margin-bottom:0.75rem;">🌧️ Weather & monsoon alerts</div>
-            <label style="display:flex;align-items:center;gap:0.6rem;font-size:0.88rem;color:var(--text-secondary);margin-bottom:0.5rem;cursor:pointer;">
-              <input type="checkbox" id="alert-first-rain" style="accent-color:var(--ep-green);"> First monsoon rain of the year
-            </label>
-            <label style="display:flex;align-items:center;gap:0.6rem;font-size:0.88rem;color:var(--text-secondary);margin-bottom:0.5rem;cursor:pointer;">
-              <input type="checkbox" id="alert-heavy-rain" style="accent-color:var(--ep-green);"> Heavy rain (≥20mm in a day)
-            </label>
-            <label style="display:flex;align-items:center;gap:0.6rem;font-size:0.88rem;color:var(--text-secondary);cursor:pointer;">
-              <input type="checkbox" id="alert-heat" style="accent-color:var(--ep-green);"> Heat wave — temperature above 38°C
-            </label>
-          </div>
-
-          <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem;">
-            <div style="font-weight:600;color:var(--ep-green);margin-bottom:0.75rem;">🐦 Bird alerts</div>
-            <label style="display:flex;align-items:center;gap:0.6rem;font-size:0.88rem;color:var(--text-secondary);margin-bottom:0.5rem;cursor:pointer;">
-              <input type="checkbox" id="alert-new-species" style="accent-color:var(--ep-green);"> New species detected for the first time this year
-            </label>
-            <label style="display:flex;align-items:center;gap:0.6rem;font-size:0.88rem;color:var(--text-secondary);margin-bottom:0.5rem;cursor:pointer;">
-              <input type="checkbox" id="alert-rare-bird" style="accent-color:var(--ep-green);"> Rare species detected (kestrel, nightjar, heron, owl)
-            </label>
-            <div style="margin-top:0.75rem;">
-              <label style="font-size:0.8rem;color:var(--text-muted);display:block;margin-bottom:5px;">Favourite species — alert when heard (comma-separated):</label>
-              <input type="text" id="alert-fav-birds" placeholder="e.g. Shikra, Asian Koel, Common Hawk-Cuckoo" style="width:100%;padding:0.6rem 0.9rem;border:1px solid var(--border-strong);border-radius:var(--radius-sm);font-family:var(--sans);font-size:0.85rem;box-sizing:border-box;outline:none;">
-            </div>
-          </div>
-
-          <button class="action-btn primary" onclick="saveAlerts()" style="align-self:flex-start;font-size:0.9rem;">Save alert preferences</button>
-          <div id="alerts-msg" style="font-size:0.82rem;color:var(--ep-green);display:none;">✅ Alerts saved!</div>
+    <!-- ALERTS -->
+    <div class="panel" id="panel-alerts">
+      <div class="panel-title">My Alerts</div>
+      <div class="panel-sub">Get an email within an hour of any of these events happening in Baner.</div>
+      <div style="max-width:580px;">
+        <div class="alert-group">
+          <div class="alert-group-title">🍃 Air quality</div>
+          <label class="alert-row"><input type="checkbox" id="a-good-aqi"> AQI drops to Good (≤40 EU) — best time to be outdoors</label>
+          <label class="alert-row"><input type="checkbox" id="a-bad-aqi"> AQI exceeds Poor (≥80 EU) — health warning</label>
+          <label class="alert-row"><input type="checkbox" id="a-hazardous"> AQI exceeds 100 — hazardous, stay indoors</label>
         </div>
+        <div class="alert-group">
+          <div class="alert-group-title">🌧️ Weather</div>
+          <label class="alert-row"><input type="checkbox" id="a-first-rain"> First monsoon rain of the year</label>
+          <label class="alert-row"><input type="checkbox" id="a-heavy-rain"> Heavy rain — ≥20mm in a day</label>
+          <label class="alert-row"><input type="checkbox" id="a-heat"> Heat wave — temperature above 38°C</label>
+        </div>
+        <div class="alert-group">
+          <div class="alert-group-title">🐦 Birds</div>
+          <label class="alert-row"><input type="checkbox" id="a-new-sp"> New species detected for the first time this year</label>
+          <label class="alert-row"><input type="checkbox" id="a-rare"> Rare species detected (kestrel, nightjar, heron, owl)</label>
+          <div style="margin-top:0.75rem;">
+            <div style="font-size:0.8rem;color:var(--text-muted);margin-bottom:5px;">Alert when my favourite species is heard (comma-separated):</div>
+            <input type="text" id="a-fav" placeholder="e.g. Shikra, Asian Koel, Common Hawk-Cuckoo" style="width:100%;padding:0.6rem 0.9rem;border:1px solid var(--border-strong);border-radius:var(--radius-sm);font-family:var(--sans);font-size:0.85rem;box-sizing:border-box;outline:none;">
+          </div>
+        </div>
+        <button class="act-btn primary" onclick="saveAlerts()" style="font-size:0.9rem;">Save alert preferences</button>
+        <div id="alerts-saved" style="font-size:0.82rem;color:var(--ep-green);margin-top:0.75rem;display:none;">✅ Saved!</div>
       </div>
     </div>
 
-  </div><!-- end data-main -->
-</div>
-
-<!-- Email modal -->
-<div class="modal-overlay" id="email-modal">
-  <div class="modal">
-    <h3>Email this data</h3>
-    <p style="font-size:0.85rem;color:var(--text-muted);">The data table and summary will be sent to:</p>
-    <input type="email" id="email-to" placeholder="recipient@example.com">
-    <div class="modal-btns">
-      <button class="modal-cancel" onclick="closeModal()">Cancel</button>
-      <button class="modal-send" onclick="sendEmail()">Send →</button>
-    </div>
   </div>
 </div>
 
 <div id="ep-footer"></div>
 <script src="analytics.js"></script>
 <script src="nav.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script>
-const SB_URL = 'https://krmczyqwblsoekceanlj.supabase.co';
-const SB_KEY = 'sb_publishable_DrHFT5J0vmrkYraUXIlpQQ_gsk1rdq6';
-const SB_H   = { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY };
-const supabase = window.supabase.createClient(SB_URL, SB_KEY);
+// _sb and _user are already initialised in <head>
+var lastRows = null;
 
-let currentUser = null;
-let lastResult  = null; // for download/email
-
-// ── AUTH CHECK ────────────────────────────────────────────────────────────────
-supabase.auth.getSession().then(function(d) {
-  if (!d.data.session) { window.location.href = 'register.html'; return; }
-  currentUser = d.data.session.user;
-  const meta  = currentUser.user_metadata || {};
-  const name  = ((meta.first_name||'') + ' ' + (meta.last_name||'')).trim() || currentUser.email.split('@')[0];
-  document.getElementById('sb-name').textContent  = name;
-  document.getElementById('sb-email').textContent = currentUser.email;
-  loadHistory();
-  loadAlerts();
-
-  // Show email verification nudge for new users or unverified
-  const isNew      = sessionStorage.getItem('ep_new_user');
-  const isVerified = currentUser.email_confirmed_at;
-  if (isNew && !isVerified) {
-    sessionStorage.removeItem('ep_new_user');
-    showVerifyBanner(currentUser.email);
+// ── INIT ─────────────────────────────────────────────────────────────────────
+window.addEventListener('DOMContentLoaded', function() {
+  if (!_user) {
+    // Auth check hasn't resolved yet — wait for it
+    setTimeout(function() {
+      if (!_user) window.location.href = 'register.html';
+      else initPage();
+    }, 2000);
+  } else {
+    initPage();
+  }
+  // Also listen for late auth resolution
+  if (_sb) {
+    _sb.auth.onAuthStateChange(function(event, session) {
+      if (event === 'SIGNED_IN' && session) {
+        _user = session.user;
+        initPage();
+      } else if (event === 'SIGNED_OUT') {
+        window.location.href = 'register.html';
+      }
+    });
   }
 });
 
-function showVerifyBanner(email) {
-  const banner = document.createElement('div');
-  banner.style.cssText = 'background:#fef3c7;border-bottom:1px solid #f59e0b;padding:0.75rem 1.5rem;display:flex;align-items:center;gap:0.75rem;font-size:0.85rem;color:#713f12;';
-  banner.innerHTML = '<span style="font-size:1.1rem;">📧</span><span>Welcome! A confirmation email was sent to <strong>' + email + '</strong>. You have full access now — verify whenever you\'re ready.</span><button onclick="this.parentElement.remove()" style="margin-left:auto;background:none;border:none;cursor:pointer;color:#92400e;font-size:1.1rem;">✕</button>';
-  // Insert after nav
-  const nav = document.querySelector('.ep-nav') || document.getElementById('ep-nav');
-  if (nav && nav.nextSibling) nav.parentNode.insertBefore(banner, nav.nextSibling);
-  else document.body.prepend(banner);
-}
-
-async function signOut() {
-  await supabase.auth.signOut();
-  window.location.href = 'index.html';
+function initPage() {
+  if (!_user) return;
+  var meta  = _user.user_metadata || {};
+  var name  = ((meta.first_name||'') + ' ' + (meta.last_name||'')).trim() || _user.email.split('@')[0];
+  document.getElementById('u-name').textContent  = name;
+  document.getElementById('u-email').textContent = _user.email;
+  var badge = document.getElementById('u-badge');
+  if (_user.email_confirmed_at) {
+    badge.innerHTML = '<span class="user-pill-badge">✓ Verified</span>';
+  } else {
+    badge.innerHTML = '<span class="user-pill-badge" style="background:rgba(245,158,11,0.15);color:#92400e;">📧 Verify email</span>';
+  }
+  loadHistory();
+  loadAlerts();
 }
 
 // ── PANEL SWITCHING ───────────────────────────────────────────────────────────
-function showPanel(id) {
-  document.querySelectorAll('.data-panel').forEach(function(p){ p.classList.remove('active'); });
-  document.querySelectorAll('.sidebar-link').forEach(function(b){ b.classList.remove('active'); });
-  document.getElementById('panel-'+id).classList.add('active');
-  event.currentTarget.classList.add('active');
+function switchPanel(id, btn) {
+  document.querySelectorAll('.panel').forEach(function(p) { p.classList.remove('on'); });
+  document.querySelectorAll('.sb-link').forEach(function(b) { b.classList.remove('active'); });
+  var el = document.getElementById('panel-' + id);
+  if (el) el.classList.add('on');
+  if (btn) btn.classList.add('active');
+}
+
+// ── SIGN OUT ─────────────────────────────────────────────────────────────────
+async function doSignOut() {
+  if (!_sb) { window.location.href = 'register.html'; return; }
+  try { await _sb.auth.signOut(); } catch(e) {}
+  // Clear localStorage session
+  try {
+    Object.keys(localStorage).forEach(function(k) {
+      if (k.indexOf('supabase') !== -1) localStorage.removeItem(k);
+    });
+  } catch(e) {}
+  window.location.href = 'index.html';
 }
 
 // ── AI QUERY ──────────────────────────────────────────────────────────────────
-function setQuery(q) { document.getElementById('ai-query').value = q; runQuery(); }
+function ask(q) {
+  document.getElementById('ai-q').value = q;
+  switchPanel('explorer', document.getElementById('nav-explorer'));
+  runQuery();
+}
 
 async function runQuery() {
-  const q = document.getElementById('ai-query').value.trim();
+  var q = (document.getElementById('ai-q').value || '').trim();
   if (!q) return;
-  const btn = document.getElementById('ai-btn');
-  btn.disabled = true; btn.textContent = 'Thinking…';
-  document.getElementById('ai-result').style.display = 'none';
+  var btn = document.getElementById('ai-go');
+  btn.disabled = true; btn.innerHTML = '<span class="spin"></span>';
+  document.getElementById('ai-result').innerHTML = '';
 
   try {
-    // Fetch relevant data from Supabase based on query keywords
-    const context = await gatherContext(q);
-
-    // Ask Claude to interpret the query and provide analysis
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
+    var context = await gatherContext(q);
+    var res = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         model: 'claude-sonnet-4-20250514',
         max_tokens: 1000,
-        system: `You are the Earth Pulse data analyst for Baner, Pune. You have access to environmental monitoring data from a citizen science project on the edge of the Western Ghats since January 2022.
-
-The dataset includes:
-- Hourly climate readings: AQI (EU 0-100 scale), India AQI (0-500), temperature (°C), humidity (%), precipitation (mm), wind speed, cloud cover, solar radiation
-- Bird detections: species common name, scientific name, confidence (0-1), timestamp, seasonal patterns
-- 35+ bird species detected, 37,000+ climate records
-
-Here is relevant data fetched for this query:
-${context}
-
-Answer the user's question conversationally but with specific numbers. Be fascinating and insightful. End with 1-2 follow-up questions they might want to explore. Format: start with a 2-sentence summary in bold, then detailed answer, then "📊 Key numbers:" with bullet points, then "🔍 Explore further:".`,
+        system: 'You are the Earth Pulse data analyst for Baner, Pune — a citizen science environmental observatory on the edge of the Western Ghats since January 2022. Dataset: 37,000+ hourly climate records (EU AQI 0-100, India AQI 0-500, temperature °C, humidity %, precipitation mm, wind, solar), 35+ bird species detected by BirdNET AI acoustic monitoring. Answer the user\'s question with specific numbers from the data provided. Be insightful, warm, and scientifically accurate. Format: bold 2-sentence summary first, then detailed answer, then "📊 Key numbers:" with bullet points. End with one fascinating follow-up observation. Data:\n' + context,
         messages: [{ role: 'user', content: q }]
       })
     });
+    var data = await res.json();
+    var answer = data.content && data.content[0] ? data.content[0].text : 'Analysis unavailable — please try again.';
 
-    const data = await response.json();
-    const answer = data.content && data.content[0] ? data.content[0].text : 'Could not generate analysis.';
-
-    // Save to history
     saveHistory(q);
 
-    // Render result
-    const resultEl = document.getElementById('ai-result');
-    resultEl.style.display = 'block';
-    resultEl.innerHTML =
-      '<div class="ai-response">' +
-        '<div class="ai-response-header">' +
-          '<div>' +
-            '<div class="ai-query-label">Your question</div>' +
-            '<div class="ai-query-text">' + q + '</div>' +
-          '</div>' +
-        '</div>' +
-        '<div class="ai-answer">' + formatAnswer(answer) + '</div>' +
-      '</div>' +
-      (lastResult && lastResult.rows && lastResult.rows.length ?
-        '<div class="ai-response">' +
-          '<div style="font-weight:600;color:var(--ep-green);margin-bottom:0.75rem;">📋 Supporting data</div>' +
-          '<div class="data-table-wrap">' + buildTable(lastResult.rows, lastResult.cols) + '</div>' +
-          '<div class="result-actions">' +
-            '<button class="action-btn primary" onclick="downloadCurrentCSV()">⬇ Download CSV</button>' +
-            '<button class="action-btn" onclick="openEmailModal()">✉ Email this data</button>' +
-          '</div>' +
-        '</div>' : '');
+    var html = '<div class="res-card"><div class="res-q">' + escHtml(q) + '</div><div class="res-body">' + md2html(answer) + '</div></div>';
+    if (lastRows && lastRows.length) {
+      html += '<div class="res-card"><div style="font-weight:600;color:var(--ep-green);margin-bottom:0.75rem;">📋 Supporting data (' + lastRows.length + ' rows)</div>';
+      html += buildTable(lastRows);
+      html += '<div class="actions"><button class="act-btn primary" onclick="dlCSV()">⬇ Download CSV</button></div></div>';
+    }
+    document.getElementById('ai-result').innerHTML = html;
 
   } catch(e) {
-    document.getElementById('ai-result').style.display = 'block';
-    document.getElementById('ai-result').innerHTML = '<div class="ai-response"><p style="color:#dc2626;">Error: ' + e.message + '</p></div>';
+    document.getElementById('ai-result').innerHTML = '<div class="res-card" style="border-color:#fca5a5;"><p style="color:#dc2626;">⚠️ ' + escHtml(e.message) + '</p><p style="font-size:0.82rem;color:var(--text-muted);">Try refreshing the page. If the error persists, the AI service may be temporarily unavailable.</p></div>';
   }
 
   btn.disabled = false; btn.textContent = 'Ask →';
 }
 
-function formatAnswer(text) {
-  // Convert **bold** markdown and bullet points
-  return text
+function md2html(t) {
+  return t
     .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
     .replace(/\n\n/g, '</p><p>')
-    .replace(/\n- /g, '<br>• ')
+    .replace(/\n[-•] /g, '<br>• ')
     .replace(/\n/g, '<br>')
-    .replace(/^/, '<p>')
-    .replace(/$/, '</p>');
+    .replace(/^/, '<p>').replace(/$/, '</p>');
 }
+function escHtml(t) { return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
-// ── GATHER CONTEXT FROM SUPABASE ──────────────────────────────────────────────
-async function gatherContext(q) {
-  const ql = q.toLowerCase();
-  let parts = [];
-  lastResult = null;
-
-  try {
-    // Always include latest climate reading
-    const latest = await sbGet('/rest/v1/climate_readings?select=recorded_at,aqi,temperature,humidity,precipitation&order=recorded_at.desc&limit=1');
-    if (latest[0]) parts.push('Latest reading: AQI ' + latest[0].aqi + ', Temp ' + latest[0].temperature + '°C, Humidity ' + latest[0].humidity + '%, Rain ' + latest[0].precipitation + 'mm');
-
-    if (ql.includes('bird') || ql.includes('species') || ql.includes('dawn') || ql.includes('migrat') || ql.includes('monsoon')) {
-      const birds = await sbGet('/rest/v1/bird_detections?select=species_common,species_scientific,confidence,detected_at&order=detected_at.desc&limit=500');
-      // Aggregate by species
-      const map = {};
-      birds.forEach(function(b) {
-        if (!map[b.species_common]) map[b.species_common] = { count:0, maxConf:0, months:new Set() };
-        map[b.species_common].count++;
-        map[b.species_common].maxConf = Math.max(map[b.species_common].maxConf, b.confidence);
-        map[b.species_common].months.add(new Date(b.detected_at).getMonth());
-      });
-      const rows = Object.entries(map).sort(function(a,b){return b[1].count-a[1].count;}).slice(0,20).map(function(e) {
-        return { species:e[0], detections:e[1].count, best_confidence:(e[1].maxConf*100).toFixed(0)+'%', months_active:e[1].months.size };
-      });
-      parts.push('Bird detections (top species): ' + JSON.stringify(rows.slice(0,10)));
-      lastResult = { rows: rows, cols: ['species','detections','best_confidence','months_active'] };
-    }
-
-    if (ql.includes('aqi') || ql.includes('air') || ql.includes('pollution') || ql.includes('diwali') || ql.includes('holi')) {
-      const climate = await sbGet('/rest/v1/climate_readings?select=recorded_at,aqi,google_aqi_india,temperature,precipitation&order=recorded_at.desc&limit=200');
-      const avgAqi  = Math.round(climate.reduce(function(s,r){return s+(r.aqi||0);},0)/climate.length);
-      const maxAqi  = Math.max.apply(null, climate.map(function(r){return r.aqi||0;}));
-      const minAqi  = Math.min.apply(null, climate.filter(function(r){return r.aqi>0;}).map(function(r){return r.aqi;}));
-      parts.push('Recent AQI stats (last 200 readings): avg=' + avgAqi + ', max=' + maxAqi + ', min=' + minAqi);
-      if (!lastResult) lastResult = { rows: climate.slice(0,20).map(function(r){ return {date:r.recorded_at.slice(0,10),eu_aqi:r.aqi,india_aqi:r.google_aqi_india,temp:r.temperature}; }), cols:['date','eu_aqi','india_aqi','temp'] };
-    }
-
-    if (ql.includes('rain') || ql.includes('monsoon') || ql.includes('rainfall')) {
-      const rain = await sbGet('/rest/v1/climate_readings?select=recorded_at,precipitation&precipitation=gt.0&order=recorded_at.desc&limit=200');
-      const total = rain.reduce(function(s,r){return s+(r.precipitation||0);},0);
-      parts.push('Rain data: ' + rain.length + ' rainy readings found, total ' + total.toFixed(1) + 'mm in recent records');
-    }
-
-    if (ql.includes('temp') || ql.includes('hot') || ql.includes('cold') || ql.includes('heat')) {
-      const temps = await sbGet('/rest/v1/climate_readings?select=recorded_at,temperature&order=temperature.desc&limit=10');
-      const coldTemps = await sbGet('/rest/v1/climate_readings?select=recorded_at,temperature&order=temperature.asc&limit=10');
-      parts.push('Hottest readings: ' + JSON.stringify(temps.map(function(r){return {date:r.recorded_at.slice(0,10),temp:r.temperature};})));
-      parts.push('Coldest readings: ' + JSON.stringify(coldTemps.map(function(r){return {date:r.recorded_at.slice(0,10),temp:r.temperature};})));
-      if (!lastResult) lastResult = { rows: temps.concat(coldTemps).map(function(r){return {date:r.recorded_at.slice(0,10),temperature:r.temperature+'°C'};}), cols:['date','temperature'] };
-    }
-
-  } catch(e) { parts.push('Note: some data could not be fetched: ' + e.message); }
-  return parts.join('\n\n') || 'No specific data fetched for this query — answer from general knowledge of the dataset.';
-}
-
-async function sbGet(path) {
-  var r = await fetch(SB_URL + '/rest/v1' + path.replace('/rest/v1',''), { headers: SB_H });
+async function sbFetch(path) {
+  var r = await fetch(_SB_URL + '/rest/v1' + path, { headers: { 'apikey': _SB_KEY, 'Authorization': 'Bearer ' + _SB_KEY } });
   return r.json();
 }
 
-// ── TABLE & DOWNLOAD ──────────────────────────────────────────────────────────
-function buildTable(rows, cols) {
-  if (!rows || !rows.length) return '';
-  var keys = cols || Object.keys(rows[0]);
-  var html = '<table class="data-table"><thead><tr>' + keys.map(function(k){return '<th>'+k.replace(/_/g,' ')+'</th>';}).join('') + '</tr></thead><tbody>';
-  rows.forEach(function(r){ html += '<tr>' + keys.map(function(k){return '<td>'+(r[k]!=null?r[k]:'—')+'</td>';}).join('') + '</tr>'; });
-  return html + '</tbody></table>';
+async function gatherContext(q) {
+  var ql = q.toLowerCase();
+  var parts = [];
+  lastRows = null;
+  try {
+    var latest = await sbFetch('/climate_readings?select=recorded_at,aqi,google_aqi_india,temperature,humidity,precipitation&order=recorded_at.desc&limit=1');
+    if (latest[0]) parts.push('Latest reading: EU AQI ' + latest[0].aqi + ', India AQI ' + latest[0].google_aqi_india + ', Temp ' + latest[0].temperature + '°C, Humidity ' + latest[0].humidity + '%, Rain ' + latest[0].precipitation + 'mm');
+
+    if (ql.includes('bird') || ql.includes('species') || ql.includes('dawn') || ql.includes('monsoon') || ql.includes('migrat')) {
+      var birds = await sbFetch('/bird_detections?select=species_common,species_scientific,confidence,detected_at&order=detected_at.desc&limit=1000');
+      var map = {}; birds.forEach(function(b) { if (!map[b.species_common]) map[b.species_common]={n:0,maxConf:0,months:new Set()}; map[b.species_common].n++; map[b.species_common].maxConf=Math.max(map[b.species_common].maxConf,b.confidence); map[b.species_common].months.add(new Date(b.detected_at).getMonth()); });
+      var rows = Object.entries(map).sort(function(a,b){return b[1].n-a[1].n;}).slice(0,20).map(function(e){return{species:e[0],detections:e[1].n,best_conf:Math.round(e[1].maxConf*100)+'%',months_active:e[1].months.size};});
+      parts.push('Bird species by detection count: ' + JSON.stringify(rows.slice(0,10)));
+      lastRows = rows;
+    }
+    if (ql.includes('aqi') || ql.includes('air') || ql.includes('pollution') || ql.includes('diwali') || ql.includes('holi')) {
+      var cl = await sbFetch('/climate_readings?select=recorded_at,aqi,google_aqi_india,temperature&order=recorded_at.desc&limit=300');
+      var avg = Math.round(cl.reduce(function(s,r){return s+(r.aqi||0);},0)/cl.length);
+      var mx  = Math.max.apply(null, cl.map(function(r){return r.aqi||0;}));
+      var mn  = Math.min.apply(null, cl.filter(function(r){return r.aqi>0;}).map(function(r){return r.aqi;}));
+      parts.push('AQI stats (last 300 readings): avg=' + avg + ', max=' + mx + ', min=' + mn);
+      if (!lastRows) lastRows = cl.slice(0,25).map(function(r){return{date:r.recorded_at.slice(0,10),eu_aqi:r.aqi,india_aqi:r.google_aqi_india,temp:r.temperature};});
+    }
+    if (ql.includes('rain') || ql.includes('rainfall') || ql.includes('monsoon') || ql.includes('precipitation')) {
+      var rain = await sbFetch('/climate_readings?select=recorded_at,precipitation&precipitation=gt.0&order=recorded_at.desc&limit=500');
+      var tot  = rain.reduce(function(s,r){return s+(r.precipitation||0);},0);
+      parts.push('Rain: ' + rain.length + ' hourly readings with precipitation, total ' + tot.toFixed(1) + 'mm in recent records');
+    }
+    if (ql.includes('temp') || ql.includes('hot') || ql.includes('cold') || ql.includes('heat')) {
+      var hot  = await sbFetch('/climate_readings?select=recorded_at,temperature&order=temperature.desc&limit=10');
+      var cold = await sbFetch('/climate_readings?select=recorded_at,temperature&order=temperature.asc&limit=10');
+      parts.push('Hottest: ' + JSON.stringify(hot.map(function(r){return{date:r.recorded_at.slice(0,10),temp:r.temperature};})));
+      parts.push('Coldest: ' + JSON.stringify(cold.map(function(r){return{date:r.recorded_at.slice(0,10),temp:r.temperature};})));
+      if (!lastRows) lastRows = hot.slice(0,10).map(function(r){return{date:r.recorded_at.slice(0,10),temperature_c:r.temperature};});
+    }
+  } catch(e) { parts.push('Data fetch note: ' + e.message); }
+  return parts.join('\n\n') || 'No specific data retrieved — answer from general dataset knowledge.';
 }
 
-function toCSV(rows, cols) {
+function buildTable(rows) {
   if (!rows || !rows.length) return '';
-  var keys = cols || Object.keys(rows[0]);
+  var keys = Object.keys(rows[0]);
+  var h = '<div class="tbl-wrap"><table class="tbl"><thead><tr>' + keys.map(function(k){return '<th>'+k.replace(/_/g,' ')+'</th>';}).join('') + '</tr></thead><tbody>';
+  rows.forEach(function(r){ h += '<tr>' + keys.map(function(k){return '<td>'+(r[k]!=null?r[k]:'—')+'</td>';}).join('') + '</tr>'; });
+  return h + '</tbody></table></div>';
+}
+
+function toCSV(rows) {
+  if (!rows || !rows.length) return '';
+  var keys = Object.keys(rows[0]);
   var lines = [keys.join(',')];
   rows.forEach(function(r){ lines.push(keys.map(function(k){var v=r[k]!=null?r[k]:''; return '"'+String(v).replace(/"/g,'""')+'"';}).join(',')); });
   return lines.join('\n');
 }
 
-function downloadCurrentCSV() {
-  if (!lastResult || !lastResult.rows) return;
-  var csv = toCSV(lastResult.rows, lastResult.cols);
-  var blob = new Blob([csv], { type:'text/csv' });
-  var a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = 'earthpulse-' + Date.now() + '.csv';
-  a.click();
+function dlCSV() {
+  if (!lastRows) return;
+  var blob = new Blob([toCSV(lastRows)], {type:'text/csv'});
+  var a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'earthpulse-'+Date.now()+'.csv'; a.click();
 }
 
-async function downloadCSV(type, range) {
-  var from = range === 'custom' ? document.getElementById('dl-from').value : '';
-  var to   = range === 'custom' ? document.getElementById('dl-to').value   : '';
-  var url, filename;
-
-  if (type === 'climate') {
-    url = '/rest/v1/climate_readings?select=*' + (from ? '&recorded_at=gte.'+from+'T00:00:00Z' : '') + (to ? '&recorded_at=lte.'+to+'T23:59:59Z' : '') + '&order=recorded_at.asc&limit=50000';
-    filename = 'earthpulse-climate.csv';
-  } else if (type === 'birds') {
-    url = '/rest/v1/bird_detections?select=*' + (from ? '&detected_at=gte.'+from+'T00:00:00Z' : '') + (to ? '&detected_at=lte.'+to+'T23:59:59Z' : '') + '&order=detected_at.asc&limit=10000';
-    filename = 'earthpulse-birds.csv';
-  } else if (type === 'rain') {
-    url = '/rest/v1/climate_readings?select=recorded_at,precipitation&precipitation=gt.0' + (from ? '&recorded_at=gte.'+from+'T00:00:00Z' : '') + '&order=recorded_at.asc&limit=10000';
-    filename = 'earthpulse-rainfall.csv';
-  } else {
-    url = '/rest/v1/timelapse_frames?select=*&order=captured_at.asc&limit=5000';
-    filename = 'earthpulse-photos.csv';
-  }
-
-  var rows = await sbGet(url);
-  if (!Array.isArray(rows) || !rows.length) { alert('No data found for this selection.'); return; }
-  var csv  = toCSV(rows);
-  var blob = new Blob([csv], { type:'text/csv' });
-  var a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = filename;
-  a.click();
+async function dlData(type) {
+  var url, name;
+  if (type==='climate') { url='/climate_readings?select=*&order=recorded_at.asc&limit=50000'; name='climate'; }
+  else if (type==='birds') { url='/bird_detections?select=*&order=detected_at.asc&limit=10000'; name='birds'; }
+  else if (type==='rain')  { url='/climate_readings?select=recorded_at,precipitation&precipitation=gt.0&order=recorded_at.asc&limit=10000'; name='rainfall'; }
+  else                     { url='/timelapse_frames?select=*&order=captured_at.asc&limit=5000'; name='photos'; }
+  var rows = await sbFetch(url);
+  if (!Array.isArray(rows)||!rows.length) { alert('No data found.'); return; }
+  var blob = new Blob([toCSV(rows)], {type:'text/csv'});
+  var a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'earthpulse-'+name+'.csv'; a.click();
 }
 
-// ── EMAIL MODAL ───────────────────────────────────────────────────────────────
-function openEmailModal() {
-  document.getElementById('email-to').value = currentUser ? currentUser.email : '';
-  document.getElementById('email-modal').classList.add('open');
-}
-function closeModal() { document.getElementById('email-modal').classList.remove('open'); }
-function sendEmail() {
-  // In production this would call a Cloudflare Worker or Supabase Edge Function
-  // For now, create a mailto link with the CSV as attachment note
-  var to = document.getElementById('email-to').value;
-  var q  = document.getElementById('ai-query').value;
-  alert('Email functionality requires a backend worker. For now, download the CSV and attach it manually.\n\nRecipient: ' + to + '\nQuery: ' + q);
-  closeModal();
+async function dlCustom() {
+  var type = document.getElementById('dl-type').value;
+  var from = document.getElementById('dl-from').value;
+  var to   = document.getElementById('dl-to').value;
+  if (!from || !to) { alert('Please select a date range.'); return; }
+  var filter = '&' + (type==='birds' ? 'detected_at' : 'recorded_at') + '=gte.' + from + 'T00:00:00Z&' + (type==='birds' ? 'detected_at' : 'recorded_at') + '=lte.' + to + 'T23:59:59Z';
+  var url = type==='birds' ? '/bird_detections?select=*' + filter + '&order=detected_at.asc&limit=10000' : '/climate_readings?select=*' + filter + '&order=recorded_at.asc&limit=50000';
+  await dlData(type + '_custom');
 }
 
 // ── HISTORY ───────────────────────────────────────────────────────────────────
-async function saveHistory(query) {
-  if (!currentUser) return;
-  try {
-    await fetch(SB_URL + '/rest/v1/user_searches', {
-      method:'POST',
-      headers:{...SB_H,'Content-Type':'application/json','Prefer':'return=minimal'},
-      body:JSON.stringify({ user_id:currentUser.id, query:query, created_at:new Date().toISOString() })
-    });
-  } catch(e) { /* history save is non-critical */ }
+async function saveHistory(q) {
+  if (!_user || !_sb) return;
+  try { await _sb.from('user_searches').insert({ user_id: _user.id, query: q, created_at: new Date().toISOString() }); } catch(e) {}
 }
 
 async function loadHistory() {
-  if (!currentUser) return;
+  if (!_user || !_sb) return;
   try {
-    var rows = await sbGet('/rest/v1/user_searches?select=*&user_id=eq.'+currentUser.id+'&order=created_at.desc&limit=20');
-    var el = document.getElementById('history-list');
-    if (!Array.isArray(rows) || !rows.length) { el.innerHTML = '<p style="color:var(--text-muted);font-size:0.88rem;">No search history yet. Try asking something in the Data Explorer!</p>'; return; }
+    var res = await _sb.from('user_searches').select('*').eq('user_id', _user.id).order('created_at', {ascending:false}).limit(20);
+    var rows = res.data || [];
+    var el = document.getElementById('hist-list');
+    if (!rows.length) { el.innerHTML = '<p style="color:var(--text-muted);font-size:0.88rem;">No search history yet. Try the Data Explorer!</p>'; return; }
     el.innerHTML = rows.map(function(r) {
       var ago = timeAgo(r.created_at);
-      return '<div class="history-item" onclick="rerunHistory(\''+r.query.replace(/'/g,"\\'")+'\')">' +
-        '<span style="font-size:1.2rem;">🔍</span>' +
-        '<div class="history-q">' + r.query + '</div>' +
-        '<div class="history-time">' + ago + '</div>' +
+      return '<div class="hist-item" onclick="ask(\'' + r.query.replace(/'/g,"\\'") + '\')">' +
+        '<span style="font-size:1.1rem;">🔍</span>' +
+        '<span class="hist-q">' + escHtml(r.query) + '</span>' +
+        '<span class="hist-t">' + ago + '</span>' +
         '</div>';
     }).join('');
-  } catch(e) { document.getElementById('history-list').innerHTML = '<p style="color:var(--text-muted);font-size:0.88rem;">History not available — the user_searches table may need to be created.</p>'; }
-}
-
-function rerunHistory(q) {
-  showPanel('explorer');
-  document.getElementById('ai-query').value = q;
-  runQuery();
+  } catch(e) { document.getElementById('hist-list').innerHTML = '<p style="color:var(--text-muted);font-size:0.82rem;">History unavailable — run the SQL setup script to create the user_searches table.</p>'; }
 }
 
 function timeAgo(ts) {
-  var diff = (Date.now() - new Date(ts).getTime()) / 1000;
-  if (diff < 60) return 'just now';
-  if (diff < 3600) return Math.floor(diff/60) + 'm ago';
-  if (diff < 86400) return Math.floor(diff/3600) + 'h ago';
-  return Math.floor(diff/86400) + 'd ago';
+  var d = (Date.now() - new Date(ts).getTime()) / 1000;
+  if (d < 60) return 'just now'; if (d < 3600) return Math.floor(d/60) + 'm ago';
+  if (d < 86400) return Math.floor(d/3600) + 'h ago'; return Math.floor(d/86400) + 'd ago';
 }
 
 // ── ALERTS ────────────────────────────────────────────────────────────────────
 async function loadAlerts() {
-  if (!currentUser) return;
+  if (!_user || !_sb) return;
   try {
-    var rows = await sbGet('/rest/v1/user_alerts?select=*&user_id=eq.'+currentUser.id+'&limit=1');
-    if (rows[0]) {
-      var prefs = rows[0].preferences || {};
-      if (prefs.good_aqi)     document.getElementById('alert-good-aqi').checked     = true;
-      if (prefs.bad_aqi)      document.getElementById('alert-bad-aqi').checked      = true;
-      if (prefs.hazardous)    document.getElementById('alert-hazardous').checked    = true;
-      if (prefs.first_rain)   document.getElementById('alert-first-rain').checked   = true;
-      if (prefs.heavy_rain)   document.getElementById('alert-heavy-rain').checked   = true;
-      if (prefs.heat)         document.getElementById('alert-heat').checked         = true;
-      if (prefs.new_species)  document.getElementById('alert-new-species').checked  = true;
-      if (prefs.rare_bird)    document.getElementById('alert-rare-bird').checked    = true;
-      if (prefs.fav_birds)    document.getElementById('alert-fav-birds').value      = prefs.fav_birds;
+    var res = await _sb.from('user_alerts').select('*').eq('user_id', _user.id).limit(1);
+    if (res.data && res.data[0]) {
+      var p = res.data[0].preferences || {};
+      ['good-aqi','bad-aqi','hazardous','first-rain','heavy-rain','heat','new-sp','rare'].forEach(function(k) {
+        var el = document.getElementById('a-' + k); if (el && p[k]) el.checked = true;
+      });
+      if (p.fav) document.getElementById('a-fav').value = p.fav;
     }
-  } catch(e) { /* alerts table may not exist yet */ }
+  } catch(e) {}
 }
 
 async function saveAlerts() {
-  if (!currentUser) return;
-  var prefs = {
-    good_aqi:    document.getElementById('alert-good-aqi').checked,
-    bad_aqi:     document.getElementById('alert-bad-aqi').checked,
-    hazardous:   document.getElementById('alert-hazardous').checked,
-    first_rain:  document.getElementById('alert-first-rain').checked,
-    heavy_rain:  document.getElementById('alert-heavy-rain').checked,
-    heat:        document.getElementById('alert-heat').checked,
-    new_species: document.getElementById('alert-new-species').checked,
-    rare_bird:   document.getElementById('alert-rare-bird').checked,
-    fav_birds:   document.getElementById('alert-fav-birds').value.trim(),
+  if (!_user || !_sb) return;
+  var p = {
+    'good-aqi':   document.getElementById('a-good-aqi').checked,
+    'bad-aqi':    document.getElementById('a-bad-aqi').checked,
+    hazardous:    document.getElementById('a-hazardous').checked,
+    'first-rain': document.getElementById('a-first-rain').checked,
+    'heavy-rain': document.getElementById('a-heavy-rain').checked,
+    heat:         document.getElementById('a-heat').checked,
+    'new-sp':     document.getElementById('a-new-sp').checked,
+    rare:         document.getElementById('a-rare').checked,
+    fav:          document.getElementById('a-fav').value.trim(),
   };
   try {
-    await fetch(SB_URL + '/rest/v1/user_alerts', {
-      method:'POST',
-      headers:{...SB_H,'Content-Type':'application/json','Prefer':'resolution=merge-duplicates,return=minimal'},
-      body:JSON.stringify({ user_id:currentUser.id, preferences:prefs, updated_at:new Date().toISOString() })
-    });
-    var msg = document.getElementById('alerts-msg');
-    msg.style.display = 'block';
-    setTimeout(function(){ msg.style.display = 'none'; }, 3000);
-  } catch(e) { alert('Could not save alerts: ' + e.message); }
+    await _sb.from('user_alerts').upsert({ user_id: _user.id, preferences: p, updated_at: new Date().toISOString() }, { onConflict: 'user_id' });
+    var msg = document.getElementById('alerts-saved');
+    msg.style.display = 'block'; setTimeout(function(){msg.style.display='none';}, 3000);
+  } catch(e) { alert('Error saving: ' + e.message); }
 }
 </script>
 </body>

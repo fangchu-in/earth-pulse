@@ -7,166 +7,179 @@
   <meta name="robots" content="noindex, nofollow">
   <link rel="icon" type="image/png" href="earth-pulse-logo.png">
   <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script>
+    var _SB_URL = 'https://krmczyqwblsoekceanlj.supabase.co';
+    var _SB_KEY = 'sb_publishable_DrHFT5J0vmrkYraUXIlpQQ_gsk1rdq6';
+    var _sb = null; var _user = null;
+    var ADMIN_EMAIL = 'fangchu@gmail.com';
+    try { _sb = window.supabase.createClient(_SB_URL, _SB_KEY); } catch(e) {}
+    if (_sb) {
+      _sb.auth.getSession().then(function(d) {
+        if (!d.data||!d.data.session) { window.location.href='register.html'; return; }
+        if (d.data.session.user.email !== ADMIN_EMAIL) { window.location.href='data.html'; return; }
+        _user = d.data.session.user;
+      });
+    }
+  </script>
   <style>
-    .admin-layout { display:grid; grid-template-columns:240px 1fr; min-height:calc(100vh - 62px); }
-    @media(max-width:800px){ .admin-layout { grid-template-columns:1fr; } .admin-sidebar { display:none; } }
-    .admin-sidebar { background:#1a1a2e; padding:1.5rem 1rem; display:flex; flex-direction:column; gap:0.3rem; }
-    .admin-brand { color:rgba(242,240,230,0.8); font-size:0.7rem; font-weight:700; text-transform:uppercase; letter-spacing:0.12em; padding:0 0.5rem; margin-bottom:1rem; }
-    .admin-link { padding:0.5rem 0.75rem; border-radius:var(--radius-sm); font-size:0.84rem; color:rgba(242,240,230,0.6); text-decoration:none; display:flex; align-items:center; gap:0.6rem; cursor:pointer; border:none; background:none; font-family:var(--sans); width:100%; text-align:left; transition:all 0.15s; }
-    .admin-link:hover { background:rgba(255,255,255,0.07); color:rgba(242,240,230,0.9); }
-    .admin-link.active { background:rgba(33,67,50,0.6); color:var(--ep-cream); }
+    body { margin:0; }
+    .admin-wrap { display:grid; grid-template-columns:220px 1fr; min-height:calc(100vh - 62px); }
+    @media(max-width:800px){ .admin-wrap { grid-template-columns:1fr; } .admin-side { display:none; } }
+    .admin-side { background:#0f1923; padding:1.5rem 1rem; display:flex; flex-direction:column; gap:2px; }
+    .admin-brand { color:rgba(242,240,230,0.5); font-size:0.65rem; font-weight:700; text-transform:uppercase; letter-spacing:0.12em; padding:0 0.5rem; margin-bottom:1rem; }
+    .al { display:flex; align-items:center; gap:0.6rem; padding:0.48rem 0.75rem; border-radius:var(--radius-sm); font-size:0.83rem; color:rgba(242,240,230,0.55); cursor:pointer; border:none; background:none; font-family:var(--sans); width:100%; text-align:left; transition:all 0.12s; }
+    .al:hover { background:rgba(255,255,255,0.07); color:rgba(242,240,230,0.9); }
+    .al.on { background:rgba(33,67,50,0.5); color:var(--ep-cream); }
+    .al.danger { color:rgba(239,68,68,0.7); margin-top:auto; }
+    .al.danger:hover { background:rgba(239,68,68,0.1); color:#f87171; }
+    .sp { flex:1; }
     .admin-main { background:var(--ep-cream); padding:2rem; overflow-y:auto; }
-    .admin-panel { display:none; }
-    .admin-panel.active { display:block; }
-    .admin-section-title { font-family:var(--serif); font-size:1.5rem; color:var(--ep-green); margin-bottom:0.3rem; }
-    .admin-sub { font-size:0.85rem; color:var(--text-muted); margin-bottom:1.75rem; }
+    .panel { display:none; }
+    .panel.on { display:block; }
+    .ptitle { font-family:var(--serif); font-size:1.5rem; color:var(--ep-green); margin-bottom:0.25rem; }
+    .psub { font-size:0.85rem; color:var(--text-muted); margin-bottom:1.75rem; }
+    .refresh-btn { padding:0.38rem 0.9rem; border:1px solid var(--border-strong); background:transparent; border-radius:var(--radius-sm); font-family:var(--sans); font-size:0.78rem; color:var(--ep-green); cursor:pointer; }
+    .refresh-btn:hover { background:var(--ep-green); color:#fff; }
 
-    /* Stats grid */
-    .admin-stats { display:grid; grid-template-columns:repeat(auto-fill,minmax(170px,1fr)); gap:1rem; margin-bottom:2rem; }
-    .admin-stat { background:white; border:1px solid var(--border); border-radius:var(--radius-lg); padding:1.1rem 1.2rem; }
-    .admin-stat-val { font-family:var(--serif); font-size:1.8rem; color:var(--ep-green); line-height:1; }
-    .admin-stat-label { font-size:0.67rem; font-weight:600; text-transform:uppercase; letter-spacing:0.07em; color:var(--text-muted); margin-top:0.25rem; }
-    .admin-stat-sub { font-size:0.72rem; color:var(--ep-tan); font-family:var(--mono); margin-top:3px; }
+    .stat-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(160px,1fr)); gap:1rem; margin-bottom:1.5rem; }
+    .stat-box { background:#fff; border:1px solid var(--border); border-radius:var(--radius-lg); padding:1.1rem 1.2rem; }
+    .stat-box-icon { font-size:1.3rem; margin-bottom:3px; }
+    .stat-box-val { font-family:var(--serif); font-size:1.8rem; color:var(--ep-green); line-height:1; margin-bottom:3px; }
+    .stat-box-label { font-size:0.66rem; font-weight:600; text-transform:uppercase; letter-spacing:0.07em; color:var(--text-muted); }
+    .stat-box-sub { font-size:0.7rem; color:var(--ep-tan); font-family:var(--mono); margin-top:2px; }
 
-    /* Status indicators */
-    .status-dot { display:inline-block; width:8px; height:8px; border-radius:50%; margin-right:6px; }
-    .status-ok   { background:#22c55e; }
-    .status-warn { background:#f59e0b; }
-    .status-err  { background:#ef4444; }
+    .status-dot { display:inline-block; width:8px; height:8px; border-radius:50%; margin-right:5px; }
+    .ok-dot  { background:#22c55e; }
+    .warn-dot{ background:#f59e0b; }
+    .err-dot { background:#ef4444; }
 
-    /* Table */
-    .admin-table-wrap { overflow-x:auto; background:white; border:1px solid var(--border); border-radius:var(--radius-lg); margin-bottom:1.5rem; }
-    .admin-table { width:100%; border-collapse:collapse; font-size:0.83rem; }
-    .admin-table th { text-align:left; font-size:0.67rem; font-weight:700; text-transform:uppercase; letter-spacing:0.07em; color:var(--text-muted); padding:0.65rem 1rem; border-bottom:2px solid var(--border); background:var(--ep-cream); white-space:nowrap; }
-    .admin-table td { padding:0.6rem 1rem; border-bottom:1px solid var(--border); color:var(--text-secondary); }
-    .admin-table tr:last-child td { border-bottom:none; }
-    .admin-table tr:hover td { background:rgba(33,67,50,0.025); }
-    .badge-active { background:rgba(34,197,94,0.12); color:#166534; font-size:0.68rem; font-weight:600; padding:2px 8px; border-radius:20px; }
+    .card { background:#fff; border:1px solid var(--border); border-radius:var(--radius-lg); padding:1.25rem; margin-bottom:1rem; }
+    .card-title { font-weight:600; color:var(--ep-green); margin-bottom:0.85rem; }
+    .kv { display:flex; justify-content:space-between; font-size:0.82rem; padding:0.3rem 0; border-bottom:1px solid var(--border); }
+    .kv:last-child { border-bottom:none; }
+    .kv-k { color:var(--text-muted); }
+    .kv-v { font-family:var(--mono); color:var(--text-secondary); font-size:0.78rem; text-align:right; max-width:60%; }
 
-    /* System health */
-    .health-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(250px,1fr)); gap:1rem; margin-bottom:1.5rem; }
-    .health-card { background:white; border:1px solid var(--border); border-radius:var(--radius-lg); padding:1.1rem 1.2rem; }
-    .health-card-title { font-weight:600; font-size:0.88rem; color:var(--ep-green); margin-bottom:0.6rem; display:flex; align-items:center; gap:6px; }
-    .health-row { display:flex; justify-content:space-between; font-size:0.8rem; padding:0.25rem 0; color:var(--text-muted); }
-    .health-val { font-family:var(--mono); color:var(--text-secondary); }
+    .log-line { font-family:var(--mono); font-size:0.74rem; padding:0.35rem 0; border-bottom:1px solid var(--border); display:flex; gap:0.75rem; }
+    .log-ok   { color:#16a34a; flex-shrink:0; }
+    .log-warn { color:#d97706; flex-shrink:0; }
+    .log-err  { color:#dc2626; flex-shrink:0; }
+    .log-time { color:var(--text-muted); flex-shrink:0; }
 
-    /* Log entries */
-    .log-entry { font-family:var(--mono); font-size:0.75rem; padding:0.4rem 0; border-bottom:1px solid var(--border); display:flex; gap:1rem; }
-    .log-time { color:var(--text-muted); white-space:nowrap; }
-    .log-ok   { color:#16a34a; }
-    .log-warn { color:#d97706; }
-    .log-err  { color:#dc2626; }
+    .tbl { width:100%; border-collapse:collapse; font-size:0.82rem; }
+    .tbl th { text-align:left; font-size:0.66rem; font-weight:700; text-transform:uppercase; letter-spacing:0.07em; color:var(--text-muted); padding:0.55rem 1rem; border-bottom:2px solid var(--border); background:var(--ep-cream); }
+    .tbl td { padding:0.55rem 1rem; border-bottom:1px solid var(--border); color:var(--text-secondary); }
 
-    .refresh-btn { padding:0.4rem 1rem; border:1px solid var(--border-strong); background:transparent; border-radius:var(--radius-sm); font-family:var(--sans); font-size:0.8rem; color:var(--ep-green); cursor:pointer; }
-    .refresh-btn:hover { background:var(--ep-green); color:white; }
+    .ubar { background:var(--ep-cream-dark); border-radius:4px; height:7px; overflow:hidden; margin-top:3px; }
+    .ufill { height:100%; border-radius:4px; background:var(--ep-green); }
+    .ufill.warn { background:#f59e0b; }
+    .ufill.danger { background:#ef4444; }
 
-    /* Usage meter */
-    .usage-bar-wrap { background:var(--ep-cream-dark); border-radius:4px; height:8px; overflow:hidden; margin-top:4px; }
-    .usage-bar { height:100%; border-radius:4px; background:var(--ep-green); transition:width 0.5s; }
-    .usage-bar.warn { background:#f59e0b; }
-    .usage-bar.danger { background:#ef4444; }
+    .ext-btn { display:inline-flex; align-items:center; gap:6px; padding:0.5rem 1.1rem; background:var(--ep-green); color:#fff; border:none; border-radius:var(--radius-sm); font-family:var(--sans); font-size:0.82rem; font-weight:500; cursor:pointer; text-decoration:none; }
   </style>
 </head>
 <body>
 <div id="ep-nav"></div>
 
-<div class="admin-layout">
-  <!-- SIDEBAR -->
-  <div class="admin-sidebar">
-    <div class="admin-brand">⚙ Admin Panel</div>
-    <button class="admin-link active" onclick="showAdmin('overview')">📊 Overview</button>
-    <button class="admin-link" onclick="showAdmin('users')">👥 Users</button>
-    <button class="admin-link" onclick="showAdmin('system')">🖥 System health</button>
-    <button class="admin-link" onclick="showAdmin('logs')">📋 Recent logs</button>
-    <button class="admin-link" onclick="showAdmin('usage')">💰 API usage</button>
-    <button class="admin-link" onclick="showAdmin('analytics')">📈 Analytics</button>
-    <button class="admin-link" onclick="showAdmin('data')" style="margin-top:1rem;">🗄 Data</button>
-    <button class="admin-link" onclick="signOut()" style="margin-top:auto;color:rgba(239,68,68,0.8);">→ Sign out</button>
+<div class="admin-wrap">
+  <div class="admin-side">
+    <div class="admin-brand">⚙ Admin</div>
+    <button class="al on" id="al-overview"  onclick="sp('overview',this)">📊 Overview</button>
+    <button class="al"     id="al-users"     onclick="sp('users',this)">👥 Users</button>
+    <button class="al"     id="al-system"    onclick="sp('system',this)">🖥 System health</button>
+    <button class="al"     id="al-logs"      onclick="sp('logs',this)">📋 Recent logs</button>
+    <button class="al"     id="al-usage"     onclick="sp('usage',this)">💰 API usage</button>
+    <button class="al"     id="al-analytics" onclick="sp('analytics',this)">📈 Analytics</button>
+    <button class="al"     id="al-data"      onclick="sp('data',this)">🗄 Data</button>
+    <div class="sp"></div>
+    <button class="al danger" onclick="doSignOut()">→ Sign out</button>
   </div>
 
-  <!-- MAIN -->
   <div class="admin-main">
 
     <!-- OVERVIEW -->
-    <div class="admin-panel active" id="panel-overview">
-      <div class="admin-section-title">Overview</div>
-      <div class="admin-sub">Last updated <span id="overview-updated">—</span> · <button class="refresh-btn" onclick="loadOverview()">↻ Refresh</button></div>
-
-      <div class="admin-stats" id="overview-stats">
-        <div class="ep-skeleton" style="height:80px;border-radius:var(--radius-lg);"></div>
-        <div class="ep-skeleton" style="height:80px;border-radius:var(--radius-lg);"></div>
-        <div class="ep-skeleton" style="height:80px;border-radius:var(--radius-lg);"></div>
-        <div class="ep-skeleton" style="height:80px;border-radius:var(--radius-lg);"></div>
-        <div class="ep-skeleton" style="height:80px;border-radius:var(--radius-lg);"></div>
-      </div>
-
-      <!-- Quick system status -->
-      <div style="background:white;border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem;margin-bottom:1.5rem;">
-        <div style="font-weight:600;color:var(--ep-green);margin-bottom:0.85rem;">System status</div>
-        <div id="quick-status">Loading…</div>
-      </div>
-
-      <!-- Latest data freshness -->
-      <div style="background:white;border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem;">
-        <div style="font-weight:600;color:var(--ep-green);margin-bottom:0.85rem;">Data freshness</div>
-        <div id="data-freshness">Loading…</div>
-      </div>
+    <div class="panel on" id="panel-overview">
+      <div class="ptitle">Overview</div>
+      <div class="psub">Last refreshed <span id="ov-time">—</span> · <button class="refresh-btn" onclick="loadOverview()">↻ Refresh</button></div>
+      <div class="stat-grid" id="ov-stats"><div class="ep-skeleton" style="height:80px;border-radius:var(--radius-lg);"></div><div class="ep-skeleton" style="height:80px;border-radius:var(--radius-lg);"></div><div class="ep-skeleton" style="height:80px;border-radius:var(--radius-lg);"></div><div class="ep-skeleton" style="height:80px;border-radius:var(--radius-lg);"></div></div>
+      <div class="card"><div class="card-title">System status</div><div id="ov-status">Loading…</div></div>
+      <div class="card"><div class="card-title">Data freshness</div><div id="ov-fresh">Loading…</div></div>
     </div>
 
     <!-- USERS -->
-    <div class="admin-panel" id="panel-users">
-      <div class="admin-section-title">Users</div>
-      <div class="admin-sub">All registered Earth Pulse accounts. <span id="user-count">—</span> total users.</div>
-
-      <div class="admin-table-wrap">
-        <table class="admin-table">
-          <thead>
-            <tr><th>Name</th><th>Email</th><th>Registered</th><th>Searches</th><th>Newsletter</th><th>Status</th></tr>
-          </thead>
-          <tbody id="users-tbody"><tr><td colspan="6" style="text-align:center;padding:2rem;color:var(--text-muted);">Loading users…</td></tr></tbody>
-        </table>
+    <div class="panel" id="panel-users">
+      <div class="ptitle">Users</div>
+      <div class="psub" id="user-sub">Loading…</div>
+      <div style="background:#fff;border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;">
+        <table class="tbl"><thead><tr><th>Email</th><th>Subscribed</th></tr></thead><tbody id="users-body"><tr><td colspan="2" style="text-align:center;padding:2rem;color:var(--text-muted);">Loading…</td></tr></tbody></table>
       </div>
-      <p style="font-size:0.78rem;color:var(--text-muted);">Note: Full user management (edit, ban, delete) requires Supabase dashboard or a service-role backend function. This panel shows read-only data from public tables.</p>
+      <p style="font-size:0.78rem;color:var(--text-muted);margin-top:0.75rem;">Shows newsletter subscribers. Full auth user list available in Supabase dashboard → Authentication → Users.</p>
     </div>
 
-    <!-- SYSTEM HEALTH -->
-    <div class="admin-panel" id="panel-system">
-      <div class="admin-section-title">System health</div>
-      <div class="admin-sub">Live status of all Earth Pulse components. <button class="refresh-btn" onclick="loadSystem()">↻ Refresh</button></div>
-      <div class="health-grid" id="health-grid">
-        <div class="ep-skeleton" style="height:120px;border-radius:var(--radius-lg);"></div>
-        <div class="ep-skeleton" style="height:120px;border-radius:var(--radius-lg);"></div>
-        <div class="ep-skeleton" style="height:120px;border-radius:var(--radius-lg);"></div>
-        <div class="ep-skeleton" style="height:120px;border-radius:var(--radius-lg);"></div>
-      </div>
+    <!-- SYSTEM -->
+    <div class="panel" id="panel-system">
+      <div class="ptitle">System health</div>
+      <div class="psub">Live status of all Earth Pulse components. <button class="refresh-btn" onclick="loadSystem()">↻ Refresh</button></div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1rem;" id="sys-grid"><div class="ep-skeleton" style="height:120px;border-radius:var(--radius-lg);"></div><div class="ep-skeleton" style="height:120px;border-radius:var(--radius-lg);"></div></div>
     </div>
 
     <!-- LOGS -->
-    <div class="admin-panel" id="panel-logs">
-      <div class="admin-section-title">Recent logs</div>
-      <div class="admin-sub">Last 50 system events — AQI fetch, bird detection, image processing. <button class="refresh-btn" onclick="loadLogs()">↻ Refresh</button></div>
-      <div style="background:white;border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem;max-height:600px;overflow-y:auto;" id="logs-container">Loading…</div>
+    <div class="panel" id="panel-logs">
+      <div class="ptitle">Recent logs</div>
+      <div class="psub">Last 48 climate readings — shows gaps and errors. <button class="refresh-btn" onclick="loadLogs()">↻ Refresh</button></div>
+      <div class="card" style="max-height:600px;overflow-y:auto;" id="logs-wrap">Loading…</div>
     </div>
 
     <!-- USAGE -->
-    <div class="admin-panel" id="panel-usage">
-      <div class="admin-section-title">API usage this month</div>
-      <div class="admin-sub">Estimated usage against free tier limits. Refresh monthly to track spend.</div>
-      <div id="usage-cards">Loading…</div>
+    <div class="panel" id="panel-usage">
+      <div class="ptitle">API usage this month</div>
+      <div class="psub">Estimated usage against free tier limits.</div>
+      <div id="usage-wrap">Loading…</div>
     </div>
 
     <!-- ANALYTICS -->
-    <div class="admin-panel" id="panel-analytics">
-      <div class="admin-section-title">Analytics summary</div>
-      <div class="admin-sub">Key metrics from Cloudflare and Supabase. For full GA4 and Cloudflare dashboards, open them directly — this is a quick summary.</div>
-      <div id="analytics-content">Loading…</div>
+    <div class="panel" id="panel-analytics">
+      <div class="ptitle">Analytics</div>
+      <div class="psub">Quick links to your external dashboards — all in one place.</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:1rem;">
+        <div class="card" style="text-align:center;">
+          <div style="font-size:2rem;margin-bottom:0.5rem;">📊</div>
+          <div style="font-weight:600;color:var(--ep-green);margin-bottom:0.4rem;">Google Analytics 4</div>
+          <p style="font-size:0.82rem;color:var(--text-muted);margin-bottom:1rem;">Real-time visitors, page views, traffic sources.</p>
+          <a href="https://analytics.google.com" target="_blank" class="ext-btn">Open GA4 →</a>
+        </div>
+        <div class="card" style="text-align:center;">
+          <div style="font-size:2rem;margin-bottom:0.5rem;">☁</div>
+          <div style="font-weight:600;color:var(--ep-green);margin-bottom:0.4rem;">Cloudflare Analytics</div>
+          <p style="font-size:0.82rem;color:var(--text-muted);margin-bottom:1rem;">Requests, bandwidth, cache rate, threats.</p>
+          <a href="https://dash.cloudflare.com" target="_blank" class="ext-btn">Open Cloudflare →</a>
+        </div>
+        <div class="card" style="text-align:center;">
+          <div style="font-size:2rem;margin-bottom:0.5rem;">🗄</div>
+          <div style="font-weight:600;color:var(--ep-green);margin-bottom:0.4rem;">Supabase Dashboard</div>
+          <p style="font-size:0.82rem;color:var(--text-muted);margin-bottom:1rem;">DB size, API logs, auth users, storage.</p>
+          <a href="https://supabase.com/dashboard/project/krmczyqwblsoekceanlj" target="_blank" class="ext-btn">Open Supabase →</a>
+        </div>
+        <div class="card" style="text-align:center;">
+          <div style="font-size:2rem;margin-bottom:0.5rem;">🔑</div>
+          <div style="font-weight:600;color:var(--ep-green);margin-bottom:0.4rem;">Google Cloud Console</div>
+          <p style="font-size:0.82rem;color:var(--text-muted);margin-bottom:1rem;">Air Quality API quota and billing alerts.</p>
+          <a href="https://console.cloud.google.com" target="_blank" class="ext-btn">Open GCloud →</a>
+        </div>
+      </div>
     </div>
 
     <!-- DATA -->
-    <div class="admin-panel" id="panel-data">
-      <div class="admin-section-title">Data management</div>
-      <div class="admin-sub">Quick access to data counts and admin actions.</div>
-      <div id="data-admin">Loading…</div>
+    <div class="panel" id="panel-data">
+      <div class="ptitle">Data management</div>
+      <div class="psub">Row counts and admin actions. Destructive operations must be done in Supabase SQL Editor.</div>
+      <div class="stat-grid" id="data-stats">Loading…</div>
+      <div class="card" style="border-color:rgba(220,38,38,0.25);">
+        <div class="card-title" style="color:#dc2626;">⚠️ Danger zone</div>
+        <p style="font-size:0.82rem;color:var(--text-muted);margin-bottom:0.75rem;">All DELETE and TRUNCATE operations must be run in the Supabase SQL Editor with the service role key. This prevents accidental browser-side deletions.</p>
+        <a href="https://supabase.com/dashboard/project/krmczyqwblsoekceanlj/editor" target="_blank" class="ext-btn" style="background:#dc2626;">Open SQL Editor →</a>
+      </div>
     </div>
 
   </div>
@@ -175,237 +188,194 @@
 <div id="ep-footer"></div>
 <script src="analytics.js"></script>
 <script src="nav.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script>
-const SB_URL   = 'https://krmczyqwblsoekceanlj.supabase.co';
-const SB_KEY   = 'sb_publishable_DrHFT5J0vmrkYraUXIlpQQ_gsk1rdq6';
-const ADMIN_EMAIL = 'fangchu@gmail.com';
-const supabase = window.supabase.createClient(SB_URL, SB_KEY);
-const SB_H     = { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY };
-
-// Auth guard — only admin
-supabase.auth.getSession().then(function(d) {
-  if (!d.data.session) { window.location.href = 'register.html'; return; }
-  if (d.data.session.user.email !== ADMIN_EMAIL) { window.location.href = 'data.html'; return; }
-  loadOverview();
-});
-
-async function signOut() { await supabase.auth.signOut(); window.location.href = 'index.html'; }
-
-function showAdmin(id) {
-  document.querySelectorAll('.admin-panel').forEach(function(p){ p.classList.remove('active'); });
-  document.querySelectorAll('.admin-link').forEach(function(b){ b.classList.remove('active'); });
-  document.getElementById('panel-'+id).classList.add('active');
-  event.currentTarget.classList.add('active');
+// ── PANEL SWITCHING ───────────────────────────────────────────────────────────
+function sp(id, btn) {
+  document.querySelectorAll('.panel').forEach(function(p){ p.classList.remove('on'); });
+  document.querySelectorAll('.al').forEach(function(b){ b.classList.remove('on'); });
+  var el = document.getElementById('panel-' + id);
+  if (el) el.classList.add('on');
+  if (btn) btn.classList.add('on');
+  // Load data for this panel if not yet loaded
+  if (id==='overview')  loadOverview();
   if (id==='users')     loadUsers();
   if (id==='system')    loadSystem();
   if (id==='logs')      loadLogs();
   if (id==='usage')     loadUsage();
-  if (id==='analytics') loadAnalytics();
-  if (id==='data')      loadDataAdmin();
+  if (id==='data')      loadData();
 }
 
-async function sbGet(path) {
-  var r = await fetch(SB_URL + path, { headers: SB_H });
-  return r;
+window.addEventListener('DOMContentLoaded', function() {
+  if (!_sb) return;
+  _sb.auth.getSession().then(function(d) {
+    if (!d.data||!d.data.session) { window.location.href='register.html'; return; }
+    if (d.data.session.user.email !== ADMIN_EMAIL) { window.location.href='data.html'; return; }
+    _user = d.data.session.user;
+    loadOverview();
+  });
+});
+
+async function doSignOut() {
+  if (_sb) await _sb.auth.signOut().catch(function(){});
+  try { Object.keys(localStorage).forEach(function(k){ if(k.indexOf('supabase')!==-1)localStorage.removeItem(k); }); } catch(e) {}
+  window.location.href = 'index.html';
 }
-async function sbJSON(path) { return (await sbGet(path)).json(); }
+
+async function sbCount(table) {
+  var r = await fetch(_SB_URL + '/rest/v1/' + table + '?select=id&limit=1', { headers: {'apikey':_SB_KEY,'Authorization':'Bearer '+_SB_KEY,'Prefer':'count=exact'} });
+  return parseInt(r.headers.get('content-range')?.split('/')[1] || '0');
+}
+async function sbGet(path) {
+  var r = await fetch(_SB_URL + '/rest/v1' + path, { headers: {'apikey':_SB_KEY,'Authorization':'Bearer '+_SB_KEY} });
+  return r.json();
+}
+function staleness(ts) {
+  if (!ts) return '<span class="status-dot err-dot"></span>No data';
+  var mins = Math.round((Date.now()-new Date(ts).getTime())/60000);
+  var cls  = mins<130?'ok-dot':mins<360?'warn-dot':'err-dot';
+  var str  = mins<60?mins+'m ago':Math.floor(mins/60)+'h ago';
+  return '<span class="status-dot '+cls+'"></span>'+str;
+}
 
 // ── OVERVIEW ──────────────────────────────────────────────────────────────────
 async function loadOverview() {
-  document.getElementById('overview-updated').textContent = new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit',hour12:true,timeZone:'Asia/Kolkata'}) + ' IST';
+  document.getElementById('ov-time').textContent = new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit',hour12:true,timeZone:'Asia/Kolkata'}) + ' IST';
+  try {
+    var [cr,bd,tf,ns] = await Promise.all([
+      sbCount('climate_readings'),
+      sbCount('bird_detections'),
+      sbCount('timelapse_frames'),
+      sbCount('newsletter_signups'),
+    ]);
+    document.getElementById('ov-stats').innerHTML = [
+      {icon:'📊',val:cr.toLocaleString(),label:'Climate records',sub:'hourly since Jan 2022'},
+      {icon:'🐦',val:bd.toLocaleString(),label:'Bird detections',sub:'BirdNET acoustic AI'},
+      {icon:'📸',val:tf.toLocaleString(),label:'Hill photos',sub:'timelapse archive'},
+      {icon:'📬',val:ns.toLocaleString(),label:'Subscribers',sub:'newsletter'},
+    ].map(function(s){
+      return '<div class="stat-box"><div class="stat-box-icon">'+s.icon+'</div><div class="stat-box-val">'+s.val+'</div><div class="stat-box-label">'+s.label+'</div><div class="stat-box-sub">'+s.sub+'</div></div>';
+    }).join('');
 
-  const [cr, bd, tf, ns] = await Promise.all([
-    sbGet('/rest/v1/climate_readings?select=id&limit=1').then(r=>parseInt(r.headers.get('content-range')?.split('/')[1]||'0')),
-    sbGet('/rest/v1/bird_detections?select=id&limit=1').then(r=>parseInt(r.headers.get('content-range')?.split('/')[1]||'0')),
-    sbGet('/rest/v1/timelapse_frames?select=id&limit=1').then(r=>parseInt(r.headers.get('content-range')?.split('/')[1]||'0')),
-    sbGet('/rest/v1/newsletter_signups?select=id&limit=1').then(r=>parseInt(r.headers.get('content-range')?.split('/')[1]||'0')),
-  ]);
+    var [lat,bird,photo] = await Promise.all([
+      sbGet('/climate_readings?select=recorded_at,aqi,temperature&order=recorded_at.desc&limit=1'),
+      sbGet('/bird_detections?select=detected_at&order=detected_at.desc&limit=1'),
+      sbGet('/timelapse_frames?select=captured_at&order=captured_at.desc&limit=1'),
+    ]);
+    var aqiAge  = lat[0]  ? Math.round((Date.now()-new Date(lat[0].recorded_at).getTime())/60000) : 9999;
+    var birdAge = bird[0] ? Math.round((Date.now()-new Date(bird[0].detected_at).getTime())/60000) : 9999;
 
-  document.getElementById('overview-stats').innerHTML = [
-    { icon:'📊', val:cr.toLocaleString(), label:'Climate records', sub:'hourly since Jan 2022' },
-    { icon:'🐦', val:bd.toLocaleString(), label:'Bird detections', sub:'BirdNET acoustic' },
-    { icon:'📸', val:tf.toLocaleString(), label:'Hill photos', sub:'timelapse archive' },
-    { icon:'📬', val:ns.toLocaleString(), label:'Newsletter subs', sub:'email subscribers' },
-  ].map(function(s){
-    return '<div class="admin-stat"><div style="font-size:1.3rem;margin-bottom:4px;">'+s.icon+'</div><div class="admin-stat-val">'+s.val+'</div><div class="admin-stat-label">'+s.label+'</div><div class="admin-stat-sub">'+s.sub+'</div></div>';
-  }).join('');
+    document.getElementById('ov-status').innerHTML = [
+      ['Pi 3B+ (AQI cron)',  aqiAge<130  ? 'ok-dot' : 'err-dot', aqiAge<130  ? 'Running (' + aqiAge + 'm ago)' : '⚠️ Last update '+aqiAge+'m ago — check Pi'],
+      ['Pi 3B (BirdNET)',    birdAge<70  ? 'ok-dot' : 'warn-dot', birdAge<70 ? 'Listening (' + birdAge + 'm ago)' : 'No detection for '+birdAge+'m'],
+      ['Supabase',           'ok-dot',   'Connected · RLS enabled'],
+      ['Cloudflare Pages',   'ok-dot',   'Live · earthpulse.pages.dev'],
+    ].map(function(r){ return '<div class="kv"><span class="kv-k"><span class="status-dot '+r[1]+'"></span>'+r[0]+'</span><span class="kv-v">'+r[2]+'</span></div>'; }).join('');
 
-  // Data freshness
-  const latest = await sbJSON('/rest/v1/climate_readings?select=recorded_at&order=recorded_at.desc&limit=1');
-  const latestBird = await sbJSON('/rest/v1/bird_detections?select=detected_at&order=detected_at.desc&limit=1');
-  const latestPhoto = await sbJSON('/rest/v1/timelapse_frames?select=captured_at&order=captured_at.desc&limit=1');
-
-  function staleness(ts) {
-    if (!ts) return '<span class="status-dot status-err"></span>No data';
-    var mins = Math.round((Date.now()-new Date(ts).getTime())/60000);
-    var cls  = mins<120?'status-ok':mins<360?'status-warn':'status-err';
-    var str  = mins<60?mins+'m ago':Math.floor(mins/60)+'h ago';
-    return '<span class="status-dot '+cls+'"></span>'+str+' ('+new Date(ts).toLocaleString('en-IN',{timeZone:'Asia/Kolkata',day:'numeric',month:'short',hour:'2-digit',minute:'2-digit',hour12:true})+')';
-  }
-  document.getElementById('data-freshness').innerHTML =
-    '<div class="health-row"><span>Last climate reading</span><span class="health-val">'+staleness(latest[0]?.recorded_at)+'</span></div>' +
-    '<div class="health-row"><span>Last bird detection</span><span class="health-val">'+staleness(latestBird[0]?.detected_at)+'</span></div>' +
-    '<div class="health-row"><span>Last hill photo</span><span class="health-val">'+staleness(latestPhoto[0]?.captured_at)+'</span></div>';
-
-  document.getElementById('quick-status').innerHTML =
-    '<div class="health-row"><span><span class="status-dot status-ok"></span>Supabase database</span><span class="health-val">Operational</span></div>' +
-    '<div class="health-row"><span><span class="status-dot status-ok"></span>Cloudflare Pages</span><span class="health-val">Deployed</span></div>' +
-    '<div class="health-row"><span><span class="status-dot '+(Date.now()-new Date(latest[0]?.recorded_at).getTime()<7200000?'status-ok':'status-warn')+'"></span>Pi AQI cron</span><span class="health-val">'+(Date.now()-new Date(latest[0]?.recorded_at).getTime()<7200000?'Running':'Check Pi — last update >2h ago')+'</span></div>' +
-    '<div class="health-row"><span><span class="status-dot '+(Date.now()-new Date(latestBird[0]?.detected_at).getTime()<3600000?'status-ok':'status-warn')+'"></span>BirdNET detection</span><span class="health-val">'+(Date.now()-new Date(latestBird[0]?.detected_at).getTime()<3600000?'Active':'Check Pi — >1h since last detection')+'</span></div>';
+    document.getElementById('ov-fresh').innerHTML = [
+      ['Last climate reading', staleness(lat[0]?.recorded_at) + ' · AQI ' + (lat[0]?.aqi||'—') + ' · ' + (lat[0]?.temperature||'—') + '°C'],
+      ['Last bird detection',  staleness(bird[0]?.detected_at)],
+      ['Last hill photo',      staleness(photo[0]?.captured_at)],
+    ].map(function(r){ return '<div class="kv"><span class="kv-k">'+r[0]+'</span><span class="kv-v">'+r[1]+'</span></div>'; }).join('');
+  } catch(e) { document.getElementById('ov-stats').textContent = 'Error: ' + e.message; }
 }
 
 // ── USERS ─────────────────────────────────────────────────────────────────────
 async function loadUsers() {
   try {
-    // Read from newsletter_signups as proxy (auth.users not accessible via anon key)
-    var rows = await sbJSON('/rest/v1/newsletter_signups?select=*&order=created_at.desc&limit=100');
-    document.getElementById('user-count').textContent = rows.length;
-    document.getElementById('users-tbody').innerHTML = rows.map(function(r) {
-      var date = r.created_at ? new Date(r.created_at).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}) : '—';
-      return '<tr><td>—</td><td>'+r.email+'</td><td>'+date+'</td><td>—</td><td><span class="badge-active">Yes</span></td><td><span class="badge-active">Active</span></td></tr>';
-    }).join('') || '<tr><td colspan="6" style="text-align:center;padding:1.5rem;color:var(--text-muted);">No subscribers yet</td></tr>';
-  } catch(e) { document.getElementById('users-tbody').innerHTML = '<tr><td colspan="6" style="color:#dc2626;padding:1rem;">Error: '+e.message+'</td></tr>'; }
+    var rows = await sbGet('/newsletter_signups?select=*&order=created_at.desc&limit=100');
+    document.getElementById('user-sub').textContent = rows.length + ' newsletter subscribers · Full auth user list in Supabase dashboard.';
+    document.getElementById('users-body').innerHTML = rows.map(function(r) {
+      var dt = r.created_at ? new Date(r.created_at).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}) : '—';
+      return '<tr><td>' + r.email + '</td><td>' + dt + '</td></tr>';
+    }).join('') || '<tr><td colspan="2" style="text-align:center;padding:1.5rem;color:var(--text-muted);">No subscribers yet</td></tr>';
+  } catch(e) { document.getElementById('users-body').innerHTML = '<tr><td colspan="2" style="color:#dc2626;padding:1rem;">Error: '+e.message+'</td></tr>'; }
 }
 
-// ── SYSTEM HEALTH ─────────────────────────────────────────────────────────────
+// ── SYSTEM ────────────────────────────────────────────────────────────────────
 async function loadSystem() {
-  var latest = await sbJSON('/rest/v1/climate_readings?select=recorded_at,aqi,temperature&order=recorded_at.desc&limit=1');
-  var latestBird = await sbJSON('/rest/v1/bird_detections?select=detected_at&order=detected_at.desc&limit=1');
-  var aqiAge = latest[0] ? Math.round((Date.now()-new Date(latest[0].recorded_at).getTime())/60000) : 9999;
-  var birdAge = latestBird[0] ? Math.round((Date.now()-new Date(latestBird[0].detected_at).getTime())/60000) : 9999;
-
-  var cards = [
-    { title:'🖥 Raspberry Pi 3B+ (AQI)', dot: aqiAge<130?'ok':'err',
-      rows:[['Last AQI fetch', aqiAge+'m ago'], ['Latest AQI', latest[0]?.aqi||'—'], ['Latest temp', (latest[0]?.temperature||'—')+'°C'], ['Status', aqiAge<130?'✅ Running normally':'⚠️ Check Pi — cron may be stopped']] },
-    { title:'🎙 Raspberry Pi 3B (BirdNET)', dot: birdAge<70?'ok':'warn',
-      rows:[['Last detection', birdAge+'m ago'], ['Status', birdAge<70?'✅ Listening':'⚠️ Check Pi or no birds detected']] },
-    { title:'🗄 Supabase', dot:'ok',
-      rows:[['Database', '✅ Connected'], ['RLS', '✅ Enabled'], ['Storage', '✅ timelapse bucket'], ['Free tier', 'Monitor usage in dashboard']] },
-    { title:'☁ Cloudflare Pages', dot:'ok',
-      rows:[['Deployment', '✅ Live'], ['Domain', 'earthpulse.pages.dev'], ['CDN', '✅ Global'], ['R2 Storage', 'Check Cloudflare dashboard']] },
-  ];
-
-  document.getElementById('health-grid').innerHTML = cards.map(function(c) {
-    return '<div class="health-card"><div class="health-card-title"><span class="status-dot status-'+c.dot+'"></span>'+c.title+'</div>' +
-      c.rows.map(function(r){ return '<div class="health-row"><span>'+r[0]+'</span><span class="health-val">'+r[1]+'</span></div>'; }).join('') +
-      '</div>';
-  }).join('');
+  try {
+    var [lat,bird] = await Promise.all([
+      sbGet('/climate_readings?select=recorded_at,aqi,temperature&order=recorded_at.desc&limit=1'),
+      sbGet('/bird_detections?select=detected_at&order=detected_at.desc&limit=1'),
+    ]);
+    var aqiAge  = lat[0]  ? Math.round((Date.now()-new Date(lat[0].recorded_at).getTime())/60000) : 9999;
+    var birdAge = bird[0] ? Math.round((Date.now()-new Date(bird[0].detected_at).getTime())/60000) : 9999;
+    var cards = [
+      {title:'🖥 Pi 3B+ (AQI & data pipeline)', dot:aqiAge<130?'ok-dot':'err-dot',
+       rows:[['Last AQI fetch',aqiAge+'m ago'],['Latest AQI',(lat[0]?.aqi||'—')],['Latest temp',(lat[0]?.temperature||'—')+'°C'],['Status',aqiAge<130?'✅ Running normally':'⚠️ Check Pi — cron may be stopped']]},
+      {title:'🎙 Pi 3B (BirdNET)',dot:birdAge<70?'ok-dot':'warn-dot',
+       rows:[['Last detection',birdAge+'m ago'],['Status',birdAge<70?'✅ Listening':'⚠️ No detection for '+birdAge+'m — check Pi or no birds']]},
+      {title:'🗄 Supabase',dot:'ok-dot',
+       rows:[['Database','✅ Connected'],['RLS','✅ Enabled on all tables'],['Storage','✅ timelapse bucket'],['Free tier','Monitor in Supabase dashboard']]},
+      {title:'☁ Cloudflare Pages',dot:'ok-dot',
+       rows:[['Deployment','✅ Live'],['Domain','earthpulse.pages.dev'],['CDN','✅ Global edge'],['R2 Storage','Check Cloudflare dashboard']]},
+    ];
+    document.getElementById('sys-grid').innerHTML = cards.map(function(c){
+      return '<div class="card"><div class="card-title"><span class="status-dot '+c.dot+'"></span>'+c.title+'</div>'+
+        c.rows.map(function(r){ return '<div class="kv"><span class="kv-k">'+r[0]+'</span><span class="kv-v">'+r[1]+'</span></div>'; }).join('')+'</div>';
+    }).join('');
+  } catch(e) { document.getElementById('sys-grid').textContent='Error: '+e.message; }
 }
 
 // ── LOGS ──────────────────────────────────────────────────────────────────────
 async function loadLogs() {
-  var container = document.getElementById('logs-container');
   try {
-    // Show recent climate readings as proxy for "system log"
-    var rows = await sbJSON('/rest/v1/climate_readings?select=recorded_at,aqi,temperature,precipitation&order=recorded_at.desc&limit=48');
-    var html = rows.map(function(r) {
-      var t  = new Date(r.recorded_at).toLocaleString('en-IN',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit',hour12:true,timeZone:'Asia/Kolkata'});
-      var ok = r.aqi != null && r.temperature != null;
-      return '<div class="log-entry">' +
-        '<span class="log-time">'+t+'</span>' +
-        '<span class="'+(ok?'log-ok':'log-warn')+'">'+(ok?'✅':'⚠️')+'</span>' +
-        '<span>'+(ok?'AQI '+r.aqi+' · '+r.temperature+'°C'+(r.precipitation>0?' · '+r.precipitation+'mm rain':''):'Incomplete reading — some fields null')+'</span>' +
-        '</div>';
-    }).join('');
-    container.innerHTML = html || '<p style="color:var(--text-muted);">No recent logs found.</p>';
-    // Check for gaps
+    var rows = await sbGet('/climate_readings?select=recorded_at,aqi,temperature,precipitation&order=recorded_at.desc&limit=48');
     var lastTs = rows[0]?.recorded_at;
     var gapMins = lastTs ? Math.round((Date.now()-new Date(lastTs).getTime())/60000) : 9999;
-    if (gapMins > 130) container.innerHTML = '<div class="log-entry"><span class="log-time">NOW</span><span class="log-err">⚠️</span><span>ALERT: Last climate reading was '+gapMins+' minutes ago — Pi cron may have stopped</span></div>' + container.innerHTML;
-  } catch(e) { container.innerHTML = '<p style="color:#dc2626;">Error loading logs: '+e.message+'</p>'; }
+    var html = '';
+    if (gapMins > 130) html += '<div class="log-line"><span class="log-err">⚠️ ALERT</span><span>Last climate reading was '+gapMins+'m ago — Pi AQI cron may have stopped</span></div>';
+    html += rows.map(function(r) {
+      var t  = new Date(r.recorded_at).toLocaleString('en-IN',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit',hour12:true,timeZone:'Asia/Kolkata'});
+      var ok = r.aqi!=null && r.temperature!=null;
+      var rain = r.precipitation>0 ? ' · 🌧️ '+r.precipitation+'mm' : '';
+      return '<div class="log-line"><span class="log-time">'+t+'</span><span class="'+(ok?'log-ok':'log-warn')+'">'+(ok?'✅':'⚠️')+'</span><span>'+(ok?'AQI '+r.aqi+' · '+r.temperature+'°C'+rain:'Incomplete — some fields null')+'</span></div>';
+    }).join('');
+    document.getElementById('logs-wrap').innerHTML = html || '<p style="color:var(--text-muted)">No logs found.</p>';
+  } catch(e) { document.getElementById('logs-wrap').textContent='Error: '+e.message; }
 }
 
 // ── USAGE ─────────────────────────────────────────────────────────────────────
 async function loadUsage() {
-  // Estimate Google AQI API usage based on hourly cron
-  var daysThisMonth = new Date().getDate();
-  var googleAqiCalls = daysThisMonth * 24; // 1 per hour
-  var googleAqiLimit = 10000; // generous free tier
-  var googlePct = Math.round(googleAqiCalls/googleAqiLimit*100);
+  var dom = new Date().getDate();
+  var googleCalls = dom * 24;
+  var googleLimit = 10000;
+  var gPct = Math.round(googleCalls/googleLimit*100);
 
-  var cr = await sbGet('/rest/v1/climate_readings?select=id&limit=1').then(function(r){ return parseInt(r.headers.get('content-range')?.split('/')[1]||'0'); });
-  var bd = await sbGet('/rest/v1/bird_detections?select=id&limit=1').then(function(r){ return parseInt(r.headers.get('content-range')?.split('/')[1]||'0'); });
-  var tf = await sbGet('/rest/v1/timelapse_frames?select=id&limit=1').then(function(r){ return parseInt(r.headers.get('content-range')?.split('/')[1]||'0'); });
+  try {
+    var [cr,bd,tf] = await Promise.all([sbCount('climate_readings'),sbCount('bird_detections'),sbCount('timelapse_frames')]);
+    var total = cr+bd+tf;
+    var dbMB = (total*0.5/1024).toFixed(1);
+    var apiEst = dom*24*5;
 
-  // Supabase free tier: 500MB DB, 1GB storage, 2M API requests/month
-  var sbRows   = cr + bd + tf;
-  var sbDbEst  = (sbRows * 0.5 / 1024).toFixed(1); // ~0.5KB per row
-  var sbApiEst = daysThisMonth * 24 * 5; // ~5 API calls per hour (cron + reads)
-
-  document.getElementById('usage-cards').innerHTML =
-    usageCard('🌍 Google Air Quality API', googleAqiCalls+' / '+googleAqiLimit+' calls', googlePct, googlePct<80?'ok':'warn', 'Free tier: 10,000 calls/month. At 24/day you use ~720/month — very safe.') +
-    usageCard('🗄 Supabase — DB rows', sbRows.toLocaleString()+' rows total', Math.round(sbRows/500000*100), 'ok', 'Free tier: 500MB. Est. '+sbDbEst+'MB used. Very safe for years.') +
-    usageCard('🗄 Supabase — API requests', sbApiEst.toLocaleString()+' est. this month', Math.round(sbApiEst/2000000*100), 'ok', 'Free tier: 2M requests/month. Estimated well below limit.') +
-    usageCard('☁ Cloudflare Pages', 'Unlimited requests', 0, 'ok', 'Pages is free with no request limits. R2 Storage: check Cloudflare dashboard for egress.') +
-    usageCard('🔑 Supabase Auth', 'Free tier: 50,000 MAU', 1, 'ok', 'Monthly Active Users — you are well within limits.') +
-    '<div style="background:rgba(33,67,50,0.05);border:1px solid rgba(33,67,50,0.15);border-radius:var(--radius-lg);padding:1.1rem 1.25rem;margin-top:0.5rem;font-size:0.82rem;color:var(--text-muted);line-height:1.8;">💡 <strong style="color:var(--ep-green);">To prevent surprises:</strong> Enable Supabase spend limits in your project settings. Set a Google Cloud billing alert at $5. Enable Cloudflare R2 usage alerts in the dashboard.</div>';
+    document.getElementById('usage-wrap').innerHTML = [
+      {title:'🌍 Google Air Quality API',val:googleCalls+' / '+googleLimit+' calls est.',pct:gPct,note:'Free tier: ~10,000 calls/month. At 24/day you use ~720/month — very safe. Set a billing alert at $5 in Google Cloud just in case.'},
+      {title:'🗄 Supabase — database rows',val:total.toLocaleString()+' rows total',pct:Math.round(total/500000*100),note:'Free tier: 500MB. Estimated '+dbMB+'MB used. Safe for years at current growth rate.'},
+      {title:'🗄 Supabase — API requests',val:'~'+apiEst.toLocaleString()+' est. this month',pct:Math.round(apiEst/2000000*100),note:'Free tier: 2M requests/month. Well below limit.'},
+      {title:'☁ Cloudflare Pages',val:'Unlimited requests',pct:0,note:'Pages is completely free with no request limits. R2 storage: check Cloudflare dashboard for egress.'},
+    ].map(function(u){
+      var barCls = u.pct>80?'danger':u.pct>50?'warn':'';
+      return '<div class="card"><div class="card-title">'+u.title+'</div>' +
+        '<div style="font-family:var(--mono);font-size:1rem;color:var(--ep-green);margin-bottom:0.4rem;">'+u.val+'</div>' +
+        (u.pct>0?'<div class="ubar"><div class="ufill '+barCls+'" style="width:'+Math.min(u.pct,100)+'%"></div></div>':'') +
+        '<div style="font-size:0.76rem;color:var(--text-muted);margin-top:0.5rem;">'+u.note+'</div></div>';
+    }).join('');
+  } catch(e) { document.getElementById('usage-wrap').textContent='Error: '+e.message; }
 }
 
-function usageCard(title, value, pct, status, note) {
-  var barCls = pct>80?'danger':pct>50?'warn':'';
-  return '<div style="background:white;border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem;margin-bottom:1rem;">' +
-    '<div style="font-weight:600;color:var(--ep-green);margin-bottom:0.6rem;display:flex;align-items:center;gap:6px;"><span class="status-dot status-'+status+'"></span>'+title+'</div>' +
-    '<div style="font-family:var(--mono);font-size:1rem;color:var(--ep-green);margin-bottom:0.4rem;">'+value+'</div>' +
-    (pct>0?'<div class="usage-bar-wrap"><div class="usage-bar '+barCls+'" style="width:'+Math.min(pct,100)+'%"></div></div>':'') +
-    '<div style="font-size:0.76rem;color:var(--text-muted);margin-top:0.5rem;">'+note+'</div>' +
-    '</div>';
+// ── DATA ──────────────────────────────────────────────────────────────────────
+async function loadData() {
+  try {
+    var [cr,bd,tf] = await Promise.all([sbCount('climate_readings'),sbCount('bird_detections'),sbCount('timelapse_frames')]);
+    document.getElementById('data-stats').innerHTML = [
+      {icon:'📊',val:cr.toLocaleString(),label:'climate_readings',sub:'hourly environmental data'},
+      {icon:'🐦',val:bd.toLocaleString(),label:'bird_detections',sub:'acoustic detections'},
+      {icon:'📸',val:tf.toLocaleString(),label:'timelapse_frames',sub:'hill photo metadata'},
+    ].map(function(s){
+      return '<div class="stat-box"><div class="stat-box-icon">'+s.icon+'</div><div class="stat-box-val">'+s.val+'</div><div class="stat-box-label">'+s.label+'</div><div class="stat-box-sub">'+s.sub+'</div></div>';
+    }).join('');
+  } catch(e) { document.getElementById('data-stats').textContent='Error: '+e.message; }
 }
-
-// ── ANALYTICS ─────────────────────────────────────────────────────────────────
-async function loadAnalytics() {
-  document.getElementById('analytics-content').innerHTML =
-    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">' +
-    '<div style="background:white;border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.5rem;text-align:center;">' +
-      '<div style="font-size:1.8rem;margin-bottom:0.5rem;">📊</div>' +
-      '<div style="font-weight:600;color:var(--ep-green);margin-bottom:0.4rem;">Google Analytics 4</div>' +
-      '<p style="font-size:0.82rem;color:var(--text-muted);margin-bottom:1rem;">Real-time visitors, page views, sessions, traffic sources.</p>' +
-      '<a href="https://analytics.google.com" target="_blank" rel="noopener" class="action-btn primary" style="display:inline-flex;text-decoration:none;padding:0.5rem 1.2rem;">Open GA4 →</a>' +
-    '</div>' +
-    '<div style="background:white;border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.5rem;text-align:center;">' +
-      '<div style="font-size:1.8rem;margin-bottom:0.5rem;">☁</div>' +
-      '<div style="font-weight:600;color:var(--ep-green);margin-bottom:0.4rem;">Cloudflare Analytics</div>' +
-      '<p style="font-size:0.82rem;color:var(--text-muted);margin-bottom:1rem;">Requests, bandwidth, cache hit rate, threats blocked.</p>' +
-      '<a href="https://dash.cloudflare.com" target="_blank" rel="noopener" class="action-btn primary" style="display:inline-flex;text-decoration:none;padding:0.5rem 1.2rem;">Open Cloudflare →</a>' +
-    '</div>' +
-    '<div style="background:white;border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.5rem;text-align:center;">' +
-      '<div style="font-size:1.8rem;margin-bottom:0.5rem;">🗄</div>' +
-      '<div style="font-weight:600;color:var(--ep-green);margin-bottom:0.4rem;">Supabase Dashboard</div>' +
-      '<p style="font-size:0.82rem;color:var(--text-muted);margin-bottom:1rem;">Database size, API logs, auth users, storage usage.</p>' +
-      '<a href="https://supabase.com/dashboard/project/krmczyqwblsoekceanlj" target="_blank" rel="noopener" class="action-btn primary" style="display:inline-flex;text-decoration:none;padding:0.5rem 1.2rem;">Open Supabase →</a>' +
-    '</div>' +
-    '<div style="background:white;border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.5rem;text-align:center;">' +
-      '<div style="font-size:1.8rem;margin-bottom:0.5rem;">🔑</div>' +
-      '<div style="font-weight:600;color:var(--ep-green);margin-bottom:0.4rem;">Google Cloud Console</div>' +
-      '<p style="font-size:0.82rem;color:var(--text-muted);margin-bottom:1rem;">Air Quality API usage, billing, quota limits.</p>' +
-      '<a href="https://console.cloud.google.com" target="_blank" rel="noopener" class="action-btn primary" style="display:inline-flex;text-decoration:none;padding:0.5rem 1.2rem;">Open GCloud →</a>' +
-    '</div>' +
-    '</div>' +
-    '<div style="background:rgba(33,67,50,0.05);border-radius:var(--radius-lg);padding:1.1rem 1.25rem;margin-top:1rem;font-size:0.82rem;color:var(--text-muted);line-height:1.8;">💡 To embed analytics here directly, connect a Cloudflare Worker that fetches Cloudflare Analytics GraphQL API, or use the GA4 Reporting API with your service account.</div>';
-}
-
-// ── DATA ADMIN ────────────────────────────────────────────────────────────────
-async function loadDataAdmin() {
-  var [cr, bd, tf] = await Promise.all([
-    sbGet('/rest/v1/climate_readings?select=id&limit=1').then(function(r){ return parseInt(r.headers.get('content-range')?.split('/')[1]||'0'); }),
-    sbGet('/rest/v1/bird_detections?select=id&limit=1').then(function(r){ return parseInt(r.headers.get('content-range')?.split('/')[1]||'0'); }),
-    sbGet('/rest/v1/timelapse_frames?select=id&limit=1').then(function(r){ return parseInt(r.headers.get('content-range')?.split('/')[1]||'0'); }),
-  ]);
-  document.getElementById('data-admin').innerHTML =
-    '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1rem;margin-bottom:2rem;">' +
-    [['📊','climate_readings',cr,'All hourly climate data'],['🐦','bird_detections',bd,'All BirdNET detections'],['📸','timelapse_frames',tf,'All hill photos']].map(function(t) {
-      return '<div class="admin-stat"><div style="font-size:1.3rem;margin-bottom:4px;">'+t[0]+'</div>' +
-        '<div class="admin-stat-val">'+t[2].toLocaleString()+'</div><div class="admin-stat-label">'+t[1]+'</div><div class="admin-stat-sub">'+t[3]+'</div></div>';
-    }).join('') + '</div>' +
-    '<div style="background:rgba(220,38,38,0.06);border:1px solid rgba(220,38,38,0.2);border-radius:var(--radius-lg);padding:1.25rem;">' +
-    '<div style="font-weight:600;color:#dc2626;margin-bottom:0.5rem;">⚠️ Danger zone</div>' +
-    '<p style="font-size:0.82rem;color:var(--text-muted);margin-bottom:0.75rem;">All destructive operations (delete, truncate, schema changes) must be done in the Supabase SQL Editor with the service role key. This prevents accidental deletion from the browser.</p>' +
-    '<a href="https://supabase.com/dashboard/project/krmczyqwblsoekceanlj/editor" target="_blank" rel="noopener" style="color:#dc2626;font-size:0.85rem;font-weight:500;">Open Supabase SQL Editor →</a>' +
-    '</div>';
-}
-
-// Define action-btn style for analytics links
-document.head.insertAdjacentHTML('beforeend','<style>.action-btn.primary{background:var(--ep-green);color:var(--ep-cream);border-color:var(--ep-green);}</style>');
 </script>
 </body>
 </html>

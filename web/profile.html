@@ -7,186 +7,219 @@
   <meta name="robots" content="noindex, nofollow">
   <link rel="icon" type="image/png" href="earth-pulse-logo.png">
   <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script>
+    var _SB_URL = 'https://krmczyqwblsoekceanlj.supabase.co';
+    var _SB_KEY = 'sb_publishable_DrHFT5J0vmrkYraUXIlpQQ_gsk1rdq6';
+    var _sb = null; var _user = null;
+    try { _sb = window.supabase.createClient(_SB_URL, _SB_KEY); } catch(e) {}
+    if (_sb) {
+      _sb.auth.getSession().then(function(d) {
+        if (!d.data||!d.data.session) window.location.href='register.html';
+        else _user = d.data.session.user;
+      });
+    }
+  </script>
   <style>
-    .profile-wrap { max-width:680px; margin:0 auto; padding:2rem 1.5rem 4rem; }
-    .back-link { display:inline-flex; align-items:center; gap:5px; color:var(--ep-green); font-size:0.85rem; font-weight:500; text-decoration:none; margin-bottom:2rem; }
-    .profile-card { background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-xl); padding:2rem; margin-bottom:1.25rem; }
-    .profile-card h2 { font-family:var(--serif); font-size:1.2rem; color:var(--ep-green); margin-bottom:1.25rem; padding-bottom:0.6rem; border-bottom:1px solid var(--border); }
-    .form-row { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
-    @media(max-width:500px){ .form-row { grid-template-columns:1fr; } }
-    .form-field { margin-bottom:1rem; }
-    .form-field label { display:block; font-size:0.78rem; font-weight:500; color:var(--text-muted); margin-bottom:0.3rem; }
-    .form-field input { width:100%; padding:0.68rem 1rem; border:1px solid var(--border-strong); border-radius:var(--radius-sm); font-family:var(--sans); font-size:0.92rem; background:white; color:var(--text-primary); outline:none; box-sizing:border-box; transition:border-color 0.2s; }
-    .form-field input:focus { border-color:var(--ep-green); }
-    .form-field input[readonly] { background:var(--ep-cream-dark); color:var(--text-muted); cursor:default; }
-    .check-row { display:flex; align-items:center; gap:0.6rem; font-size:0.88rem; color:var(--text-secondary); margin-bottom:0.6rem; cursor:pointer; }
-    .check-row input { accent-color:var(--ep-green); width:16px; height:16px; cursor:pointer; }
-    .save-btn { background:var(--ep-green); color:var(--ep-cream); padding:0.75rem 2rem; border:none; border-radius:var(--radius-sm); font-family:var(--sans); font-size:0.95rem; font-weight:500; cursor:pointer; transition:background 0.2s; }
-    .save-btn:hover { background:var(--ep-green-mid); }
+    .wrap { max-width:660px; margin:0 auto; padding:2rem 1.5rem 4rem; }
+    .back { display:inline-flex; align-items:center; gap:5px; color:var(--ep-green); font-size:0.85rem; font-weight:500; text-decoration:none; margin-bottom:1.75rem; }
+    .card { background:#fff; border:1px solid var(--border); border-radius:var(--radius-xl); padding:1.75rem; margin-bottom:1.25rem; }
+    .card h2 { font-family:var(--serif); font-size:1.15rem; color:var(--ep-green); margin:0 0 1.25rem; padding-bottom:0.6rem; border-bottom:1px solid var(--border); }
+    .row2 { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
+    @media(max-width:500px){ .row2 { grid-template-columns:1fr; } }
+    .field { margin-bottom:1rem; }
+    .field label { display:block; font-size:0.78rem; font-weight:500; color:var(--text-muted); margin-bottom:0.3rem; }
+    .field input { width:100%; padding:0.68rem 1rem; border:1.5px solid var(--border-strong); border-radius:var(--radius-sm); font-family:var(--sans); font-size:0.92rem; background:#fff; color:var(--text-primary); outline:none; box-sizing:border-box; transition:border-color 0.2s; }
+    .field input:focus { border-color:var(--ep-green); }
+    .field input[readonly] { background:var(--ep-cream-dark); cursor:default; color:var(--text-muted); }
+    .verified-badge { display:inline-flex; align-items:center; gap:4px; font-size:0.72rem; background:rgba(34,197,94,0.12); color:#166534; padding:2px 8px; border-radius:20px; font-weight:600; margin-top:4px; }
+    .unverified-badge { background:rgba(245,158,11,0.12); color:#92400e; }
+    .chk-row { display:flex; align-items:center; gap:0.65rem; font-size:0.88rem; color:var(--text-secondary); margin-bottom:0.6rem; cursor:pointer; }
+    .chk-row input { accent-color:var(--ep-green); width:16px; height:16px; cursor:pointer; }
+    .save-btn { background:var(--ep-green); color:#fff; padding:0.72rem 2rem; border:none; border-radius:var(--radius-sm); font-family:var(--sans); font-size:0.95rem; font-weight:500; cursor:pointer; transition:background 0.2s; }
+    .save-btn:hover:not(:disabled) { background:#1a3628; }
     .save-btn:disabled { opacity:0.5; }
-    .success-msg { color:var(--ep-green); font-size:0.85rem; margin-top:0.75rem; display:none; }
-    .danger-zone { border-color:rgba(220,38,38,0.3); }
-    .danger-zone h2 { color:#dc2626; border-color:rgba(220,38,38,0.2); }
-    .danger-btn { background:transparent; color:#dc2626; border:1.5px solid #dc2626; padding:0.6rem 1.4rem; border-radius:var(--radius-sm); font-family:var(--sans); font-size:0.88rem; cursor:pointer; transition:all 0.2s; }
-    .danger-btn:hover { background:#dc2626; color:white; }
-    .avatar { width:64px; height:64px; border-radius:50%; background:var(--ep-green); display:flex; align-items:center; justify-content:center; font-family:var(--serif); font-size:1.6rem; color:var(--ep-cream); margin-bottom:1rem; }
-    .stat-row { display:flex; gap:2rem; flex-wrap:wrap; margin-bottom:1rem; }
-    .stat-item { text-align:center; }
-    .stat-v { font-family:var(--serif); font-size:1.6rem; color:var(--ep-green); }
-    .stat-l { font-size:0.68rem; font-weight:600; text-transform:uppercase; letter-spacing:0.07em; color:var(--text-muted); margin-top:2px; }
+    .ok { color:var(--ep-green); font-size:0.82rem; margin-top:0.5rem; display:none; }
+    .err { color:#dc2626; font-size:0.82rem; margin-top:0.5rem; display:none; }
+    .danger-card { border-color:rgba(220,38,38,0.25); }
+    .danger-card h2 { color:#dc2626; border-color:rgba(220,38,38,0.15); }
+    .danger-btn { background:transparent; color:#dc2626; border:1.5px solid #dc2626; padding:0.6rem 1.4rem; border-radius:var(--radius-sm); font-family:var(--sans); font-size:0.88rem; cursor:pointer; transition:all 0.15s; }
+    .danger-btn:hover { background:#dc2626; color:#fff; }
+    .stat-strip { display:flex; gap:2rem; margin-bottom:1.5rem; flex-wrap:wrap; }
+    .stat-s { text-align:center; }
+    .stat-s-v { font-family:var(--serif); font-size:1.6rem; color:var(--ep-green); display:block; }
+    .stat-s-l { font-size:0.68rem; font-weight:600; text-transform:uppercase; letter-spacing:0.07em; color:var(--text-muted); }
+    .avatar { width:60px; height:60px; border-radius:50%; background:var(--ep-green); display:flex; align-items:center; justify-content:center; font-family:var(--serif); font-size:1.5rem; color:#fff; margin-bottom:1rem; }
   </style>
 </head>
 <body>
 <div id="ep-nav"></div>
-<div class="profile-wrap">
-  <a href="data.html" class="back-link">← Back to Data Explorer</a>
+<div class="wrap">
+  <a href="data.html" class="back">← Back to Data Explorer</a>
   <h1 style="font-family:var(--serif);font-size:2rem;color:var(--ep-green);margin-bottom:0.3rem;">My Profile</h1>
-  <p style="font-size:0.88rem;color:var(--text-muted);margin-bottom:2rem;">Manage your account, preferences, and how Earth Pulse communicates with you.</p>
+  <p style="font-size:0.88rem;color:var(--text-muted);margin-bottom:2rem;">Manage your account, notification preferences, and how Earth Pulse communicates with you.</p>
 
-  <!-- Member info -->
-  <div class="profile-card">
-    <div class="avatar" id="avatar-initials">EP</div>
-    <div class="stat-row" id="member-stats">
-      <div class="stat-item"><div class="stat-v" id="stat-member-since">—</div><div class="stat-l">Member since</div></div>
-      <div class="stat-item"><div class="stat-v" id="stat-searches">—</div><div class="stat-l">Data queries</div></div>
+  <!-- Member snapshot -->
+  <div class="card">
+    <div class="avatar" id="av">EP</div>
+    <div class="stat-strip">
+      <div class="stat-s"><span class="stat-s-v" id="s-since">—</span><span class="stat-s-l">Member since</span></div>
+      <div class="stat-s"><span class="stat-s-v" id="s-searches">—</span><span class="stat-s-l">Data queries</span></div>
     </div>
+    <div id="email-status"></div>
   </div>
 
   <!-- Personal details -->
-  <div class="profile-card">
+  <div class="card">
     <h2>Personal details</h2>
-    <div class="form-row">
-      <div class="form-field"><label>First name</label><input type="text" id="p-first" placeholder="Priya"></div>
-      <div class="form-field"><label>Last name</label><input type="text" id="p-last" placeholder="Sharma"></div>
+    <div class="row2">
+      <div class="field"><label>First name</label><input type="text" id="p-first" placeholder="Priya"></div>
+      <div class="field"><label>Last name</label><input type="text" id="p-last" placeholder="Sharma"></div>
     </div>
-    <div class="form-field"><label>Email address</label><input type="email" id="p-email" readonly></div>
-    <div class="form-field"><label>Mobile number <span style="opacity:0.5;font-size:0.75rem;">(optional — for SMS alerts in future)</span></label><input type="tel" id="p-mobile" placeholder="+91 98765 43210"></div>
-    <div class="form-field"><label>City / Location</label><input type="text" id="p-city" placeholder="Baner, Pune"></div>
-    <div class="form-field"><label>How did you find Earth Pulse?</label><input type="text" id="p-found" placeholder="e.g. WhatsApp, Google, friend…"></div>
-    <button class="save-btn" onclick="saveProfile()">Save changes</button>
-    <div class="success-msg" id="profile-msg">✅ Profile updated!</div>
+    <div class="field"><label>Email address</label><input type="email" id="p-email" readonly></div>
+    <div class="field"><label>Mobile number <span style="opacity:0.5;font-size:0.75em;">(optional)</span></label><input type="tel" id="p-mobile" placeholder="+91 98765 43210"></div>
+    <div class="field"><label>City / Location</label><input type="text" id="p-city" placeholder="Baner, Pune"></div>
+    <div class="field"><label>How did you find Earth Pulse?</label><input type="text" id="p-found" placeholder="e.g. WhatsApp, Google, friend…"></div>
+    <button class="save-btn" id="prof-btn" onclick="saveProfile()">Save changes</button>
+    <div class="ok" id="prof-ok">✅ Profile updated!</div>
+    <div class="err" id="prof-err"></div>
   </div>
 
   <!-- Password -->
-  <div class="profile-card">
+  <div class="card">
     <h2>Change password</h2>
-    <div class="form-field"><label>New password</label><input type="password" id="p-pw" placeholder="At least 8 characters" minlength="8"></div>
-    <div class="form-field"><label>Confirm new password</label><input type="password" id="p-pw2" placeholder="Repeat new password"></div>
-    <button class="save-btn" onclick="changePassword()">Update password</button>
-    <div class="success-msg" id="pw-msg"></div>
+    <div class="field"><label>New password <span style="opacity:0.5;font-size:0.75em;">(min 8 characters)</span></label><input type="password" id="p-pw1" placeholder="New password"></div>
+    <div class="field"><label>Confirm new password</label><input type="password" id="p-pw2" placeholder="Repeat new password"></div>
+    <button class="save-btn" onclick="changePw()">Update password</button>
+    <div class="ok" id="pw-ok">✅ Password updated!</div>
+    <div class="err" id="pw-err"></div>
   </div>
 
   <!-- Communication -->
-  <div class="profile-card">
+  <div class="card">
     <h2>Communication preferences</h2>
-    <label class="check-row"><input type="checkbox" id="pref-newsletter"> Receive the monthly Earth Pulse report (top birds, AQI trends, seasonal insights)</label>
-    <label class="check-row"><input type="checkbox" id="pref-discoveries"> Get notified when a new bird species is detected in Baner for the first time</label>
-    <label class="check-row"><input type="checkbox" id="pref-alerts"> Receive the alerts I've configured in the Data Explorer</label>
-    <label class="check-row"><input type="checkbox" id="pref-updates"> Occasional project updates (new features, milestones) — max 1/month</label>
+    <label class="chk-row"><input type="checkbox" id="pref-nl"> Receive the monthly Earth Pulse report</label>
+    <label class="chk-row"><input type="checkbox" id="pref-disc"> Notify me when a new bird species is first detected in Baner</label>
+    <label class="chk-row"><input type="checkbox" id="pref-alerts"> Send me the alerts I've set in the Data Explorer</label>
+    <label class="chk-row"><input type="checkbox" id="pref-upd"> Occasional project updates — max once a month</label>
     <button class="save-btn" style="margin-top:0.75rem;" onclick="savePrefs()">Save preferences</button>
-    <div class="success-msg" id="prefs-msg">✅ Preferences saved!</div>
+    <div class="ok" id="prefs-ok">✅ Preferences saved!</div>
   </div>
 
   <!-- Danger zone -->
-  <div class="profile-card danger-zone">
+  <div class="card danger-card">
     <h2>Danger zone</h2>
-    <p style="font-size:0.88rem;color:var(--text-muted);margin-bottom:1rem;">Deleting your account removes all your preferences, alerts, and search history. Your data contributions to the dataset remain (they are anonymised).</p>
-    <button class="danger-btn" onclick="deleteAccount()">Delete my account</button>
+    <p style="font-size:0.88rem;color:var(--text-muted);margin-bottom:1rem;">Deleting your account removes all your preferences, alert settings, and search history. Your environmental data contributions remain (they are anonymised).</p>
+    <button class="danger-btn" onclick="deleteAcct()">Delete my account</button>
   </div>
 </div>
 
 <div id="ep-footer"></div>
 <script src="analytics.js"></script>
 <script src="nav.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script>
-const SB_URL = 'https://krmczyqwblsoekceanlj.supabase.co';
-const SB_KEY = 'sb_publishable_DrHFT5J0vmrkYraUXIlpQQ_gsk1rdq6';
-const supabase = window.supabase.createClient(SB_URL, SB_KEY);
-let user = null;
-
-supabase.auth.getSession().then(function(d) {
-  if (!d.data.session) { window.location.href = 'register.html'; return; }
-  user = d.data.session.user;
-  populate();
+window.addEventListener('DOMContentLoaded', function() {
+  if (!_sb) return;
+  _sb.auth.getSession().then(function(d) {
+    if (!d.data||!d.data.session) { window.location.href='register.html'; return; }
+    _user = d.data.session.user;
+    populate();
+  });
 });
 
 async function populate() {
-  var meta = user.user_metadata || {};
-  document.getElementById('p-email').value = user.email;
+  var meta = _user.user_metadata || {};
+  document.getElementById('p-email').value = _user.email;
   document.getElementById('p-first').value = meta.first_name || '';
   document.getElementById('p-last').value  = meta.last_name  || '';
   document.getElementById('p-mobile').value= meta.mobile     || '';
   document.getElementById('p-city').value  = meta.city       || '';
   document.getElementById('p-found').value = meta.how_found  || '';
 
-  var initials = ((meta.first_name||'E').charAt(0) + (meta.last_name||'P').charAt(0)).toUpperCase();
-  document.getElementById('avatar-initials').textContent = initials;
+  var init = ((meta.first_name||'E').charAt(0) + (meta.last_name||'P').charAt(0)).toUpperCase();
+  document.getElementById('av').textContent = init;
 
-  var since = new Date(user.created_at).toLocaleDateString('en-IN',{month:'short',year:'numeric'});
-  document.getElementById('stat-member-since').textContent = since;
+  var since = new Date(_user.created_at).toLocaleDateString('en-IN',{month:'short',year:'numeric'});
+  document.getElementById('s-since').textContent = since;
 
-  // Load search count
-  var r = await fetch(SB_URL+'/rest/v1/user_searches?select=id&user_id=eq.'+user.id, {headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Prefer':'count=exact'}});
-  var count = parseInt(r.headers.get('content-range')?.split('/')[1]||'0');
-  document.getElementById('stat-searches').textContent = count;
-
-  // Load prefs
   var prefs = meta.prefs || {};
-  document.getElementById('pref-newsletter').checked  = prefs.newsletter !== false;
-  document.getElementById('pref-discoveries').checked = prefs.discoveries !== false;
-  document.getElementById('pref-alerts').checked      = prefs.alerts !== false;
-  document.getElementById('pref-updates').checked     = prefs.updates !== false;
+  document.getElementById('pref-nl').checked    = prefs.newsletter  !== false;
+  document.getElementById('pref-disc').checked  = prefs.discoveries !== false;
+  document.getElementById('pref-alerts').checked= prefs.alerts      !== false;
+  document.getElementById('pref-upd').checked   = prefs.updates     !== false;
+
+  // Email verification status
+  var statusEl = document.getElementById('email-status');
+  if (_user.email_confirmed_at) {
+    statusEl.innerHTML = '<span class="verified-badge">✓ Email verified</span>';
+  } else {
+    statusEl.innerHTML = '<span class="verified-badge unverified-badge">📧 Email not yet verified — check your inbox</span> <button onclick="resendVerify()" style="margin-left:8px;font-size:0.78rem;color:var(--ep-green);background:none;border:none;cursor:pointer;text-decoration:underline;">Resend</button>';
+  }
+
+  // Search count
+  try {
+    var r = await _sb.from('user_searches').select('id', {count:'exact',head:true}).eq('user_id', _user.id);
+    document.getElementById('s-searches').textContent = r.count || 0;
+  } catch(e) { document.getElementById('s-searches').textContent = '—'; }
+}
+
+async function resendVerify() {
+  if (!_sb||!_user) return;
+  try {
+    await _sb.auth.resend({ type:'signup', email:_user.email, options:{emailRedirectTo:'https://earthpulse.pages.dev/data.html'} });
+    alert('Verification email resent! Check your inbox.');
+  } catch(e) { alert('Error: ' + e.message); }
 }
 
 async function saveProfile() {
-  var btn = document.querySelector('.save-btn');
+  if (!_sb||!_user) return;
+  var btn = document.getElementById('prof-btn');
+  btn.disabled=true; btn.textContent='Saving…';
   try {
-    var { error } = await supabase.auth.updateUser({ data: {
+    var r = await _sb.auth.updateUser({ data: {
       first_name: document.getElementById('p-first').value.trim(),
       last_name:  document.getElementById('p-last').value.trim(),
       mobile:     document.getElementById('p-mobile').value.trim(),
       city:       document.getElementById('p-city').value.trim(),
       how_found:  document.getElementById('p-found').value.trim(),
     }});
-    if (error) throw error;
-    var msg = document.getElementById('profile-msg');
-    msg.style.display = 'block'; setTimeout(function(){ msg.style.display='none'; }, 3000);
-  } catch(e) { alert('Error: ' + e.message); }
+    if (r.error) throw r.error;
+    show('prof-ok'); hide('prof-err');
+  } catch(e) { document.getElementById('prof-err').textContent='Error: '+e.message; show('prof-err'); }
+  btn.disabled=false; btn.textContent='Save changes';
 }
 
-async function changePassword() {
-  var pw  = document.getElementById('p-pw').value;
+async function changePw() {
+  var pw1 = document.getElementById('p-pw1').value;
   var pw2 = document.getElementById('p-pw2').value;
-  var msg = document.getElementById('pw-msg');
-  if (pw !== pw2) { msg.textContent='Passwords do not match.'; msg.style.color='#dc2626'; msg.style.display='block'; return; }
-  if (pw.length < 8) { msg.textContent='Password must be at least 8 characters.'; msg.style.color='#dc2626'; msg.style.display='block'; return; }
-  var { error } = await supabase.auth.updateUser({ password: pw });
-  if (error) { msg.textContent='Error: '+error.message; msg.style.color='#dc2626'; }
-  else { msg.textContent='✅ Password updated!'; msg.style.color='var(--ep-green)'; }
-  msg.style.display='block';
-  setTimeout(function(){ msg.style.display='none'; document.getElementById('p-pw').value=''; document.getElementById('p-pw2').value=''; }, 4000);
+  if (pw1 !== pw2) { document.getElementById('pw-err').textContent='Passwords do not match.'; show('pw-err'); return; }
+  if (pw1.length < 8) { document.getElementById('pw-err').textContent='Password must be at least 8 characters.'; show('pw-err'); return; }
+  try {
+    var r = await _sb.auth.updateUser({ password: pw1 });
+    if (r.error) throw r.error;
+    show('pw-ok'); hide('pw-err');
+    document.getElementById('p-pw1').value = '';
+    document.getElementById('p-pw2').value = '';
+  } catch(e) { document.getElementById('pw-err').textContent='Error: '+e.message; show('pw-err'); }
 }
 
 async function savePrefs() {
-  var prefs = {
-    newsletter:  document.getElementById('pref-newsletter').checked,
-    discoveries: document.getElementById('pref-discoveries').checked,
-    alerts:      document.getElementById('pref-alerts').checked,
-    updates:     document.getElementById('pref-updates').checked,
-  };
-  var { error } = await supabase.auth.updateUser({ data: { prefs } });
-  var msg = document.getElementById('prefs-msg');
-  msg.style.display='block'; if(error) msg.textContent='Error: '+error.message;
-  setTimeout(function(){ msg.style.display='none'; }, 3000);
+  if (!_sb||!_user) return;
+  var prefs = { newsletter:document.getElementById('pref-nl').checked, discoveries:document.getElementById('pref-disc').checked, alerts:document.getElementById('pref-alerts').checked, updates:document.getElementById('pref-upd').checked };
+  try {
+    var r = await _sb.auth.updateUser({ data: { prefs } });
+    if (r.error) throw r.error;
+    show('prefs-ok');
+  } catch(e) { alert('Error: ' + e.message); }
 }
 
-async function deleteAccount() {
-  if (!confirm('Are you sure? This cannot be undone. Your search history and alert preferences will be permanently deleted.')) return;
-  // In production this calls a Supabase Edge Function with service role key
-  // For now, sign out and show message
-  await supabase.auth.signOut();
-  alert('Account deletion request noted. Contact us at fangchu@gmail.com to complete deletion.');
+function show(id) { var el=document.getElementById(id); el.style.display='block'; setTimeout(function(){el.style.display='none';},3500); }
+function hide(id) { document.getElementById(id).style.display='none'; }
+
+async function deleteAcct() {
+  if (!confirm('Are you sure? This cannot be undone.')) return;
+  await _sb.auth.signOut().catch(function(){});
+  alert('Account deletion requested. Please email fangchu@gmail.com to complete deletion. You have been signed out.');
   window.location.href = 'index.html';
 }
 </script>
