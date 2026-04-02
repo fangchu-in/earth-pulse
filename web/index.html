@@ -3,19 +3,27 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Earth Pulse — Live Climate & Bird Monitor, Baner, Pune</title>
-  <meta name="description" content="Hyperlocal air quality, climate, and bird biodiversity monitoring from Baner, Pune. Real-time AQI, temperature, and bird species detected daily using BirdNET acoustic AI.">
-  <meta name="keywords" content="Baner Pune AQI, Pune air quality, bird watching Pune, Sahyadri birds, BirdNET Pune, hyperlocal climate data, Pune pollution, citizen science Pune">
+  <title>Earth Pulse — Live AQI, Birds & Climate Monitor | Baner, Pune</title>
+  <meta name="description" content="Real-time air quality (AQI), bird detection, microclimate and biodiversity monitoring from Baner, Pune — on the edge of the Western Ghats. Hourly data since January 2022. Free and open.">
+  <meta name="keywords" content="Baner Pune AQI live, Pune air quality today, bird watching Pune, Sahyadri birds, BirdNET Pune, Baner weather live, hyperlocal climate Pune, Western Ghats biodiversity, citizen science Pune, Baner pollution levels">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://earthpulse.pages.dev/">
-  <meta property="og:title" content="Earth Pulse — Live Climate & Bird Monitor, Baner, Pune">
-  <meta property="og:description" content="Real-time AQI, microclimate data, and bird species detected daily from the Sahyadri foothills.">
+  <!-- Open Graph / WhatsApp -->
+  <meta property="og:title" content="Earth Pulse — Live AQI, Birds & Climate | Baner, Pune">
+  <meta property="og:description" content="Real-time air quality, temperature, and bird detections from the Sahyadri foothills. 37,000+ hourly records since 2022. Free citizen science data for Baner, Pune.">
   <meta property="og:image" content="https://earthpulse.pages.dev/earth-pulse-logo.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
   <meta property="og:url" content="https://earthpulse.pages.dev/">
   <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Earth Pulse · Baner, Pune">
   <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Earth Pulse — Live AQI, Birds & Climate | Baner, Pune">
+  <meta name="twitter:description" content="Real-time environmental monitoring from the Sahyadri foothills. Live AQI, bird detections, hourly weather. Open citizen science data since 2022.">
+  <meta name="twitter:image" content="https://earthpulse.pages.dev/earth-pulse-logo.png">
   <link rel="icon" type="image/png" href="earth-pulse-logo.png">
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Dataset","name":"Earth Pulse — Baner, Pune Environmental Observatory","description":"Hyperlocal air quality, microclimate, and bird biodiversity data from Baner, Pune, India.","url":"https://earthpulse.pages.dev","spatialCoverage":{"@type":"Place","name":"Baner, Pune, Maharashtra, India","geo":{"@type":"GeoCoordinates","latitude":18.5526156,"longitude":73.7818663}},"temporalCoverage":"2022-01-01/.."}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"Earth Pulse","url":"https://earthpulse.pages.dev","description":"Hyperlocal air quality, microclimate, and bird biodiversity data from Baner, Pune, India — on the edge of the Western Ghats UNESCO ecosystem.","potentialAction":{"@type":"SearchAction","target":"https://earthpulse.pages.dev/search.html?q={search_term_string}","query-input":"required name=search_term_string"}}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Dataset","name":"Earth Pulse — Baner, Pune Environmental Observatory","description":"Hourly air quality (EU AQI, India AQI, PM2.5, PM10), microclimate, and acoustic bird biodiversity data from Baner, Pune, on the edge of the Western Ghats. 37,000+ records since January 2022.","url":"https://earthpulse.pages.dev","license":"https://creativecommons.org/licenses/by/4.0/","creator":{"@type":"Organization","name":"Earth Pulse Project","url":"https://earthpulse.pages.dev"},"spatialCoverage":{"@type":"Place","name":"Baner, Pune, Maharashtra, India","geo":{"@type":"GeoCoordinates","latitude":18.5526156,"longitude":73.7818663}},"temporalCoverage":"2022-01-01/..","measurementTechnique":"BirdNET acoustic AI, Copernicus CAMS API, Google Air Quality API","variableMeasured":["AQI","PM2.5","PM10","temperature","humidity","precipitation","bird species detections"]}</script>
   <link rel="stylesheet" href="styles.css">
   <style>
     .metrics-row { display:grid; grid-template-columns:2fr 1fr 1fr 1fr 1fr; gap:1rem; max-width:1100px; margin:0 auto; padding:2rem 2rem 1rem; }
@@ -102,7 +110,7 @@
   <div class="ep-hero-tag ep-fade-up">📍 Baner, Pune · 18.55°N 73.78°E · Sahyadri Foothills</div>
   <h1 class="ep-fade-up ep-delay-1">The <em>living pulse</em> of<br>Baner's environment</h1>
   <p class="ep-hero-sub ep-fade-up ep-delay-2">Real-time air quality, microclimate, and bird biodiversity — monitored continuously.</p>
-  <p class="ep-hero-meta ep-fade-up ep-delay-3">Updated hourly · Data since <strong>January 2022</strong> · <strong id="total-records">37,000+</strong> climate records · Last updated <strong id="last-updated">—</strong></p>
+  <p class="ep-hero-meta ep-fade-up ep-delay-3">Updated hourly · Data since <strong>January 2022</strong> · <strong id="total-records">37,000+</strong> climate records · <strong id="species-count">—</strong> bird species detected · Last updated <strong id="last-updated">—</strong></p>
 </div>
 
 <!-- LIVE METRICS -->
@@ -305,7 +313,7 @@
       <h3>Monthly Earth Pulse report</h3>
       <p>A beautifully formatted monthly summary — top birds, AQI trends, notable events, and seasonal insights — delivered to your inbox.</p>
       <form class="ep-newsletter-form" id="newsletter-form" onsubmit="handleNewsletter(event)">
-        <input type="email" placeholder="your@email.com" required aria-label="Email address">
+        <input type="email" placeholder="Tenzing.Norgay@everest.com" required aria-label="Email address">
         <button type="submit">Subscribe</button>
       </form>
       <p style="margin-top:1rem;font-size:0.74rem;color:var(--text-muted);">No spam. Unsubscribe anytime. ~1 email per month.</p>
@@ -491,14 +499,17 @@ async function loadBirds() {
     const unique=birds.filter(b=>{if(seen.has(b.species_scientific))return false;seen.add(b.species_scientific);return true;});
     grid.innerHTML=unique.map((b,i)=>{
       const time=new Date(b.detected_at).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit',hour12:true,timeZone:'Asia/Kolkata'});
-      const wiki=encodeURIComponent(b.species_scientific.replace(/ /g,'_'));
+      // Link to species profile page, not Wikipedia
+      const speciesUrl=`species.html?bird=${b.species_scientific.replace(/ /g,'_')}`;
       const star=b.is_new_species_this_year?`<span class="bird-new-star">★ First this year</span>`:'';
-      return `<a class="ep-bird-card" href="https://en.wikipedia.org/wiki/${wiki}" target="_blank" rel="noopener" role="listitem">
+      return `<a class="ep-bird-card" href="${speciesUrl}" role="listitem" title="View ${b.species_common} profile">
         <div class="bird-photo-wrap" id="idx-photo-wrap-${i}"><div class="bird-photo-loading" id="idx-photo-${i}"></div></div>
         <div><div class="ep-bird-name">${b.species_common}${star}</div><div class="ep-bird-sci">${b.species_scientific}</div>
-        <div style="margin-bottom:4px;"><span class="ep-badge ep-badge-common">Common</span></div>
+        <div style="margin-bottom:3px;"><span class="ep-badge ep-badge-common">Common</span></div>
         <div class="ep-bird-time">Heard at ${time}</div>
-        <div class="ep-bird-conf">${(b.confidence*100).toFixed(0)}% confidence</div></div></a>`;
+        <div class="ep-bird-conf">${(b.confidence*100).toFixed(0)}% confidence</div>
+        <div style="font-size:0.68rem;color:var(--ep-tan);margin-top:3px;font-weight:500;">View full profile →</div>
+        </div></a>`;
     }).join('');
     unique.forEach(async(b,i)=>{
       const el=document.getElementById(`idx-photo-${i}`);
@@ -729,6 +740,16 @@ async function handleNewsletter(e) {
   loadMonsoon();
   loadCharts();
   loadYearStats();
+  // Load total species count for hero
+  try {
+    const r = await fetch(`${SUPABASE_URL}/rest/v1/bird_detections?select=species_scientific`,{headers:HDR});
+    const rows = await r.json();
+    if(Array.isArray(rows)){
+      const count = new Set(rows.map(b=>b.species_scientific)).size;
+      const el = document.getElementById('species-count');
+      if(el) el.textContent = count;
+    }
+  } catch(e){}
 })();
 </script>
 </body>

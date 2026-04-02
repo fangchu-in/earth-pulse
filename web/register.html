@@ -9,64 +9,87 @@
   <link rel="canonical" href="https://earthpulse.pages.dev/register.html">
   <link rel="icon" type="image/png" href="earth-pulse-logo.png">
   <link rel="stylesheet" href="styles.css">
+
+  <!--
+    CRITICAL: Supabase JS must load in <head> so it is available
+    before ANY user interaction with the form buttons.
+  -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script>
+    // Initialise immediately — this runs before body renders
+    var SB_URL = 'https://krmczyqwblsoekceanlj.supabase.co';
+    var SB_KEY = 'sb_publishable_DrHFT5J0vmrkYraUXIlpQQ_gsk1rdq6';
+    var _supabase = null;
+
+    // Safe init — won't throw even if CDN fails
+    try {
+      _supabase = window.supabase.createClient(SB_URL, SB_KEY);
+    } catch(e) {
+      console.error('Supabase init failed:', e);
+    }
+
+    // If already logged in, redirect immediately
+    if (_supabase) {
+      _supabase.auth.getSession().then(function(d) {
+        if (!d.data || !d.data.session) return;
+        var email = d.data.session.user.email;
+        window.location.href = email === 'fangchu@gmail.com' ? 'admin.html' : 'data.html';
+      }).catch(function(){});
+    }
+  </script>
+
   <style>
     body { background:var(--ep-cream); }
     .reg-layout { min-height:calc(100vh - 62px); display:grid; grid-template-columns:1fr 1fr; }
     @media(max-width:800px){ .reg-layout { grid-template-columns:1fr; } .reg-left { display:none; } }
 
-    /* Left panel — benefits */
-    .reg-left {
-      background:var(--ep-green); padding:3.5rem 3rem;
-      display:flex; flex-direction:column; justify-content:center;
-    }
-    .reg-left-logo { display:flex; align-items:center; gap:10px; margin-bottom:3rem; }
-    .reg-left-logo span { font-family:var(--sans); font-weight:600; font-size:1.1rem; color:var(--ep-cream); }
+    .reg-left { background:var(--ep-green); padding:3.5rem 3rem; display:flex; flex-direction:column; justify-content:center; }
     .reg-left h2 { font-family:var(--serif); font-size:1.8rem; color:var(--ep-cream); margin-bottom:0.75rem; line-height:1.2; }
     .reg-left p  { font-size:0.88rem; color:rgba(242,240,230,0.65); line-height:1.8; margin-bottom:2rem; }
-    .benefit-list { list-style:none; }
+    .benefit-list { list-style:none; padding:0; margin:0; }
     .benefit-list li { display:flex; align-items:flex-start; gap:0.75rem; margin-bottom:1rem; font-size:0.88rem; color:rgba(242,240,230,0.85); line-height:1.5; }
     .benefit-icon { font-size:1.1rem; flex-shrink:0; margin-top:1px; }
     .benefit-list strong { color:var(--ep-tan); display:block; font-size:0.9rem; }
     .reg-left-note { margin-top:2.5rem; font-size:0.75rem; color:rgba(242,240,230,0.35); }
 
-    /* Right panel — form */
     .reg-right { padding:3.5rem 3rem; display:flex; align-items:center; justify-content:center; }
     .reg-form-wrap { width:100%; max-width:420px; }
     .reg-form-wrap h1 { font-family:var(--serif); font-size:2rem; color:var(--ep-green); margin-bottom:0.3rem; }
-    .reg-form-wrap .sub { font-size:0.88rem; color:var(--text-muted); margin-bottom:2rem; }
+    .reg-sub { font-size:0.88rem; color:var(--text-muted); margin-bottom:1.75rem; }
 
-    /* Tabs */
-    .auth-tabs { display:flex; gap:0; margin-bottom:1.75rem; border:1px solid var(--border-strong); border-radius:var(--radius-sm); overflow:hidden; }
+    .auth-tabs { display:flex; margin-bottom:1.75rem; border:1px solid var(--border-strong); border-radius:var(--radius-sm); overflow:hidden; }
     .auth-tab { flex:1; padding:0.6rem; text-align:center; font-size:0.85rem; font-weight:500; cursor:pointer; background:transparent; border:none; font-family:var(--sans); color:var(--text-muted); transition:all 0.15s; }
     .auth-tab.active { background:var(--ep-green); color:var(--ep-cream); }
 
-    /* Form */
-    .auth-form { display:flex; flex-direction:column; gap:1rem; }
-    .form-group label { display:block; font-size:0.78rem; font-weight:500; color:var(--text-secondary); margin-bottom:0.3rem; }
-    .form-group input { width:100%; padding:0.72rem 1rem; border:1px solid var(--border-strong); border-radius:var(--radius-sm); font-family:var(--sans); font-size:0.95rem; background:white; color:var(--text-primary); outline:none; box-sizing:border-box; transition:border-color 0.2s; }
-    .form-group input:focus { border-color:var(--ep-green); }
-    .form-group.half { display:grid; grid-template-columns:1fr 1fr; gap:0.75rem; }
+    .form-field { margin-bottom:1rem; }
+    .form-field label { display:block; font-size:0.78rem; font-weight:500; color:var(--text-secondary); margin-bottom:0.3rem; }
+    .form-field input { width:100%; padding:0.72rem 1rem; border:1.5px solid var(--border-strong); border-radius:var(--radius-sm); font-family:var(--sans); font-size:0.95rem; background:white; color:var(--text-primary); outline:none; box-sizing:border-box; transition:border-color 0.2s; }
+    .form-field input:focus { border-color:var(--ep-green); box-shadow:0 0 0 3px rgba(33,67,50,0.08); }
+    .form-row { display:grid; grid-template-columns:1fr 1fr; gap:0.75rem; }
 
-    .auth-btn { background:var(--ep-green); color:var(--ep-cream); padding:0.82rem; border:none; border-radius:var(--radius-sm); font-family:var(--sans); font-size:1rem; font-weight:500; cursor:pointer; transition:background 0.2s; width:100%; }
-    .auth-btn:hover:not(:disabled) { background:var(--ep-green-mid); }
-    .auth-btn:disabled { opacity:0.55; cursor:not-allowed; }
+    .auth-btn { background:var(--ep-green); color:var(--ep-cream); padding:0.82rem 1rem; border:none; border-radius:var(--radius-sm); font-family:var(--sans); font-size:1rem; font-weight:500; cursor:pointer; transition:background 0.2s; width:100%; margin-top:0.25rem; }
+    .auth-btn:hover:not(:disabled) { background:#1a3628; }
+    .auth-btn:disabled { opacity:0.5; cursor:not-allowed; }
+    .auth-btn-outline { background:transparent; color:var(--ep-green); border:1.5px solid var(--ep-green); }
+    .auth-btn-outline:hover:not(:disabled) { background:rgba(33,67,50,0.06); }
 
-    .auth-divider { text-align:center; font-size:0.78rem; color:var(--text-muted); position:relative; margin:0.5rem 0; }
-    .auth-divider::before { content:''; position:absolute; top:50%; left:0; right:0; height:1px; background:var(--border); }
-    .auth-divider span { background:var(--ep-cream); padding:0 0.75rem; position:relative; }
-
-    .msg { padding:0.75rem 1rem; border-radius:var(--radius-sm); font-size:0.85rem; display:none; }
+    .msg { padding:0.75rem 1rem; border-radius:var(--radius-sm); font-size:0.85rem; margin-bottom:1rem; display:none; line-height:1.5; }
+    .msg.error   { background:rgba(220,38,38,0.07); color:#991b1b; border:1px solid rgba(220,38,38,0.25); }
     .msg.success { background:rgba(33,67,50,0.08); color:var(--ep-green); border:1px solid rgba(33,67,50,0.2); }
-    .msg.error   { background:rgba(220,38,38,0.07); color:#991b1b; border:1px solid rgba(220,38,38,0.2); }
 
-    .terms { font-size:0.72rem; color:var(--text-muted); text-align:center; line-height:1.6; }
+    .divider { display:flex; align-items:center; gap:0.75rem; margin:1rem 0; }
+    .divider-line { flex:1; height:1px; background:var(--border); }
+    .divider-text { font-size:0.75rem; color:var(--text-muted); white-space:nowrap; }
+
+    .terms { font-size:0.71rem; color:var(--text-muted); line-height:1.6; margin-top:0.75rem; }
     .terms a { color:var(--ep-green); text-decoration:none; }
 
-    /* Success state */
-    .success-state { text-align:center; padding:2rem; display:none; }
-    .success-state .check { font-size:3rem; margin-bottom:1rem; }
-    .success-state h2 { font-family:var(--serif); font-size:1.6rem; color:var(--ep-green); margin-bottom:0.5rem; }
-    .success-state p { font-size:0.88rem; color:var(--text-muted); line-height:1.7; }
+    .success-panel { text-align:center; padding:2.5rem 1rem; display:none; }
+    .success-icon { font-size:3rem; margin-bottom:1rem; }
+    .success-panel h2 { font-family:var(--serif); font-size:1.6rem; color:var(--ep-green); margin-bottom:0.75rem; }
+    .success-panel p { font-size:0.88rem; color:var(--text-muted); line-height:1.7; }
+
+    .forgot-link { font-size:0.78rem; color:var(--ep-green); text-decoration:none; display:block; text-align:right; margin-top:-0.5rem; margin-bottom:0.75rem; }
   </style>
 </head>
 <body>
@@ -74,251 +97,253 @@
 
 <div class="reg-layout">
 
-  <!-- LEFT: benefits -->
+  <!-- LEFT PANEL -->
   <div class="reg-left">
-    <div class="reg-left-logo">
-      <img src="earth-pulse-logo-white.png" alt="Earth Pulse" style="height:32px;width:auto;" onerror="this.style.display='none'">
-    </div>
+    
     <h2>Unlock the full<br>Earth Pulse dataset</h2>
     <p>Free registration gives you access to the complete environmental archive from Baner, Pune — every hour since January 2022.</p>
     <ul class="benefit-list">
       <li><span class="benefit-icon">📊</span><div><strong>Full historical data</strong>37,000+ hourly records of AQI, temperature, humidity, wind, solar radiation — downloadable as CSV.</div></li>
       <li><span class="benefit-icon">🐦</span><div><strong>Complete bird log</strong>Every BirdNET detection with confidence score, timestamp, and correlated climate data.</div></li>
-      <li><span class="benefit-icon">📈</span><div><strong>Advanced charts</strong>Multi-year trends, festival pollution analysis, seasonal AQI patterns, monsoon comparisons.</div></li>
-      <li><span class="benefit-icon">🌧️</span><div><strong>Full records table</strong>All-time extremes — highest rainfall, worst AQI days, coldest mornings, most rainy months.</div></li>
-      <li><span class="benefit-icon">🔗</span><div><strong>API access</strong>Direct query access to the Supabase database for research and integration projects.</div></li>
-      <li><span class="benefit-icon">📬</span><div><strong>Monthly report</strong>A beautifully formatted email with top birds, AQI trends, and seasonal insights every month.</div></li>
+      <li><span class="benefit-icon">🔍</span><div><strong>AI data explorer</strong>Ask any question in plain English — "Which birds are heard most in monsoon?" — and get instant answers.</div></li>
+      <li><span class="benefit-icon">🔔</span><div><strong>Custom alerts</strong>Get notified when your favourite birds are detected, or when AQI hits extremes.</div></li>
+      <li><span class="benefit-icon">📬</span><div><strong>Monthly report</strong>Top birds, AQI trends, seasonal insights — delivered to your inbox every month.</div></li>
     </ul>
     <p class="reg-left-note">Free forever. No credit card. No spam. Unsubscribe anytime.</p>
   </div>
 
-  <!-- RIGHT: auth form -->
+  <!-- RIGHT PANEL -->
   <div class="reg-right">
     <div class="reg-form-wrap">
-      <h1>Create account</h1>
-      <p class="sub">Join the Earth Pulse community. Free forever.</p>
+      <h1 id="form-title">Create account</h1>
+      <p class="reg-sub" id="form-sub">Join the Earth Pulse community. Free forever.</p>
 
-      <!-- Tabs -->
-      <div class="auth-tabs">
-        <button class="auth-tab active" id="tab-register" onclick="switchTab('register')">Register</button>
-        <button class="auth-tab"        id="tab-login"    onclick="switchTab('login')">Sign in</button>
+      <!-- Tab switcher -->
+      <div class="auth-tabs" id="auth-tabs">
+        <button class="auth-tab active" id="tab-reg" onclick="showTab('register')">Register</button>
+        <button class="auth-tab"        id="tab-login" onclick="showTab('login')">Sign in</button>
       </div>
 
-      <!-- Google OAuth -->
-      <button onclick="signInWithGoogle()" style="width:100%;display:flex;align-items:center;justify-content:center;gap:0.75rem;padding:0.75rem 1rem;border:1.5px solid var(--border-strong);border-radius:var(--radius-sm);background:white;font-family:var(--sans);font-size:0.92rem;font-weight:500;color:var(--text-primary);cursor:pointer;margin-bottom:1rem;transition:box-shadow 0.2s;" onmouseover="this.style.boxShadow='0 2px 12px rgba(0,0,0,0.1)'" onmouseout="this.style.boxShadow='none'">
-        <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/><path fill="none" d="M0 0h48v48H0z"/></svg>
-        Continue with Google
-      </button>
-
-      <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1rem;">
-        <div style="flex:1;height:1px;background:var(--border);"></div>
-        <span style="font-size:0.75rem;color:var(--text-muted);">or use email</span>
-        <div style="flex:1;height:1px;background:var(--border);"></div>
-      </div>
-
-      <!-- Message -->
+      <!-- Error / success message -->
       <div class="msg" id="auth-msg"></div>
 
-      <!-- Register form -->
-      <div id="form-register">
-        <form class="auth-form" onsubmit="handleRegister(event)">
-          <div class="form-group half">
-            <div>
-              <label for="reg-first">First name</label>
-              <input type="text" id="reg-first" placeholder="Priya" autocomplete="given-name">
-            </div>
-            <div>
-              <label for="reg-last">Last name</label>
-              <input type="text" id="reg-last" placeholder="Sharma" autocomplete="family-name">
-            </div>
+      <!-- ── REGISTER PANEL ── -->
+      <div id="panel-register">
+        <div class="form-row">
+          <div class="form-field">
+            <label for="reg-first">First name</label>
+            <input type="text" id="reg-first" placeholder="Tenzing" autocomplete="given-name">
           </div>
-          <div class="form-group">
-            <label for="reg-email">Email address</label>
-            <input type="email" id="reg-email" placeholder="you@example.com" required autocomplete="email">
+          <div class="form-field">
+            <label for="reg-last">Last name</label>
+            <input type="text" id="reg-last" placeholder="Norgay" autocomplete="family-name">
           </div>
-          <div class="form-group">
-            <label for="reg-password">Password</label>
-            <input type="password" id="reg-password" placeholder="At least 8 characters" required minlength="8" autocomplete="new-password">
-          </div>
-          <div class="form-group">
-            <label for="reg-why">How did you find Earth Pulse? <span style="opacity:0.5">(optional)</span></label>
-            <input type="text" id="reg-why" placeholder="e.g. WhatsApp, Google, friend…">
-          </div>
-          <button type="submit" class="auth-btn" id="reg-btn">Create free account</button>
-          <p class="terms">By registering you agree that your data will be used only to personalise your Earth Pulse experience and send the monthly report. <a href="contact.html">Contact us</a> to delete your account.</p>
-        </form>
+        </div>
+        <div class="form-field">
+          <label for="reg-email">Email address *</label>
+          <input type="email" id="reg-email" placeholder="you@example.com" autocomplete="email">
+        </div>
+        <div class="form-field">
+          <label for="reg-pw">Password * <span style="opacity:0.5;font-size:0.75em;">(min 8 characters)</span></label>
+          <input type="password" id="reg-pw" placeholder="At least 8 characters" autocomplete="new-password">
+        </div>
+        <div class="form-field">
+          <label for="reg-why">How did you find Earth Pulse? <span style="opacity:0.5">(optional)</span></label>
+          <input type="text" id="reg-why" placeholder="e.g. WhatsApp, Google, friend…">
+        </div>
+        <!-- NOTE: NO <form> tag, NO onsubmit — just a plain button with onclick -->
+        <button class="auth-btn" id="reg-btn" onclick="doRegister()">Create free account</button>
+        <p class="terms">By registering you agree that your data is used only to personalise your Earth Pulse experience and send the monthly report. <a href="contact.html">Contact us</a> to delete your account.</p>
       </div>
 
-      <!-- Login form -->
-      <div id="form-login" style="display:none;">
-        <form class="auth-form" onsubmit="handleLogin(event)">
-          <div class="form-group">
-            <label for="login-email">Email address</label>
-            <input type="email" id="login-email" placeholder="you@example.com" required autocomplete="email">
-          </div>
-          <div class="form-group">
-            <label for="login-password">Password</label>
-            <input type="password" id="login-password" placeholder="Your password" required autocomplete="current-password">
-          </div>
-          <button type="submit" class="auth-btn" id="login-btn">Sign in</button>
-          <div class="auth-divider"><span>or</span></div>
-          <button type="button" class="auth-btn" style="background:transparent;color:var(--ep-green);border:1.5px solid var(--ep-green);" onclick="handleMagicLink()">
-            Send magic link →
-          </button>
-        </form>
+      <!-- ── LOGIN PANEL ── -->
+      <div id="panel-login" style="display:none;">
+        <div class="form-field">
+          <label for="login-email">Email address</label>
+          <input type="email" id="login-email" placeholder="you@example.com" autocomplete="email"
+            onkeydown="if(event.key==='Enter')doLogin()">
+        </div>
+        <div class="form-field">
+          <label for="login-pw">Password</label>
+          <input type="password" id="login-pw" placeholder="Your password" autocomplete="current-password"
+            onkeydown="if(event.key==='Enter')doLogin()">
+        </div>
+        <button class="auth-btn" id="login-btn" onclick="doLogin()">Sign in</button>
+
+        <div class="divider"><div class="divider-line"></div><span class="divider-text">or sign in without password</span><div class="divider-line"></div></div>
+        <button class="auth-btn auth-btn-outline" id="magic-btn" onclick="doMagicLink()">Send magic link to my email</button>
+        <div id="magic-msg" style="font-size:0.82rem;color:var(--ep-green);margin-top:0.75rem;display:none;">✅ Magic link sent! Check your inbox.</div>
       </div>
 
-      <!-- Success state -->
-      <div class="success-state" id="success-state">
-        <div class="check">🌿</div>
-        <h2>You're registered!</h2>
-        <p id="success-msg">Thank you for joining Earth Pulse. The full member dashboard is currently being built — you'll receive an email as soon as it goes live with your data access credentials. In the meantime, all public data on the site is freely available.</p>
-        <a href="index.html" class="ep-btn-primary" style="display:inline-block;margin-top:1.25rem;">Go to Earth Pulse →</a>
+      <!-- ── SUCCESS PANEL ── -->
+      <div class="success-panel" id="panel-success">
+        <div class="success-icon">🌿</div>
+        <h2>Welcome aboard!</h2>
+        <p>Your account is ready. A confirmation email has been sent — you can verify whenever you're ready. You have full access now.</p>
+        <a href="data.html" class="auth-btn" style="display:inline-block;margin-top:1.25rem;text-decoration:none;text-align:center;">Open Data Explorer →</a>
       </div>
+
     </div>
   </div>
 </div>
 
 <script src="analytics.js"></script>
-<!-- Supabase JS client -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="nav.js"></script>
 <script>
-const SUPABASE_URL = 'https://krmczyqwblsoekceanlj.supabase.co';
-const SUPABASE_KEY = 'sb_publishable_DrHFT5J0vmrkYraUXIlpQQ_gsk1rdq6';
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+// _supabase is already initialised in <head>
+// These functions are safe to call at any time
 
-async function signInWithGoogle() {
-  try {
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: 'google',
-      options: {
-        redirectTo: 'https://earthpulse.pages.dev/data.html',
-        queryParams: { access_type: 'offline', prompt: 'select_account' }
-      }
-    });
-    if (error) throw error;
-  } catch(err) {
-    showMsg('Google sign-in failed: ' + err.message);
-  }
+function ge(id) { return document.getElementById(id); }
+
+function showMsg(text, type) {
+  var el = ge('auth-msg');
+  el.textContent = text;
+  el.className = 'msg ' + (type || 'error');
+  el.style.display = 'block';
 }
+function hideMsg() { ge('auth-msg').style.display = 'none'; }
 
-function switchTab(tab) {
-  document.getElementById('tab-register').classList.toggle('active', tab==='register');
-  document.getElementById('tab-login').classList.toggle('active', tab==='login');
-  document.getElementById('form-register').style.display = tab==='register' ? 'block' : 'none';
-  document.getElementById('form-login').style.display    = tab==='login'    ? 'block' : 'none';
+function showTab(tab) {
+  var isReg = tab === 'register';
+  ge('tab-reg').classList.toggle('active', isReg);
+  ge('tab-login').classList.toggle('active', !isReg);
+  ge('panel-register').style.display = isReg ? 'block' : 'none';
+  ge('panel-login').style.display    = isReg ? 'none'  : 'block';
+  ge('form-title').textContent = isReg ? 'Create account' : 'Sign in';
+  ge('form-sub').textContent   = isReg ? 'Join the Earth Pulse community. Free forever.' : 'Welcome back.';
   hideMsg();
 }
 
-function showMsg(text, type='error') {
-  const el = document.getElementById('auth-msg');
-  el.textContent = text; el.className = `msg ${type}`; el.style.display = 'block';
-}
-function hideMsg() {
-  document.getElementById('auth-msg').style.display = 'none';
-}
+// ── REGISTER ─────────────────────────────────────────────────────────────────
+async function doRegister() {
+  hideMsg();
 
-function showSuccess(msg) {
-  document.getElementById('form-register').style.display = 'none';
-  document.getElementById('form-login').style.display    = 'none';
-  document.querySelector('.auth-tabs').style.display     = 'none';
-  document.querySelector('.sub').style.display           = 'none';
-  document.querySelector('h1').style.display             = 'none';
-  document.getElementById('success-msg').textContent     = msg;
-  document.getElementById('success-state').style.display = 'block';
-}
+  if (!_supabase) { showMsg('Service unavailable — please refresh and try again.'); return; }
 
-async function handleRegister(e) {
-  e.preventDefault();
-  const btn = document.getElementById('reg-btn');
+  var email = (ge('reg-email').value || '').trim();
+  var pw    = (ge('reg-pw').value   || '');
+  var first = (ge('reg-first').value || '').trim();
+  var last  = (ge('reg-last').value  || '').trim();
+  var why   = (ge('reg-why').value   || '').trim();
+
+  if (!email) { showMsg('Please enter your email address.'); ge('reg-email').focus(); return; }
+  if (!email.includes('@')) { showMsg('Please enter a valid email address.'); ge('reg-email').focus(); return; }
+  if (pw.length < 8) { showMsg('Password must be at least 8 characters.'); ge('reg-pw').focus(); return; }
+
+  var btn = ge('reg-btn');
   btn.disabled = true; btn.textContent = 'Creating account…';
-  hideMsg();
-
-  const email    = document.getElementById('reg-email').value.trim();
-  const password = document.getElementById('reg-password').value;
-  const first    = document.getElementById('reg-first').value.trim();
-  const last     = document.getElementById('reg-last').value.trim();
-  const why      = document.getElementById('reg-why').value.trim();
 
   try {
-    const { data, error } = await supabase.auth.signUp({
-      email, password,
+    var result = await _supabase.auth.signUp({
+      email: email,
+      password: pw,
       options: {
         data: { first_name: first, last_name: last, how_found: why, newsletter: true },
         emailRedirectTo: 'https://earthpulse.pages.dev/data.html'
       }
     });
-    if (error) throw error;
 
-    // Add to newsletter regardless
-    fetch(`${SUPABASE_URL}/rest/v1/newsletter_signups`, {
-      method:'POST',
-      headers:{'apikey':SUPABASE_KEY,'Authorization':`Bearer ${SUPABASE_KEY}`,'Content-Type':'application/json','Prefer':'return=minimal'},
-      body:JSON.stringify({ email })
-    }).catch(()=>{});
+    if (result.error) {
+      var msg = result.error.message || 'Registration failed.';
+      if (msg.toLowerCase().includes('already registered') || msg.toLowerCase().includes('already exists')) {
+        showMsg('An account with this email already exists. Use the Sign in tab.', 'error');
+      } else {
+        showMsg(msg, 'error');
+      }
+      btn.disabled = false; btn.textContent = 'Create free account';
+      return;
+    }
 
-    // Always redirect to data.html — if email confirm is ON, user still
-    // gets a session token they can use. A banner in data.html will ask
-    // them to verify when they're ready.
-    // Store a flag so data.html can show the verification nudge
-    sessionStorage.setItem('ep_new_user', '1');
-    sessionStorage.setItem('ep_user_email', email);
-    window.location.href = 'data.html';
+    // Newsletter signup (non-blocking)
+    fetch(SB_URL + '/rest/v1/newsletter_signups', {
+      method: 'POST',
+      headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
+      body: JSON.stringify({ email: email })
+    }).catch(function(){});
+
+    // If a session was created, redirect. Otherwise show success panel.
+    if (result.data && result.data.session) {
+      sessionStorage.setItem('ep_new_user', '1');
+      window.location.href = 'data.html';
+    } else {
+      // Email confirmation is ON — show success state, let user click through
+      ge('panel-register').style.display = 'none';
+      ge('auth-tabs').style.display = 'none';
+      ge('form-title').style.display = 'none';
+      ge('form-sub').style.display = 'none';
+      ge('panel-success').style.display = 'block';
+    }
 
   } catch(err) {
-    // Handle the common "User already registered" case gracefully
-    if (err.message && err.message.toLowerCase().includes('already registered')) {
-      showMsg('An account with this email already exists. Use the Sign in tab instead.', 'error');
-    } else {
-      showMsg(err.message || 'Registration failed. Please try again.');
-    }
+    showMsg('Unexpected error: ' + err.message + '. Please try again.');
     btn.disabled = false; btn.textContent = 'Create free account';
   }
 }
 
-async function handleLogin(e) {
-  e.preventDefault();
-  const btn = document.getElementById('login-btn');
-  btn.disabled = true; btn.textContent = 'Signing in…';
+// ── LOGIN ─────────────────────────────────────────────────────────────────────
+async function doLogin() {
   hideMsg();
+  if (!_supabase) { showMsg('Service unavailable — please refresh.'); return; }
 
-  const email    = document.getElementById('login-email').value.trim();
-  const password = document.getElementById('login-password').value;
+  var email = (ge('login-email').value || '').trim();
+  var pw    = (ge('login-pw').value   || '');
+
+  if (!email) { showMsg('Please enter your email address.'); ge('login-email').focus(); return; }
+  if (!pw)    { showMsg('Please enter your password.'); ge('login-pw').focus(); return; }
+
+  var btn = ge('login-btn');
+  btn.disabled = true; btn.textContent = 'Signing in…';
 
   try {
-    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-    if (error) throw error;
-    // Admin goes to admin panel
-    if (email === 'fangchu@gmail.com') { window.location.href = 'admin.html'; return; }
-    window.location.href = 'data.html';
+    var result = await _supabase.auth.signInWithPassword({ email: email, password: pw });
+
+    if (result.error) {
+      var msg = result.error.message || 'Sign in failed.';
+      if (msg.toLowerCase().includes('invalid') || msg.toLowerCase().includes('credentials')) {
+        showMsg('Incorrect email or password. Try again or use the magic link option below.');
+      } else if (msg.toLowerCase().includes('not confirmed')) {
+        showMsg('Please confirm your email first — check your inbox for the confirmation link.');
+      } else {
+        showMsg(msg);
+      }
+      btn.disabled = false; btn.textContent = 'Sign in';
+      return;
+    }
+
+    var userEmail = result.data.user.email;
+    window.location.href = userEmail === 'fangchu@gmail.com' ? 'admin.html' : 'data.html';
+
   } catch(err) {
-    showMsg(err.message || 'Sign in failed. Check your email and password.');
+    showMsg('Unexpected error: ' + err.message);
     btn.disabled = false; btn.textContent = 'Sign in';
   }
 }
 
-async function handleMagicLink() {
-  const email = document.getElementById('login-email').value.trim();
-  if (!email) { showMsg('Enter your email address first.'); return; }
+// ── MAGIC LINK ────────────────────────────────────────────────────────────────
+async function doMagicLink() {
   hideMsg();
+  if (!_supabase) { showMsg('Service unavailable — please refresh.'); return; }
+
+  var email = (ge('login-email').value || '').trim();
+  if (!email || !email.includes('@')) { showMsg('Enter your email address above first.'); ge('login-email').focus(); return; }
+
+  var btn = ge('magic-btn');
+  btn.disabled = true; btn.textContent = 'Sending…';
+
   try {
-    const { error } = await supabase.auth.signInWithOtp({
-      email,
+    var result = await _supabase.auth.signInWithOtp({
+      email: email,
       options: { emailRedirectTo: email === 'fangchu@gmail.com' ? 'https://earthpulse.pages.dev/admin.html' : 'https://earthpulse.pages.dev/data.html' }
     });
-    if (error) throw error;
-    showSuccess('Magic link sent! Check your email and click it to sign in instantly — no password needed.');
+    if (result.error) throw result.error;
+    ge('magic-msg').style.display = 'block';
+    btn.textContent = 'Sent!';
+    setTimeout(function() { btn.disabled = false; btn.textContent = 'Send magic link to my email'; }, 10000);
   } catch(err) {
-    showMsg(err.message || 'Could not send magic link.');
+    showMsg('Could not send magic link: ' + err.message);
+    btn.disabled = false; btn.textContent = 'Send magic link to my email';
   }
 }
-
-// If already logged in, redirect
-supabase.auth.getSession().then(({ data }) => {
-  if (!data.session) return;
-  if (data.session.user.email === 'fangchu@gmail.com') window.location.href = 'admin.html';
-  else window.location.href = 'data.html';
-});
 </script>
 </body>
 </html>
