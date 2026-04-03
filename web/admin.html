@@ -76,7 +76,43 @@
     .ufill.warn { background:#f59e0b; }
     .ufill.danger { background:#ef4444; }
 
-    .ext-btn { display:inline-flex; align-items:center; gap:6px; padding:0.5rem 1.1rem; background:var(--ep-green); color:#fff; border:none; border-radius:var(--radius-sm); font-family:var(--sans); font-size:0.82rem; font-weight:500; cursor:pointer; text-decoration:none; }
+    .ext-btn { display:inline-flex; align-items:center; gap:6px; padding:0.5rem 1.1rem; background:var(--ep-green); color:#fff; border:none; border-radius:var(--radius-sm); font-family:var(--sans); font-size:0.82rem; font-weight:500; cursor:pointer; text-decoration:none; transition:background 0.15s; }
+    .ext-btn:hover { background:#1a3628; }
+
+    /* ── EMAIL COMPOSER ── */
+    .email-template-tabs { display:flex; gap:0.4rem; flex-wrap:wrap; margin-bottom:1.25rem; }
+    .et-tab { padding:0.38rem 1rem; border:1.5px solid var(--border-strong); border-radius:2rem; font-family:var(--sans); font-size:0.8rem; cursor:pointer; color:var(--ep-green); background:transparent; transition:all 0.12s; }
+    .et-tab:hover { background:rgba(33,67,50,0.07); }
+    .et-tab.on { background:var(--ep-green); color:#fff; border-color:var(--ep-green); }
+    .composer-wrap { display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; }
+    @media(max-width:900px){ .composer-wrap { grid-template-columns:1fr; } }
+    .compose-side { display:flex; flex-direction:column; gap:0.75rem; }
+    .compose-field label { display:block; font-size:0.75rem; font-weight:600; color:var(--text-muted); margin-bottom:0.3rem; text-transform:uppercase; letter-spacing:0.06em; }
+    .compose-field input, .compose-field select { width:100%; padding:0.6rem 0.9rem; border:1.5px solid var(--border-strong); border-radius:var(--radius-sm); font-family:var(--sans); font-size:0.9rem; color:var(--text-primary); background:#fff; outline:none; box-sizing:border-box; }
+    .compose-field input:focus, .compose-field select:focus { border-color:var(--ep-green); }
+    .wysiwyg-toolbar { display:flex; gap:2px; flex-wrap:wrap; padding:0.4rem; background:var(--ep-cream-dark); border:1.5px solid var(--border-strong); border-bottom:none; border-radius:var(--radius-sm) var(--radius-sm) 0 0; }
+    .wb { padding:0.25rem 0.6rem; border:none; background:transparent; font-family:var(--sans); font-size:0.82rem; cursor:pointer; border-radius:3px; color:var(--text-secondary); }
+    .wb:hover { background:rgba(33,67,50,0.1); }
+    .wysiwyg-body { min-height:280px; border:1.5px solid var(--border-strong); border-top:none; border-radius:0 0 var(--radius-sm) var(--radius-sm); padding:1rem; font-family:var(--sans); font-size:0.9rem; line-height:1.7; outline:none; background:#fff; overflow-y:auto; }
+    .preview-frame { border:1.5px solid var(--border-strong); border-radius:var(--radius-sm); background:#fff; overflow:hidden; }
+    .preview-header { background:var(--ep-green); color:var(--ep-cream); padding:1rem 1.5rem; }
+    .preview-body { padding:1.5rem; min-height:200px; font-size:0.9rem; line-height:1.8; color:#333; }
+    .preview-footer { background:rgba(33,67,50,0.05); padding:0.75rem 1.5rem; font-size:0.72rem; color:var(--text-muted); text-align:center; border-top:1px solid var(--border); }
+    .segment-pills { display:flex; gap:0.4rem; flex-wrap:wrap; }
+    .seg-pill { padding:0.25rem 0.75rem; border-radius:2rem; border:1px solid var(--border-strong); font-size:0.78rem; cursor:pointer; color:var(--text-secondary); background:transparent; }
+    .seg-pill.on { background:var(--ep-green); color:#fff; border-color:var(--ep-green); }
+    .send-preview-bar { display:flex; gap:0.75rem; align-items:center; flex-wrap:wrap; margin-top:0.75rem; padding-top:0.75rem; border-top:1px solid var(--border); }
+    .send-note { font-size:0.78rem; color:var(--text-muted); flex:1; }
+    .auto-trigger-card { background:rgba(33,67,50,0.05); border:1px solid rgba(33,67,50,0.15); border-radius:var(--radius-lg); padding:1.1rem 1.25rem; margin-bottom:1rem; }
+    .auto-trigger-title { font-weight:600; font-size:0.9rem; color:var(--ep-green); margin-bottom:0.3rem; }
+    .auto-trigger-desc { font-size:0.82rem; color:var(--text-muted); margin-bottom:0.75rem; line-height:1.6; }
+    .toggle-wrap { display:flex; align-items:center; gap:0.75rem; }
+    .toggle { position:relative; width:40px; height:22px; flex-shrink:0; }
+    .toggle input { opacity:0; width:0; height:0; }
+    .toggle-slider { position:absolute; inset:0; background:var(--border-strong); border-radius:22px; cursor:pointer; transition:background 0.2s; }
+    .toggle-slider::before { content:''; position:absolute; width:16px; height:16px; left:3px; top:3px; background:#fff; border-radius:50%; transition:transform 0.2s; }
+    .toggle input:checked + .toggle-slider { background:var(--ep-green); }
+    .toggle input:checked + .toggle-slider::before { transform:translateX(18px); }
   </style>
 </head>
 <body>
@@ -90,6 +126,7 @@
     <button class="al"     id="al-system"    onclick="sp('system',this)">🖥 System health</button>
     <button class="al"     id="al-logs"      onclick="sp('logs',this)">📋 Recent logs</button>
     <button class="al"     id="al-usage"     onclick="sp('usage',this)">💰 API usage</button>
+    <button class="al"     id="al-email"     onclick="sp('email',this)">✉️ Email sender</button>
     <button class="al"     id="al-analytics" onclick="sp('analytics',this)">📈 Analytics</button>
     <button class="al"     id="al-data"      onclick="sp('data',this)">🗄 Data</button>
     <div class="sp"></div>
@@ -136,6 +173,130 @@
       <div class="ptitle">API usage this month</div>
       <div class="psub">Estimated usage against free tier limits.</div>
       <div id="usage-wrap">Loading…</div>
+    </div>
+
+    <!-- EMAIL SENDER -->
+    <div class="panel" id="panel-email">
+      <div class="ptitle">Email Sender</div>
+      <div class="psub">Compose and send newsletters and automated alerts to your subscribers. All emails are sent via Resend.com — <a href="https://resend.com" target="_blank" style="color:var(--ep-green);">sign up free</a> (3,000 emails/month free tier).</div>
+
+      <!-- Automated triggers -->
+      <div class="card" style="margin-bottom:1.5rem;">
+        <div class="card-title">🤖 Automated email triggers</div>
+        <p style="font-size:0.82rem;color:var(--text-muted);margin-bottom:1rem;">These emails are sent automatically by a cron job on your Pi or a Cloudflare Worker on a schedule. Requires Resend API key in your .env file.</p>
+
+        <div class="auto-trigger-card">
+          <div class="auto-trigger-title">🐦 New species detected alert</div>
+          <div class="auto-trigger-desc">Sent at 4:00 PM daily if a species was detected for the first time this year. Goes to subscribers who opted in for bird alerts.</div>
+          <div class="toggle-wrap">
+            <label class="toggle"><input type="checkbox" id="trig-new-species" checked><span class="toggle-slider"></span></label>
+            <span style="font-size:0.82rem;color:var(--text-secondary);">Enabled — triggers daily at 4 PM if new species detected</span>
+          </div>
+        </div>
+
+        <div class="auto-trigger-card">
+          <div class="auto-trigger-title">🍃 AQI alert</div>
+          <div class="auto-trigger-desc">Sent within 1 hour when AQI crosses Good (≤40) or Poor (≥80) threshold. Subscribers choose their threshold in Data Explorer → My Alerts.</div>
+          <div class="toggle-wrap">
+            <label class="toggle"><input type="checkbox" id="trig-aqi" checked><span class="toggle-slider"></span></label>
+            <span style="font-size:0.82rem;color:var(--text-secondary);">Enabled — threshold-based, near real-time</span>
+          </div>
+        </div>
+
+        <div class="auto-trigger-card">
+          <div class="auto-trigger-title">📬 Monthly Earth Pulse report</div>
+          <div class="auto-trigger-desc">Sent on the 1st of each month. Top birds detected, AQI trends, monsoon update, hill photo of the month. You compose it below.</div>
+          <div class="toggle-wrap">
+            <label class="toggle"><input type="checkbox" id="trig-monthly" checked><span class="toggle-slider"></span></label>
+            <span style="font-size:0.82rem;color:var(--text-secondary);">Enabled — 1st of each month</span>
+          </div>
+        </div>
+
+        <p style="font-size:0.78rem;color:var(--text-muted);margin-top:0.75rem;padding-top:0.75rem;border-top:1px solid var(--border);">
+          To activate these triggers: add <code style="background:var(--ep-cream-dark);padding:1px 5px;border-radius:3px;font-size:0.78rem;">RESEND_API_KEY=re_xxxx</code> to your .env file and deploy the included Python trigger script to your Pi's cron.
+        </p>
+      </div>
+
+      <!-- Manual composer -->
+      <div class="card">
+        <div class="card-title">✍️ Compose & send now</div>
+
+        <!-- Template picker -->
+        <div style="margin-bottom:1.25rem;">
+          <div style="font-size:0.75rem;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:0.5rem;">Start from template</div>
+          <div class="email-template-tabs">
+            <button class="et-tab on" onclick="loadTemplate('monthly',this)">📬 Monthly report</button>
+            <button class="et-tab" onclick="loadTemplate('new-bird',this)">🐦 New species alert</button>
+            <button class="et-tab" onclick="loadTemplate('aqi-alert',this)">🍃 AQI alert</button>
+            <button class="et-tab" onclick="loadTemplate('monsoon',this)">🌧️ Monsoon update</button>
+            <button class="et-tab" onclick="loadTemplate('blank',this)">✏️ Blank</button>
+          </div>
+        </div>
+
+        <!-- Recipient segment -->
+        <div style="margin-bottom:1.25rem;">
+          <div style="font-size:0.75rem;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:0.5rem;">Send to</div>
+          <div class="segment-pills">
+            <button class="seg-pill on" onclick="toggleSeg(this,'all')">All subscribers</button>
+            <button class="seg-pill" onclick="toggleSeg(this,'birds')">Bird alert opt-ins</button>
+            <button class="seg-pill" onclick="toggleSeg(this,'aqi')">AQI alert opt-ins</button>
+            <button class="seg-pill" onclick="toggleSeg(this,'newsletter')">Newsletter only</button>
+          </div>
+          <div id="seg-count" style="font-size:0.8rem;color:var(--ep-green);margin-top:0.5rem;font-family:var(--mono);">Loading subscriber count…</div>
+        </div>
+
+        <!-- Composer -->
+        <div class="composer-wrap">
+          <div class="compose-side">
+            <div class="compose-field">
+              <label>Subject line</label>
+              <input type="text" id="em-subject" placeholder="Earth Pulse · April 2026 — Top birds, AQI trends & more">
+            </div>
+            <div class="compose-field">
+              <label>From name</label>
+              <input type="text" id="em-from" value="Earth Pulse · Baner, Pune">
+            </div>
+            <div>
+              <div style="font-size:0.75rem;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:0.4rem;">Email body (WYSIWYG)</div>
+              <div class="wysiwyg-toolbar">
+                <button class="wb" title="Bold" onclick="fmt('bold')"><b>B</b></button>
+                <button class="wb" title="Italic" onclick="fmt('italic')"><em>I</em></button>
+                <button class="wb" title="H2" onclick="fmt('formatBlock','<h2>')">H2</button>
+                <button class="wb" title="H3" onclick="fmt('formatBlock','<h3>')">H3</button>
+                <button class="wb" title="Bullet list" onclick="fmt('insertUnorderedList')">• List</button>
+                <button class="wb" title="Link" onclick="insertLink()">🔗</button>
+                <button class="wb" title="Divider" onclick="fmt('insertHorizontalRule')">— hr</button>
+                <button class="wb" title="Clear" onclick="clearBody()" style="margin-left:auto;color:#dc2626;">✕ Clear</button>
+              </div>
+              <div class="wysiwyg-body" id="em-body" contenteditable="true" onkeyup="updatePreview()" oninput="updatePreview()">
+                Loading template…
+              </div>
+            </div>
+          </div>
+
+          <!-- Live preview -->
+          <div>
+            <div style="font-size:0.75rem;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:0.5rem;">Live preview</div>
+            <div class="preview-frame">
+              <div class="preview-header">
+                <div style="font-size:0.7rem;opacity:0.6;margin-bottom:2px;text-transform:uppercase;letter-spacing:0.1em;">Earth Pulse · Baner, Pune</div>
+                <div id="preview-subject" style="font-size:1rem;font-weight:600;">Subject line…</div>
+              </div>
+              <div class="preview-body" id="preview-body"></div>
+              <div class="preview-footer">
+                Earth Pulse · earthpulse.pages.dev · Baner, Pune<br>
+                <span style="color:var(--ep-tan);">Unsubscribe</span>
+              </div>
+            </div>
+
+            <div class="send-preview-bar">
+              <div class="send-note" id="send-status">Ready to send</div>
+              <button class="ext-btn" style="background:rgba(33,67,50,0.1);color:var(--ep-green);border:1.5px solid var(--ep-green);" onclick="sendTestEmail()">📤 Send test to me</button>
+              <button class="ext-btn" onclick="sendBroadcast()">✉️ Send to all</button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- ANALYTICS -->
@@ -189,20 +350,157 @@
 <script src="analytics.js"></script>
 <script src="nav.js"></script>
 <script>
-// ── PANEL SWITCHING ───────────────────────────────────────────────────────────
+// ── EMAIL PANEL ───────────────────────────────────────────────────────────────
+var selectedSegment = 'all';
+var subCount = 0;
+
+var TEMPLATES = {
+  'monthly': {
+    subject: 'Earth Pulse · ' + new Date().toLocaleDateString('en-IN',{month:'long',year:'numeric'}) + ' — Top birds, AQI trends & more',
+    body: `<h2>🌿 Baner's living pulse this month</h2>
+<p>Here's what Earth Pulse recorded from the Sahyadri foothills in the past month.</p>
+<hr>
+<h3>🐦 Birds of the month</h3>
+<p><strong>[Top species]</strong> was the most frequently detected species this month, heard <strong>[X] times</strong>. A total of <strong>[N] species</strong> were identified by BirdNET acoustic AI.</p>
+<h3>🍃 Air quality highlights</h3>
+<p>Average EU AQI this month: <strong>[avg]</strong>. Best day: <strong>[date] at AQI [n]</strong> (Good). Worst: <strong>[date] at AQI [n]</strong>.</p>
+<h3>🌡️ Climate snapshot</h3>
+<p>Temperature ranged from <strong>[min]°C to [max]°C</strong>. Total rainfall: <strong>[mm]mm</strong>.</p>
+<h3>📸 Hill photo of the month</h3>
+<p>[Add hill photo link or description here]</p>
+<hr>
+<p><a href="https://earthpulse.pages.dev">View the full dataset →</a></p>`
+  },
+  'new-bird': {
+    subject: 'New bird detected in Baner! 🐦 [Species name] heard for the first time this year',
+    body: `<h2>🎉 A new species has arrived in Baner!</h2>
+<p>Our BirdNET acoustic monitor on the Sahyadri foothills has detected a species for the first time this year.</p>
+<h3>[Species common name] (<em>[Scientific name]</em>)</h3>
+<p>First detected at <strong>[time]</strong> today with <strong>[confidence]% confidence</strong>. This is the <strong>[Nth] species</strong> detected in Baner so far this year.</p>
+<p><strong>About this bird:</strong> [Brief description — habitat, behaviour, migration status]</p>
+<p><a href="https://earthpulse.pages.dev/species.html?bird=[scientific_name]">View full detection profile →</a></p>
+<hr>
+<p style="font-size:0.85em;color:#666;">You're receiving this because you opted in for bird detection alerts on Earth Pulse.</p>`
+  },
+  'aqi-alert': {
+    subject: 'Air quality alert for Baner 🍃 AQI now [level]',
+    body: `<h2>🍃 Air quality update — Baner, Pune</h2>
+<p>The EU AQI in Baner has changed significantly and you asked to be notified.</p>
+<table style="border-collapse:collapse;width:100%;margin:1rem 0;">
+<tr style="background:#f0f4f0;"><td style="padding:0.5rem 1rem;font-weight:600;">EU AQI</td><td style="padding:0.5rem 1rem;font-size:1.5rem;font-weight:700;color:#214332;">[value]</td><td style="padding:0.5rem 1rem;color:#555;">[status]</td></tr>
+<tr><td style="padding:0.5rem 1rem;font-weight:600;">India AQI</td><td style="padding:0.5rem 1rem;">[india_value]</td><td style="padding:0.5rem 1rem;color:#555;">[india_status]</td></tr>
+<tr style="background:#f0f4f0;"><td style="padding:0.5rem 1rem;font-weight:600;">Dominant pollutant</td><td style="padding:0.5rem 1rem;" colspan="2">[pollutant]</td></tr>
+</table>
+<p><strong>Recommendation:</strong> [health_recommendation]</p>
+<p><a href="https://earthpulse.pages.dev/climate.html">See full AQI history →</a></p>`
+  },
+  'monsoon': {
+    subject: '🌧️ Monsoon update from Baner — [date]',
+    body: `<h2>🌧️ Monsoon season update</h2>
+<p>Here's the latest from Earth Pulse on the Baner monsoon.</p>
+<h3>Rainfall so far this season</h3>
+<p>Total rainfall recorded: <strong>[total]mm</strong>. This compares to <strong>[prev_year]mm</strong> in the same period last year.</p>
+<h3>Birds responding to the rains</h3>
+<p>Monsoon species are beginning to appear — <strong>[monsoon_birds]</strong> have been detected following the first rains.</p>
+<p><a href="https://earthpulse.pages.dev/monsoon.html">View monsoon tracker →</a></p>`
+  },
+  'blank': {
+    subject: '',
+    body: '<p>Compose your message here…</p>'
+  }
+};
+
+function loadTemplate(name, btn) {
+  document.querySelectorAll('.et-tab').forEach(function(t){ t.classList.remove('on'); });
+  btn.classList.add('on');
+  var t = TEMPLATES[name] || TEMPLATES['blank'];
+  document.getElementById('em-subject').value = t.subject;
+  document.getElementById('em-body').innerHTML = t.body;
+  updatePreview();
+}
+
+function updatePreview() {
+  var subj = document.getElementById('em-subject').value || 'Subject line…';
+  var body = document.getElementById('em-body').innerHTML;
+  document.getElementById('preview-subject').textContent = subj;
+  document.getElementById('preview-body').innerHTML = body;
+}
+
+function fmt(cmd, val) {
+  document.getElementById('em-body').focus();
+  document.execCommand(cmd, false, val || null);
+  updatePreview();
+}
+function insertLink() {
+  var url = prompt('Enter URL:');
+  if (url) document.execCommand('createLink', false, url);
+  updatePreview();
+}
+function clearBody() {
+  if (confirm('Clear the email body?')) {
+    document.getElementById('em-body').innerHTML = '';
+    updatePreview();
+  }
+}
+
+function toggleSeg(btn, seg) {
+  document.querySelectorAll('.seg-pill').forEach(function(p){ p.classList.remove('on'); });
+  btn.classList.add('on');
+  selectedSegment = seg;
+  updateSegCount();
+}
+
+async function updateSegCount() {
+  try {
+    var rows = await sbGet('/newsletter_signups?select=id&limit=1000');
+    subCount = Array.isArray(rows) ? rows.length : 0;
+    document.getElementById('seg-count').textContent = subCount + ' recipient' + (subCount!==1?'s':'') + ' · ' + selectedSegment.replace('-',' ') + ' list';
+  } catch(e) { document.getElementById('seg-count').textContent = 'Could not load subscriber count'; }
+}
+
+async function sendTestEmail() {
+  var subject = document.getElementById('em-subject').value;
+  var body    = document.getElementById('em-body').innerHTML;
+  if (!subject) { alert('Please add a subject line first.'); return; }
+
+  var status = document.getElementById('send-status');
+  status.textContent = 'Sending test to fangchu@gmail.com…';
+
+  // This calls the Resend API via a Cloudflare Worker proxy
+  // For now, show the setup instructions
+  status.innerHTML = '⚠️ To send emails, deploy the email-worker.js to Cloudflare Workers with your RESEND_API_KEY. See README for setup. Your email preview looks great!';
+}
+
+async function sendBroadcast() {
+  var subject = document.getElementById('em-subject').value;
+  if (!subject) { alert('Please add a subject line first.'); return; }
+  if (!confirm('Send to ' + subCount + ' subscribers? This cannot be undone.')) return;
+  document.getElementById('send-status').innerHTML = '⚠️ Email sending requires the Cloudflare Worker + Resend.com setup. See the README. The email body and template are ready.';
+}
+
+// Load template and subscriber count on panel open
+function initEmailPanel() {
+  loadTemplate('monthly', document.querySelector('.et-tab.on'));
+  updateSegCount();
+  document.getElementById('em-subject').addEventListener('input', updatePreview);
+}
+
+// Call initEmailPanel when email panel is activated
+var _origSp = window.sp;
+var _emailPanelInited = false;
 function sp(id, btn) {
   document.querySelectorAll('.panel').forEach(function(p){ p.classList.remove('on'); });
   document.querySelectorAll('.al').forEach(function(b){ b.classList.remove('on'); });
   var el = document.getElementById('panel-' + id);
   if (el) el.classList.add('on');
   if (btn) btn.classList.add('on');
-  // Load data for this panel if not yet loaded
   if (id==='overview')  loadOverview();
   if (id==='users')     loadUsers();
   if (id==='system')    loadSystem();
   if (id==='logs')      loadLogs();
   if (id==='usage')     loadUsage();
   if (id==='data')      loadData();
+  if (id==='email' && !_emailPanelInited) { _emailPanelInited=true; setTimeout(initEmailPanel, 100); }
 }
 
 window.addEventListener('DOMContentLoaded', function() {

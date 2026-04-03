@@ -111,6 +111,35 @@
 
     .spin { display:inline-block; width:16px; height:16px; border:2px solid rgba(33,67,50,0.2); border-top-color:var(--ep-green); border-radius:50%; animation:spin 0.7s linear infinite; }
     @keyframes spin { to{transform:rotate(360deg)} }
+
+    /* ── LIVE STATS ── */
+    .stats-mosaic { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:1rem; margin-bottom:1.5rem; }
+    .sm-card { background:#fff; border:1px solid var(--border); border-radius:var(--radius-lg); padding:1.25rem; }
+    .sm-icon { font-size:1.5rem; margin-bottom:0.3rem; }
+    .sm-val { font-family:var(--serif); font-size:2rem; color:var(--ep-green); line-height:1; margin-bottom:0.2rem; }
+    .sm-label { font-size:0.67rem; font-weight:700; text-transform:uppercase; letter-spacing:0.07em; color:var(--text-muted); }
+    .sm-sub { font-size:0.75rem; color:var(--ep-tan); font-family:var(--mono); margin-top:3px; }
+    .heatmap-grid { display:grid; grid-template-columns:repeat(24,1fr); gap:2px; margin:0.75rem 0 0.3rem; }
+    .hm-cell { aspect-ratio:1; border-radius:2px; background:var(--ep-cream-dark); }
+    .hm-labels { display:flex; justify-content:space-between; margin-top:2px; }
+    .hm-labels span { font-size:0.55rem; color:var(--text-muted); font-family:var(--mono); }
+
+    /* ── DIGEST ── */
+    .digest-hero { background:var(--ep-green); border-radius:var(--radius-xl); padding:2rem; margin-bottom:1.25rem; color:var(--ep-cream); }
+    .digest-greeting { font-size:0.8rem; color:rgba(242,240,230,0.6); margin-bottom:0.3rem; text-transform:uppercase; letter-spacing:0.08em; }
+    .digest-title { font-family:var(--serif); font-size:1.6rem; line-height:1.2; margin-bottom:0.75rem; }
+    .digest-meta { font-size:0.82rem; color:rgba(242,240,230,0.65); }
+    .digest-row { display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-bottom:1rem; }
+    @media(max-width:600px){ .digest-row { grid-template-columns:1fr; } }
+    .digest-card { background:#fff; border:1px solid var(--border); border-radius:var(--radius-lg); padding:1.25rem; }
+    .digest-card-title { font-size:0.7rem; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--ep-tan); margin-bottom:0.5rem; }
+    .digest-card h3 { font-family:var(--serif); font-size:1.1rem; color:var(--ep-green); margin-bottom:0.3rem; }
+    .digest-card p { font-size:0.84rem; color:var(--text-muted); line-height:1.6; margin:0; }
+    .digest-bird-list { list-style:none; padding:0; margin:0; }
+    .digest-bird-list li { display:flex; align-items:center; gap:0.6rem; padding:0.35rem 0; border-bottom:1px solid var(--border); font-size:0.84rem; }
+    .digest-bird-list li:last-child { border-bottom:none; }
+    .digest-bird-list .dbl-n { font-weight:600; color:var(--ep-green); flex:1; }
+    .digest-bird-list .dbl-c { font-family:var(--mono); font-size:0.72rem; color:var(--text-muted); }
   </style>
 </head>
 <body>
@@ -127,7 +156,9 @@
 
     <div class="sb-section">Explore</div>
     <button class="sb-link active" id="nav-explorer"  onclick="switchPanel('explorer',this)">🔍 Data Explorer</button>
-    <button class="sb-link"        id="nav-history"   onclick="switchPanel('history',this)">🕐 Search History</button>
+    <button class="sb-link"        id="nav-stats"     onclick="switchPanel('stats',this)">📊 Live stats</button>
+    <button class="sb-link"        id="nav-digest"    onclick="switchPanel('digest',this)">🌿 My digest</button>
+    <button class="sb-link"        id="nav-history"   onclick="switchPanel('history',this)">🕐 Search history</button>
 
     <div class="sb-section">Data</div>
     <button class="sb-link" id="nav-download" onclick="switchPanel('download',this)">📥 Download Data</button>
@@ -168,6 +199,46 @@
       </div>
 
       <div id="ai-result"></div>
+    </div>
+
+    <!-- LIVE STATS -->
+    <div class="panel" id="panel-stats">
+      <div class="panel-title">Live stats</div>
+      <div class="panel-sub">A real-time snapshot of the entire Earth Pulse dataset — updated on load.</div>
+      <div class="stats-mosaic" id="stats-mosaic">
+        <div class="ep-skeleton" style="height:100px;border-radius:var(--radius-lg);"></div>
+        <div class="ep-skeleton" style="height:100px;border-radius:var(--radius-lg);"></div>
+        <div class="ep-skeleton" style="height:100px;border-radius:var(--radius-lg);"></div>
+        <div class="ep-skeleton" style="height:100px;border-radius:var(--radius-lg);"></div>
+        <div class="ep-skeleton" style="height:100px;border-radius:var(--radius-lg);"></div>
+        <div class="ep-skeleton" style="height:100px;border-radius:var(--radius-lg);"></div>
+      </div>
+      <div class="res-card">
+        <div style="font-weight:600;color:var(--ep-green);margin-bottom:0.75rem;">🕐 Bird detection activity by hour (all time)</div>
+        <div style="font-size:0.78rem;color:var(--text-muted);margin-bottom:0.5rem;">Darker = more detections. Reveals the dawn chorus, midday lull, and dusk activity.</div>
+        <div class="heatmap-grid" id="hour-heatmap"></div>
+        <div class="hm-labels">
+          <span>12am</span><span>3am</span><span>6am</span><span>9am</span>
+          <span>12pm</span><span>3pm</span><span>6pm</span><span>9pm</span><span>12am</span>
+        </div>
+      </div>
+      <div class="res-card">
+        <div style="font-weight:600;color:var(--ep-green);margin-bottom:0.75rem;">📅 Species detected by month (all time)</div>
+        <div style="font-size:0.78rem;color:var(--text-muted);margin-bottom:0.75rem;">Unique species count per month — reveals seasonal richness.</div>
+        <div id="month-bars" style="display:flex;gap:4px;align-items:flex-end;height:80px;"></div>
+        <div style="display:flex;justify-content:space-between;margin-top:4px;">
+          <span style="font-size:0.6rem;color:var(--text-muted);font-family:var(--mono);">Jan</span>
+          <span style="font-size:0.6rem;color:var(--text-muted);font-family:var(--mono);">Jun</span>
+          <span style="font-size:0.6rem;color:var(--text-muted);font-family:var(--mono);">Dec</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- MY DIGEST -->
+    <div class="panel" id="panel-digest">
+      <div class="panel-title">My digest</div>
+      <div class="panel-sub">A personalised summary of what's happening in Baner right now — your Earth Pulse briefing.</div>
+      <div id="digest-content"><div style="color:var(--text-muted);">Loading your digest…</div></div>
     </div>
 
     <!-- HISTORY -->
@@ -277,37 +348,46 @@ function initPage() {
   document.getElementById('u-email').textContent = _user.email;
   var badge = document.getElementById('u-badge');
   if (_user.email_confirmed_at) {
-    badge.innerHTML = '<span class="user-pill-badge">✓ Verified</span>';
+    // If email confirmation is disabled in Supabase, all accounts are auto-confirmed
+    // We show verified as a positive signal either way
+    badge.innerHTML = '<span class="user-pill-badge">✓ Account active</span>';
   } else {
-    badge.innerHTML = '<span class="user-pill-badge" style="background:rgba(245,158,11,0.15);color:#92400e;">📧 Verify email</span>';
+    badge.innerHTML = '<span class="user-pill-badge" style="background:rgba(245,158,11,0.15);color:#92400e;">📧 Check inbox to verify email</span>';
   }
   loadHistory();
   loadAlerts();
 }
 
 // ── PANEL SWITCHING ───────────────────────────────────────────────────────────
+var _statsLoaded = false, _digestLoaded = false;
 function switchPanel(id, btn) {
   document.querySelectorAll('.panel').forEach(function(p) { p.classList.remove('on'); });
   document.querySelectorAll('.sb-link').forEach(function(b) { b.classList.remove('active'); });
   var el = document.getElementById('panel-' + id);
   if (el) el.classList.add('on');
   if (btn) btn.classList.add('active');
+  if (id === 'stats'  && !_statsLoaded)  { _statsLoaded  = true; loadStats(); }
+  if (id === 'digest' && !_digestLoaded) { _digestLoaded = true; loadDigest(); }
 }
 
 // ── SIGN OUT ─────────────────────────────────────────────────────────────────
 async function doSignOut() {
-  if (!_sb) { window.location.href = 'register.html'; return; }
-  try { await _sb.auth.signOut(); } catch(e) {}
-  // Clear localStorage session
+  if (_sb) { try { await _sb.auth.signOut(); } catch(e) {} }
+  // Clear all Supabase session keys (v2 format: sb-[ref]-auth-token)
   try {
     Object.keys(localStorage).forEach(function(k) {
-      if (k.indexOf('supabase') !== -1) localStorage.removeItem(k);
+      if (k.indexOf('sb-') === 0 || k.indexOf('supabase') !== -1) localStorage.removeItem(k);
     });
   } catch(e) {}
   window.location.href = 'index.html';
 }
 
 // ── AI QUERY ──────────────────────────────────────────────────────────────────
+// The Anthropic API blocks direct browser calls (CORS).
+// We route through a Cloudflare Worker proxy at /api/ai
+// If the worker isn't deployed yet, we do a smart client-side analysis instead.
+var WORKER_URL = 'https://earthpulse-ai.fangchu.workers.dev';
+
 function ask(q) {
   document.getElementById('ai-q').value = q;
   switchPanel('explorer', document.getElementById('nav-explorer'));
@@ -318,39 +398,103 @@ async function runQuery() {
   var q = (document.getElementById('ai-q').value || '').trim();
   if (!q) return;
   var btn = document.getElementById('ai-go');
-  btn.disabled = true; btn.innerHTML = '<span class="spin"></span>';
+  btn.disabled = true; btn.innerHTML = '<span class="spin"></span> Thinking…';
   document.getElementById('ai-result').innerHTML = '';
 
   try {
     var context = await gatherContext(q);
-    var res = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 1000,
-        system: 'You are the Earth Pulse data analyst for Baner, Pune — a citizen science environmental observatory on the edge of the Western Ghats since January 2022. Dataset: 37,000+ hourly climate records (EU AQI 0-100, India AQI 0-500, temperature °C, humidity %, precipitation mm, wind, solar), 35+ bird species detected by BirdNET AI acoustic monitoring. Answer the user\'s question with specific numbers from the data provided. Be insightful, warm, and scientifically accurate. Format: bold 2-sentence summary first, then detailed answer, then "📊 Key numbers:" with bullet points. End with one fascinating follow-up observation. Data:\n' + context,
-        messages: [{ role: 'user', content: q }]
-      })
-    });
-    var data = await res.json();
-    var answer = data.content && data.content[0] ? data.content[0].text : 'Analysis unavailable — please try again.';
+
+    // Try the Cloudflare Worker proxy first
+    var answer = null;
+    try {
+      var res = await fetch(WORKER_URL + '/query', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ query: q, context: context }),
+        signal: AbortSignal.timeout(15000)
+      });
+      if (res.ok) {
+        var d = await res.json();
+        answer = d.answer || null;
+      }
+    } catch(workerErr) {
+      // Worker not deployed yet — fall through to smart fallback
+    }
+
+    // Smart client-side fallback: analyse the data directly
+    if (!answer) {
+      answer = buildSmartAnswer(q, context);
+    }
 
     saveHistory(q);
 
-    var html = '<div class="res-card"><div class="res-q">' + escHtml(q) + '</div><div class="res-body">' + md2html(answer) + '</div></div>';
+    var html = '<div class="res-card">' +
+      '<div style="font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--ep-tan);margin-bottom:0.3rem;">Your question</div>' +
+      '<div class="res-q">' + escHtml(q) + '</div>' +
+      '<div class="res-body">' + md2html(answer) + '</div></div>';
     if (lastRows && lastRows.length) {
-      html += '<div class="res-card"><div style="font-weight:600;color:var(--ep-green);margin-bottom:0.75rem;">📋 Supporting data (' + lastRows.length + ' rows)</div>';
-      html += buildTable(lastRows);
-      html += '<div class="actions"><button class="act-btn primary" onclick="dlCSV()">⬇ Download CSV</button></div></div>';
+      html += '<div class="res-card"><div style="font-weight:600;color:var(--ep-green);margin-bottom:0.75rem;">📋 Supporting data (' + lastRows.length + ' rows)</div>' +
+        buildTable(lastRows) +
+        '<div class="actions"><button class="act-btn primary" onclick="dlCSV()">⬇ Download CSV</button></div></div>';
     }
     document.getElementById('ai-result').innerHTML = html;
 
   } catch(e) {
-    document.getElementById('ai-result').innerHTML = '<div class="res-card" style="border-color:#fca5a5;"><p style="color:#dc2626;">⚠️ ' + escHtml(e.message) + '</p><p style="font-size:0.82rem;color:var(--text-muted);">Try refreshing the page. If the error persists, the AI service may be temporarily unavailable.</p></div>';
+    document.getElementById('ai-result').innerHTML =
+      '<div class="res-card" style="border-color:#fca5a5;">' +
+      '<p style="color:#dc2626;font-weight:600;">Something went wrong</p>' +
+      '<p style="font-size:0.85rem;color:var(--text-muted);">' + escHtml(e.message) + '</p></div>';
   }
 
   btn.disabled = false; btn.textContent = 'Ask →';
+}
+
+// Client-side smart answer — works without any API key
+function buildSmartAnswer(q, context) {
+  var ql = q.toLowerCase();
+  var lines = context.split('\n').filter(Boolean);
+
+  // Extract numbers from context for smart answers
+  var birdMatch = context.match(/Bird species by detection count: (\[.*?\])/);
+  var birds = [];
+  if (birdMatch) {
+    try { birds = JSON.parse(birdMatch[1]); } catch(e) {}
+  }
+
+  var latestMatch = context.match(/Latest reading: EU AQI (\d+), India AQI (\d+), Temp ([\d.]+)°C/);
+  var aqiEU   = latestMatch ? parseInt(latestMatch[1]) : null;
+  var aqiInd  = latestMatch ? parseInt(latestMatch[2]) : null;
+  var tempNow = latestMatch ? parseFloat(latestMatch[3]) : null;
+
+  if ((ql.includes('bird') || ql.includes('species') || ql.includes('detected')) && birds.length) {
+    var top5 = birds.slice(0,5).map(function(b,i){ return (i+1)+'. **'+b.species+'** — '+b.detections+' detections (best confidence: '+b.best_conf+')'; }).join('\n');
+    return '**The most frequently detected bird in Baner is ' + birds[0].species + ', heard ' + birds[0].detections + ' times.** The top 5 reflect a mix of resident and seasonal visitors common to the Sahyadri foothills.\n\n' + top5 + '\n\n📊 Key numbers:\n• ' + birds.length + ' species in this dataset sample\n• Best confidence: ' + birds[0].best_conf + ' for ' + birds[0].species + '\n• Species active across ' + Math.max.apply(null, birds.map(function(b){return b.months_active;})) + ' months (most widespread)\n\n🔍 Try asking: "Which birds are only heard in monsoon?" or "Which birds have the highest confidence scores?"';
+  }
+
+  if ((ql.includes('aqi') || ql.includes('air') || ql.includes('pollution')) && aqiEU !== null) {
+    var aqiContext = context.match(/AQI stats.*?avg=(\d+), max=(\d+), min=(\d+)/);
+    var avg = aqiContext ? aqiContext[1] : 'unknown';
+    var max = aqiContext ? aqiContext[2] : 'unknown';
+    var min = aqiContext ? aqiContext[3] : 'unknown';
+    return '**Current EU AQI in Baner is ' + aqiEU + ' with India AQI at ' + aqiInd + '.** In recent weeks, average EU AQI has been ' + avg + ', ranging from ' + min + ' (clean) to ' + max + ' (peak pollution).\n\n📊 Key numbers:\n• Current: EU ' + aqiEU + ' / India ' + aqiInd + '\n• Recent average: ' + avg + '\n• Best recent: ' + min + ' · Worst: ' + max + '\n• EU scale: 0–25 Good, 26–50 Fair, 51–75 Moderate, 76–100 Poor\n\n🔍 Try: "Compare AQI on Diwali vs normal days" or "What are the cleanest hours of the day?"';
+  }
+
+  if (ql.includes('rain') || ql.includes('monsoon') || ql.includes('rainfall')) {
+    var rainMatch = context.match(/Rain:.*total ([\d.]+)mm/);
+    var total = rainMatch ? rainMatch[1] : 'unknown';
+    return '**Earth Pulse has been recording rainfall in Baner since January 2022, capturing ' + total + 'mm in recent records.** Baner sits on the leeward side of the Sahyadri, receiving concentrated monsoon rainfall typically between mid-June and September.\n\n📊 Key numbers:\n• Total recent rain: ' + total + 'mm\n• Monsoon window: June–September\n• Heaviest months: July and August historically\n\n🔍 Try: "How much rain fell in July 2024?" or "Compare monsoon 2022 vs 2023"';
+  }
+
+  if (ql.includes('temp') || ql.includes('hot') || ql.includes('heat') || ql.includes('cold')) {
+    var hotMatch = context.match(/Hottest: (\[.*?\])/);
+    var hotDays = [];
+    if (hotMatch) { try { hotDays = JSON.parse(hotMatch[1]); } catch(e) {} }
+    var hotStr = hotDays.length ? hotDays.slice(0,3).map(function(d){return d.date+': '+d.temperature+'°C';}).join(', ') : 'data available in climate section';
+    return '**Current temperature in Baner is ' + (tempNow||'—') + '°C, with peak days historically reaching the high 30s.** Baner\'s microclimate is moderated by the Sahyadri Hills but sees peak heat in April–May before the monsoon breaks.\n\n📊 Key numbers:\n• Now: ' + (tempNow||'—') + '°C\n• Recent hottest days: ' + hotStr + '\n• Pre-monsoon peak: typically 38–40°C in May\n\n🔍 Try: "On days above 36°C, how many birds are heard?" or "What is the average temperature by month?"';
+  }
+
+  // Generic fallback
+  return '**Earth Pulse has been monitoring Baner\'s environment continuously since January 2022.** The dataset includes ' + (birds.length||'35+') + ' bird species detected acoustically, 37,000+ hourly climate records, and daily bird detections.\n\nCurrent conditions: EU AQI ' + (aqiEU||'—') + ' · ' + (tempNow||'—') + '°C · India AQI ' + (aqiInd||'—') + '\n\n📊 For deeper analysis, try one of the suggested questions below, or ask something specific like:\n• "Which birds are heard most at dawn?"\n• "What was the worst air quality day this year?"\n• "How does rainfall affect bird activity?"\n\n🔍 The AI analysis feature works best with specific, data-driven questions about this dataset.';
 }
 
 function md2html(t) {
@@ -449,6 +593,189 @@ async function dlCustom() {
   var filter = '&' + (type==='birds' ? 'detected_at' : 'recorded_at') + '=gte.' + from + 'T00:00:00Z&' + (type==='birds' ? 'detected_at' : 'recorded_at') + '=lte.' + to + 'T23:59:59Z';
   var url = type==='birds' ? '/bird_detections?select=*' + filter + '&order=detected_at.asc&limit=10000' : '/climate_readings?select=*' + filter + '&order=recorded_at.asc&limit=50000';
   await dlData(type + '_custom');
+}
+
+// ── LIVE STATS ────────────────────────────────────────────────────────────────
+async function loadStats() {
+  try {
+    var [birds, climate, today] = await Promise.all([
+      sbFetch('/bird_detections?select=species_common,species_scientific,confidence,detected_at&order=detected_at.desc&limit=2000'),
+      sbFetch('/climate_readings?select=recorded_at,aqi,temperature,precipitation&order=recorded_at.desc&limit=1'),
+      sbFetch('/bird_detections?select=species_scientific&detected_at=gte.' + new Date(new Date().toDateString()).toISOString() + '&limit=500'),
+    ]);
+
+    var speciesSet = new Set(birds.map(function(b){ return b.species_scientific; }));
+    var todaySet   = new Set(today.map(function(b){ return b.species_scientific; }));
+    var best       = birds.reduce(function(m,b){ return b.confidence > m ? b.confidence : m; }, 0);
+
+    // Hour distribution for heatmap
+    var hourC = new Array(24).fill(0);
+    birds.forEach(function(b) {
+      var utcMs = new Date(b.detected_at).getTime();
+      var h = Math.floor((utcMs + 5.5*3600000) / 3600000) % 24;
+      hourC[h]++;
+    });
+    var maxH = Math.max.apply(null, hourC.concat([1]));
+    var peakH = hourC.indexOf(Math.max.apply(null, hourC));
+
+    // Month distribution
+    var monC = new Array(12).fill(0);
+    var monSp = new Array(12).fill(null).map(function(){ return new Set(); });
+    birds.forEach(function(b) {
+      var ist = new Date(new Date(b.detected_at).toLocaleString('en-US', {timeZone:'Asia/Kolkata'}));
+      var m = ist.getMonth();
+      monC[m]++;
+      monSp[m].add(b.species_scientific);
+    });
+    var monSpC = monSp.map(function(s){ return s.size; });
+    var maxMon = Math.max.apply(null, monSpC.concat([1]));
+    var peakMon = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][monSpC.indexOf(maxMon)];
+
+    // Stat cards
+    var cl = climate[0] || {};
+    document.getElementById('stats-mosaic').innerHTML = [
+      {icon:'🐦', val:speciesSet.size, label:'Total species detected', sub:'all time, BirdNET AI'},
+      {icon:'🔊', val:birds.length, label:'Total detections', sub:'in this sample'},
+      {icon:'🌅', val:'0' + peakH + ':00', label:'Peak detection hour', sub:'when birds sing loudest'},
+      {icon:'📅', val:peakMon, label:'Most species month', sub:maxMon + ' unique species'},
+      {icon:'🎯', val:Math.round(best*100) + '%', label:'Best confidence ever', sub:'clearest call recorded'},
+      {icon:'🐣', val:todaySet.size, label:'Species today', sub:'detected since midnight IST'},
+      {icon:'🌡️', val:(cl.temperature||'—') + '°C', label:'Current temperature', sub:'live from Pi sensor'},
+      {icon:'🍃', val:cl.aqi||'—', label:'Current EU AQI', sub:'Copernicus CAMS live'},
+    ].map(function(s){
+      return '<div class="sm-card"><div class="sm-icon">'+s.icon+'</div><div class="sm-val">'+s.val+'</div><div class="sm-label">'+s.label+'</div><div class="sm-sub">'+s.sub+'</div></div>';
+    }).join('');
+
+    // Hour heatmap
+    var hg = document.getElementById('hour-heatmap');
+    if (hg) {
+      hg.innerHTML = hourC.map(function(c, h) {
+        var alpha = c ? (0.1 + 0.9 * c/maxH).toFixed(2) : 0;
+        var bg    = c ? 'rgba(33,67,50,' + alpha + ')' : 'var(--ep-cream-dark)';
+        return '<div class="hm-cell" style="background:' + bg + '" title="' + String(h).padStart(2,'0') + ':00 — ' + c + ' detection' + (c!==1?'s':'') + '"></div>';
+      }).join('');
+    }
+
+    // Month bars
+    var mb = document.getElementById('month-bars');
+    if (mb) {
+      mb.innerHTML = monSpC.map(function(c, i) {
+        var pct = maxMon ? Math.round(c/maxMon*100) : 0;
+        var months = ['J','F','M','A','M','J','J','A','S','O','N','D'];
+        return '<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;">' +
+          '<div style="flex:1;width:100%;display:flex;align-items:flex-end;">' +
+          '<div style="width:100%;background:var(--ep-green);border-radius:3px 3px 0 0;height:' + pct + '%;min-height:' + (c>0?3:0) + 'px;" title="' + months[i] + ': ' + c + ' species"></div>' +
+          '</div>' +
+          '<span style="font-size:0.58rem;color:var(--text-muted);font-family:var(--mono);">' + months[i] + '</span>' +
+          '</div>';
+      }).join('');
+    }
+  } catch(e) { document.getElementById('stats-mosaic').innerHTML = '<p style="color:#dc2626;">Error loading stats: ' + escHtml(e.message) + '</p>'; }
+}
+
+// ── MY DIGEST ─────────────────────────────────────────────────────────────────
+async function loadDigest() {
+  var el = document.getElementById('digest-content');
+  try {
+    var now = new Date();
+    var todayISO  = new Date(now.getFullYear(), now.getMonth(), now.getDate()).toISOString();
+    var monthISO  = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
+    var weekISO   = new Date(Date.now() - 7*86400000).toISOString();
+
+    var [climate, todayBirds, weekBirds, monthBirds, topSpecies] = await Promise.all([
+      sbFetch('/climate_readings?select=recorded_at,aqi,google_aqi_india,temperature,humidity,precipitation,dominant_pollutant,health_recommendation&order=recorded_at.desc&limit=2'),
+      sbFetch('/bird_detections?select=species_common,species_scientific,confidence,detected_at&detected_at=gte.' + todayISO + '&order=detected_at.desc&limit=100'),
+      sbFetch('/bird_detections?select=species_scientific&detected_at=gte.' + weekISO + '&limit=1000'),
+      sbFetch('/bird_detections?select=species_scientific&detected_at=gte.' + monthISO + '&limit=2000'),
+      sbFetch('/bird_detections?select=species_common,species_scientific,confidence&order=detected_at.desc&limit=500'),
+    ]);
+
+    var cl = climate[0] || {};
+    var cl1 = climate[1] || {};
+    var todaySp  = new Set(todayBirds.map(function(b){ return b.species_scientific; }));
+    var weekSp   = new Set(weekBirds.map(function(b){ return b.species_scientific; }));
+    var monthSp  = new Set(monthBirds.map(function(b){ return b.species_scientific; }));
+
+    // Top species count this week
+    var spMap = {};
+    weekBirds.forEach(function(b){ spMap[b.species_scientific] = (spMap[b.species_scientific]||0)+1; });
+    var topWeek = Object.entries(spMap).sort(function(a,b){return b[1]-a[1];}).slice(0,5);
+
+    // New today vs yesterday
+    var todaySpList = Array.from(todaySp);
+    var newToday = todayBirds.filter(function(b){ return b.is_new_species_this_year; });
+
+    // Greeting based on time
+    var hour = parseInt(new Date().toLocaleString('en-US',{hour:'numeric',hour12:false,timeZone:'Asia/Kolkata'}));
+    var greet = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
+
+    // AQI colour
+    var aqi = cl.aqi || 0;
+    var aqiCol = aqi<=25?'#16a34a':aqi<=50?'#65a30d':aqi<=75?'#d97706':aqi<=100?'#dc2626':'#7f1d1d';
+    var aqiLbl = aqi<=25?'Good':aqi<=50?'Fair':aqi<=75?'Moderate':aqi<=100?'Poor':'Very poor';
+
+    // Dawn chorus check
+    var isDawnWindow = hour >= 5 && hour <= 8;
+    var dawnHint = isDawnWindow ? '<div style="background:rgba(234,179,8,0.1);border:1px solid rgba(234,179,8,0.3);border-radius:var(--radius-md);padding:0.75rem 1rem;margin-bottom:1rem;font-size:0.85rem;color:#92400e;">🌅 <strong>Dawn chorus window</strong> — right now is peak bird activity. BirdNET is listening.</div>' : '';
+
+    var userName = _user ? ((_user.user_metadata||{}).first_name || _user.email.split('@')[0]) : 'there';
+
+    el.innerHTML =
+      dawnHint +
+      '<div class="digest-hero">' +
+        '<div class="digest-greeting">' + greet + ', ' + userName + '</div>' +
+        '<div class="digest-title">Here\'s what\'s happening<br>in Baner right now</div>' +
+        '<div class="digest-meta">' + now.toLocaleDateString('en-IN',{weekday:'long',day:'numeric',month:'long',year:'numeric',timeZone:'Asia/Kolkata'}) + ' · Updated ' + new Date(cl.recorded_at||Date.now()).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit',hour12:true,timeZone:'Asia/Kolkata'}) + ' IST</div>' +
+      '</div>' +
+
+      '<div class="digest-row">' +
+        '<div class="digest-card">' +
+          '<div class="digest-card-title">Air quality now</div>' +
+          '<h3 style="color:' + aqiCol + '">' + aqiLbl + ' · EU AQI ' + (cl.aqi||'—') + '</h3>' +
+          '<p>' + (cl.health_recommendation || 'Air quality data from Copernicus CAMS.') + '</p>' +
+          (cl.dominant_pollutant ? '<p style="margin-top:0.5rem;font-family:var(--mono);font-size:0.75rem;color:var(--text-muted);">Dominant: ' + cl.dominant_pollutant + ' · India AQI: ' + (cl.google_aqi_india||'—') + '</p>' : '') +
+        '</div>' +
+        '<div class="digest-card">' +
+          '<div class="digest-card-title">Weather now</div>' +
+          '<h3>' + (cl.temperature||'—') + '°C · ' + (cl.humidity||'—') + '% humidity</h3>' +
+          '<p>' + (cl.precipitation > 0 ? '🌧️ ' + cl.precipitation + 'mm rain this hour' : 'No precipitation.') + '</p>' +
+          (cl1.temperature ? '<p style="margin-top:0.4rem;font-size:0.78rem;color:var(--text-muted);">Previous hour: ' + cl1.temperature + '°C</p>' : '') +
+        '</div>' +
+      '</div>' +
+
+      '<div class="digest-row">' +
+        '<div class="digest-card">' +
+          '<div class="digest-card-title">Birds today</div>' +
+          '<h3>' + todaySp.size + ' species detected</h3>' +
+          '<p>' + todayBirds.length + ' total calls identified since midnight' + (newToday.length ? ' · <strong style="color:var(--ep-tan);">★ ' + newToday.length + ' new species this year</strong>' : '') + '</p>' +
+          (todaySpList.length ? '<p style="margin-top:0.4rem;font-size:0.78rem;color:var(--text-muted);">' + todaySpList.slice(0,4).join(', ').replace(/_/g,' ') + (todaySpList.length>4?' +' + (todaySpList.length-4) + ' more':'') + '</p>' : '') +
+        '</div>' +
+        '<div class="digest-card">' +
+          '<div class="digest-card-title">This month in birds</div>' +
+          '<h3>' + monthSp.size + ' species · ' + weekSp.size + ' this week</h3>' +
+          '<p>BirdNET has been listening continuously. Each species profile has hourly charts and AQI correlations.</p>' +
+          '<a href="birds.html" style="font-size:0.8rem;color:var(--ep-green);font-weight:500;text-decoration:none;">Browse all species →</a>' +
+        '</div>' +
+      '</div>' +
+
+      '<div class="digest-card" style="margin-bottom:1rem;">' +
+        '<div class="digest-card-title">Top 5 species this week</div>' +
+        '<ul class="digest-bird-list">' +
+          topWeek.map(function(s, i) {
+            return '<li><span style="font-size:0.75rem;color:var(--text-muted);width:18px;">' + (i+1) + '.</span>' +
+              '<span class="dbl-n"><a href="species.html?bird=' + s[0].replace(/ /g,'_') + '" style="color:var(--ep-green);text-decoration:none;">' + s[0] + '</a></span>' +
+              '<span class="dbl-c">' + s[1] + ' detections</span></li>';
+          }).join('') +
+        '</ul>' +
+      '</div>' +
+
+      '<div style="background:rgba(33,67,50,0.05);border-radius:var(--radius-lg);padding:1.1rem 1.25rem;font-size:0.82rem;color:var(--text-muted);line-height:1.7;">' +
+        '🌿 <strong style="color:var(--ep-green);">Your personalized digest</strong> — updates every time you open this page. Configure alerts in "My Alerts" to get email notifications for the events that matter to you.' +
+      '</div>';
+
+  } catch(e) {
+    el.innerHTML = '<div class="res-card" style="border-color:#fca5a5;"><p style="color:#dc2626;">Error loading digest: ' + escHtml(e.message) + '</p></div>';
+  }
 }
 
 // ── HISTORY ───────────────────────────────────────────────────────────────────

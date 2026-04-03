@@ -1,12 +1,12 @@
-/* Earth Pulse — Central Navigation + Footer
-   Always include BEFORE any page-specific scripts.
-   Checks Supabase auth to show correct nav CTA.
+/* Earth Pulse — nav.js
+   Auth-aware navigation. Reads Supabase v2 session from localStorage.
+   Supabase v2 key: "sb-[project-ref]-auth-token"
+   where project-ref = "krmczyqwblsoekceanlj"
 */
 (function() {
   var SITE    = 'Earth Pulse';
   var TAGLINE = 'Observing the Earth, over time.';
-  var SB_URL  = 'https://krmczyqwblsoekceanlj.supabase.co';
-  var SB_KEY  = 'sb_publishable_DrHFT5J0vmrkYraUXIlpQQ_gsk1rdq6';
+  var SB_KEY_NAME = 'sb-krmczyqwblsoekceanlj-auth-token';
 
   var LINKS = [
     { href:'index.html',          label:'Home' },
@@ -23,16 +23,56 @@
     { href:'species.html',  label:'Species' },
     { href:'climate.html',  label:'Climate' },
     { href:'hill.html',     label:'Baner Hill' },
-    { href:'register.html', label:'Register' },
+    { href:'register.html', label:'Register / Sign in' },
     { href:'about.html',    label:'About' },
     { href:'contact.html',  label:'Contact' },
   ];
 
-  function page() {
-    return window.location.pathname.split('/').pop() || 'index.html';
+  function page() { return window.location.pathname.split('/').pop() || 'index.html'; }
+
+  function getSession() {
+    // Try exact Supabase v2 key first
+    try {
+      var raw = localStorage.getItem(SB_KEY_NAME);
+      if (raw) {
+        var d = JSON.parse(raw);
+        if (d && d.user && d.expires_at) {
+          // expires_at is Unix timestamp in seconds
+          if (d.expires_at * 1000 > Date.now()) return { email: d.user.email || '', ok: true };
+        }
+      }
+    } catch(e) {}
+
+    // Fallback: scan all keys for any supabase auth token
+    try {
+      var keys = Object.keys(localStorage);
+      for (var i = 0; i < keys.length; i++) {
+        var k = keys[i];
+        if (k.indexOf('sb-') === 0 && k.indexOf('-auth-token') !== -1) {
+          var raw2 = localStorage.getItem(k);
+          if (!raw2) continue;
+          var d2 = JSON.parse(raw2);
+          if (d2 && d2.user && d2.expires_at && d2.expires_at * 1000 > Date.now()) {
+            return { email: d2.user.email || '', ok: true };
+          }
+        }
+        // Also check for access_token directly (some versions store differently)
+        if (k.indexOf('supabase.auth.token') !== -1) {
+          var raw3 = localStorage.getItem(k);
+          if (!raw3) continue;
+          var d3 = JSON.parse(raw3);
+          var session = d3 && (d3.currentSession || d3);
+          if (session && session.user && session.expires_at && session.expires_at * 1000 > Date.now()) {
+            return { email: session.user.email || '', ok: true };
+          }
+        }
+      }
+    } catch(e) {}
+
+    return { ok: false, email: '' };
   }
 
-  function buildNav(isLoggedIn, userEmail) {
+  function buildNav(session) {
     var el = document.getElementById('ep-nav');
     if (!el) return;
     var pg = page();
@@ -42,11 +82,9 @@
     }).join('');
 
     var cta;
-    if (isLoggedIn) {
-      var isAdmin = userEmail === 'fangchu@gmail.com';
-      var label = isAdmin ? '⚙ Admin' : '👤 My account';
-      var href  = isAdmin ? 'admin.html' : 'data.html';
-      cta = '<a href="' + href + '" class="ep-nav-cta" style="background:rgba(33,67,50,0.15);color:var(--ep-green);border:1.5px solid var(--ep-green);">' + label + '</a>';
+    if (session.ok) {
+      var isAdmin = session.email === 'fangchu@gmail.com';
+      cta = '<a href="' + (isAdmin ? 'admin.html' : 'data.html') + '" class="ep-nav-cta" style="background:rgba(33,67,50,0.12);color:var(--ep-green);border:1.5px solid var(--ep-green);">' + (isAdmin ? '⚙ Admin' : '👤 My account') + '</a>';
     } else {
       cta = '<a href="register.html" class="ep-nav-cta">Register</a>';
     }
@@ -64,9 +102,7 @@
           cta +
         '</div>' +
       '</nav>' +
-      '<style>' +
-        '@media(max-width:600px){.ep-nav-logo-full{max-width:38px;object-fit:cover;object-position:left center;}}' +
-      '</style>';
+      '<style>@media(max-width:600px){.ep-nav-logo-full{max-width:38px;object-fit:cover;object-position:left center;}}</style>';
   }
 
   function buildFooter() {
@@ -84,28 +120,9 @@
       '</footer>';
   }
 
-  // Check auth state via REST (avoids needing Supabase JS client in nav)
-  // Uses the stored session token from localStorage if available
-  function checkAuthAndBuild() {
-    var isLoggedIn = false;
-    var userEmail  = '';
-    try {
-      // Supabase stores session in localStorage with this key pattern
-      var keys = Object.keys(localStorage);
-      for (var i = 0; i < keys.length; i++) {
-        if (keys[i].indexOf('supabase') !== -1 && keys[i].indexOf('auth-token') !== -1) {
-          var data = JSON.parse(localStorage.getItem(keys[i]));
-          if (data && data.user && data.expires_at * 1000 > Date.now()) {
-            isLoggedIn = true;
-            userEmail  = data.user.email || '';
-          }
-          break;
-        }
-      }
-    } catch(e) {}
-    buildNav(isLoggedIn, userEmail);
+  document.addEventListener('DOMContentLoaded', function() {
+    var session = getSession();
+    buildNav(session);
     buildFooter();
-  }
-
-  document.addEventListener('DOMContentLoaded', checkAuthAndBuild);
+  });
 })();

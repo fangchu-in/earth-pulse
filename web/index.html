@@ -100,6 +100,18 @@
     .monsoon-count { text-align:center; flex-shrink:0; }
     .monsoon-days { font-family:var(--serif); font-size:3.5rem; line-height:1; color:var(--ep-tan); }
     .monsoon-days-label { font-size:0.75rem; color:rgba(242,240,230,0.65); text-transform:uppercase; letter-spacing:0.08em; }
+    /* ── 2-day forecast strip ── */
+    .forecast-strip { max-width:1100px; margin:0.75rem auto 0; padding:0 2rem; }
+    .forecast-days { display:grid; grid-template-columns:1fr 1fr 1fr; gap:0.75rem; }
+    @media(max-width:600px){ .forecast-days { grid-template-columns:1fr; } }
+    .fc-day { background:white; border:1px solid var(--border); border-radius:var(--radius-lg); padding:1rem 1.25rem; display:flex; align-items:center; gap:1rem; }
+    .fc-day.today { background:rgba(33,67,50,0.05); border-color:rgba(33,67,50,0.2); }
+    .fc-icon { font-size:2rem; flex-shrink:0; line-height:1; }
+    .fc-label { font-size:0.68rem; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--text-muted); margin-bottom:2px; }
+    .fc-temps { font-family:var(--serif); font-size:1.25rem; color:var(--ep-green); }
+    .fc-temps span { font-size:0.85rem; color:var(--text-muted); margin-left:4px; }
+    .fc-desc { font-size:0.78rem; color:var(--text-muted); margin-top:2px; }
+    .fc-rain { font-size:0.72rem; color:#1e40af; margin-top:2px; font-family:var(--mono); }
   </style>
 </head>
 <body>
@@ -159,6 +171,11 @@
     <div class="ep-card-value" id="cloud-val">—</div>
     <div class="ep-card-unit">% · <span id="precip-val">—</span> mm rain</div>
   </div>
+</div>
+
+<!-- 2-DAY FORECAST STRIP (Open-Meteo, free, no key) -->
+<div class="forecast-strip" id="forecast-strip" style="display:none;">
+  <div class="forecast-days" id="forecast-days"></div>
 </div>
 
 <!-- LIVE RAIN BANNER — only visible when precipitation > 0 -->
@@ -756,9 +773,72 @@ async function handleNewsletter(e) {
   } catch{btn.textContent='Try again';btn.disabled=false;}
 }
 
+// ── 2-DAY FORECAST from Open-Meteo (free, no API key) ─────────────────────────
+async function loadForecast() {
+  try {
+    // Open-Meteo daily forecast — free, no key needed
+    const url = 'https://api.open-meteo.com/v1/forecast?latitude=18.5526&longitude=73.7819' +
+      '&daily=temperature_2m_max,temperature_2m_min,weathercode,precipitation_sum,windspeed_10m_max' +
+      '&timezone=Asia%2FKolkata&forecast_days=3';
+    const res  = await fetch(url);
+    const data = await res.json();
+    if (!data.daily) return;
+
+    const days  = data.daily;
+    const labels = ['Today', 'Tomorrow', new Date(Date.now()+2*86400000).toLocaleDateString('en-IN',{weekday:'short',day:'numeric',month:'short'})];
+
+    function wmoIcon(code) {
+      if (code === 0)                     return '☀️';
+      if (code <= 2)                      return '🌤️';
+      if (code <= 3)                      return '☁️';
+      if (code <= 49)                     return '🌫️'; // fog/drizzle
+      if (code <= 59)                     return '🌦️'; // drizzle
+      if (code <= 69)                     return '🌧️'; // rain
+      if (code <= 79)                     return '🌨️'; // snow
+      if (code <= 84)                     return '🌦️'; // showers
+      if (code <= 99)                     return '⛈️'; // thunderstorm
+      return '🌡️';
+    }
+    function wmoDesc(code) {
+      if (code === 0)  return 'Clear sky';
+      if (code <= 2)   return 'Partly cloudy';
+      if (code <= 3)   return 'Overcast';
+      if (code <= 49)  return 'Fog / haze';
+      if (code <= 59)  return 'Drizzle';
+      if (code <= 69)  return 'Rain';
+      if (code <= 79)  return 'Snow showers';
+      if (code <= 84)  return 'Showers';
+      if (code <= 99)  return 'Thunderstorm';
+      return 'Variable';
+    }
+
+    const html = days.time.slice(0,3).map((date, i) => {
+      const max   = Math.round(days.temperature_2m_max[i]);
+      const min   = Math.round(days.temperature_2m_min[i]);
+      const rain  = days.precipitation_sum[i];
+      const code  = days.weathercode[i];
+      const wind  = Math.round(days.windspeed_10m_max[i]);
+      const rainTxt = rain > 0 ? `<div class="fc-rain">🌧️ ${rain.toFixed(1)}mm · ${wind}km/h wind</div>` : `<div class="fc-rain" style="color:var(--text-muted);">${wind}km/h max wind</div>`;
+      return `<div class="fc-day${i===0?' today':''}">
+        <div class="fc-icon">${wmoIcon(code)}</div>
+        <div>
+          <div class="fc-label">${labels[i]}</div>
+          <div class="fc-temps">${max}°<span>/ ${min}°C</span></div>
+          <div class="fc-desc">${wmoDesc(code)}</div>
+          ${rainTxt}
+        </div>
+      </div>`;
+    }).join('');
+
+    document.getElementById('forecast-days').innerHTML = html;
+    document.getElementById('forecast-strip').style.display = 'block';
+  } catch(e) { console.warn('Forecast error:', e); }
+}
+
 // ── INIT ──────────────────────────────────────────────────────────────────────
 (async function(){
   await loadClimate();
+  loadForecast();
   loadChanges();
   loadBirds();
   loadInsights();
