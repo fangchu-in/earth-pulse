@@ -100,8 +100,11 @@
     .monsoon-count { text-align:center; flex-shrink:0; }
     .monsoon-days { font-family:var(--serif); font-size:3.5rem; line-height:1; color:var(--ep-tan); }
     .monsoon-days-label { font-size:0.75rem; color:rgba(242,240,230,0.65); text-transform:uppercase; letter-spacing:0.08em; }
-    /* ── 3-day forecast strip ── */
-    .forecast-strip { max-width:1100px; margin:1rem auto 0; padding:0 2rem; }
+    /* ── 3-day forecast strip — clear separation from sections below ── */
+    .forecast-outer { max-width:1100px; margin:1.5rem auto 2.5rem; padding:0 2rem; }
+    .forecast-section-label { display:flex; align-items:center; gap:0.5rem; margin-bottom:0.75rem; }
+    .forecast-section-label span { font-size:0.67rem; font-weight:700; text-transform:uppercase; letter-spacing:0.1em; color:var(--text-muted); }
+    .forecast-section-label::before, .forecast-section-label::after { content:''; flex:1; height:1px; background:var(--border); }
     .forecast-days { display:grid; grid-template-columns:repeat(3,1fr); gap:0.85rem; }
     @media(max-width:700px){ .forecast-days { grid-template-columns:1fr; gap:0.5rem; } }
     .fc-day {
@@ -109,20 +112,63 @@
       padding:1rem 1.25rem; display:grid;
       grid-template-columns:52px 1fr auto;
       align-items:center; gap:0.75rem;
-      transition:box-shadow 0.15s;
+      cursor:pointer; transition:box-shadow 0.15s, transform 0.12s;
     }
-    .fc-day:hover { box-shadow:0 2px 12px rgba(33,67,50,0.08); }
+    .fc-day:hover { box-shadow:0 4px 16px rgba(33,67,50,0.1); transform:translateY(-1px); }
+    .fc-day:active { transform:translateY(0); }
     .fc-day.today { background:rgba(33,67,50,0.04); border-color:rgba(33,67,50,0.2); }
     .fc-icon { font-size:2rem; line-height:1; text-align:center; }
     .fc-label { font-size:0.65rem; font-weight:700; text-transform:uppercase; letter-spacing:0.1em; color:var(--text-muted); margin-bottom:2px; }
     .fc-desc  { font-size:0.8rem; color:var(--text-secondary); margin-top:1px; }
     .fc-rain  { font-size:0.72rem; color:#1d4ed8; margin-top:2px; font-family:var(--mono); }
+    .fc-hint  { font-size:0.62rem; color:var(--text-muted); margin-top:4px; opacity:0.7; }
     .fc-temps-col { text-align:right; }
     .fc-max  { font-family:var(--serif); font-size:1.5rem; color:var(--ep-green); line-height:1; }
     .fc-min  { font-size:0.8rem; color:var(--text-muted); margin-top:1px; }
-    .forecast-label { max-width:1100px; margin:0.5rem auto 0; padding:0 2rem; display:flex; align-items:center; gap:0.5rem; }
-    .forecast-label span { font-size:0.67rem; font-weight:700; text-transform:uppercase; letter-spacing:0.1em; color:var(--text-muted); }
-    .forecast-label::before, .forecast-label::after { content:''; flex:1; height:1px; background:var(--border); }
+
+    /* ── Weather detail bottom sheet / popup ── */
+    .wx-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.45); z-index:500; display:none; align-items:flex-end; justify-content:center; }
+    .wx-overlay.open { display:flex; animation:fadeIn 0.18s ease; }
+    @media(min-width:600px){ .wx-overlay { align-items:center; } }
+    @keyframes fadeIn { from{opacity:0} to{opacity:1} }
+    .wx-sheet {
+      background:#F2F0E6; border-radius:20px 20px 0 0; width:100%; max-width:520px;
+      padding:1.25rem 1.5rem 2.5rem; max-height:88vh; overflow-y:auto;
+      box-shadow:0 -8px 40px rgba(0,0,0,0.2);
+      animation:slideUp 0.22s ease;
+    }
+    @media(min-width:600px){ .wx-sheet { border-radius:16px; margin:1rem; } }
+    @keyframes slideUp { from{transform:translateY(30px);opacity:0} to{transform:translateY(0);opacity:1} }
+    .wx-handle { width:36px; height:4px; background:var(--border-strong); border-radius:2px; margin:0 auto 1rem; display:block; }
+    .wx-close-row { display:flex; justify-content:space-between; align-items:center; margin-bottom:0.75rem; }
+    .wx-day-label { font-size:0.68rem; font-weight:700; text-transform:uppercase; letter-spacing:0.1em; color:var(--text-muted); }
+    .wx-close { background:none; border:none; font-size:1.4rem; color:var(--text-muted); cursor:pointer; line-height:1; padding:2px 4px; border-radius:6px; }
+    .wx-close:hover { background:var(--border); }
+    .wx-hero { display:flex; align-items:center; gap:1rem; background:var(--ep-green); border-radius:var(--radius-lg); padding:1.1rem 1.25rem; margin-bottom:1rem; }
+    .wx-hero-icon { font-size:2.8rem; flex-shrink:0; }
+    .wx-hero-info { flex:1; }
+    .wx-hero-temp { font-family:var(--serif); font-size:2.8rem; color:#F2F0E6; line-height:1; }
+    .wx-hero-desc { font-size:0.9rem; color:rgba(242,240,230,0.8); margin-top:3px; }
+    .wx-hero-range { font-size:0.8rem; color:rgba(242,240,230,0.6); margin-top:2px; }
+    .wx-grid2 { display:grid; grid-template-columns:1fr 1fr; gap:0.55rem; margin-bottom:1rem; }
+    .wx-cell { background:white; border:1px solid var(--border); border-radius:var(--radius-md); padding:0.7rem 0.85rem; }
+    .wx-cell-label { font-size:0.62rem; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--text-muted); margin-bottom:3px; }
+    .wx-cell-val   { font-size:0.95rem; font-weight:600; color:var(--ep-green); font-family:var(--mono); }
+    .wx-cell-sub   { font-size:0.68rem; color:var(--text-muted); margin-top:2px; }
+    .wx-section-title { font-size:0.68rem; font-weight:700; text-transform:uppercase; letter-spacing:0.1em; color:var(--text-muted); margin:1rem 0 0.5rem; }
+    .wx-hourly-scroll { display:flex; gap:0.45rem; overflow-x:auto; padding-bottom:6px; -webkit-overflow-scrolling:touch; scrollbar-width:none; }
+    .wx-hourly-scroll::-webkit-scrollbar { display:none; }
+    .wx-hour { flex-shrink:0; background:white; border:1px solid var(--border); border-radius:var(--radius-md); padding:0.55rem 0.6rem; text-align:center; min-width:52px; }
+    .wx-hour-time { font-size:0.6rem; color:var(--text-muted); font-family:var(--mono); }
+    .wx-hour-icon { font-size:1.1rem; margin:3px 0; display:block; }
+    .wx-hour-temp { font-size:0.82rem; font-weight:600; color:var(--ep-green); }
+    .wx-hour-rain { font-size:0.58rem; color:#1d4ed8; font-family:var(--mono); margin-top:1px; }
+    .wx-astro { display:grid; grid-template-columns:1fr 1fr; gap:0.55rem; margin-top:0.5rem; }
+    .wx-astro-card { background:var(--ep-green); border-radius:var(--radius-md); padding:0.8rem 0.9rem; }
+    .wx-astro-label { font-size:0.62rem; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:rgba(242,240,230,0.6); }
+    .wx-astro-val   { font-size:1rem; font-weight:600; color:#F2F0E6; margin-top:3px; }
+    .wx-astro-sub   { font-size:0.7rem; color:rgba(242,240,230,0.55); margin-top:2px; }
+    .wx-moon { font-size:0.85rem; color:#F2F0E6; margin-top:2px; }
   </style>
 </head>
 <body>
@@ -184,12 +230,29 @@
   </div>
 </div>
 
-<!-- 3-DAY FORECAST (Open-Meteo free API — ECMWF model, hyper-accurate for Baner) -->
-<div class="forecast-label" id="forecast-label" style="display:none;">
-  <span>3-day forecast · Baner, Pune · Open-Meteo ECMWF</span>
-</div>
-<div class="forecast-strip" id="forecast-strip" style="display:none;">
+<!-- 3-DAY FORECAST (Open-Meteo ECMWF — clickable for full detail) -->
+<div class="forecast-outer" id="forecast-outer" style="display:none;">
+  <div class="forecast-section-label">
+    <span>3-day forecast · Baner, Pune · Open-Meteo ECMWF</span>
+  </div>
   <div class="forecast-days" id="forecast-days"></div>
+</div>
+
+<!-- WEATHER DETAIL BOTTOM SHEET -->
+<div class="wx-overlay" id="wx-overlay" onclick="if(event.target===this)closeWx()">
+  <div class="wx-sheet" id="wx-sheet">
+    <span class="wx-handle"></span>
+    <div class="wx-close-row">
+      <span class="wx-day-label" id="wx-day-label">Today</span>
+      <button class="wx-close" onclick="closeWx()">✕</button>
+    </div>
+    <div class="wx-hero" id="wx-hero"></div>
+    <div class="wx-grid2" id="wx-grid"></div>
+    <div class="wx-section-title">Hourly temperature & rain</div>
+    <div class="wx-hourly-scroll" id="wx-hourly"></div>
+    <div class="wx-section-title">Sun & Moon</div>
+    <div class="wx-astro" id="wx-astro"></div>
+  </div>
 </div>
 
 <!-- LIVE RAIN BANNER — only visible when precipitation > 0 -->
@@ -788,48 +851,53 @@ async function handleNewsletter(e) {
 }
 
 // ── 3-DAY FORECAST from Open-Meteo (free, ECMWF model, no API key) ────────────
+// ── 3-DAY FORECAST + WEATHER DETAIL POPUP ────────────────────────────────────
+var _forecastData = null;
+
+function wmoIcon(c) {
+  if (c===0) return '☀️'; if (c<=2) return '🌤️'; if (c<=3) return '☁️';
+  if (c<=49) return '🌫️'; if (c<=59) return '🌦️'; if (c<=69) return '🌧️';
+  if (c<=79) return '🌨️'; if (c<=84) return '🌦️'; if (c<=99) return '⛈️';
+  return '🌡️';
+}
+function wmoDesc(c) {
+  if (c===0) return 'Clear sky';    if (c<=2) return 'Partly cloudy';
+  if (c<=3)  return 'Overcast';     if (c<=49) return 'Fog / haze';
+  if (c<=59) return 'Drizzle';      if (c<=69) return 'Rain';
+  if (c<=79) return 'Snow';         if (c<=84) return 'Showers';
+  if (c<=99) return 'Thunderstorm'; return 'Variable';
+}
+function moonPhase(date) {
+  const known = new Date('2000-01-06');
+  const days  = (date - known) / 86400000;
+  const phase = ((days % 29.53058770576) + 29.53058770576) % 29.53058770576;
+  if (phase < 1.85)  return ['🌑','New Moon'];
+  if (phase < 7.38)  return ['🌒','Waxing Crescent'];
+  if (phase < 9.22)  return ['🌓','First Quarter'];
+  if (phase < 14.77) return ['🌔','Waxing Gibbous'];
+  if (phase < 16.61) return ['🌕','Full Moon'];
+  if (phase < 22.15) return ['🌖','Waning Gibbous'];
+  if (phase < 23.99) return ['🌗','Last Quarter'];
+  return ['🌘','Waning Crescent'];
+}
+
 async function loadForecast() {
   try {
     const url = 'https://api.open-meteo.com/v1/forecast?latitude=18.5526&longitude=73.7819' +
-      '&daily=temperature_2m_max,temperature_2m_min,weathercode,precipitation_sum,windspeed_10m_max,precipitation_probability_max' +
+      '&daily=temperature_2m_max,temperature_2m_min,weathercode,precipitation_sum,' +
+      'windspeed_10m_max,windgusts_10m_max,precipitation_probability_max,sunrise,sunset,' +
+      'uv_index_max,precipitation_hours' +
+      '&hourly=temperature_2m,precipitation_probability,weathercode,windspeed_10m,relativehumidity_2m' +
       '&timezone=Asia%2FKolkata&forecast_days=3';
     const res  = await fetch(url);
     const data = await res.json();
     if (!data.daily || !data.daily.time) return;
+    _forecastData = data;
 
     const d      = data.daily;
     const now    = new Date();
-    const labels = [
-      'Today',
-      'Tomorrow',
-      now.toLocaleDateString('en-IN',{weekday:'short',day:'numeric',month:'short'}).replace(/,/,'')
-        .split(' ').map((w,i)=>i===0?w.charAt(0).toUpperCase()+w.slice(1):w).join(' ')
-    ];
-
-    function wmoIcon(c) {
-      if (c===0)      return '☀️';
-      if (c<=2)       return '🌤️';
-      if (c<=3)       return '☁️';
-      if (c<=49)      return '🌫️';
-      if (c<=59)      return '🌦️';
-      if (c<=69)      return '🌧️';
-      if (c<=79)      return '🌨️';
-      if (c<=84)      return '🌦️';
-      if (c<=99)      return '⛈️';
-      return '🌡️';
-    }
-    function wmoDesc(c) {
-      if (c===0)  return 'Clear sky';
-      if (c<=2)   return 'Partly cloudy';
-      if (c<=3)   return 'Overcast';
-      if (c<=49)  return 'Fog / haze';
-      if (c<=59)  return 'Drizzle';
-      if (c<=69)  return 'Rain';
-      if (c<=79)  return 'Snow';
-      if (c<=84)  return 'Showers';
-      if (c<=99)  return 'Thunderstorm';
-      return 'Variable';
-    }
+    const labels = ['Today','Tomorrow',
+      new Date(now.getTime()+2*86400000).toLocaleDateString('en-IN',{weekday:'short',day:'numeric',month:'short'})];
 
     const html = d.time.slice(0,3).map((date, i) => {
       const max   = Math.round(d.temperature_2m_max[i]);
@@ -841,12 +909,13 @@ async function loadForecast() {
       const rainLine = rain > 0
         ? `<div class="fc-rain">🌧️ ${rain.toFixed(1)}mm · ${rProb}% chance</div>`
         : `<div class="fc-rain" style="color:var(--text-muted);">${wind}km/h max wind</div>`;
-      return `<div class="fc-day${i===0?' today':''}">
+      return `<div class="fc-day${i===0?' today':''}" onclick="openWx(${i})" role="button" tabindex="0" aria-label="Weather detail for ${labels[i]}">
         <div class="fc-icon">${wmoIcon(code)}</div>
         <div>
           <div class="fc-label">${labels[i]}</div>
           <div class="fc-desc">${wmoDesc(code)}</div>
           ${rainLine}
+          <div class="fc-hint">Tap for full details ›</div>
         </div>
         <div class="fc-temps-col">
           <div class="fc-max">${max}°</div>
@@ -856,10 +925,110 @@ async function loadForecast() {
     }).join('');
 
     document.getElementById('forecast-days').innerHTML = html;
-    document.getElementById('forecast-strip').style.display = 'block';
-    document.getElementById('forecast-label').style.display = 'flex';
+    document.getElementById('forecast-outer').style.display = 'block';
   } catch(e) { console.warn('Forecast error:', e); }
 }
+
+function openWx(dayIndex) {
+  if (!_forecastData) return;
+  const d = _forecastData.daily;
+  const h = _forecastData.hourly;
+  const now = new Date();
+  const dayLabels = ['Today','Tomorrow',
+    new Date(now.getTime()+2*86400000).toLocaleDateString('en-IN',{weekday:'long',day:'numeric',month:'long'})];
+
+  const max     = Math.round(d.temperature_2m_max[dayIndex]);
+  const min     = Math.round(d.temperature_2m_min[dayIndex]);
+  const code    = d.weathercode[dayIndex];
+  const rain    = (d.precipitation_sum[dayIndex] || 0).toFixed(1);
+  const rProb   = d.precipitation_probability_max ? (d.precipitation_probability_max[dayIndex] || 0) : '—';
+  const wind    = Math.round(d.windspeed_10m_max[dayIndex]);
+  const gusts   = d.windgusts_10m_max ? Math.round(d.windgusts_10m_max[dayIndex]) : '—';
+  const uv      = d.uv_index_max ? (d.uv_index_max[dayIndex] || '—') : '—';
+  const rainHrs = d.precipitation_hours ? (d.precipitation_hours[dayIndex] || 0) : '—';
+  const uvDesc  = uv==='—'?'':Number(uv)>=8?'Very High':Number(uv)>=6?'High':Number(uv)>=3?'Moderate':'Low';
+
+  function fmtTime(iso) {
+    if (!iso) return '—';
+    return new Date(iso).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit',hour12:true,timeZone:'Asia/Kolkata'});
+  }
+  const sunrise = fmtTime(d.sunrise ? d.sunrise[dayIndex] : null);
+  const sunset  = fmtTime(d.sunset  ? d.sunset[dayIndex]  : null);
+  const dateObj = new Date(d.time[dayIndex]);
+  const [moonEmoji, moonName] = moonPhase(dateObj);
+
+  document.getElementById('wx-day-label').textContent =
+    dayLabels[dayIndex] + ' · ' + dateObj.toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'});
+
+  document.getElementById('wx-hero').innerHTML =
+    `<div class="wx-hero-icon">${wmoIcon(code)}</div>
+     <div class="wx-hero-info">
+       <div class="wx-hero-temp">${max}°C</div>
+       <div class="wx-hero-desc">${wmoDesc(code)}</div>
+       <div class="wx-hero-range">Low ${min}°C · High ${max}°C</div>
+     </div>`;
+
+  document.getElementById('wx-grid').innerHTML = [
+    {label:'🌧️ Rainfall',   val:rain+'mm',       sub:rProb+'% probability'},
+    {label:'⏱️ Rain hours', val:rainHrs+'h',     sub:'of precipitation'},
+    {label:'💨 Max wind',   val:wind+' km/h',    sub:'Gusts '+gusts+' km/h'},
+    {label:'☀️ UV Index',   val:uv,              sub:uvDesc},
+    {label:'🌅 Sunrise',    val:sunrise,         sub:'IST · Baner, Pune'},
+    {label:'🌇 Sunset',     val:sunset,          sub:'Dusk ~20 min later'},
+  ].map(c=>`<div class="wx-cell"><div class="wx-cell-label">${c.label}</div><div class="wx-cell-val">${c.val}</div><div class="wx-cell-sub">${c.sub}</div></div>`).join('');
+
+  // Hourly strip
+  const dayStart = dayIndex * 24;
+  document.getElementById('wx-hourly').innerHTML = Array.from({length:24},(_,hi)=>{
+    const idx  = dayStart + hi;
+    const temp = h.temperature_2m ? Math.round(h.temperature_2m[idx]) : '—';
+    const prob = h.precipitation_probability ? (h.precipitation_probability[idx] || 0) : 0;
+    const wc   = h.weathercode ? (h.weathercode[idx] || 0) : 0;
+    const hr   = String(hi).padStart(2,'0')+':00';
+    return `<div class="wx-hour">
+      <div class="wx-hour-time">${hr}</div>
+      <span class="wx-hour-icon">${wmoIcon(wc)}</span>
+      <div class="wx-hour-temp">${temp}°</div>
+      <div class="wx-hour-rain">${prob>0?prob+'%':''}</div>
+    </div>`;
+  }).join('');
+
+  // Scroll hourly to current hour when viewing today
+  if (dayIndex === 0) {
+    const curHr = new Date().getHours();
+    setTimeout(()=>{
+      const el = document.querySelectorAll('.wx-hour')[curHr];
+      if (el) el.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});
+    }, 150);
+  }
+
+  // Sun & Moon
+  document.getElementById('wx-astro').innerHTML =
+    `<div class="wx-astro-card">
+       <div class="wx-astro-label">🌅 Sunrise</div>
+       <div class="wx-astro-val">${sunrise}</div>
+       <div class="wx-astro-sub">Golden hour follows</div>
+     </div>
+     <div class="wx-astro-card">
+       <div class="wx-astro-label">🌇 Sunset</div>
+       <div class="wx-astro-val">${sunset}</div>
+       <div class="wx-astro-sub">Dusk ~20 min later</div>
+     </div>
+     <div class="wx-astro-card" style="grid-column:1/-1;">
+       <div class="wx-astro-label">🌙 Moon phase</div>
+       <div class="wx-moon">${moonEmoji} ${moonName}</div>
+       <div class="wx-astro-sub">Affects nocturnal bird behaviour · bat foraging · light pollution</div>
+     </div>`;
+
+  document.getElementById('wx-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeWx() {
+  document.getElementById('wx-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+document.addEventListener('keydown', function(e){ if(e.key==='Escape') closeWx(); });
 
 // ── INIT ──────────────────────────────────────────────────────────────────────
 (async function(){

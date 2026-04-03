@@ -24,6 +24,7 @@
     { href:'climate.html',  label:'Climate' },
     { href:'hill.html',     label:'Baner Hill' },
     { href:'register.html', label:'Register / Sign in' },
+    { href:'contribute.html', label:'Contribute' },
     { href:'about.html',    label:'About' },
     { href:'contact.html',  label:'Contact' },
   ];
