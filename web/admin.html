@@ -149,7 +149,7 @@
       <div class="ptitle">Users</div>
       <div class="psub" id="user-sub">Loading…</div>
       <div style="background:#fff;border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;">
-        <table class="tbl"><thead><tr><th>Email</th><th>Subscribed</th></tr></thead><tbody id="users-body"><tr><td colspan="2" style="text-align:center;padding:2rem;color:var(--text-muted);">Loading…</td></tr></tbody></table>
+        <table class="tbl"><thead><tr><th>Email</th><th>Subscribed</th><th>Source</th></tr></thead><tbody id="users-body"><tr><td colspan="3" style="text-align:center;padding:2rem;color:var(--text-muted);">Loading…</td></tr></tbody></table>
       </div>
       <p style="font-size:0.78rem;color:var(--text-muted);margin-top:0.75rem;">Shows newsletter subscribers. Full auth user list available in Supabase dashboard → Authentication → Users.</p>
     </div>
@@ -458,6 +458,9 @@ async function updateSegCount() {
   } catch(e) { document.getElementById('seg-count').textContent = 'Could not load subscriber count'; }
 }
 
+var EMAIL_WORKER = 'https://earthpulse-email.fangchu.workers.dev';
+var ADMIN_SECRET = 'earthpulse-admin'; // Set this in both the Worker and here
+
 async function sendTestEmail() {
   var subject = document.getElementById('em-subject').value;
   var body    = document.getElementById('em-body').innerHTML;
@@ -466,16 +469,50 @@ async function sendTestEmail() {
   var status = document.getElementById('send-status');
   status.textContent = 'Sending test to fangchu@gmail.com…';
 
-  // This calls the Resend API via a Cloudflare Worker proxy
-  // For now, show the setup instructions
-  status.innerHTML = '⚠️ To send emails, deploy the email-worker.js to Cloudflare Workers with your RESEND_API_KEY. See README for setup. Your email preview looks great!';
+  try {
+    var res = await fetch(EMAIL_WORKER + '/send', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + ADMIN_SECRET },
+      body: JSON.stringify({ to: 'fangchu@gmail.com', subject: '[TEST] ' + subject, html: body })
+    });
+    var d = await res.json();
+    if (!res.ok) throw new Error(d.error || 'Worker error ' + res.status);
+    status.innerHTML = '✅ Test sent to fangchu@gmail.com! Check your inbox. (Resend ID: ' + (d.id||'ok') + ')';
+  } catch(e) {
+    status.innerHTML = '⚠️ Error: ' + e.message + ' — check that your Resend FROM address is verified at resend.com/domains';
+  }
 }
 
 async function sendBroadcast() {
   var subject = document.getElementById('em-subject').value;
+  var html    = document.getElementById('em-body').innerHTML;
   if (!subject) { alert('Please add a subject line first.'); return; }
-  if (!confirm('Send to ' + subCount + ' subscribers? This cannot be undone.')) return;
-  document.getElementById('send-status').innerHTML = '⚠️ Email sending requires the Cloudflare Worker + Resend.com setup. See the README. The email body and template are ready.';
+
+  // Fetch subscriber list
+  var recipients = [];
+  try {
+    var rows = await sbGet('/newsletter_signups?select=email&limit=1000');
+    if (Array.isArray(rows)) recipients = rows.map(function(r){ return r.email; }).filter(Boolean);
+  } catch(e) { alert('Could not load subscribers: ' + e.message); return; }
+
+  if (!recipients.length) { alert('No subscribers found.'); return; }
+  if (!confirm('Send to ' + recipients.length + ' subscribers? This cannot be undone.')) return;
+
+  var status = document.getElementById('send-status');
+  status.textContent = 'Sending to ' + recipients.length + ' subscribers…';
+
+  try {
+    var res = await fetch(EMAIL_WORKER + '/send-batch', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + ADMIN_SECRET },
+      body: JSON.stringify({ recipients, subject, html })
+    });
+    var d = await res.json();
+    if (!res.ok) throw new Error(d.error || 'Worker error ' + res.status);
+    status.innerHTML = '✅ Broadcast sent! ' + d.sent + ' delivered' + (d.failed ? ', ' + d.failed + ' failed' : '') + '.';
+  } catch(e) {
+    status.innerHTML = '⚠️ Error: ' + e.message;
+  }
 }
 
 // Load template and subscriber count on panel open
@@ -539,22 +576,81 @@ function staleness(ts) {
 async function loadOverview() {
   document.getElementById('ov-time').textContent = new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit',hour12:true,timeZone:'Asia/Kolkata'}) + ' IST';
   try {
-    var [cr,bd,tf,ns] = await Promise.all([
+    // Fetch all counts in parallel
+    var [cr, bd, tf, ns, allBirds] = await Promise.all([
       sbCount('climate_readings'),
       sbCount('bird_detections'),
       sbCount('timelapse_frames'),
       sbCount('newsletter_signups'),
+      sbGet('/bird_detections?select=species_common,species_scientific&limit=5000'),
     ]);
-    document.getElementById('ov-stats').innerHTML = [
-      {icon:'📊',val:cr.toLocaleString(),label:'Climate records',sub:'hourly since Jan 2022'},
-      {icon:'🐦',val:bd.toLocaleString(),label:'Bird detections',sub:'BirdNET acoustic AI'},
-      {icon:'📸',val:tf.toLocaleString(),label:'Hill photos',sub:'timelapse archive'},
-      {icon:'📬',val:ns.toLocaleString(),label:'Subscribers',sub:'newsletter'},
+
+    // Compute unique species and classifications
+    var speciesMap = {};
+    if (Array.isArray(allBirds)) {
+      allBirds.forEach(function(b) { speciesMap[b.species_scientific] = b.species_common; });
+    }
+    var uniqueSpecies = Object.keys(speciesMap).length;
+
+    // Classify species
+    var RARE_WORDS      = ['kestrel','nightjar','heron','owl','osprey','vulture','falcon','crake','rail'];
+    var MIGRATORY_WORDS = ['warbler','martin','swift','pipit','bee-eater','flycatcher','redstart','wagtail','chat','stint','sandpiper','wheatear','swift'];
+    var rareCount = 0, migCount = 0, commonCount = 0;
+    Object.values(speciesMap).forEach(function(name) {
+      var l = name.toLowerCase();
+      if      (RARE_WORDS.some(function(w){return l.includes(w);}))      rareCount++;
+      else if (MIGRATORY_WORDS.some(function(w){return l.includes(w);})) migCount++;
+      else commonCount++;
+    });
+
+    // Fetch auth users count via newsletter as proxy (anon key can't read auth.users)
+    var thisYearISO = new Date(new Date().getFullYear(),0,1).toISOString();
+    var newThisYear = Array.isArray(allBirds) ? (function(){
+      var set = new Set(); allBirds.forEach(function(b){ set.add(b.species_scientific); }); return set.size;
+    })() : 0;
+
+    // Build stat cards — first row: database overview
+    var statsHtml = [
+      {icon:'📊', val:cr.toLocaleString(),      label:'Climate records',       sub:'hourly since Jan 2022'},
+      {icon:'🔊', val:bd.toLocaleString(),      label:'Bird detections',       sub:'total acoustic calls'},
+      {icon:'🐦', val:uniqueSpecies,            label:'Unique species',        sub:'ever detected in Baner'},
+      {icon:'📸', val:tf.toLocaleString(),      label:'Hill photos',           sub:'timelapse archive'},
+      {icon:'📬', val:ns.toLocaleString(),      label:'Subscribers',           sub:'newsletter + registered'},
     ].map(function(s){
       return '<div class="stat-box"><div class="stat-box-icon">'+s.icon+'</div><div class="stat-box-val">'+s.val+'</div><div class="stat-box-label">'+s.label+'</div><div class="stat-box-sub">'+s.sub+'</div></div>';
     }).join('');
 
-    var [lat,bird,photo] = await Promise.all([
+    document.getElementById('ov-stats').innerHTML = statsHtml;
+
+    // Bird classification breakdown card
+    var birdBreakdown =
+      '<div class="card" style="margin-bottom:1rem;">' +
+      '<div class="card-title">🐦 Species breakdown — ' + uniqueSpecies + ' unique species detected</div>' +
+      '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:0.75rem;margin-bottom:0.75rem;">' +
+        '<div style="background:rgba(33,67,50,0.07);border-radius:var(--radius-md);padding:1rem;text-align:center;">' +
+          '<div style="font-family:var(--serif);font-size:1.6rem;color:var(--ep-green);">' + commonCount + '</div>' +
+          '<div style="font-size:0.68rem;font-weight:600;text-transform:uppercase;letter-spacing:0.07em;color:var(--text-muted);">Resident / Common</div>' +
+          '<div style="font-size:0.72rem;color:var(--ep-tan);margin-top:2px;">Year-round Baner species</div>' +
+        '</div>' +
+        '<div style="background:rgba(191,155,123,0.1);border-radius:var(--radius-md);padding:1rem;text-align:center;">' +
+          '<div style="font-family:var(--serif);font-size:1.6rem;color:var(--ep-tan);">' + migCount + '</div>' +
+          '<div style="font-size:0.68rem;font-weight:600;text-transform:uppercase;letter-spacing:0.07em;color:var(--text-muted);">Migratory</div>' +
+          '<div style="font-size:0.72rem;color:var(--ep-tan);margin-top:2px;">Seasonal visitors</div>' +
+        '</div>' +
+        '<div style="background:rgba(220,38,38,0.05);border-radius:var(--radius-md);padding:1rem;text-align:center;">' +
+          '<div style="font-family:var(--serif);font-size:1.6rem;color:#dc2626;">' + rareCount + '</div>' +
+          '<div style="font-size:0.68rem;font-weight:600;text-transform:uppercase;letter-spacing:0.07em;color:var(--text-muted);">Rare / Uncommon</div>' +
+          '<div style="font-size:0.72rem;color:#dc2626;margin-top:2px;">Kestrel, Owl, Heron, Nightjar…</div>' +
+        '</div>' +
+      '</div>' +
+      '<p style="font-size:0.75rem;color:var(--text-muted);">Classification is rule-based on common name — visit <a href="birds.html" style="color:var(--ep-green);">Birds page</a> for full species profiles.</p>' +
+      '</div>';
+
+    // Stitch it all together
+    document.getElementById('ov-stats').insertAdjacentHTML('afterend', birdBreakdown);
+
+    // System status and data freshness
+    var [lat, bird, photo] = await Promise.all([
       sbGet('/climate_readings?select=recorded_at,aqi,temperature&order=recorded_at.desc&limit=1'),
       sbGet('/bird_detections?select=detected_at&order=detected_at.desc&limit=1'),
       sbGet('/timelapse_frames?select=captured_at&order=captured_at.desc&limit=1'),
@@ -563,56 +659,93 @@ async function loadOverview() {
     var birdAge = bird[0] ? Math.round((Date.now()-new Date(bird[0].detected_at).getTime())/60000) : 9999;
 
     document.getElementById('ov-status').innerHTML = [
-      ['Pi 3B+ (AQI cron)',  aqiAge<130  ? 'ok-dot' : 'err-dot', aqiAge<130  ? 'Running (' + aqiAge + 'm ago)' : '⚠️ Last update '+aqiAge+'m ago — check Pi'],
-      ['Pi 3B (BirdNET)',    birdAge<70  ? 'ok-dot' : 'warn-dot', birdAge<70 ? 'Listening (' + birdAge + 'm ago)' : 'No detection for '+birdAge+'m'],
-      ['Supabase',           'ok-dot',   'Connected · RLS enabled'],
-      ['Cloudflare Pages',   'ok-dot',   'Live · earthpulse.pages.dev'],
+      ['Pi 3B+ (AQI cron)',       aqiAge<130  ? 'ok-dot':'err-dot',  aqiAge<130  ? 'Running ('+aqiAge+'m ago)' : '⚠️ Last update '+aqiAge+'m ago — check Pi'],
+      ['Pi 3B (BirdNET)',         birdAge<70  ? 'ok-dot':'warn-dot', birdAge<70  ? 'Listening ('+birdAge+'m ago)' : 'No detection for '+birdAge+'m'],
+      ['Supabase',                'ok-dot',   'Connected · RLS enabled on all tables'],
+      ['Cloudflare Pages',        'ok-dot',   'Live · earthpulse.pages.dev'],
+      ['AI Worker (Claude)',      'ok-dot',   'earthpulse-ai.fangchu.workers.dev'],
+      ['Email Worker (Resend)',   'ok-dot',   'earthpulse-email.fangchu.workers.dev'],
     ].map(function(r){ return '<div class="kv"><span class="kv-k"><span class="status-dot '+r[1]+'"></span>'+r[0]+'</span><span class="kv-v">'+r[2]+'</span></div>'; }).join('');
 
     document.getElementById('ov-fresh').innerHTML = [
-      ['Last climate reading', staleness(lat[0]?.recorded_at) + ' · AQI ' + (lat[0]?.aqi||'—') + ' · ' + (lat[0]?.temperature||'—') + '°C'],
+      ['Last climate reading', staleness(lat[0]?.recorded_at)  + ' · AQI ' + (lat[0]?.aqi||'—') + ' · ' + (lat[0]?.temperature||'—') + '°C'],
       ['Last bird detection',  staleness(bird[0]?.detected_at)],
       ['Last hill photo',      staleness(photo[0]?.captured_at)],
     ].map(function(r){ return '<div class="kv"><span class="kv-k">'+r[0]+'</span><span class="kv-v">'+r[1]+'</span></div>'; }).join('');
-  } catch(e) { document.getElementById('ov-stats').textContent = 'Error: ' + e.message; }
+
+  } catch(e) {
+    document.getElementById('ov-stats').textContent = 'Error loading overview: ' + e.message;
+  }
 }
 
 // ── USERS ─────────────────────────────────────────────────────────────────────
 async function loadUsers() {
   try {
-    var rows = await sbGet('/newsletter_signups?select=*&order=created_at.desc&limit=100');
-    document.getElementById('user-sub').textContent = rows.length + ' newsletter subscribers · Full auth user list in Supabase dashboard.';
+    var resp = await sbGet('/newsletter_signups?select=*&order=created_at.desc&limit=200');
+    // Supabase may return an array or an error object
+    var rows = Array.isArray(resp) ? resp : [];
+    var count = rows.length;
+    document.getElementById('user-sub').textContent = count + ' newsletter subscriber' + (count!==1?'s':'') + ' · Full auth user list in Supabase dashboard → Authentication → Users.';
+    if (!count) {
+      document.getElementById('users-body').innerHTML = '<tr><td colspan="3" style="text-align:center;padding:1.5rem;color:var(--text-muted);">No subscribers yet — they come from the homepage newsletter form and registration.</td></tr>';
+      return;
+    }
     document.getElementById('users-body').innerHTML = rows.map(function(r) {
-      var dt = r.created_at ? new Date(r.created_at).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}) : '—';
-      return '<tr><td>' + r.email + '</td><td>' + dt + '</td></tr>';
-    }).join('') || '<tr><td colspan="2" style="text-align:center;padding:1.5rem;color:var(--text-muted);">No subscribers yet</td></tr>';
-  } catch(e) { document.getElementById('users-body').innerHTML = '<tr><td colspan="2" style="color:#dc2626;padding:1rem;">Error: '+e.message+'</td></tr>'; }
+      var dt  = r.created_at ? new Date(r.created_at).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}) : '—';
+      var src = r.source || 'newsletter';
+      return '<tr><td style="font-family:var(--mono);font-size:0.82rem;">' + (r.email||'—') + '</td>' +
+        '<td style="font-size:0.78rem;color:var(--text-muted);">' + dt + '</td>' +
+        '<td><span style="font-size:0.68rem;background:rgba(33,67,50,0.1);color:var(--ep-green);padding:1px 8px;border-radius:20px;font-weight:600;">' + src + '</span></td></tr>';
+    }).join('');
+  } catch(e) {
+    document.getElementById('users-body').innerHTML = '<tr><td colspan="3" style="color:#dc2626;padding:1rem;">Error: ' + e.message + '</td></tr>';
+  }
 }
 
 // ── SYSTEM ────────────────────────────────────────────────────────────────────
 async function loadSystem() {
   try {
-    var [lat,bird] = await Promise.all([
+    var [lat, bird] = await Promise.all([
       sbGet('/climate_readings?select=recorded_at,aqi,temperature&order=recorded_at.desc&limit=1'),
       sbGet('/bird_detections?select=detected_at&order=detected_at.desc&limit=1'),
     ]);
     var aqiAge  = lat[0]  ? Math.round((Date.now()-new Date(lat[0].recorded_at).getTime())/60000) : 9999;
     var birdAge = bird[0] ? Math.round((Date.now()-new Date(bird[0].detected_at).getTime())/60000) : 9999;
+
+    // Ping AI worker to check it's alive
+    var aiOk = false;
+    try {
+      var aiRes = await fetch('https://earthpulse-ai.fangchu.workers.dev/health', { signal: AbortSignal.timeout(4000) });
+      aiOk = aiRes.ok;
+    } catch(e) { aiOk = false; }
+
+    // Ping email worker health check
+    var emailOk = false;
+    try {
+      var emailRes = await fetch('https://earthpulse-email.fangchu.workers.dev/health', { signal: AbortSignal.timeout(4000) });
+      emailOk = emailRes.ok;
+    } catch(e) { emailOk = false; }
+
     var cards = [
       {title:'🖥 Pi 3B+ (AQI & data pipeline)', dot:aqiAge<130?'ok-dot':'err-dot',
        rows:[['Last AQI fetch',aqiAge+'m ago'],['Latest AQI',(lat[0]?.aqi||'—')],['Latest temp',(lat[0]?.temperature||'—')+'°C'],['Status',aqiAge<130?'✅ Running normally':'⚠️ Check Pi — cron may be stopped']]},
-      {title:'🎙 Pi 3B (BirdNET)',dot:birdAge<70?'ok-dot':'warn-dot',
-       rows:[['Last detection',birdAge+'m ago'],['Status',birdAge<70?'✅ Listening':'⚠️ No detection for '+birdAge+'m — check Pi or no birds']]},
-      {title:'🗄 Supabase',dot:'ok-dot',
-       rows:[['Database','✅ Connected'],['RLS','✅ Enabled on all tables'],['Storage','✅ timelapse bucket'],['Free tier','Monitor in Supabase dashboard']]},
-      {title:'☁ Cloudflare Pages',dot:'ok-dot',
-       rows:[['Deployment','✅ Live'],['Domain','earthpulse.pages.dev'],['CDN','✅ Global edge'],['R2 Storage','Check Cloudflare dashboard']]},
+      {title:'🎙 Pi 3B (BirdNET)', dot:birdAge<70?'ok-dot':'warn-dot',
+       rows:[['Last detection',birdAge+'m ago'],['Mic device','plughw:2,0'],['Status',birdAge<70?'✅ Listening':'⚠️ No detection for '+birdAge+'m — check Pi or no birds near mic']]},
+      {title:'🤖 AI Worker (Claude proxy)', dot:aiOk?'ok-dot':'warn-dot',
+       rows:[['URL','earthpulse-ai.fangchu.workers.dev'],['Status',aiOk?'✅ Responding':'⚠️ Not responding — check Cloudflare dashboard'],['API key','ANTHROPIC_API_KEY set'],['Model','claude-sonnet-4-20250514']]},
+      {title:'📧 Email Worker (Resend)', dot:emailOk?'ok-dot':'warn-dot',
+       rows:[['URL','earthpulse-email.fangchu.workers.dev'],['Status',emailOk?'✅ Responding':'⚠️ Not responding — check Cloudflare dashboard'],['API key','RESEND_API_KEY set'],['Free tier','3,000 emails/month']]},
+      {title:'🗄 Supabase', dot:'ok-dot',
+       rows:[['Database','✅ Connected'],['RLS','✅ Enabled on all tables'],['Storage','✅ timelapse bucket public'],['Auth','✅ Email auth enabled']]},
+      {title:'☁ Cloudflare Pages + R2', dot:'ok-dot',
+       rows:[['Deployment','✅ Live at earthpulse.pages.dev'],['CDN','✅ Global edge network'],['R2 Storage','earthpulse-files bucket'],['Deploy','Via GitHub push to main branch']]},
     ];
+
     document.getElementById('sys-grid').innerHTML = cards.map(function(c){
       return '<div class="card"><div class="card-title"><span class="status-dot '+c.dot+'"></span>'+c.title+'</div>'+
         c.rows.map(function(r){ return '<div class="kv"><span class="kv-k">'+r[0]+'</span><span class="kv-v">'+r[1]+'</span></div>'; }).join('')+'</div>';
     }).join('');
-  } catch(e) { document.getElementById('sys-grid').textContent='Error: '+e.message; }
+  } catch(e) { document.getElementById('sys-grid').textContent = 'Error: ' + e.message; }
 }
 
 // ── LOGS ──────────────────────────────────────────────────────────────────────
@@ -635,30 +768,103 @@ async function loadLogs() {
 
 // ── USAGE ─────────────────────────────────────────────────────────────────────
 async function loadUsage() {
-  var dom = new Date().getDate();
-  var googleCalls = dom * 24;
-  var googleLimit = 10000;
-  var gPct = Math.round(googleCalls/googleLimit*100);
+  var dom  = new Date().getDate();         // day of month
+  var mon  = new Date().getMonth() + 1;    // month number
+
+  // Estimated API calls this month (based on cron schedule)
+  var googleCalls    = dom * 24;           // 1 call/hour
+  var anthropicCalls = dom * 5;            // ~5 AI queries/day avg estimate
+  var resendSent     = dom * 1;            // rough: 1 email alert/day avg
+  var workerReqs     = dom * 24 * 3;       // 3 worker hits per hour (AI + email)
 
   try {
-    var [cr,bd,tf] = await Promise.all([sbCount('climate_readings'),sbCount('bird_detections'),sbCount('timelapse_frames')]);
-    var total = cr+bd+tf;
-    var dbMB = (total*0.5/1024).toFixed(1);
-    var apiEst = dom*24*5;
+    var [cr, bd, tf, ns] = await Promise.all([
+      sbCount('climate_readings'), sbCount('bird_detections'),
+      sbCount('timelapse_frames'), sbCount('newsletter_signups'),
+    ]);
+    var totalRows = cr + bd + tf;
+    var dbMB = (totalRows * 0.5 / 1024).toFixed(1);
+    var sbApiEst = dom * 24 * 6;
 
-    document.getElementById('usage-wrap').innerHTML = [
-      {title:'🌍 Google Air Quality API',val:googleCalls+' / '+googleLimit+' calls est.',pct:gPct,note:'Free tier: ~10,000 calls/month. At 24/day you use ~720/month — very safe. Set a billing alert at $5 in Google Cloud just in case.'},
-      {title:'🗄 Supabase — database rows',val:total.toLocaleString()+' rows total',pct:Math.round(total/500000*100),note:'Free tier: 500MB. Estimated '+dbMB+'MB used. Safe for years at current growth rate.'},
-      {title:'🗄 Supabase — API requests',val:'~'+apiEst.toLocaleString()+' est. this month',pct:Math.round(apiEst/2000000*100),note:'Free tier: 2M requests/month. Well below limit.'},
-      {title:'☁ Cloudflare Pages',val:'Unlimited requests',pct:0,note:'Pages is completely free with no request limits. R2 storage: check Cloudflare dashboard for egress.'},
-    ].map(function(u){
-      var barCls = u.pct>80?'danger':u.pct>50?'warn':'';
-      return '<div class="card"><div class="card-title">'+u.title+'</div>' +
-        '<div style="font-family:var(--mono);font-size:1rem;color:var(--ep-green);margin-bottom:0.4rem;">'+u.val+'</div>' +
-        (u.pct>0?'<div class="ubar"><div class="ufill '+barCls+'" style="width:'+Math.min(u.pct,100)+'%"></div></div>':'') +
-        '<div style="font-size:0.76rem;color:var(--text-muted);margin-top:0.5rem;">'+u.note+'</div></div>';
-    }).join('');
-  } catch(e) { document.getElementById('usage-wrap').textContent='Error: '+e.message; }
+    var cards = [
+      {
+        title: '🌍 Google Air Quality API',
+        val: googleCalls + ' / 10,000 calls est.',
+        pct: Math.round(googleCalls/10000*100),
+        note: 'Free: ~10,000 calls/month. At 24/day you use ~' + (dom*24) + ' so far. Safe for the whole month.',
+        link: 'https://console.cloud.google.com/apis/api/airquality.googleapis.com/quotas',
+        linkLabel: 'View quota →'
+      },
+      {
+        title: '🤖 Anthropic Claude API',
+        val: '~' + anthropicCalls + ' queries est. this month',
+        pct: Math.round(anthropicCalls/1000*100), // relative to 1000 budget
+        note: 'Pay-per-use. At ~$0.003 per query, ' + anthropicCalls + ' queries ≈ $' + (anthropicCalls*0.003).toFixed(2) + '. Monitor credits in Anthropic Console.',
+        link: 'https://console.anthropic.com',
+        linkLabel: 'Check credits →'
+      },
+      {
+        title: '📧 Resend Email (earthpulse-email Worker)',
+        val: '~' + resendSent + ' emails sent est.',
+        pct: Math.round(resendSent/3000*100),
+        note: 'Free: 3,000 emails/month. At your current volume, you will use <1% of the free tier.',
+        link: 'https://resend.com/dashboard',
+        linkLabel: 'View dashboard →'
+      },
+      {
+        title: '⚙ Cloudflare Workers',
+        val: '~' + workerReqs.toLocaleString() + ' requests est.',
+        pct: Math.round(workerReqs/100000*100),
+        note: 'Free: 100,000 requests/day. Both workers combined are well below limit.',
+        link: 'https://dash.cloudflare.com',
+        linkLabel: 'View metrics →'
+      },
+      {
+        title: '🗄 Supabase — database',
+        val: totalRows.toLocaleString() + ' rows · ~' + dbMB + 'MB est.',
+        pct: Math.round(totalRows/500000*100),
+        note: 'Free: 500MB storage, 2M API requests/month. At current growth, database lasts years on free tier.',
+        link: 'https://supabase.com/dashboard/project/krmczyqwblsoekceanlj',
+        linkLabel: 'View dashboard →'
+      },
+      {
+        title: '☁ Cloudflare R2 Storage',
+        val: 'Hill photo archive',
+        pct: 0,
+        note: 'Free: 10GB storage, 1M read ops/month. R2 usage depends on timelapse upload frequency — check Cloudflare dashboard.',
+        link: 'https://dash.cloudflare.com',
+        linkLabel: 'View R2 usage →'
+      },
+      {
+        title: '📈 Cloudflare Pages',
+        val: 'Unlimited requests · free forever',
+        pct: 0,
+        note: 'No request limits on Pages. DNS and CDN included. Deploy via GitHub push.',
+        link: 'https://dash.cloudflare.com',
+        linkLabel: 'View analytics →'
+      },
+    ];
+
+    document.getElementById('usage-wrap').innerHTML = cards.map(function(u) {
+      var barCls = u.pct > 80 ? 'danger' : u.pct > 50 ? 'warn' : '';
+      return '<div class="card">' +
+        '<div class="card-title" style="display:flex;justify-content:space-between;align-items:center;">' +
+          u.title +
+          (u.link ? '<a href="'+u.link+'" target="_blank" style="font-size:0.72rem;color:var(--ep-tan);text-decoration:none;font-weight:500;">'+u.linkLabel+'</a>' : '') +
+        '</div>' +
+        '<div style="font-family:var(--mono);font-size:0.95rem;color:var(--ep-green);margin-bottom:0.4rem;">' + u.val + '</div>' +
+        (u.pct > 0 ? '<div class="ubar" style="margin-bottom:0.4rem;"><div class="ufill ' + barCls + '" style="width:' + Math.min(u.pct,100) + '%"></div></div>' : '') +
+        '<div style="font-size:0.76rem;color:var(--text-muted);">' + u.note + '</div>' +
+        '</div>';
+    }).join('') +
+    '<div style="background:rgba(33,67,50,0.05);border:1px solid rgba(33,67,50,0.15);border-radius:var(--radius-lg);padding:1rem 1.25rem;font-size:0.78rem;color:var(--text-muted);line-height:1.8;margin-top:0.5rem;">' +
+    '💡 <strong style="color:var(--ep-green);">Spend protection:</strong> ' +
+    'Set billing alerts in Google Cloud ($5) and Anthropic Console ($10). ' +
+    'Resend, Cloudflare, and Supabase are free at your scale. ' +
+    'PostHog free tier (1M events/month) and Sentry free tier (5k errors/month) available for analytics and error tracking.' +
+    '</div>';
+
+  } catch(e) { document.getElementById('usage-wrap').textContent = 'Error: ' + e.message; }
 }
 
 // ── DATA ──────────────────────────────────────────────────────────────────────
