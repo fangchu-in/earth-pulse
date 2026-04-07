@@ -658,32 +658,34 @@ async function approvePhoto(id, storagePath, filename) {
     var tok = await getToken();
     var hdr = { 'apikey':_SB_KEY, 'Authorization':'Bearer '+tok, 'Content-Type':'application/json' };
 
-    // 1. Copy file from photo-staging to timelapse bucket
-    var copyRes = await fetch(_SB_URL+'/storage/v1/object/copy', {
-      method: 'POST',
-      headers: {'apikey':_SB_KEY, 'Authorization':'Bearer '+tok, 'Content-Type':'application/json'},
-      body: JSON.stringify({
-        sourceKey:         storagePath,
-        sourceBucketName:  'photo-staging',
-        destinationKey:    filename,
-        destinationBucket: 'timelapse'
-      })
+    // 1. Download file from private photo-staging bucket
+    var dlRes = await fetch(_SB_URL+'/storage/v1/object/photo-staging/'+storagePath, {
+      headers: {'apikey':_SB_KEY, 'Authorization':'Bearer '+tok}
     });
-    // Copy may fail if buckets don't support server-side copy — continue anyway
+    if (!dlRes.ok) throw new Error('Could not download from staging: '+dlRes.status);
+    var blob = await dlRes.blob();
+
+    // 2. Upload to public timelapse bucket
+    var ulRes = await fetch(_SB_URL+'/storage/v1/object/timelapse/'+filename, {
+      method: 'POST',
+      headers: {'apikey':_SB_KEY, 'Authorization':'Bearer '+tok, 'Content-Type':'image/jpeg', 'x-upsert':'true'},
+      body: blob
+    });
+    if (!ulRes.ok) throw new Error('Could not upload to timelapse: '+ulRes.status);
 
     var publicUrl = _SB_URL+'/storage/v1/object/public/timelapse/'+filename;
 
-    // 2. Update submission status
+    // 3. Update submission record
     await fetch(_SB_URL+'/rest/v1/photo_submissions?id=eq.'+id, {
       method:'PATCH', headers:hdr,
       body:JSON.stringify({ status:'approved', public_url:publicUrl, reviewed_by:_user.email, reviewed_at:new Date().toISOString() })
     });
 
-    // 3. Get submission metadata for timelapse_frames record
+    // 4. Get submission metadata
     var subR = await sbGet('/photo_submissions?select=*&id=eq.'+id);
     var sub  = Array.isArray(subR) && subR[0];
 
-    // 4. Create timelapse_frames record so it shows on hill.html
+    // 5. Create timelapse_frames record so it shows on hill.html
     await fetch(_SB_URL+'/rest/v1/timelapse_frames', {
       method:'POST', headers:{...hdr,'Prefer':'resolution=merge-duplicates,return=minimal'},
       body:JSON.stringify({
