@@ -12,7 +12,7 @@ const ABOUT_HTML = `
   </div>
   <div class="about-section">
     <h3>The science</h3>
-    <p>Climate data is sourced from the <strong>Copernicus Atmosphere Monitoring Service (CAMS)</strong> via Open-Meteo, with validation from the Google Air Quality API. Historical records extend back to January 2022.</p>
+    <p>Climate data is sourced from the <strong>Copernicus Atmosphere Monitoring Service (CAMS)</strong> via Open-Meteo, Weather Union, with validation from the Google Air Quality API. Historical records extend back to January 2022.</p>
     <p>Bird detection uses <strong>BirdNET</strong> — the neural network developed by the K. Lisa Yang Center for Conservation Bioacoustics at Cornell Lab of Ornithology — running continuously on a Raspberry Pi, detecting species from ambient audio at dawn, dusk, and overnight.</p>
     <p>All data is openly accessible. Raw datasets are available to registered researchers on request.</p>
   </div>
