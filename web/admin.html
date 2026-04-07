@@ -658,15 +658,15 @@ async function approvePhoto(id, storagePath, filename) {
     var tok = await getToken();
     var hdr = { 'apikey':_SB_KEY, 'Authorization':'Bearer '+tok, 'Content-Type':'application/json' };
 
-    // 1. Copy file from photo-staging to timelapse bucket via Supabase Storage API
+    // 1. Copy file from photo-staging to timelapse bucket
     var copyRes = await fetch(_SB_URL+'/storage/v1/object/copy', {
       method: 'POST',
-      headers: hdr,
+      headers: {'apikey':_SB_KEY, 'Authorization':'Bearer '+tok, 'Content-Type':'application/json'},
       body: JSON.stringify({
-        bucketId:         'photo-staging',
-        sourceKey:        storagePath,
-        destinationBucket:'timelapse',
-        destinationKey:   filename
+        sourceKey:         storagePath,
+        sourceBucketName:  'photo-staging',
+        destinationKey:    filename,
+        destinationBucket: 'timelapse'
       })
     });
     // Copy may fail if buckets don't support server-side copy — continue anyway
@@ -694,8 +694,7 @@ async function approvePhoto(id, storagePath, filename) {
       })
     });
 
-    var copyNote = copyRes?.ok ? '' : '\n\nNote: auto-copy may have failed. Manually move photo-staging/'+storagePath+' → timelapse/'+filename+' in Supabase Storage if needed.';
-    alert('✅ Approved & published to gallery.'+copyNote);
+    alert('✅ Approved & published to gallery.');
     _photosLoaded=false; loadPhotoQueue();
   } catch(e) {
     alert('Error: '+e.message);
