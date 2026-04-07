@@ -6,99 +6,65 @@
   <title>Upload Hill Photo — Earth Pulse</title>
   <meta name="robots" content="noindex, nofollow">
   <link rel="icon" type="image/png" href="earth-pulse-logo.png">
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-  <script>
-    var _SB_URL = 'https://krmczyqwblsoekceanlj.supabase.co';
-    var _SB_KEY = 'sb_publishable_DrHFT5J0vmrkYraUXIlpQQ_gsk1rdq6';
-    var _sb = null; var _user = null; var _token = null;
-    try { _sb = window.supabase.createClient(_SB_URL, _SB_KEY); } catch(e) {}
-  </script>
   <link rel="stylesheet" href="styles.css">
   <style>
-    body { max-width:680px; margin:0 auto; padding:2rem 1.5rem 5rem; }
-    .page-logo { display:flex; align-items:center; gap:10px; margin-bottom:0.5rem; }
+    body { max-width:640px; margin:0 auto; padding:2rem 1.5rem 4rem; }
+
+    .page-logo { display:flex; align-items:center; gap:10px; margin-bottom:2rem; }
     .page-logo img { height:32px; }
+    .page-logo span { font-family:var(--sans); font-weight:600; color:var(--ep-green); font-size:1rem; }
+
     h1 { font-family:var(--serif); font-size:2rem; color:var(--ep-green); margin-bottom:0.3rem; }
-    .subtitle { color:var(--text-muted); font-size:0.9rem; margin-bottom:1.5rem; line-height:1.6; }
+    .subtitle { color:var(--text-muted); font-size:0.9rem; margin-bottom:2rem; line-height:1.6; }
 
-    /* Auth gate */
-    .auth-gate { position:fixed; inset:0; background:rgba(242,240,230,0.97); display:none; flex-direction:column; align-items:center; justify-content:center; gap:1rem; z-index:999; text-align:center; padding:2rem; }
-    .auth-gate h2 { font-family:var(--serif); color:var(--ep-green); }
-    .auth-gate p  { color:var(--text-muted); font-size:0.9rem; max-width:360px; }
-    .auth-gate a  { background:var(--ep-green); color:var(--ep-cream); padding:0.7rem 1.6rem; border-radius:30px; text-decoration:none; font-weight:500; }
-
-    /* User bar */
-    .user-bar { background:rgba(33,67,50,0.06); border-radius:var(--radius-sm); padding:0.7rem 1rem; margin-bottom:1.25rem; display:none; align-items:center; justify-content:space-between; font-size:0.82rem; }
-    .user-bar a { color:var(--text-muted); text-decoration:none; font-size:0.78rem; }
-
-    /* Mod notice */
-    .mod-notice { background:rgba(245,158,11,0.08); border:1px solid rgba(245,158,11,0.3); border-radius:var(--radius-md); padding:0.85rem 1rem; margin-bottom:1.25rem; font-size:0.82rem; color:#92400e; display:flex; gap:0.6rem; align-items:flex-start; }
-
-    /* Rules */
-    .rules-box { background:rgba(33,67,50,0.05); border-left:3px solid var(--ep-green); border-radius:0 var(--radius-sm) var(--radius-sm) 0; padding:0.9rem 1.1rem; margin-bottom:1.25rem; font-size:0.82rem; color:var(--text-muted); line-height:1.8; }
-    .rules-box strong { color:var(--ep-green); display:block; margin-bottom:0.25rem; }
-    .rules-box ul { margin:0; padding-left:1.25rem; }
-    .rules-box li { margin-bottom:1px; }
+    .info-box {
+      background:rgba(33,67,50,0.05); border-left:3px solid var(--ep-green);
+      border-radius:0 var(--radius-sm) var(--radius-sm) 0;
+      padding:0.9rem 1.1rem; margin-bottom:1.75rem;
+      font-size:0.82rem; color:var(--text-muted); line-height:1.8;
+    }
+    .info-box strong { color:var(--ep-green); }
 
     /* Drop zone */
-    .drop-zone { border:2px dashed var(--border-strong); border-radius:var(--radius-lg); padding:2.5rem 1.5rem; text-align:center; cursor:pointer; transition:all 0.2s; background:var(--ep-cream); margin-bottom:1rem; position:relative; }
+    .drop-zone {
+      border:2px dashed var(--border-strong); border-radius:var(--radius-lg);
+      padding:2.5rem 1.5rem; text-align:center; cursor:pointer;
+      transition:all 0.2s; background:var(--ep-cream); margin-bottom:1.25rem;
+      position:relative;
+    }
     .drop-zone.drag { border-color:var(--ep-green); background:rgba(33,67,50,0.04); }
     .drop-zone input { position:absolute; inset:0; opacity:0; cursor:pointer; width:100%; height:100%; }
     .dz-icon { font-size:2.2rem; margin-bottom:0.6rem; }
     .dz-title { font-family:var(--serif); font-size:1.15rem; color:var(--ep-green); margin-bottom:0.25rem; }
     .dz-sub { font-size:0.8rem; color:var(--text-muted); }
-    .dz-limits { font-size:0.72rem; color:var(--text-muted); margin-top:0.4rem; font-family:var(--mono); }
 
     /* Preview */
-    .preview-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:0.6rem; margin-bottom:1rem; }
+    .preview-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:0.6rem; margin-bottom:1.25rem; }
     .preview-item { position:relative; border-radius:var(--radius-sm); overflow:hidden; aspect-ratio:4/3; background:var(--ep-cream-dark); }
     .preview-item img { width:100%; height:100%; object-fit:cover; }
     .preview-remove { position:absolute; top:4px; right:4px; background:rgba(0,0,0,0.65); color:white; border:none; border-radius:50%; width:22px; height:22px; font-size:0.8rem; cursor:pointer; display:flex; align-items:center; justify-content:center; }
     .preview-label { position:absolute; bottom:0; left:0; right:0; background:rgba(0,0,0,0.55); color:rgba(255,255,255,0.9); font-size:0.58rem; font-family:var(--mono); padding:3px 5px; }
-    .preview-error { position:absolute; inset:0; background:rgba(220,38,38,0.15); display:flex; align-items:center; justify-content:center; font-size:0.68rem; color:#dc2626; padding:4px; text-align:center; font-family:var(--mono); }
-
-    /* Caption */
-    .field-label { font-size:0.72rem; font-weight:700; text-transform:uppercase; letter-spacing:0.06em; color:var(--text-muted); margin-bottom:4px; display:block; }
-    .caption-field { width:100%; padding:0.65rem 0.85rem; border:1.5px solid var(--border-strong); border-radius:var(--radius-sm); font-family:var(--sans); font-size:0.9rem; background:var(--ep-cream); outline:none; resize:vertical; min-height:60px; box-sizing:border-box; margin-bottom:1rem; }
-    .caption-field:focus { border-color:var(--ep-green); background:white; }
 
     /* Progress */
-    .progress { margin-bottom:1rem; display:none; }
+    .progress { margin-bottom:1.25rem; display:none; }
     .progress-text { font-size:0.8rem; color:var(--text-muted); font-family:var(--mono); margin-bottom:5px; }
     .progress-track { background:var(--ep-cream-dark); border-radius:4px; height:7px; overflow:hidden; }
     .progress-fill { height:100%; background:var(--ep-green); border-radius:4px; transition:width 0.3s; }
 
-    .results { margin-bottom:1rem; display:none; }
-    .result-row { font-size:0.8rem; font-family:var(--mono); padding:5px 0; border-bottom:1px solid var(--border); }
-    .result-row.ok   { color:var(--ep-green); }
-    .result-row.err  { color:#dc2626; }
-    .result-row.info { color:#d97706; }
+    /* Results */
+    .results { margin-bottom:1.25rem; display:none; }
+    .result-row { font-size:0.8rem; font-family:var(--mono); padding:5px 0; border-bottom:1px solid var(--border); color:var(--text-muted); }
+    .result-row.ok  { color:var(--ep-green); }
+    .result-row.err { color:#dc2626; }
 
     .upload-btn { width:100%; background:var(--ep-green); color:var(--ep-cream); padding:0.85rem; border:none; border-radius:var(--radius-sm); font-family:var(--sans); font-size:1rem; font-weight:500; cursor:pointer; transition:background 0.2s; }
     .upload-btn:hover:not(:disabled) { background:var(--ep-green-mid); }
     .upload-btn:disabled { opacity:0.5; cursor:not-allowed; }
-    .back-link { display:block; text-align:center; margin-top:1.5rem; color:var(--ep-green); font-size:0.88rem; text-decoration:none; font-weight:500; }
 
-    /* My submissions */
-    .my-submissions { margin-top:2.5rem; padding-top:2rem; border-top:1px solid var(--border); display:none; }
-    .sub-item { display:flex; gap:0.75rem; align-items:flex-start; padding:0.75rem 0; border-bottom:1px solid var(--border); }
-    .sub-thumb { width:56px; height:42px; border-radius:6px; object-fit:cover; background:var(--ep-cream-dark); flex-shrink:0; }
-    .sub-name  { font-size:0.83rem; font-weight:500; color:var(--ep-green); font-family:var(--mono); }
-    .sub-date  { font-size:0.72rem; color:var(--text-muted); }
-    .sub-badge { font-size:0.63rem; font-weight:700; text-transform:uppercase; letter-spacing:0.06em; padding:2px 8px; border-radius:20px; flex-shrink:0; margin-top:2px; }
-    .badge-pending  { background:rgba(245,158,11,0.12); color:#d97706; }
-    .badge-approved { background:rgba(33,67,50,0.1); color:var(--ep-green); }
-    .badge-rejected { background:rgba(220,38,38,0.1); color:#dc2626; }
+    .back-link { display:block; text-align:center; margin-top:1.5rem; color:var(--ep-green); font-size:0.88rem; text-decoration:none; font-weight:500; }
   </style>
 </head>
 <body>
-
-<div class="auth-gate" id="auth-gate">
-  <img src="earth-pulse-logo.png" alt="Earth Pulse" style="height:48px;">
-  <h2>Sign in to upload photos</h2>
-  <p>Photo uploads are for registered Earth Pulse members only. Free account — 30 seconds to sign up.</p>
-  <a href="register.html?next=upload.html">Sign in or register →</a>
-</div>
 
 <div class="page-logo">
   <img src="earth-pulse-logo.png" alt="Earth Pulse">
@@ -106,349 +72,253 @@
 </div>
 
 <h1>Upload a hill photo</h1>
-<p class="subtitle" id="page-subtitle">Share photos of the Baner hills and Sahyadri foothills. All uploads are reviewed before appearing publicly.</p>
+<p class="subtitle">Share your photos of the Baner hills. The date and time is read from EXIF metadata automatically. Photos are resized to 1280×720 before upload.</p>
 
-<div class="user-bar" id="user-bar">
-  <span style="color:var(--ep-green);font-weight:500;">📸 Uploading as <strong id="user-email-display">—</strong></span>
-  <a href="data.html">← My account</a>
+<div class="info-box">
+  <strong>Works best with:</strong> Photos taken from Baner facing the Sahyadri foothills. Monsoon green, summer brown, fog, hail — all valuable for the record.
+  <br><strong>Formats:</strong> JPG or PNG · <strong>Max:</strong> 20 photos at once · <strong>Privacy:</strong> Photos are public.
 </div>
 
-<div class="mod-notice" id="mod-notice">
-  <span style="font-size:1.1rem;">🔍</span>
-  <div><strong style="font-weight:600;">Photos are moderated before publishing.</strong> Submissions go into a review queue. Admin approval usually takes 1–2 days. Track your status in "My submissions" below.</div>
-</div>
-
-<div class="rules-box">
-  <strong>✅ We accept</strong>
-  <ul>
-    <li>Photos of Baner Hill, Pashan Lake, or Sahyadri foothills from Baner/Pashan/Aundh</li>
-    <li>JPG or PNG · Max 15MB · Max 5 photos at once · Min 800px shortest side</li>
-    <li>All seasons welcome — monsoon green, summer haze, winter fog, rain</li>
-    <li>Original photos you personally took (no stock images)</li>
-  </ul>
-  <strong style="margin-top:0.6rem;">❌ We reject</strong>
-  <ul>
-    <li>Photos containing people, vehicles, or private property</li>
-    <li>Screenshots, graphics, AI-generated, or heavily filtered images</li>
-    <li>Photos not of the Baner/Sahyadri area · Blurry or very low quality shots</li>
-  </ul>
-</div>
-
+<!-- Drop zone -->
 <div class="drop-zone" id="dz">
   <input type="file" id="file-input" accept="image/jpeg,image/jpg,image/png" multiple>
   <div class="dz-icon">📷</div>
   <div class="dz-title">Drop photos here</div>
   <div class="dz-sub">or tap to browse your gallery</div>
-  <div class="dz-limits">JPG / PNG · Max 15MB each · Max 5 photos</div>
 </div>
 
+<!-- Preview grid -->
 <div class="preview-grid" id="preview-grid" style="display:none;"></div>
 
-<div id="caption-section" style="display:none;">
-  <label class="field-label">Where was this taken? (optional)</label>
-  <textarea class="caption-field" id="location-note" placeholder="e.g. From my terrace in Pashan, facing Baner Hill · Shot during morning fog"></textarea>
-</div>
-
+<!-- Progress -->
 <div class="progress" id="progress">
   <div class="progress-text" id="progress-text">Preparing…</div>
   <div class="progress-track"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
 </div>
 
+<!-- Results -->
 <div class="results" id="results"></div>
 
+<!-- Upload button -->
 <button class="upload-btn" id="upload-btn" onclick="startUpload()" disabled>
   Select photos to upload
 </button>
 
-<a href="hill.html" class="back-link">← View the hill gallery</a>
-
-<div class="my-submissions" id="my-submissions">
-  <h3 style="font-family:var(--serif);color:var(--ep-green);margin-bottom:0.25rem;">My submissions</h3>
-  <p style="font-size:0.82rem;color:var(--text-muted);margin-bottom:1rem;">Your photos and their review status.</p>
-  <div id="submissions-list"><div style="color:var(--text-muted);font-size:0.85rem;">Loading…</div></div>
-</div>
+<a href="hill.html" class="back-link">← View the full hill gallery</a>
 
 <script>
-const SUPABASE_URL     = 'https://krmczyqwblsoekceanlj.supabase.co';
-const SUPABASE_KEY     = 'sb_publishable_DrHFT5J0vmrkYraUXIlpQQ_gsk1rdq6';
-const HDR_ANON         = { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer '+SUPABASE_KEY };
-const STAGING_BUCKET   = 'photo-staging';
-const MAX_FILE_SIZE    = 15 * 1024 * 1024;
-const MAX_FILES        = 5;
-const MIN_SHORT_SIDE   = 800;
-// Allowed MIME signatures (magic bytes)
-const ALLOWED_MAGIC    = [
-  [0xFF,0xD8,0xFF],             // JPEG
-  [0x89,0x50,0x4E,0x47,0x0D,0x0A,0x1A,0x0A]  // PNG
-];
+const SUPABASE_URL = 'https://krmczyqwblsoekceanlj.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_DrHFT5J0vmrkYraUXIlpQQ_gsk1rdq6';
+const HDR = { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` };
+const BUCKET = 'timelapse';
 
-let files = [];
+let files = []; // array of { file, filename, capturedAt }
 
-// ── AUTH ─────────────────────────────────────────────────────────────────────
-document.addEventListener('DOMContentLoaded', function() {
-  if (!_sb) { document.getElementById('auth-gate').style.display='flex'; return; }
-  _sb.auth.onAuthStateChange(function(event, session) {
-    if (!session) {
-      document.getElementById('auth-gate').style.display = 'flex';
-    } else {
-      _user  = session.user;
-      _token = session.access_token;
-  if (isAdmin()) {
-    const mn = document.getElementById('mod-notice');
-    if (mn) { mn.style.background='rgba(33,67,50,0.06)'; mn.style.borderColor='rgba(33,67,50,0.2)'; mn.style.color='var(--ep-green)';
-      mn.innerHTML='<span style="font-size:1.1rem;">🟢</span><div><strong style="font-weight:600;">Admin mode.</strong> Your photos publish directly to the gallery without review.</div>'; }
-  }
-  document.getElementById('auth-gate').style.display = 'none';
-  const bar = document.getElementById('user-bar');
-  bar.style.display = 'flex';
-  document.getElementById('user-email-display').textContent = _user.email;
-  loadMySubmissions();
-    }
-  });
-});
+// ── Drag and drop ─────────────────────────────────────────────────────────────
+const dz = document.getElementById('dz');
+const fi = document.getElementById('file-input');
+dz.addEventListener('dragover', e=>{ e.preventDefault(); dz.classList.add('drag'); });
+dz.addEventListener('dragleave', ()=>dz.classList.remove('drag'));
+dz.addEventListener('drop', e=>{ e.preventDefault(); dz.classList.remove('drag'); handleFiles([...e.dataTransfer.files]); });
+fi.addEventListener('change', ()=>handleFiles([...fi.files]));
 
-// ── SECURITY: validate by magic bytes, not extension ─────────────────────────
-async function checkMagicBytes(file) {
-  return new Promise(resolve => {
-    const fr = new FileReader();
-    fr.onload = e => {
-      const bytes = new Uint8Array(e.target.result);
-      const isJPEG = bytes[0]===0xFF && bytes[1]===0xD8 && bytes[2]===0xFF;
-      const isPNG  = bytes[0]===0x89 && bytes[1]===0x50 && bytes[2]===0x4E && bytes[3]===0x47;
-      resolve(isJPEG || isPNG);
-    };
-    fr.readAsArrayBuffer(file.slice(0, 16));
-  });
-}
-
-function checkDimensions(file) {
-  return new Promise(resolve => {
-    const img = new Image();
-    const url = URL.createObjectURL(file);
-    img.onload = () => { URL.revokeObjectURL(url); resolve(Math.min(img.width, img.height) >= MIN_SHORT_SIDE); };
-    img.onerror = () => { URL.revokeObjectURL(url); resolve(false); };
-    img.src = url;
-  });
-}
-
-// ── EXIF DATE ─────────────────────────────────────────────────────────────────
+// ── Read DateTimeOriginal from EXIF (pure JS, no library) ─────────────────────
 function readExifDate(file) {
   return new Promise(resolve => {
     const fr = new FileReader();
     fr.onload = e => {
       try {
-        const buf = e.target.result; const view = new DataView(buf);
+        const buf  = e.target.result;
+        const view = new DataView(buf);
+        // JPEG starts with FFD8, find APP1 marker FFE1
         let pos = 2;
         while (pos < view.byteLength - 4) {
           const marker = view.getUint16(pos);
           const segLen = view.getUint16(pos + 2);
-          if (marker === 0xFFE1 && view.getUint32(pos+4) === 0x45786966) {
-            const base = pos+10; const le = view.getUint16(base)===0x4949;
-            const ifd0 = base + view.getUint32(base+4,le);
-            const n = view.getUint16(ifd0,le);
-            for (let t=0;t<n;t++) {
-              const off = ifd0+2+t*12; const tag = view.getUint16(off,le);
-              if (tag===0x9003||tag===0x9004||tag===0x0132) {
-                const vo = base + view.getUint32(off+8,le);
-                let s=''; for (let c=0;c<19;c++) s+=String.fromCharCode(view.getUint8(vo+c));
-                const [d,t2]=s.split(' '); const [y,mo,dy]=d.split(':').map(Number); const [h,mi,sc]=t2.split(':').map(Number);
-                resolve(new Date(y,mo-1,dy,h,mi,sc||0)); return;
+          if (marker === 0xFFE1) {
+            // Check "Exif\0\0" header at pos+4
+            if (view.getUint32(pos+4) === 0x45786966) {
+              const tiffBase = pos + 10; // skip FFE1 length (2) + "Exif\0\0" (6)
+              const le = view.getUint16(tiffBase) === 0x4949; // little-endian?
+              const ifd0 = tiffBase + view.getUint32(tiffBase + 4, le);
+              const numTags = view.getUint16(ifd0, le);
+              for (let t = 0; t < numTags; t++) {
+                const off = ifd0 + 2 + t * 12;
+                const tag = view.getUint16(off, le);
+                // 0x9003=DateTimeOriginal, 0x9004=DateTimeDigitized, 0x0132=DateTime
+                if (tag === 0x9003 || tag === 0x9004 || tag === 0x0132) {
+                  const valOff = tiffBase + view.getUint32(off + 8, le);
+                  let s = '';
+                  for (let c = 0; c < 19; c++) s += String.fromCharCode(view.getUint8(valOff + c));
+                  // "YYYY:MM:DD HH:MM:SS"
+                  const [dt, tm] = s.split(' ');
+                  const [y,mo,d] = dt.split(':').map(Number);
+                  const [h,mi,sc]= tm.split(':').map(Number);
+                  resolve(new Date(y, mo-1, d, h, mi, sc||0));
+                  return;
+                }
               }
             }
           }
           pos += 2 + segLen;
         }
-      } catch(e) {}
+      } catch {}
+      // Fallback to file's last-modified time
       resolve(new Date(file.lastModified));
     };
-    fr.readAsArrayBuffer(file.slice(0,131072));
+    fr.readAsArrayBuffer(file.slice(0, 131072)); // read first 128KB for EXIF
   });
 }
 
 function pad(n) { return String(n).padStart(2,'0'); }
-function makeFilename(dt, used) {
+function toFilename(dt, used) {
   const base = `${dt.getFullYear()}-${pad(dt.getMonth()+1)}-${pad(dt.getDate())}_${pad(dt.getHours())}-${pad(dt.getMinutes())}`;
-  let name=base+'.jpg', n=2;
-  while (used.has(name)) name=base+'_'+(n++)+'.jpg';
-  used.add(name); return name;
+  let name = `${base}.jpg`, n = 2;
+  while (used.has(name)) name = `${base}_${n++}.jpg`;
+  used.add(name);
+  return name;
 }
 
-// ── DRAG & DROP ───────────────────────────────────────────────────────────────
-const dz=document.getElementById('dz'), fi=document.getElementById('file-input');
-dz.addEventListener('dragover',e=>{e.preventDefault();dz.classList.add('drag');});
-dz.addEventListener('dragleave',()=>dz.classList.remove('drag'));
-dz.addEventListener('drop',e=>{e.preventDefault();dz.classList.remove('drag');handleFiles([...e.dataTransfer.files]);});
-fi.addEventListener('change',()=>handleFiles([...fi.files]));
-
 async function handleFiles(rawFiles) {
-  let imgs = rawFiles.filter(f=>f.type.startsWith('image/')||/\.(jpg|jpeg|png)$/i.test(f.name));
+  const imgs = rawFiles.filter(f => f.type.startsWith('image/')).slice(0, 20);
   if (!imgs.length) return;
-  if (imgs.length > MAX_FILES) { imgs = imgs.slice(0,MAX_FILES); }
   files = [];
   const used = new Set();
   const grid = document.getElementById('preview-grid');
   grid.innerHTML = ''; grid.style.display = 'grid';
-  document.getElementById('caption-section').style.display = 'block';
 
-  for (let i=0; i<imgs.length; i++) {
-    const f = imgs[i];
-    const itemEl = document.createElement('div');
-    itemEl.className = 'preview-item'; itemEl.id = 'pi-'+i;
-    grid.appendChild(itemEl);
-
-    const errors = [];
-    if (f.size > MAX_FILE_SIZE)        errors.push('Too large — max 15MB');
-    const validMagic = await checkMagicBytes(f);
-    if (!validMagic)                   errors.push('Invalid file — JPEG/PNG only');
-    if (!errors.length) {
-      const okDims = await checkDimensions(f);
-      if (!okDims)                     errors.push('Too small — min 800px');
-    }
-
+  for (const f of imgs) {
     const dt       = await readExifDate(f);
-    const filename = makeFilename(dt, used);
+    const filename = toFilename(dt, used);
+    files.push({ file:f, filename, capturedAt:dt });
     const objUrl   = URL.createObjectURL(f);
-    files.push({ file:f, filename, capturedAt:dt, valid:errors.length===0, errors });
-
-    if (errors.length) {
-      itemEl.innerHTML = `<img src="${objUrl}" alt=""><div class="preview-error">⚠️ ${errors[0]}</div>`;
-    } else {
-      const ds = dt.toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'});
-      const ts = dt.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit',hour12:true});
-      itemEl.innerHTML = `<img src="${objUrl}" alt="${filename}"><div class="preview-label">${ds} ${ts}</div><button class="preview-remove" onclick="removeFile(${i})">✕</button>`;
-    }
+    const dateStr  = dt.toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'});
+    const timeStr  = dt.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit',hour12:true});
+    const idx      = files.length - 1;
+    grid.innerHTML += `
+      <div class="preview-item" id="pi-${idx}">
+        <img src="${objUrl}" alt="">
+        <div class="preview-label">${dateStr} ${timeStr}</div>
+        <button class="preview-remove" onclick="removeFile(${idx})">✕</button>
+      </div>`;
   }
   updateBtn();
 }
 
 function removeFile(idx) {
-  if (files[idx]) files[idx]=null;
-  const el=document.getElementById('pi-'+idx); if(el) el.remove();
+  files[idx] = null;
+  const el = document.getElementById(`pi-${idx}`);
+  if (el) el.remove();
   updateBtn();
 }
 function updateBtn() {
-  const n = files.filter(f=>f&&f.valid).length;
+  const n = files.filter(Boolean).length;
   const btn = document.getElementById('upload-btn');
-  btn.disabled = n===0;
-  btn.textContent = n ? `Submit ${n} photo${n!==1?'s':''} for review →` : 'Select photos to upload';
+  btn.disabled = n === 0;
+  btn.textContent = n ? `Upload ${n} photo${n!==1?'s':''}` : 'Select photos to upload';
 }
 
-// ── RESIZE ────────────────────────────────────────────────────────────────────
-function resize(file) {
+// ── Resize in browser (canvas) ────────────────────────────────────────────────
+function resize(file, maxW=1280, maxH=720, quality=0.82) {
   return new Promise(resolve => {
-    const img = new Image(); const url = URL.createObjectURL(file);
+    const img = new Image();
+    const url = URL.createObjectURL(file);
     img.onload = () => {
       let w=img.width, h=img.height;
-      const r = Math.min(1920/w, 1440/h, 1); // max 1920x1440, never upscale
-      w=Math.round(w*r); h=Math.round(h*r);
-      const c=document.createElement('canvas'); c.width=w; c.height=h;
-      c.getContext('2d').drawImage(img,0,0,w,h);
+      const ratio = Math.min(maxW/w, maxH/h, 1); // never upscale
+      w = Math.round(w*ratio); h = Math.round(h*ratio);
+      const c = document.createElement('canvas');
+      c.width=w; c.height=h;
+      c.getContext('2d').drawImage(img, 0, 0, w, h);
       URL.revokeObjectURL(url);
-      c.toBlob(b=>resolve(b),'image/jpeg',0.88);
+      c.toBlob(b => resolve(b), 'image/jpeg', quality);
     };
-    img.onerror=()=>{URL.revokeObjectURL(url);resolve(null);};
-    img.src=url;
+    img.src = url;
   });
 }
 
-const ADMIN_EMAIL    = 'fangchu@gmail.com';
-const PUBLIC_BUCKET  = 'timelapse'; // approved photos land here
+// ── Fetch climate for timestamp ────────────────────────────────────────────────
+async function getClimate(dt) {
+  try {
+    const h = new Date(dt); h.setMinutes(0,0,0);
+    const from = new Date(h.getTime()-3600000).toISOString();
+    const to   = new Date(h.getTime()+3600000).toISOString();
+    const r = await fetch(
+      `${SUPABASE_URL}/rest/v1/climate_readings?select=temperature,humidity,aqi,google_aqi_india,dominant_pollutant,cloudcover,precipitation,wind_speed&recorded_at=gte.${from}&recorded_at=lte.${to}&order=recorded_at.asc&limit=1`,
+      {headers:HDR}
+    );
+    const rows = await r.json();
+    return (Array.isArray(rows) && rows[0]) || {};
+  } catch { return {}; }
+}
 
-function isAdmin() { return _user && _user.email === ADMIN_EMAIL; }
-
-// ── UPLOAD ONE ────────────────────────────────────────────────────────────────
-// Admin → uploads directly to public timelapse bucket, auto-approved
-// User  → uploads to private photo-staging bucket, queued for review
-async function uploadOne(item, setMsg) {
-  if (!item||!item.valid||!_user) return null;
+// ── Upload one file ────────────────────────────────────────────────────────────
+async function uploadOne(item, setMsg, setBar) {
   const { file, filename, capturedAt } = item;
-  const locationNote = document.getElementById('location-note').value.trim();
-  const admin = isAdmin();
 
+  // 1. Resize
   setMsg(`Resizing ${filename}…`);
   const blob = await resize(file);
-  if (!blob) throw new Error('Image processing failed');
 
-  const bucket = admin ? PUBLIC_BUCKET : STAGING_BUCKET;
-  const year   = capturedAt.getFullYear();
-  const month  = pad(capturedAt.getMonth()+1);
-  const path   = admin
-    ? `${year}/${month}/${filename}`                         // flat path in public bucket
-    : `${_user.id}/${year}/${month}/${filename}`;            // user-scoped in staging
-
+  // 2. Upload to Supabase Storage (bucket: timelapse)
   setMsg(`Uploading ${filename}…`);
-  const upRes = await fetch(`${SUPABASE_URL}/storage/v1/object/${bucket}/${path}`, {
-    method: 'POST',
-    headers: {
-      'apikey': SUPABASE_KEY,
-      'Authorization': `Bearer ${_token}`,
-      'Content-Type': 'image/jpeg',
-      'x-upsert': 'true'
-    },
-    body: blob
-  });
-  if (!upRes.ok) {
-    const e = await upRes.text();
-    throw new Error(`Storage ${upRes.status}: ${e.slice(0,120)}`);
-  }
-
-  if (admin) {
-    // Admin: create timelapse_frames record directly (auto-approved, live immediately)
-    setMsg(`Publishing ${filename}…`);
-    const publicUrl = `${SUPABASE_URL}/storage/v1/object/public/${bucket}/${path}`;
-    await fetch(`${SUPABASE_URL}/rest/v1/timelapse_frames`, {
+  const dt   = capturedAt;
+  const path = `${dt.getFullYear()}/${pad(dt.getMonth()+1)}/${filename}`;
+  const up   = await fetch(
+    `${SUPABASE_URL}/storage/v1/object/${BUCKET}/${path}`,
+    {
       method: 'POST',
       headers: {
         'apikey': SUPABASE_KEY,
-        'Authorization': `Bearer ${_token}`,
-        'Content-Type': 'application/json',
-        'Prefer': 'resolution=merge-duplicates,return=minimal'
+        'Authorization': `Bearer ${SUPABASE_KEY}`,
+        'Content-Type': 'image/jpeg',
+        'x-upsert': 'true'
       },
-      body: JSON.stringify({
-        filename,
-        captured_at:  capturedAt.toISOString(),
-        r2_url:       publicUrl,
-        r2_key:       path,
-        source:       'upload_admin',
-        location_note: locationNote || null,
-      })
-    });
-    // Also log in photo_submissions as approved for audit trail
-    await fetch(`${SUPABASE_URL}/rest/v1/photo_submissions`, {
-      method: 'POST',
-      headers: { 'apikey':SUPABASE_KEY, 'Authorization':`Bearer ${_token}`, 'Content-Type':'application/json', 'Prefer':'return=minimal' },
-      body: JSON.stringify({
-        user_id: _user.id, user_email: _user.email, filename,
-        storage_path: path, public_url: publicUrl,
-        captured_at: capturedAt.toISOString(), location_note: locationNote||null,
-        status: 'approved', reviewed_by: ADMIN_EMAIL, reviewed_at: new Date().toISOString()
-      })
-    });
-  } else {
-    // Regular user: add to moderation queue
-    setMsg(`Queuing ${filename} for review…`);
-    const dbRes = await fetch(`${SUPABASE_URL}/rest/v1/photo_submissions`, {
-      method: 'POST',
-      headers: { 'apikey':SUPABASE_KEY, 'Authorization':`Bearer ${_token}`, 'Content-Type':'application/json', 'Prefer':'return=minimal' },
-      body: JSON.stringify({
-        user_id: _user.id, user_email: _user.email, filename,
-        storage_path: path,
-        captured_at: capturedAt.toISOString(), location_note: locationNote||null,
-        status: 'pending'
-      })
-    });
-    if (!dbRes.ok && dbRes.status!==409) {
-      const e = await dbRes.text();
-      throw new Error(`Database ${dbRes.status}: ${e.slice(0,80)}`);
+      body: blob
     }
+  );
+  if (!up.ok) {
+    const err = await up.text();
+    throw new Error(`Storage: ${up.status} — ${err}`);
   }
-  return { filename, admin };
+  const publicUrl = `${SUPABASE_URL}/storage/v1/object/public/${BUCKET}/${path}`;
+
+  // 3. Climate data
+  setMsg(`Fetching climate for ${filename}…`);
+  const climate = await getClimate(capturedAt);
+
+  // 4. Insert into timelapse_frames
+  const rec = {
+    filename,
+    captured_at:  capturedAt.toISOString(),
+    r2_url:       publicUrl,
+    r2_key:       path,
+    source:       'upload',
+    temperature:  climate.temperature    ?? null,
+    humidity:     climate.humidity       ?? null,
+    aqi:          climate.aqi            ?? null,
+    google_aqi_india:   climate.google_aqi_india   ?? null,
+    dominant_pollutant: climate.dominant_pollutant ?? null,
+    cloudcover:   climate.cloudcover     ?? null,
+    precipitation:climate.precipitation  ?? null,
+    wind_speed:   climate.wind_speed     ?? null,
+  };
+  const db = await fetch(`${SUPABASE_URL}/rest/v1/timelapse_frames`, {
+    method: 'POST',
+    headers: { ...HDR, 'Content-Type':'application/json', 'Prefer':'resolution=merge-duplicates,return=minimal' },
+    body: JSON.stringify(rec)
+  });
+  if (!db.ok && db.status !== 409) {
+    const err = await db.text();
+    throw new Error(`Database: ${db.status} — ${err}`);
+  }
+
+  return { filename, climate };
 }
 
-// ── MAIN FLOW ─────────────────────────────────────────────────────────────────
+// ── Main upload ───────────────────────────────────────────────────────────────
 async function startUpload() {
-  if (!_user) { alert('Please sign in first.'); return; }
-  const toUpload = files.filter(f=>f&&f.valid);
+  const toUpload = files.filter(Boolean);
   if (!toUpload.length) return;
 
   const btn     = document.getElementById('upload-btn');
@@ -457,80 +327,42 @@ async function startUpload() {
   const pFill   = document.getElementById('progress-fill');
   const results = document.getElementById('results');
 
-  btn.disabled=true;
-  btn.textContent = isAdmin() ? 'Publishing…' : 'Submitting for review…';
-  progress.style.display='block'; results.style.display='block'; results.innerHTML='';
+  btn.disabled = true; btn.textContent = 'Uploading…';
+  progress.style.display = 'block';
+  results.style.display = 'block';
+  results.innerHTML = '';
 
-  // Refresh token before upload
-  const sess = await _sb.auth.getSession();
-  if (sess.data?.session) { _user=sess.data.session.user; _token=sess.data.session.access_token; }
-
-  let done=0;
+  let done = 0;
   for (const item of toUpload) {
     try {
-      const res = await uploadOne(item, msg=>pText.textContent=msg);
+      const res = await uploadOne(
+        item,
+        msg => pText.textContent = msg,
+        pct => pFill.style.width = pct + '%'
+      );
       done++;
-      pFill.style.width=Math.round(done/toUpload.length*100)+'%';
-      const msg = res?.admin
-        ? `✅ ${item.filename} — published to gallery`
-        : `✅ ${item.filename} — submitted for review`;
-      results.innerHTML+=`<div class="result-row ok">${msg}</div>`;
-    } catch(err) {
+      pFill.style.width = `${Math.round(done/toUpload.length*100)}%`;
+      const c = res.climate;
+      const summary = [
+        c.temperature != null ? `${c.temperature}°C` : null,
+        c.aqi         != null ? `EU AQI ${c.aqi}`    : null,
+        c.google_aqi_india ? `IN ${c.google_aqi_india}` : null,
+        (c.precipitation||0) > 0 ? `${c.precipitation}mm rain` : null,
+      ].filter(Boolean).join(' · ') || 'No climate data found for this time';
+      results.innerHTML += `<div class="result-row ok">✅ ${res.filename} — ${summary}</div>`;
+    } catch (err) {
       done++;
-      pFill.style.width=Math.round(done/toUpload.length*100)+'%';
-      results.innerHTML+=`<div class="result-row err">❌ ${item.filename} — ${err.message}</div>`;
+      pFill.style.width = `${Math.round(done/toUpload.length*100)}%`;
+      results.innerHTML += `<div class="result-row err">❌ ${item.filename} — ${err.message}</div>`;
     }
   }
 
-  pText.textContent=`Done. ${done} photo${done!==1?'s':''} uploaded.`;
-  const queueMsg = isAdmin()
-    ? `<div class="result-row info" style="margin-top:0.5rem;">🟢 Published directly to gallery as admin.</div>`
-    : `<div class="result-row info" style="margin-top:0.5rem;">🔍 In review queue — check status in "My submissions" below.</div>`;
-  results.innerHTML += queueMsg;
-  btn.textContent='Submit more photos'; btn.disabled=false;
-  files=[]; fi.value='';
-  document.getElementById('preview-grid').innerHTML='';
-  document.getElementById('preview-grid').style.display='none';
-  document.getElementById('caption-section').style.display='none';
-  document.getElementById('location-note').value='';
-  setTimeout(loadMySubmissions, 800);
-}
-
-// ── MY SUBMISSIONS ────────────────────────────────────────────────────────────
-async function loadMySubmissions() {
-  if (!_user) return;
-  document.getElementById('my-submissions').style.display='block';
-  const list = document.getElementById('submissions-list');
-  try {
-    const sess = await _sb.auth.getSession();
-    const tok  = sess.data?.session?.access_token || SUPABASE_KEY;
-    const r = await fetch(
-      `${SUPABASE_URL}/rest/v1/photo_submissions?select=*&user_id=eq.${_user.id}&order=submitted_at.desc&limit=20`,
-      { headers:{ 'apikey':SUPABASE_KEY, 'Authorization':`Bearer ${tok}` }}
-    );
-    const rows = await r.json();
-    if (!Array.isArray(rows)||!rows.length) {
-      list.innerHTML='<div style="color:var(--text-muted);font-size:0.85rem;padding:1rem 0;">No submissions yet.</div>';
-      return;
-    }
-    list.innerHTML=rows.map(s=>{
-      const dt  = s.captured_at ? new Date(s.captured_at).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}) : '—';
-      const sub = new Date(s.submitted_at).toLocaleDateString('en-IN',{day:'numeric',month:'short'});
-      const badgeCls = s.status==='approved'?'badge-approved':s.status==='rejected'?'badge-rejected':'badge-pending';
-      const badgeTxt = s.status==='approved'?'✓ Approved':s.status==='rejected'?`✗ Rejected${s.rejection_reason?' · '+s.rejection_reason:''}`:'⏳ Under review';
-      return `<div class="sub-item">
-        <div class="sub-thumb" style="background:var(--ep-cream-dark);border-radius:6px;"></div>
-        <div style="flex:1;">
-          <div class="sub-name">${s.filename}</div>
-          <div class="sub-date">Taken: ${dt} · Submitted: ${sub}</div>
-          ${s.location_note?`<div class="sub-date" style="font-style:italic;">${s.location_note}</div>`:''}
-        </div>
-        <span class="sub-badge ${badgeCls}">${badgeTxt}</span>
-      </div>`;
-    }).join('');
-  } catch(e) {
-    list.innerHTML=`<div style="color:#dc2626;font-size:0.82rem;">Error: ${e.message}</div>`;
-  }
+  pText.textContent = `Done. ${done} file${done!==1?'s':''} processed.`;
+  btn.textContent = 'Upload more photos'; btn.disabled = false;
+  files = [];
+  document.getElementById('preview-grid').innerHTML = '';
+  document.getElementById('preview-grid').style.display = 'none';
+  fi.value = '';
 }
 </script>
 </body>
