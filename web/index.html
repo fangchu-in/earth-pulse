@@ -242,7 +242,7 @@
   <div class="ep-card ep-fade-up ep-delay-2">
     <div class="ep-card-label">Temperature</div>
     <div class="ep-card-value" id="temp-val">—</div>
-    <div class="ep-card-unit">°C · feels <span id="feels-val">—</span>°C</div>
+    <div class="ep-card-unit">°C<br />feels <span id="feels-val">—</span>°C</div>
     <div class="src-tag" id="wu-tag" style="display:none;">Weather Union</div>
   </div>
   <div class="ep-card ep-fade-up ep-delay-2">
@@ -260,7 +260,7 @@
   <div class="ep-card ep-fade-up ep-delay-3">
     <div class="ep-card-label">Cloud cover</div>
     <div class="ep-card-value" id="cloud-val">—</div>
-    <div class="ep-card-unit">% · <span id="precip-val">—</span> mm rain</div>
+    <div class="ep-card-unit">%<br /><span id="precip-val">—</span> mm rain</div>
     <div class="src-tag">Open-Meteo</div>
   </div>
 </div>
@@ -1298,7 +1298,7 @@ async function loadWeatherUnion() {
 
     // Show hyperlocal source tag under temperature value
     const tag = document.getElementById('wu-tag');
-    if (tag) { tag.textContent = '📡 Hyperlocal · Weather Union · 2.5km'; tag.style.display = 'block'; }
+    if (tag) { tag.textContent = 'Weather Union'; tag.style.display = 'block'; }
 
     // Show source tags on WU-sourced cards
     ['wu-tag','wu-hum-tag','wu-wind-tag'].forEach(id => {
