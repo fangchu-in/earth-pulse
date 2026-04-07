@@ -658,8 +658,8 @@ async function approvePhoto(id, storagePath, filename) {
     var tok = await getToken();
     var hdr = { 'apikey':_SB_KEY, 'Authorization':'Bearer '+tok, 'Content-Type':'application/json' };
 
-    // 1. Download file from private photo-staging bucket
-    var dlRes = await fetch(_SB_URL+'/storage/v1/object/photo-staging/'+storagePath, {
+    // 1. Download file from private photo-staging bucket (use /authenticated/ endpoint)
+    var dlRes = await fetch(_SB_URL+'/storage/v1/object/authenticated/photo-staging/'+storagePath, {
       headers: {'apikey':_SB_KEY, 'Authorization':'Bearer '+tok}
     });
     if (!dlRes.ok) throw new Error('Could not download from staging: '+dlRes.status);
