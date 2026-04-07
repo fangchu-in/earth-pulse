@@ -106,14 +106,14 @@
 </div>
 
 <h1>Upload a hill photo</h1>
-<p class="subtitle">Share photos of the Baner hills and Sahyadri foothills. All uploads are reviewed by the admin before appearing publicly.</p>
+<p class="subtitle" id="page-subtitle">Share photos of the Baner hills and Sahyadri foothills. All uploads are reviewed before appearing publicly.</p>
 
 <div class="user-bar" id="user-bar">
   <span style="color:var(--ep-green);font-weight:500;">📸 Uploading as <strong id="user-email-display">—</strong></span>
   <a href="data.html">← My account</a>
 </div>
 
-<div class="mod-notice">
+<div class="mod-notice" id="mod-notice">
   <span style="font-size:1.1rem;">🔍</span>
   <div><strong style="font-weight:600;">Photos are moderated before publishing.</strong> Submissions go into a review queue. Admin approval usually takes 1–2 days. Track your status in "My submissions" below.</div>
 </div>
@@ -193,11 +193,16 @@ document.addEventListener('DOMContentLoaded', function() {
     } else {
       _user  = session.user;
       _token = session.access_token;
-      document.getElementById('auth-gate').style.display = 'none';
-      const bar = document.getElementById('user-bar');
-      bar.style.display = 'flex';
-      document.getElementById('user-email-display').textContent = _user.email;
-      loadMySubmissions();
+  if (isAdmin()) {
+    const mn = document.getElementById('mod-notice');
+    if (mn) { mn.style.background='rgba(33,67,50,0.06)'; mn.style.borderColor='rgba(33,67,50,0.2)'; mn.style.color='var(--ep-green)';
+      mn.innerHTML='<span style="font-size:1.1rem;">🟢</span><div><strong style="font-weight:600;">Admin mode.</strong> Your photos publish directly to the gallery without review.</div>'; }
+  }
+  document.getElementById('auth-gate').style.display = 'none';
+  const bar = document.getElementById('user-bar');
+  bar.style.display = 'flex';
+  document.getElementById('user-email-display').textContent = _user.email;
+  loadMySubmissions();
     }
   });
 });
@@ -346,49 +351,98 @@ function resize(file) {
   });
 }
 
-// ── UPLOAD ONE → STAGING BUCKET + MODERATION RECORD ──────────────────────────
+const ADMIN_EMAIL    = 'fangchu@gmail.com';
+const PUBLIC_BUCKET  = 'timelapse'; // approved photos land here
+
+function isAdmin() { return _user && _user.email === ADMIN_EMAIL; }
+
+// ── UPLOAD ONE ────────────────────────────────────────────────────────────────
+// Admin → uploads directly to public timelapse bucket, auto-approved
+// User  → uploads to private photo-staging bucket, queued for review
 async function uploadOne(item, setMsg) {
   if (!item||!item.valid||!_user) return null;
   const { file, filename, capturedAt } = item;
   const locationNote = document.getElementById('location-note').value.trim();
+  const admin = isAdmin();
 
   setMsg(`Resizing ${filename}…`);
   const blob = await resize(file);
   if (!blob) throw new Error('Image processing failed');
 
-  // User-scoped path so users can only overwrite their own files
-  const path = `${_user.id}/${capturedAt.getFullYear()}/${pad(capturedAt.getMonth()+1)}/${filename}`;
+  const bucket = admin ? PUBLIC_BUCKET : STAGING_BUCKET;
+  const year   = capturedAt.getFullYear();
+  const month  = pad(capturedAt.getMonth()+1);
+  const path   = admin
+    ? `${year}/${month}/${filename}`                         // flat path in public bucket
+    : `${_user.id}/${year}/${month}/${filename}`;            // user-scoped in staging
 
-  setMsg(`Uploading ${filename} to staging…`);
-  const upRes = await fetch(`${SUPABASE_URL}/storage/v1/object/${STAGING_BUCKET}/${path}`, {
+  setMsg(`Uploading ${filename}…`);
+  const upRes = await fetch(`${SUPABASE_URL}/storage/v1/object/${bucket}/${path}`, {
     method: 'POST',
-    headers: { 'apikey':SUPABASE_KEY, 'Authorization':`Bearer ${_token}`, 'Content-Type':'image/jpeg', 'x-upsert':'true' },
+    headers: {
+      'apikey': SUPABASE_KEY,
+      'Authorization': `Bearer ${_token}`,
+      'Content-Type': 'image/jpeg',
+      'x-upsert': 'true'
+    },
     body: blob
   });
   if (!upRes.ok) {
     const e = await upRes.text();
-    throw new Error(`Storage ${upRes.status}: ${e.slice(0,80)}`);
+    throw new Error(`Storage ${upRes.status}: ${e.slice(0,120)}`);
   }
 
-  setMsg(`Recording submission for ${filename}…`);
-  const dbRes = await fetch(`${SUPABASE_URL}/rest/v1/photo_submissions`, {
-    method: 'POST',
-    headers: { 'apikey':SUPABASE_KEY, 'Authorization':`Bearer ${_token}`, 'Content-Type':'application/json', 'Prefer':'return=minimal' },
-    body: JSON.stringify({
-      user_id:      _user.id,
-      user_email:   _user.email,
-      filename,
-      storage_path: path,
-      captured_at:  capturedAt.toISOString(),
-      location_note: locationNote || null,
-      status: 'pending'
-    })
-  });
-  if (!dbRes.ok && dbRes.status!==409) {
-    const e = await dbRes.text();
-    throw new Error(`Database ${dbRes.status}: ${e.slice(0,80)}`);
+  if (admin) {
+    // Admin: create timelapse_frames record directly (auto-approved, live immediately)
+    setMsg(`Publishing ${filename}…`);
+    const publicUrl = `${SUPABASE_URL}/storage/v1/object/public/${bucket}/${path}`;
+    await fetch(`${SUPABASE_URL}/rest/v1/timelapse_frames`, {
+      method: 'POST',
+      headers: {
+        'apikey': SUPABASE_KEY,
+        'Authorization': `Bearer ${_token}`,
+        'Content-Type': 'application/json',
+        'Prefer': 'resolution=merge-duplicates,return=minimal'
+      },
+      body: JSON.stringify({
+        filename,
+        captured_at:  capturedAt.toISOString(),
+        r2_url:       publicUrl,
+        r2_key:       path,
+        source:       'upload_admin',
+        location_note: locationNote || null,
+      })
+    });
+    // Also log in photo_submissions as approved for audit trail
+    await fetch(`${SUPABASE_URL}/rest/v1/photo_submissions`, {
+      method: 'POST',
+      headers: { 'apikey':SUPABASE_KEY, 'Authorization':`Bearer ${_token}`, 'Content-Type':'application/json', 'Prefer':'return=minimal' },
+      body: JSON.stringify({
+        user_id: _user.id, user_email: _user.email, filename,
+        storage_path: path, public_url: publicUrl,
+        captured_at: capturedAt.toISOString(), location_note: locationNote||null,
+        status: 'approved', reviewed_by: ADMIN_EMAIL, reviewed_at: new Date().toISOString()
+      })
+    });
+  } else {
+    // Regular user: add to moderation queue
+    setMsg(`Queuing ${filename} for review…`);
+    const dbRes = await fetch(`${SUPABASE_URL}/rest/v1/photo_submissions`, {
+      method: 'POST',
+      headers: { 'apikey':SUPABASE_KEY, 'Authorization':`Bearer ${_token}`, 'Content-Type':'application/json', 'Prefer':'return=minimal' },
+      body: JSON.stringify({
+        user_id: _user.id, user_email: _user.email, filename,
+        storage_path: path,
+        captured_at: capturedAt.toISOString(), location_note: locationNote||null,
+        status: 'pending'
+      })
+    });
+    if (!dbRes.ok && dbRes.status!==409) {
+      const e = await dbRes.text();
+      throw new Error(`Database ${dbRes.status}: ${e.slice(0,80)}`);
+    }
   }
-  return { filename };
+  return { filename, admin };
 }
 
 // ── MAIN FLOW ─────────────────────────────────────────────────────────────────
@@ -403,7 +457,8 @@ async function startUpload() {
   const pFill   = document.getElementById('progress-fill');
   const results = document.getElementById('results');
 
-  btn.disabled=true; btn.textContent='Submitting for review…';
+  btn.disabled=true;
+  btn.textContent = isAdmin() ? 'Publishing…' : 'Submitting for review…';
   progress.style.display='block'; results.style.display='block'; results.innerHTML='';
 
   // Refresh token before upload
@@ -413,10 +468,13 @@ async function startUpload() {
   let done=0;
   for (const item of toUpload) {
     try {
-      await uploadOne(item, msg=>pText.textContent=msg);
+      const res = await uploadOne(item, msg=>pText.textContent=msg);
       done++;
       pFill.style.width=Math.round(done/toUpload.length*100)+'%';
-      results.innerHTML+=`<div class="result-row ok">✅ ${item.filename} — submitted for review</div>`;
+      const msg = res?.admin
+        ? `✅ ${item.filename} — published to gallery`
+        : `✅ ${item.filename} — submitted for review`;
+      results.innerHTML+=`<div class="result-row ok">${msg}</div>`;
     } catch(err) {
       done++;
       pFill.style.width=Math.round(done/toUpload.length*100)+'%';
@@ -424,8 +482,11 @@ async function startUpload() {
     }
   }
 
-  pText.textContent=`Done. ${done} photo${done!==1?'s':''} submitted.`;
-  results.innerHTML+=`<div class="result-row info" style="margin-top:0.5rem;">🔍 In review queue — check status in "My submissions" below.</div>`;
+  pText.textContent=`Done. ${done} photo${done!==1?'s':''} uploaded.`;
+  const queueMsg = isAdmin()
+    ? `<div class="result-row info" style="margin-top:0.5rem;">🟢 Published directly to gallery as admin.</div>`
+    : `<div class="result-row info" style="margin-top:0.5rem;">🔍 In review queue — check status in "My submissions" below.</div>`;
+  results.innerHTML += queueMsg;
   btn.textContent='Submit more photos'; btn.disabled=false;
   files=[]; fi.value='';
   document.getElementById('preview-grid').innerHTML='';
