@@ -170,6 +170,7 @@
 <div id="ep-footer"></div>
 <script src="analytics.js"></script>
 <script src="nav.js"></script>
+<script src="iucn-status.js"></script>
 <script>
 const SB  = 'https://krmczyqwblsoekceanlj.supabase.co';
 const KEY = 'sb_publishable_DrHFT5J0vmrkYraUXIlpQQ_gsk1rdq6';
@@ -366,14 +367,15 @@ function renderPage() {
     var url   = 'species.html?bird=' + b.species_scientific.replace(/ /g,'_');
     var star  = b.is_new_species_this_year ? '<span class="bird-new-star">★ First this year</span>' : '';
     var dawn  = (function(){ var h=istHour(b.detected_at); return h>=5&&h<=8; })();
-    var dawnTag = dawn ? '<span class="ep-badge ep-badge-common" style="background:rgba(234,179,8,0.1);color:#92400e;">🌅 Dawn</span>' : '';
+    var dawnTag  = dawn ? '<span class="ep-badge ep-badge-common" style="background:rgba(234,179,8,0.1);color:#92400e;">🌅 Dawn</span>' : '';
+    var iucnBadge = (typeof iucnBadgeHTML === 'function') ? iucnBadgeHTML(b.species_scientific) : '';
     var cls   = classify(b.species_common);
     return '<a class="ep-bird-card" href="'+url+'" id="card-'+idx+'" aria-label="'+b.species_common+' — full profile">' +
       '<div class="bird-photo-loading" id="photo-'+idx+'"></div>' +
       '<div class="bird-body">' +
         '<div class="ep-bird-name">'+b.species_common+star+'</div>' +
         '<div class="ep-bird-sci">'+b.species_scientific+'</div>' +
-        '<div class="bird-badges">'+statusBadge(b.species_common)+dawnTag+'</div>' +
+        '<div class="bird-badges">'+statusBadge(b.species_common)+dawnTag+iucnBadge+'</div>' +
         '<div class="bird-stats-mini">' +
           '<div class="bird-stat"><strong>Last heard</strong>'+time+'</div>' +
           '<div class="bird-stat"><strong>Total detections</strong>'+count+'×</div>' +
@@ -391,9 +393,8 @@ function renderPage() {
     if (!el) return;
     var photo = await getWikiPhoto(b.species_scientific);
     if (photo) {
-el.outerHTML = `<img class="bird-photo" src="${photo.src}" alt="${b.species_common}" loading="lazy"
-        onerror="this.outerHTML='<div class=\\'bird-photo-placeholder\\'>${birdEmoji(b.species_common)}</div>'">
-        <div class="bird-photo-credit">📷 Wikipedia · CC</div>`;
+      el.outerHTML = '<img class="bird-photo" src="'+photo.src+'" alt="'+b.species_common+'" loading="lazy" onerror="this.outerHTML=\'<div class=\\"bird-photo-placeholder\\">'+birdEmoji(b.species_common)+'</div>\'">' +
+        '<div class="bird-photo-credit">📷 Wikipedia · CC</div>';
     } else {
       el.outerHTML = '<div class="bird-photo-placeholder">'+birdEmoji(b.species_common)+'</div>';
     }

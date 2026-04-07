@@ -79,6 +79,22 @@
     .ext-btn { display:inline-flex; align-items:center; gap:6px; padding:0.5rem 1.1rem; background:var(--ep-green); color:#fff; border:none; border-radius:var(--radius-sm); font-family:var(--sans); font-size:0.82rem; font-weight:500; cursor:pointer; text-decoration:none; transition:background 0.15s; }
     .ext-btn:hover { background:#1a3628; }
 
+    /* Photo review queue */
+    .photo-card-admin { background:#fff; border:1px solid var(--border); border-radius:var(--radius-lg); overflow:hidden; margin-bottom:1rem; }
+    .photo-card-admin img { width:100%; max-height:240px; object-fit:cover; display:block; background:var(--ep-cream-dark); }
+    .photo-card-body { padding:1rem; }
+    .photo-card-meta { font-size:0.78rem; color:var(--text-muted); line-height:1.7; }
+    .photo-card-meta strong { color:var(--ep-green); }
+    .photo-card-actions { display:flex; gap:0.6rem; margin-top:0.85rem; flex-wrap:wrap; align-items:center; }
+    .btn-approve { background:var(--ep-green); color:#fff; border:none; padding:0.45rem 1.1rem; border-radius:var(--radius-sm); font-family:var(--sans); font-size:0.82rem; cursor:pointer; font-weight:500; }
+    .btn-reject  { background:rgba(220,38,38,0.08); color:#dc2626; border:1px solid rgba(220,38,38,0.25); padding:0.45rem 1.1rem; border-radius:var(--radius-sm); font-family:var(--sans); font-size:0.82rem; cursor:pointer; }
+    .btn-reject:hover { background:rgba(220,38,38,0.15); }
+    .reject-reason { flex:1; min-width:180px; padding:0.4rem 0.7rem; border:1px solid var(--border-strong); border-radius:var(--radius-sm); font-family:var(--sans); font-size:0.82rem; color:var(--text-primary); background:#fff; outline:none; }
+    .status-pill { font-size:0.65rem; font-weight:700; text-transform:uppercase; letter-spacing:0.06em; padding:2px 8px; border-radius:20px; }
+    .pill-pending  { background:rgba(245,158,11,0.12); color:#d97706; }
+    .pill-approved { background:rgba(33,67,50,0.1); color:var(--ep-green); }
+    .pill-rejected { background:rgba(220,38,38,0.1); color:#dc2626; }
+
     /* ── EMAIL COMPOSER ── */
     .email-template-tabs { display:flex; gap:0.4rem; flex-wrap:wrap; margin-bottom:1.25rem; }
     .et-tab { padding:0.38rem 1rem; border:1.5px solid var(--border-strong); border-radius:2rem; font-family:var(--sans); font-size:0.8rem; cursor:pointer; color:var(--ep-green); background:transparent; transition:all 0.12s; }
@@ -126,6 +142,7 @@
     <button class="al"     id="al-system"    onclick="sp('system',this)">🖥 System health</button>
     <button class="al"     id="al-logs"      onclick="sp('logs',this)">📋 Recent logs</button>
     <button class="al"     id="al-usage"     onclick="sp('usage',this)">💰 API usage</button>
+    <button class="al"     id="al-photos"    onclick="sp('photos',this)">📸 Photo review</button>
     <button class="al"     id="al-email"     onclick="sp('email',this)">✉️ Email sender</button>
     <button class="al"     id="al-analytics" onclick="sp('analytics',this)">📈 Analytics</button>
     <button class="al"     id="al-data"      onclick="sp('data',this)">🗄 Data</button>
@@ -173,6 +190,23 @@
       <div class="ptitle">API usage this month</div>
       <div class="psub">Estimated usage against free tier limits.</div>
       <div id="usage-wrap">Loading…</div>
+    </div>
+
+    <!-- PHOTO REVIEW -->
+    <div class="panel" id="panel-photos">
+      <div class="ptitle">Photo Review Queue</div>
+      <div class="psub">Review and approve or reject user-submitted hill photos. Approved photos go live on hill.html. All uploads go through this queue — nothing is published automatically.</div>
+
+      <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:1.25rem;" id="photo-filter-pills">
+        <button class="ep-filter-btn active" onclick="filterPhotos('pending',this)">⏳ Pending</button>
+        <button class="ep-filter-btn" onclick="filterPhotos('approved',this)">✓ Approved</button>
+        <button class="ep-filter-btn" onclick="filterPhotos('rejected',this)">✗ Rejected</button>
+        <button class="ep-filter-btn" onclick="filterPhotos('all',this)">All</button>
+        <button class="refresh-btn" onclick="loadPhotoQueue()" style="margin-left:auto;">↺ Refresh</button>
+      </div>
+
+      <div id="photo-queue-count" style="font-size:0.78rem;color:var(--text-muted);margin-bottom:1rem;"></div>
+      <div id="photo-queue-list"><div style="color:var(--text-muted);">Loading…</div></div>
     </div>
 
     <!-- EMAIL SENDER -->
@@ -525,6 +559,10 @@ function initEmailPanel() {
 // Call initEmailPanel when email panel is activated
 var _origSp = window.sp;
 var _emailPanelInited = false;
+var _photosLoaded = false;
+var _photoFilter  = 'pending';
+var _allPhotos    = [];
+
 function sp(id, btn) {
   document.querySelectorAll('.panel').forEach(function(p){ p.classList.remove('on'); });
   document.querySelectorAll('.al').forEach(function(b){ b.classList.remove('on'); });
@@ -537,7 +575,138 @@ function sp(id, btn) {
   if (id==='logs')      loadLogs();
   if (id==='usage')     loadUsage();
   if (id==='data')      loadData();
+  if (id==='photos' && !_photosLoaded) { _photosLoaded=true; loadPhotoQueue(); }
   if (id==='email' && !_emailPanelInited) { _emailPanelInited=true; setTimeout(initEmailPanel, 100); }
+}
+
+// ── PHOTO REVIEW QUEUE ────────────────────────────────────────────────────────
+async function loadPhotoQueue() {
+  document.getElementById('photo-queue-list').innerHTML = '<div style="color:var(--text-muted);">Loading…</div>';
+  try {
+    var r = await sbGet('/photo_submissions?select=*&order=submitted_at.desc&limit=100');
+    _allPhotos = Array.isArray(r) ? r : [];
+    renderPhotoQueue();
+  } catch(e) {
+    document.getElementById('photo-queue-list').innerHTML = '<p style="color:#dc2626;">Error: '+e.message+'</p>';
+  }
+}
+
+function filterPhotos(status, btn) {
+  document.querySelectorAll('#photo-filter-pills .ep-filter-btn').forEach(function(b){ b.classList.remove('active'); });
+  if (btn) btn.classList.add('active');
+  _photoFilter = status;
+  renderPhotoQueue();
+}
+
+function renderPhotoQueue() {
+  var filtered = _photoFilter === 'all' ? _allPhotos : _allPhotos.filter(function(p){ return p.status===_photoFilter; });
+  var count = document.getElementById('photo-queue-count');
+  count.textContent = filtered.length + ' submission'+(filtered.length!==1?'s':'')+' · '+_photoFilter;
+
+  if (!filtered.length) {
+    document.getElementById('photo-queue-list').innerHTML =
+      '<div style="text-align:center;padding:2rem;color:var(--text-muted);">No '+_photoFilter+' submissions.</div>';
+    return;
+  }
+
+  document.getElementById('photo-queue-list').innerHTML = filtered.map(function(s) {
+    var dt  = s.captured_at ? new Date(s.captured_at).toLocaleString('en-IN',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit',hour12:true,timeZone:'Asia/Kolkata'}) : '—';
+    var sub = new Date(s.submitted_at).toLocaleString('en-IN',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit',hour12:true,timeZone:'Asia/Kolkata'});
+    var statusPill = '<span class="status-pill pill-'+s.status+'">'+s.status+'</span>';
+    var storageUrl = ''; // staging bucket is private — show placeholder
+
+    return '<div class="photo-card-admin" id="pcard-'+s.id+'">' +
+      '<div style="background:var(--ep-cream-dark);height:160px;display:flex;align-items:center;justify-content:center;color:var(--text-muted);font-size:0.82rem;">📷 '+s.filename+'<br><span style="font-size:0.72rem;font-family:var(--mono);">'+s.storage_path+'</span></div>' +
+      '<div class="photo-card-body">' +
+        '<div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.5rem;">' +
+          '<strong style="color:var(--ep-green);font-size:0.9rem;">'+s.filename+'</strong>'+statusPill +
+        '</div>' +
+        '<div class="photo-card-meta">' +
+          '<strong>Submitted by:</strong> '+escH(s.user_email||'—')+'<br>' +
+          '<strong>Photo taken:</strong> '+dt+'<br>' +
+          '<strong>Submitted:</strong> '+sub+'<br>' +
+          (s.location_note ? '<strong>Location note:</strong> '+escH(s.location_note)+'<br>' : '') +
+          (s.rejection_reason ? '<strong>Rejection reason:</strong> <span style="color:#dc2626;">'+escH(s.rejection_reason)+'</span><br>' : '') +
+        '</div>' +
+        (s.status==='pending' ?
+          '<div class="photo-card-actions">' +
+            '<button class="btn-approve" onclick="approvePhoto(\''+s.id+'\',\''+s.storage_path+'\',\''+s.filename+'\')">✓ Approve & publish</button>' +
+            '<input class="reject-reason" id="reason-'+s.id+'" placeholder="Rejection reason (optional)">' +
+            '<button class="btn-reject" onclick="rejectPhoto(\''+s.id+'\')">✗ Reject</button>' +
+          '</div>'
+        : s.status==='approved' ?
+          '<div class="photo-card-actions">' +
+            '<span style="font-size:0.82rem;color:var(--ep-green);">✓ Published</span>' +
+            '<button class="btn-reject" onclick="rejectPhoto(\''+s.id+'\')" style="margin-left:auto;">Unpublish</button>' +
+          '</div>'
+        : '<div style="font-size:0.82rem;color:#dc2626;margin-top:0.75rem;">✗ Rejected</div>') +
+      '</div></div>';
+  }).join('');
+}
+
+function escH(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+async function approvePhoto(id, storagePath, filename) {
+  // On approval: move photo from staging to public timelapse bucket, create timelapse_frames record
+  var btn = document.querySelector('#pcard-'+id+' .btn-approve');
+  if (btn) { btn.disabled=true; btn.textContent='Approving…'; }
+
+  try {
+    // The public URL will use Supabase Storage public bucket
+    // For now, we create the timelapse_frames record with the staging path
+    // Admin would manually copy the file via Supabase dashboard or a Worker
+    // Update the submission status
+    var r = await fetch(_SB_URL+'/rest/v1/photo_submissions?id=eq.'+id, {
+      method: 'PATCH',
+      headers: { 'apikey':_SB_KEY, 'Authorization':'Bearer '+_SB_KEY, 'Content-Type':'application/json' },
+      body: JSON.stringify({ status:'approved', reviewed_by:_user.email, reviewed_at:new Date().toISOString() })
+    });
+    if (!r.ok) throw new Error('Update failed: '+r.status);
+
+    // Fetch the submission to get metadata
+    var subR = await sbGet('/photo_submissions?select=*&id=eq.'+id);
+    var sub  = Array.isArray(subR) && subR[0];
+    if (sub) {
+      // Create entry in timelapse_frames with staging path as r2_url temporarily
+      // Admin copies file to public bucket separately
+      var publicUrl = _SB_URL+'/storage/v1/object/public/timelapse/'+filename;
+      await fetch(_SB_URL+'/rest/v1/photo_submissions?id=eq.'+id, {
+        method: 'PATCH',
+        headers: { 'apikey':_SB_KEY, 'Authorization':'Bearer '+_SB_KEY, 'Content-Type':'application/json' },
+        body: JSON.stringify({ public_url: publicUrl })
+      });
+      await fetch(_SB_URL+'/rest/v1/timelapse_frames', {
+        method: 'POST',
+        headers: { 'apikey':_SB_KEY, 'Authorization':'Bearer '+_SB_KEY, 'Content-Type':'application/json', 'Prefer':'resolution=merge-duplicates,return=minimal' },
+        body: JSON.stringify({
+          filename:   filename,
+          captured_at:sub.captured_at,
+          r2_url:     publicUrl,
+          r2_key:     filename,
+          source:     'upload',
+          temperature:sub.temperature, humidity:sub.humidity, aqi:sub.aqi,
+          google_aqi_india:sub.google_aqi_india, precipitation:sub.precipitation,
+          cloudcover:sub.cloudcover, wind_speed:sub.wind_speed
+        })
+      });
+    }
+    alert('✅ Photo approved. Remember to move file from photo-staging/'+sub?.storage_path+' to timelapse/'+filename+' in Supabase Storage.');
+    _photosLoaded=false; loadPhotoQueue();
+  } catch(e) {
+    alert('Error: '+e.message);
+    if (btn) { btn.disabled=false; btn.textContent='✓ Approve & publish'; }
+  }
+}
+
+async function rejectPhoto(id) {
+  var reason = (document.getElementById('reason-'+id)||{}).value || '';
+  var r = await fetch(_SB_URL+'/rest/v1/photo_submissions?id=eq.'+id, {
+    method: 'PATCH',
+    headers: { 'apikey':_SB_KEY, 'Authorization':'Bearer '+_SB_KEY, 'Content-Type':'application/json' },
+    body: JSON.stringify({ status:'rejected', rejection_reason:reason||null, reviewed_by:_user.email, reviewed_at:new Date().toISOString() })
+  });
+  if (r.ok) { _photosLoaded=false; loadPhotoQueue(); }
+  else alert('Error updating status: '+r.status);
 }
 
 window.addEventListener('DOMContentLoaded', function() {

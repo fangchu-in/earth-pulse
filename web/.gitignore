@@ -5,3 +5,4 @@ Trash/
 cloudflare-worker-ai-proxy.js
 supabase-email-template.html
 email-worker.js
+iucn-status.js
