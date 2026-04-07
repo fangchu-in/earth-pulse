@@ -646,51 +646,56 @@ function renderPhotoQueue() {
 
 function escH(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
+async function getToken() {
+  try { var s=await _sb.auth.getSession(); if(s.data&&s.data.session) return s.data.session.access_token; } catch(e) {}
+  return _SB_KEY;
+}
+
 async function approvePhoto(id, storagePath, filename) {
-  // On approval: move photo from staging to public timelapse bucket, create timelapse_frames record
   var btn = document.querySelector('#pcard-'+id+' .btn-approve');
   if (btn) { btn.disabled=true; btn.textContent='Approving…'; }
-
   try {
-    // The public URL will use Supabase Storage public bucket
-    // For now, we create the timelapse_frames record with the staging path
-    // Admin would manually copy the file via Supabase dashboard or a Worker
-    // Update the submission status
-    var r = await fetch(_SB_URL+'/rest/v1/photo_submissions?id=eq.'+id, {
-      method: 'PATCH',
-      headers: { 'apikey':_SB_KEY, 'Authorization':'Bearer '+_SB_KEY, 'Content-Type':'application/json' },
-      body: JSON.stringify({ status:'approved', reviewed_by:_user.email, reviewed_at:new Date().toISOString() })
-    });
-    if (!r.ok) throw new Error('Update failed: '+r.status);
+    var tok = await getToken();
+    var hdr = { 'apikey':_SB_KEY, 'Authorization':'Bearer '+tok, 'Content-Type':'application/json' };
 
-    // Fetch the submission to get metadata
+    // 1. Copy file from photo-staging to timelapse bucket via Supabase Storage API
+    var copyRes = await fetch(_SB_URL+'/storage/v1/object/copy', {
+      method: 'POST',
+      headers: hdr,
+      body: JSON.stringify({
+        bucketId:         'photo-staging',
+        sourceKey:        storagePath,
+        destinationBucket:'timelapse',
+        destinationKey:   filename
+      })
+    });
+    // Copy may fail if buckets don't support server-side copy — continue anyway
+
+    var publicUrl = _SB_URL+'/storage/v1/object/public/timelapse/'+filename;
+
+    // 2. Update submission status
+    await fetch(_SB_URL+'/rest/v1/photo_submissions?id=eq.'+id, {
+      method:'PATCH', headers:hdr,
+      body:JSON.stringify({ status:'approved', public_url:publicUrl, reviewed_by:_user.email, reviewed_at:new Date().toISOString() })
+    });
+
+    // 3. Get submission metadata for timelapse_frames record
     var subR = await sbGet('/photo_submissions?select=*&id=eq.'+id);
     var sub  = Array.isArray(subR) && subR[0];
-    if (sub) {
-      // Create entry in timelapse_frames with staging path as r2_url temporarily
-      // Admin copies file to public bucket separately
-      var publicUrl = _SB_URL+'/storage/v1/object/public/timelapse/'+filename;
-      await fetch(_SB_URL+'/rest/v1/photo_submissions?id=eq.'+id, {
-        method: 'PATCH',
-        headers: { 'apikey':_SB_KEY, 'Authorization':'Bearer '+_SB_KEY, 'Content-Type':'application/json' },
-        body: JSON.stringify({ public_url: publicUrl })
-      });
-      await fetch(_SB_URL+'/rest/v1/timelapse_frames', {
-        method: 'POST',
-        headers: { 'apikey':_SB_KEY, 'Authorization':'Bearer '+_SB_KEY, 'Content-Type':'application/json', 'Prefer':'resolution=merge-duplicates,return=minimal' },
-        body: JSON.stringify({
-          filename:   filename,
-          captured_at:sub.captured_at,
-          r2_url:     publicUrl,
-          r2_key:     filename,
-          source:     'upload',
-          temperature:sub.temperature, humidity:sub.humidity, aqi:sub.aqi,
-          google_aqi_india:sub.google_aqi_india, precipitation:sub.precipitation,
-          cloudcover:sub.cloudcover, wind_speed:sub.wind_speed
-        })
-      });
-    }
-    alert('✅ Photo approved. Remember to move file from photo-staging/'+sub?.storage_path+' to timelapse/'+filename+' in Supabase Storage.');
+
+    // 4. Create timelapse_frames record so it shows on hill.html
+    await fetch(_SB_URL+'/rest/v1/timelapse_frames', {
+      method:'POST', headers:{...hdr,'Prefer':'resolution=merge-duplicates,return=minimal'},
+      body:JSON.stringify({
+        filename, captured_at:sub?.captured_at, r2_url:publicUrl, r2_key:filename, source:'upload',
+        temperature:sub?.temperature, humidity:sub?.humidity, aqi:sub?.aqi,
+        google_aqi_india:sub?.google_aqi_india, precipitation:sub?.precipitation,
+        cloudcover:sub?.cloudcover, wind_speed:sub?.wind_speed
+      })
+    });
+
+    var copyNote = copyRes?.ok ? '' : '\n\nNote: auto-copy may have failed. Manually move photo-staging/'+storagePath+' → timelapse/'+filename+' in Supabase Storage if needed.';
+    alert('✅ Approved & published to gallery.'+copyNote);
     _photosLoaded=false; loadPhotoQueue();
   } catch(e) {
     alert('Error: '+e.message);
@@ -699,14 +704,15 @@ async function approvePhoto(id, storagePath, filename) {
 }
 
 async function rejectPhoto(id) {
+  var tok = await getToken();
   var reason = (document.getElementById('reason-'+id)||{}).value || '';
   var r = await fetch(_SB_URL+'/rest/v1/photo_submissions?id=eq.'+id, {
-    method: 'PATCH',
-    headers: { 'apikey':_SB_KEY, 'Authorization':'Bearer '+_SB_KEY, 'Content-Type':'application/json' },
-    body: JSON.stringify({ status:'rejected', rejection_reason:reason||null, reviewed_by:_user.email, reviewed_at:new Date().toISOString() })
+    method:'PATCH',
+    headers:{'apikey':_SB_KEY,'Authorization':'Bearer '+tok,'Content-Type':'application/json'},
+    body:JSON.stringify({ status:'rejected', rejection_reason:reason||null, reviewed_by:_user.email, reviewed_at:new Date().toISOString() })
   });
   if (r.ok) { _photosLoaded=false; loadPhotoQueue(); }
-  else alert('Error updating status: '+r.status);
+  else alert('Error: '+r.status);
 }
 
 window.addEventListener('DOMContentLoaded', function() {
@@ -730,7 +736,13 @@ async function sbCount(table) {
   return parseInt(r.headers.get('content-range')?.split('/')[1] || '0');
 }
 async function sbGet(path) {
-  var r = await fetch(_SB_URL + '/rest/v1' + path, { headers: {'apikey':_SB_KEY,'Authorization':'Bearer '+_SB_KEY} });
+  // Use session token (authenticated role) so RLS policies work correctly
+  var tok = _SB_KEY;
+  try {
+    var s = await _sb.auth.getSession();
+    if (s.data && s.data.session) tok = s.data.session.access_token;
+  } catch(e) {}
+  var r = await fetch(_SB_URL + '/rest/v1' + path, { headers: {'apikey':_SB_KEY,'Authorization':'Bearer '+tok} });
   return r.json();
 }
 function staleness(ts) {
