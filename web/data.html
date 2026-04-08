@@ -178,7 +178,8 @@
     <!-- EXPLORER -->
     <div class="panel on" id="panel-explorer">
       <div class="panel-title">Data Explorer</div>
-      <div class="panel-sub">Ask anything about the Earth Pulse dataset in plain English. Claude analyses your data and answers with numbers and supporting tables.</div>
+      <div class="panel-sub">Ask questions about Baner’s environment in plain English. Earth Pulse analyses real observations across weather, air quality, and biodiversity to reveal patterns, relationships, and changes over time.
+</div>
 
       <div class="ai-box">
         <textarea id="ai-q" rows="2" placeholder="e.g. Which birds are heard most during monsoon? What is the average AQI on Diwali? How many species at dawn vs night?" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();runQuery();}"></textarea>
@@ -486,7 +487,7 @@ async function runDynamicQuery(q) {
     }
 
     // ── TEMPERATURE ─────────────────
-    if (ql.includes("temperature") || ql.includes("hot")) {
+if (ql.includes("temperature") || ql.includes("hot") || ql.includes("heat")) {
       const data = await sbFetch('/climate_readings?select=recorded_at,temperature&order=temperature.desc&limit=20');
 
       const rows = data.map(d => ({
@@ -497,6 +498,57 @@ async function runDynamicQuery(q) {
       lastRows = rows;
       return rows;
     }
+
+// ── ANNUAL RAINFALL ─────────────────
+if ((ql.includes("rain") || ql.includes("rainfall")) &&
+    (ql.includes("year") || ql.includes("annual"))) 
+ {
+
+  const data = await sbFetch('/climate_readings?select=recorded_at,precipitation');
+
+  const yearMap = {};
+
+  data.forEach(d => {
+    if (!d.precipitation) return;
+
+    const year = d.recorded_at.slice(0,4);
+    yearMap[year] = (yearMap[year] || 0) + d.precipitation;
+  });
+
+  const rows = Object.entries(yearMap).map(([year, total]) => ({
+    year,
+    total_rain_mm: Math.round(total)
+  })).sort((a,b)=>a.year-b.year);
+
+  lastRows = rows;
+  return rows;
+}
+
+// ── YEAR-SPECIFIC RAIN ─────────────────
+const yearMatch = q.match(/20\d{2}/);
+
+if (ql.includes("rain") && yearMatch) {
+
+  const year = yearMatch[0];
+
+  const data = await sbFetch('/climate_readings?select=recorded_at,precipitation');
+
+  let total = 0;
+
+  data.forEach(d => {
+    if (!d.precipitation) return;
+    if (d.recorded_at.startsWith(year)) {
+      total += d.precipitation;
+    }
+  });
+
+  lastRows = [{
+    year,
+    total_rain_mm: Math.round(total)
+  }];
+
+  return lastRows;
+}
 
     // ── RAIN ─────────────────
     if (ql.includes("rain")) {
@@ -553,6 +605,18 @@ async function callGemini(query, data) {
 
 async function runQuery() {
   var q = (document.getElementById('ai-q').value || '').trim();
+
+// Save to Supabase history
+try {
+  if (_sb && _user) {
+    await _sb.from('user_searches').insert({
+      user_id: _user.id,
+      query: q
+    });
+  }
+} catch(e){}
+
+
   if (!q) return;
 
   var btn = document.getElementById('ai-go');
@@ -563,6 +627,8 @@ async function runQuery() {
 
   let data = null;
   let answer = null;
+
+// Save search
 
   try {
     const intent = classifyQuery(q);
@@ -583,16 +649,29 @@ if (!answer) {
 
     const keys = Object.keys(data[0]);
 
-    // detect correlation case
-    if (keys.includes("bird_count") && keys.length > 2) {
+    // ── YEAR-SPECIFIC RAIN ──
+    if (q.toLowerCase().includes("rain") && q.match(/20\d{2}/)) {
+      answer = `
+**Total rainfall for the selected year reflects how the monsoon unfolded in Baner.**
+
+Rather than steady accumulation, rainfall tends to concentrate in intense spells, making yearly totals sensitive to a few strong events.
+`;
+    }
+
+    // ── CORRELATION ENGINE ──
+    else if (keys.includes("bird_count") && keys.length > 2) {
 
       const variable = keys.find(k => k !== "date" && k !== "bird_count");
 
-      const low = data.slice(0,10).reduce((s,r)=>s+r.bird_count,0)/10;
-      const high = data.slice(-10).reduce((s,r)=>s+r.bird_count,0)/10;
+      const sampleSize = Math.min(10, data.length);
+const sorted = [...data].sort((a,b)=> (a[variable]||0) - (b[variable]||0));
+const lowSample = sorted.slice(0, sampleSize);
+const highSample = sorted.slice(-sampleSize);
+
+const low = lowSample.reduce((s,r)=>s+r.bird_count,0) / lowSample.length;
+const high = highSample.reduce((s,r)=>s+r.bird_count,0) / highSample.length;
 
       let trend = "remain relatively stable";
-
       if (high < low) trend = "decrease";
       if (high > low) trend = "increase";
 
@@ -601,9 +680,9 @@ if (!answer) {
 
 This suggests that environmental conditions influence behaviour more than presence. Instead of disappearing, birds may be shifting activity patterns — especially across time of day or intensity of conditions.
 `;
+    }
 
-    } else {
-
+    else {
       answer = `
 **This reflects a consistent environmental pattern observed in Baner.**
 
@@ -618,63 +697,6 @@ Earth Pulse could not interpret this yet. Try asking about birds, AQI, rainfall,
   }
 }
 
-else if (
-  q.toLowerCase().includes("bird") &&
-  (q.toLowerCase().includes("temperature") || q.toLowerCase().includes("heat"))
-) {
-
-  // better trend calculation
-const lowTempAvg = data.slice(0,10).reduce((s,r)=>s+r.bird_count,0) / 10;
-const highTempAvg = data.slice(-10).reduce((s,r)=>s+r.bird_count,0) / 10;
-
-let trend = "";
-
-if (highTempAvg < lowTempAvg) {
-  trend = "tend to decrease";
-} else if (highTempAvg > lowTempAvg) {
-  trend = "tend to increase";
-} else {
-  trend = "remain relatively stable";
-}
-
-  answer = `
-**Bird activity appears to ${trend} as temperatures rise in Baner.**
-
-This suggests that higher heat may influence vocal behaviour, activity windows, or detectability — especially during peak daytime temperatures when many species reduce movement.
-`;
-}
-
-    else if (q.toLowerCase().includes("bird")) {
-      const top = data[0];
-      answer = `
-**The most frequently heard bird is ${top.species}, consistently dominating acoustic detections.**
-
-This suggests it is either highly vocal, highly abundant, or both — a strong indicator of its ecological presence in Baner’s landscape.
-`;
-    }
-
-    else if (q.toLowerCase().includes("rain")) {
-      answer = `
-**Rainfall in Baner appears in bursts rather than steady distribution.**
-
-Most precipitation events cluster during the monsoon window, with occasional outliers outside the main season.
-`;
-    }
-
-    else {
-      answer = `
-**This pattern reflects real environmental behaviour observed over time in Baner.**
-
-While deeper relationships are still being analysed, the data suggests consistent seasonal and climatic rhythms.
-`;
-    }
-
-  } else {
-    answer = `
-Earth Pulse could not interpret this yet. Try asking about birds, AQI, rainfall, or temperature.
-`;
-  }
-}
 
     // Render
     var html =
@@ -687,7 +709,7 @@ Earth Pulse could not interpret this yet. Try asking about birds, AQI, rainfall,
       html +=
         '<div class="res-card">' +
           '<div style="font-weight:600;color:var(--ep-green);margin-bottom:0.75rem;">📋 Supporting data</div>' +
-'<div style="font-size:0.9rem;color:#6b7280;margin-bottom:0.75rem;">Based on recorded observations since 2022</div>' +
+'<div style="font-size:0.9rem;color:#6b7280;margin-bottom:0.75rem;">' + getDataContext(data) + '</div>' +
           buildTable(data) +
           '<div class="actions"><button class="act-btn primary" onclick="dlCSV()">⬇ Download CSV</button></div>' +
         '</div>';
@@ -702,7 +724,8 @@ Earth Pulse could not interpret this yet. Try asking about birds, AQI, rainfall,
   }
 
   btn.disabled = false;
-  btn.textContent = 'Ask →';
+  btn.innerHTML = 'Ask →';
+loadHistory();
 }
 
 // Client-side smart answer — works without any API key
@@ -761,7 +784,25 @@ function md2html(t) {
     .replace(/\n/g, '<br>')
     .replace(/^/, '<p>').replace(/$/, '</p>');
 }
+
 function escHtml(t) { return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function getDataContext(data) {
+  if (!data || !data.length) return "";
+
+  const keys = Object.keys(data[0]);
+
+  if (
+    keys.includes("species") ||
+    keys.includes("bird_count") ||
+    keys.includes("detections")
+  ) {
+    return "Bird activity data available from April 2026 onwards";
+  }
+
+  return "Weather and air quality data available from 2022 onwards";
+
+}
 
 async function sbFetch(path) {
   var r = await fetch(_SB_URL + '/rest/v1' + path, { headers: { 'apikey': _SB_KEY, 'Authorization': 'Bearer ' + _SB_KEY } });
