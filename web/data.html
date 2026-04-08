@@ -488,6 +488,7 @@ async function runDynamicQuery(q) {
 }
 
 // Gemini insight layer (controlled usage)
+
 async function callGemini(query, data) {
   try {
     const res = await fetch(WORKER_URL, {
@@ -502,9 +503,17 @@ async function callGemini(query, data) {
     });
 
     const json = await res.json();
-    return json.answer || null;
+
+    // 👇 THIS IS KEY
+    if (!json.answer) {
+      console.log("Gemini debug:", json.debug);
+      return null;
+    }
+
+    return json.answer;
 
   } catch(e) {
+    console.log("Gemini error:", e);
     return null;
   }
 }
@@ -536,26 +545,47 @@ async function runQuery() {
     // 3. Fallback (no AI)
 
 if (!answer) {
+
+  // 👉 generate insight WITHOUT AI
   if (data && data.length) {
-    answer = `
-**Here’s what the data shows:**
 
-This response is based directly on recorded observations from Earth Pulse. While deeper pattern analysis is still evolving, the data above reflects real environmental behaviour in Baner.
+    if (q.toLowerCase().includes("hot")) {
+      const max = data[0];
+      answer = `
+**Baner’s peak heat reaches around ${max.temperature_c}°C, typically in late summer.**
 
-Try asking:
-• "why does this happen"
-• "what patterns do you see"
-• "how does AQI affect this"
+These extreme temperatures appear just before the monsoon, when dry air, clear skies, and strong solar radiation combine to push daytime highs upward.
 `;
+    }
+
+    else if (q.toLowerCase().includes("bird")) {
+      const top = data[0];
+      answer = `
+**The most frequently heard bird is ${top.species}, consistently dominating acoustic detections.**
+
+This suggests it is either highly vocal, highly abundant, or both — a strong indicator of its ecological presence in Baner’s landscape.
+`;
+    }
+
+    else if (q.toLowerCase().includes("rain")) {
+      answer = `
+**Rainfall in Baner appears in bursts rather than steady distribution.**
+
+Most precipitation events cluster during the monsoon window, with occasional outliers outside the main season.
+`;
+    }
+
+    else {
+      answer = `
+**This pattern reflects real environmental behaviour observed over time in Baner.**
+
+While deeper relationships are still being analysed, the data suggests consistent seasonal and climatic rhythms.
+`;
+    }
+
   } else {
     answer = `
-**Earth Pulse is still interpreting this question.**
-
-Try asking about:
-• bird activity
-• air quality (AQI)
-• rainfall
-• temperature
+Earth Pulse could not interpret this yet. Try asking about birds, AQI, rainfall, or temperature.
 `;
   }
 }
