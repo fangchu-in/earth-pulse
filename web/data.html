@@ -386,7 +386,56 @@ async function doSignOut() {
 
 // ── AI QUERY (EARTH PULSE INTELLIGENCE ENGINE) ────────────────────────────────
 
-var WORKER_URL = 'https://earthpulse-ai.fangchu.workers.dev/gemini';
+var WORKER_BASE = 'https://earthpulse-ai.fangchu.workers.dev';
+var WORKER_URL  = WORKER_BASE + '/gemini'; // Gemini primary (free)
+
+// Summarise data before sending to AI — avoid sending raw noise
+function summariseData(data) {
+  if (!data || !data.length) return [];
+  // If > 20 rows, sample evenly
+  if (data.length <= 20) return data;
+  const step = Math.floor(data.length / 20);
+  return data.filter((_, i) => i % step === 0).slice(0, 20);
+}
+
+// Gemini insight layer (primary — free tier, 15 RPM)
+async function callGemini(query, data) {
+  try {
+    const res = await fetch(WORKER_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ query, data: summariseData(data) })
+    });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const json = await res.json();
+    if (json.answer) return json.answer;
+    console.warn('Gemini no answer:', json.debug);
+    return null;
+  } catch(e) {
+    console.warn('Gemini failed, trying Claude:', e.message);
+    // Fallback to Claude (paid but more reliable)
+    return callClaude(query, data);
+  }
+}
+
+// Claude fallback
+async function callClaude(query, data) {
+  try {
+    const summary = summariseData(data);
+    const context = 'Baner, Pune environmental data: ' + JSON.stringify(summary).slice(0, 3000);
+    const res = await fetch(WORKER_BASE + '/query', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ query, context })
+    });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const json = await res.json();
+    return json.answer || null;
+  } catch(e) {
+    console.warn('Claude also failed:', e.message);
+    return null;
+  }
+}
 
 function ask(q) {
   document.getElementById('ai-q').value = q;
@@ -394,20 +443,16 @@ function ask(q) {
   runQuery();
 }
 
-// Intent classifier (lightweight, flexible)
 function classifyQuery(q) {
   const ql = q.toLowerCase();
-
-  if (ql.match(/most|top|highest|lowest|count/)) return "aggregation";
-  if (ql.match(/compare|vs|correlation|impact|relationship/)) return "comparison";
-  if (ql.match(/trend|over time|monthly|yearly|pattern/)) return "timeseries";
-  if (ql.match(/why|explain|insight/)) return "explanation";
-
-  return "general";
+  if (ql.match(/most|top|highest|lowest|count/)) return 'aggregation';
+  if (ql.match(/compare|vs|correlation|impact|relationship/)) return 'comparison';
+  if (ql.match(/trend|over time|monthly|yearly|pattern/)) return 'timeseries';
+  if (ql.match(/why|explain|insight/)) return 'explanation';
+  return 'general';
 }
 
 // Dynamic query engine (NO API COST)
-
 async function runDynamicQuery(q) {
   const ql = q.toLowerCase();
   lastRows = null;
@@ -428,7 +473,7 @@ async function runDynamicQuery(q) {
     if (hasBird && variables.length) {
 
       const birds = await sbFetch('/bird_detections?select=detected_at');
-      const climate = await sbFetch('/climate_readings?select=recorded_at,temperature,aqi,precipitation,humidity');
+      const climate = await sbFetch('/combined_readings?select=recorded_at,temperature,aqi,precipitation,humidity');
 
       const birdMap = {};
       birds.forEach(b => {
@@ -488,7 +533,7 @@ async function runDynamicQuery(q) {
 
     // ── TEMPERATURE ─────────────────
 if (ql.includes("temperature") || ql.includes("hot") || ql.includes("heat")) {
-      const data = await sbFetch('/climate_readings?select=recorded_at,temperature&order=temperature.desc&limit=20');
+      const data = await sbFetch('/combined_readings?select=recorded_at,temperature&order=temperature.desc&limit=20');
 
       const rows = data.map(d => ({
         date: d.recorded_at.slice(0,10),
@@ -504,7 +549,7 @@ if ((ql.includes("rain") || ql.includes("rainfall")) &&
     (ql.includes("year") || ql.includes("annual"))) 
  {
 
-  const data = await sbFetch('/climate_readings?select=recorded_at,precipitation');
+  const data = await sbFetch('/combined_readings?select=recorded_at,precipitation');
 
   const yearMap = {};
 
@@ -531,7 +576,7 @@ if (ql.includes("rain") && yearMatch) {
 
   const year = yearMatch[0];
 
-  const data = await sbFetch('/climate_readings?select=recorded_at,precipitation');
+  const data = await sbFetch('/combined_readings?select=recorded_at,precipitation');
 
   let total = 0;
 
@@ -552,7 +597,7 @@ if (ql.includes("rain") && yearMatch) {
 
     // ── RAIN ─────────────────
     if (ql.includes("rain")) {
-      const data = await sbFetch('/climate_readings?select=recorded_at,precipitation&precipitation=gt.0&order=recorded_at.desc&limit=50');
+      const data = await sbFetch('/combined_readings?select=recorded_at,precipitation&precipitation=gt.0&order=recorded_at.desc&limit=50');
 
       const rows = data.map(d => ({
         date: d.recorded_at.slice(0,10),
@@ -814,7 +859,7 @@ async function gatherContext(q) {
   var parts = [];
   lastRows = null;
   try {
-    var latest = await sbFetch('/climate_readings?select=recorded_at,aqi,google_aqi_india,temperature,humidity,precipitation&order=recorded_at.desc&limit=1');
+    var latest = await sbFetch('/combined_readings?select=recorded_at,aqi,google_aqi_india,temperature,humidity,precipitation&order=recorded_at.desc&limit=1');
     if (latest[0]) parts.push('Latest reading: EU AQI ' + latest[0].aqi + ', India AQI ' + latest[0].google_aqi_india + ', Temp ' + latest[0].temperature + '°C, Humidity ' + latest[0].humidity + '%, Rain ' + latest[0].precipitation + 'mm');
 
     if (ql.includes('bird') || ql.includes('species') || ql.includes('dawn') || ql.includes('monsoon') || ql.includes('migrat')) {
@@ -825,7 +870,7 @@ async function gatherContext(q) {
       lastRows = rows;
     }
     if (ql.includes('aqi') || ql.includes('air') || ql.includes('pollution') || ql.includes('diwali') || ql.includes('holi')) {
-      var cl = await sbFetch('/climate_readings?select=recorded_at,aqi,google_aqi_india,temperature&order=recorded_at.desc&limit=300');
+      var cl = await sbFetch('/combined_readings?select=recorded_at,aqi,google_aqi_india,temperature&order=recorded_at.desc&limit=300');
       var avg = Math.round(cl.reduce(function(s,r){return s+(r.aqi||0);},0)/cl.length);
       var mx  = Math.max.apply(null, cl.map(function(r){return r.aqi||0;}));
       var mn  = Math.min.apply(null, cl.filter(function(r){return r.aqi>0;}).map(function(r){return r.aqi;}));
@@ -833,13 +878,13 @@ async function gatherContext(q) {
       if (!lastRows) lastRows = cl.slice(0,25).map(function(r){return{date:r.recorded_at.slice(0,10),eu_aqi:r.aqi,india_aqi:r.google_aqi_india,temp:r.temperature};});
     }
     if (ql.includes('rain') || ql.includes('rainfall') || ql.includes('monsoon') || ql.includes('precipitation')) {
-      var rain = await sbFetch('/climate_readings?select=recorded_at,precipitation&precipitation=gt.0&order=recorded_at.desc&limit=500');
+      var rain = await sbFetch('/combined_readings?select=recorded_at,precipitation&precipitation=gt.0&order=recorded_at.desc&limit=500');
       var tot  = rain.reduce(function(s,r){return s+(r.precipitation||0);},0);
       parts.push('Rain: ' + rain.length + ' hourly readings with precipitation, total ' + tot.toFixed(1) + 'mm in recent records');
     }
     if (ql.includes('temp') || ql.includes('hot') || ql.includes('cold') || ql.includes('heat')) {
-      var hot  = await sbFetch('/climate_readings?select=recorded_at,temperature&order=temperature.desc&limit=10');
-      var cold = await sbFetch('/climate_readings?select=recorded_at,temperature&order=temperature.asc&limit=10');
+      var hot  = await sbFetch('/combined_readings?select=recorded_at,temperature&order=temperature.desc&limit=10');
+      var cold = await sbFetch('/combined_readings?select=recorded_at,temperature&order=temperature.asc&limit=10');
       parts.push('Hottest: ' + JSON.stringify(hot.map(function(r){return{date:r.recorded_at.slice(0,10),temp:r.temperature};})));
       parts.push('Coldest: ' + JSON.stringify(cold.map(function(r){return{date:r.recorded_at.slice(0,10),temp:r.temperature};})));
       if (!lastRows) lastRows = hot.slice(0,10).map(function(r){return{date:r.recorded_at.slice(0,10),temperature_c:r.temperature};});
@@ -872,9 +917,9 @@ function dlCSV() {
 
 async function dlData(type) {
   var url, name;
-  if (type==='climate') { url='/climate_readings?select=*&order=recorded_at.asc&limit=50000'; name='climate'; }
+  if (type==='climate') { url='/combined_readings?select=*&order=recorded_at.asc&limit=50000'; name='climate'; }
   else if (type==='birds') { url='/bird_detections?select=*&order=detected_at.asc&limit=10000'; name='birds'; }
-  else if (type==='rain')  { url='/climate_readings?select=recorded_at,precipitation&precipitation=gt.0&order=recorded_at.asc&limit=10000'; name='rainfall'; }
+  else if (type==='rain')  { url='/combined_readings?select=recorded_at,precipitation&precipitation=gt.0&order=recorded_at.asc&limit=10000'; name='rainfall'; }
   else                     { url='/timelapse_frames?select=*&order=captured_at.asc&limit=5000'; name='photos'; }
   var rows = await sbFetch(url);
   if (!Array.isArray(rows)||!rows.length) { alert('No data found.'); return; }
@@ -888,7 +933,7 @@ async function dlCustom() {
   var to   = document.getElementById('dl-to').value;
   if (!from || !to) { alert('Please select a date range.'); return; }
   var filter = '&' + (type==='birds' ? 'detected_at' : 'recorded_at') + '=gte.' + from + 'T00:00:00Z&' + (type==='birds' ? 'detected_at' : 'recorded_at') + '=lte.' + to + 'T23:59:59Z';
-  var url = type==='birds' ? '/bird_detections?select=*' + filter + '&order=detected_at.asc&limit=10000' : '/climate_readings?select=*' + filter + '&order=recorded_at.asc&limit=50000';
+  var url = type==='birds' ? '/bird_detections?select=*' + filter + '&order=detected_at.asc&limit=10000' : '/combined_readings?select=*' + filter + '&order=recorded_at.asc&limit=50000';
   await dlData(type + '_custom');
 }
 
@@ -897,7 +942,7 @@ async function loadStats() {
   try {
     var [birds, climate, today] = await Promise.all([
       sbFetch('/bird_detections?select=species_common,species_scientific,confidence,detected_at&order=detected_at.desc&limit=2000'),
-      sbFetch('/climate_readings?select=recorded_at,aqi,temperature,precipitation&order=recorded_at.desc&limit=1'),
+      sbFetch('/combined_readings?select=recorded_at,aqi,temperature,precipitation&order=recorded_at.desc&limit=1'),
       sbFetch('/bird_detections?select=species_scientific&detected_at=gte.' + new Date(new Date().toDateString()).toISOString() + '&limit=500'),
     ]);
 
@@ -980,7 +1025,7 @@ async function loadDigest() {
     var weekISO   = new Date(Date.now() - 7*86400000).toISOString();
 
     var [climate, todayBirds, weekBirds, monthBirds, topSpecies] = await Promise.all([
-      sbFetch('/climate_readings?select=recorded_at,aqi,google_aqi_india,temperature,humidity,precipitation,dominant_pollutant,health_recommendation&order=recorded_at.desc&limit=2'),
+      sbFetch('/combined_readings?select=recorded_at,aqi,google_aqi_india,temperature,humidity,precipitation,dominant_pollutant,health_recommendation&order=recorded_at.desc&limit=2'),
       sbFetch('/bird_detections?select=species_common,species_scientific,confidence,detected_at&detected_at=gte.' + todayISO + '&order=detected_at.desc&limit=100'),
       sbFetch('/bird_detections?select=species_scientific&detected_at=gte.' + weekISO + '&limit=1000'),
       sbFetch('/bird_detections?select=species_scientific&detected_at=gte.' + monthISO + '&limit=2000'),
