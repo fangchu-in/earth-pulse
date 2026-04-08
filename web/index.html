@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Earth Pulse — Live AQI, Birds & Climate Monitor | Baner, Pune</title>
-  <meta name="description" content="Real-time air quality (AQI), bird detection, microclimate and biodiversity monitoring from Baner, Pune — on the edge of the Western Ghats. Hourly data since January 2022. Free and open.">
-  <meta name="keywords" content="Baner Pune AQI live, Pune air quality today, bird watching Pune, Sahyadri birds, BirdNET Pune, Baner weather live, hyperlocal climate Pune, Western Ghats biodiversity, citizen science Pune, Baner pollution levels">
+  <title>Earth Pulse — Live AQI, Hyperlocal Weather & Birds | Baner, Pune</title>
+  <meta name="description" content="Live air quality (AQI), hyperlocal weather from Weather Union, acoustic bird detection and climate monitoring for Baner, Pune — Western Ghats edge. 37,000+ hourly records since January 2022. Free open citizen science.">
+  <meta name="keywords" content="Baner Pune AQI live, Pune air quality today, Baner weather live, hyperlocal weather Pune, Weather Union Pune, bird watching Pune, Sahyadri birds, BirdNET Pune, Western Ghats biodiversity, citizen science Pune, Baner pollution levels, Pune PM2.5 today, Baner Hill nature">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://earthpulse.pages.dev/">
   <!-- Open Graph / WhatsApp -->
-  <meta property="og:title" content="Earth Pulse — Live AQI, Birds & Climate | Baner, Pune">
-  <meta property="og:description" content="Real-time air quality, temperature, and bird detections from the Sahyadri foothills. 37,000+ hourly records since 2022. Free citizen science data for Baner, Pune.">
+  <meta property="og:title" content="Earth Pulse — Live AQI, Hyperlocal Weather & Birds | Baner, Pune">
+  <meta property="og:description" content="Hyperlocal air quality, Weather Union data and acoustic bird monitoring from the Western Ghats edge. 37,000+ hourly records since 2022. Free citizen science data for Baner, Pune.">
   <meta property="og:image" content="https://earthpulse.pages.dev/earth-pulse-logo.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
@@ -18,12 +18,15 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Earth Pulse · Baner, Pune">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Earth Pulse — Live AQI, Birds & Climate | Baner, Pune">
-  <meta name="twitter:description" content="Real-time environmental monitoring from the Sahyadri foothills. Live AQI, bird detections, hourly weather. Open citizen science data since 2022.">
+  <meta name="twitter:title" content="Earth Pulse — Live AQI, Hyperlocal Weather & Birds | Baner, Pune">
+  <meta name="twitter:description" content="Live AQI, hyperlocal weather and bird detections from Baner, Pune. Weather Union station 2.5km away. Open citizen science since January 2022.">
   <meta name="twitter:image" content="https://earthpulse.pages.dev/earth-pulse-logo.png">
+  <meta name="geo.region" content="IN-MH">
+  <meta name="geo.placename" content="Baner, Pune, Maharashtra">
+  <meta property="og:locale" content="en_IN">
   <link rel="icon" type="image/png" href="earth-pulse-logo.png">
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"Earth Pulse","url":"https://earthpulse.pages.dev","description":"Hyperlocal air quality, microclimate, and bird biodiversity data from Baner, Pune, India — on the edge of the Western Ghats UNESCO ecosystem.","potentialAction":{"@type":"SearchAction","target":"https://earthpulse.pages.dev/search.html?q={search_term_string}","query-input":"required name=search_term_string"}}</script>
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Dataset","name":"Earth Pulse — Baner, Pune Environmental Observatory","description":"Hourly air quality (EU AQI, India AQI, PM2.5, PM10), microclimate, and acoustic bird biodiversity data from Baner, Pune, on the edge of the Western Ghats. 37,000+ records since January 2022.","url":"https://earthpulse.pages.dev","license":"https://creativecommons.org/licenses/by/4.0/","creator":{"@type":"Organization","name":"Earth Pulse Project","url":"https://earthpulse.pages.dev"},"spatialCoverage":{"@type":"Place","name":"Baner, Pune, Maharashtra, India","geo":{"@type":"GeoCoordinates","latitude":18.5526156,"longitude":73.7818663}},"temporalCoverage":"2022-01-01/..","measurementTechnique":"BirdNET acoustic AI, Copernicus CAMS API, Google Air Quality API","variableMeasured":["AQI","PM2.5","PM10","temperature","humidity","precipitation","bird species detections"]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Dataset","name":"Earth Pulse — Baner, Pune Environmental Observatory","description":"Hourly air quality (EU AQI, India AQI, PM2.5, PM10), microclimate, and acoustic bird biodiversity data from Baner, Pune, on the edge of the Western Ghats. 37,000+ records since January 2022.","url":"https://earthpulse.pages.dev","license":"https://creativecommons.org/licenses/by/4.0/","creator":{"@type":"Organization","name":"Earth Pulse Project","url":"https://earthpulse.pages.dev"},"spatialCoverage":{"@type":"Place","name":"Baner, Pune, Maharashtra, India","geo":{"@type":"GeoCoordinates","latitude":18.5526156,"longitude":73.7818663}},"temporalCoverage":"2022-01-01/..","measurementTechnique":"BirdNET acoustic AI, Weather Union ZWL008983, Google Air Quality API, CAMS Copernicus, Open-Meteo ECMWF","variableMeasured":["AQI","PM2.5","PM10","temperature","humidity","wind speed","wind direction","rain intensity","precipitation","solar radiation","bird species detections"]}</script>
   <link rel="stylesheet" href="styles.css">
   <style>
     .metrics-row { display:grid; grid-template-columns:2fr 1fr 1fr 1fr 1fr; gap:1rem; max-width:1100px; margin:0 auto; padding:2rem 2rem 1rem; }
@@ -206,7 +209,7 @@
 
 <!-- HERO -->
 <div class="ep-hero">
-  <div class="ep-hero-tag ep-fade-up">📍 Baner, Pune · 18.55°N 73.78°E · Sahyadri Foothills</div>
+  <div class="ep-hero-tag ep-fade-up">📍 Baner, Pune · 18.55°N 73.78°E · Sahyadri Foothills · Weather Union · Google AQI · Open-Meteo</div>
   <h1 class="ep-fade-up ep-delay-1">The <em>living pulse</em> of<br>Baner's environment</h1>
   <p class="ep-hero-sub ep-fade-up ep-delay-2">Real-time air quality, microclimate, and bird biodiversity — monitored continuously.</p>
   <p class="ep-hero-meta ep-fade-up ep-delay-3">Updated hourly · Data since <strong>January 2022</strong> · <strong id="total-records">37,000+</strong> climate records · <strong id="species-count">—</strong> bird species detected · Last updated <strong id="last-updated">—</strong></p>
@@ -543,7 +546,7 @@ function windDir(d) { return ['N','NE','E','SE','S','SW','W','NW'][Math.round((d
 // ── LOAD CLIMATE ──────────────────────────────────────────────────────────────
 async function loadClimate() {
   try {
-    const res = await fetch(`${SUPABASE_URL}/rest/v1/climate_readings?select=*&order=recorded_at.desc&limit=1`,{headers:HDR});
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/combined_readings?select=*&order=recorded_at.desc&limit=1`,{headers:HDR});
     if (!res.ok) throw new Error();
     const [d] = await res.json();
     if (!d) return;
@@ -599,8 +602,8 @@ async function loadClimate() {
 async function loadChanges() {
   try {
     const [tR, yR] = await Promise.all([
-      fetch(`${SUPABASE_URL}/rest/v1/climate_readings?select=aqi,google_aqi_india,temperature,humidity,wind_speed&order=recorded_at.desc&limit=1`,{headers:HDR}),
-      fetch(`${SUPABASE_URL}/rest/v1/climate_readings?select=aqi,google_aqi_india,temperature,humidity,wind_speed&order=recorded_at.desc&limit=1&offset=24`,{headers:HDR}),
+      fetch(`${SUPABASE_URL}/rest/v1/combined_readings?select=aqi,google_aqi_india,temperature,humidity,wind_speed&order=recorded_at.desc&limit=1`,{headers:HDR}),
+      fetch(`${SUPABASE_URL}/rest/v1/combined_readings?select=aqi,google_aqi_india,temperature,humidity,wind_speed&order=recorded_at.desc&limit=1&offset=24`,{headers:HDR}),
     ]);
     const [today] = await tR.json(); const [yesterday] = await yR.json();
     if (!today||!yesterday) return;
@@ -687,11 +690,11 @@ async function loadInsights() {
   try {
     const ms=new Date(new Date().getFullYear(),new Date().getMonth(),1).toISOString();
     const [maxT,bestAqi,worstAqi,bestG,worstG,species]=await Promise.all([
-      fetch(`${SUPABASE_URL}/rest/v1/climate_readings?select=temperature,recorded_at&recorded_at=gte.${ms}&order=temperature.desc&limit=1`,{headers:HDR}).then(r=>r.json()),
-      fetch(`${SUPABASE_URL}/rest/v1/climate_readings?select=aqi,recorded_at&recorded_at=gte.${ms}&aqi=gt.0&order=aqi.asc&limit=1`,{headers:HDR}).then(r=>r.json()),
-      fetch(`${SUPABASE_URL}/rest/v1/climate_readings?select=aqi,recorded_at&recorded_at=gte.${ms}&order=aqi.desc&limit=1`,{headers:HDR}).then(r=>r.json()),
-      fetch(`${SUPABASE_URL}/rest/v1/climate_readings?select=google_aqi_india&recorded_at=gte.${ms}&google_aqi_india=gt.0&order=google_aqi_india.asc&limit=1`,{headers:HDR}).then(r=>r.json()),
-      fetch(`${SUPABASE_URL}/rest/v1/climate_readings?select=google_aqi_india&recorded_at=gte.${ms}&google_aqi_india=gt.0&order=google_aqi_india.desc&limit=1`,{headers:HDR}).then(r=>r.json()),
+      fetch(`${SUPABASE_URL}/rest/v1/combined_readings?select=temperature,recorded_at&recorded_at=gte.${ms}&order=temperature.desc&limit=1`,{headers:HDR}).then(r=>r.json()),
+      fetch(`${SUPABASE_URL}/rest/v1/combined_readings?select=aqi,recorded_at&recorded_at=gte.${ms}&aqi=gt.0&order=aqi.asc&limit=1`,{headers:HDR}).then(r=>r.json()),
+      fetch(`${SUPABASE_URL}/rest/v1/combined_readings?select=aqi,recorded_at&recorded_at=gte.${ms}&order=aqi.desc&limit=1`,{headers:HDR}).then(r=>r.json()),
+      fetch(`${SUPABASE_URL}/rest/v1/combined_readings?select=google_aqi_india&recorded_at=gte.${ms}&google_aqi_india=gt.0&order=google_aqi_india.asc&limit=1`,{headers:HDR}).then(r=>r.json()),
+      fetch(`${SUPABASE_URL}/rest/v1/combined_readings?select=google_aqi_india&recorded_at=gte.${ms}&google_aqi_india=gt.0&order=google_aqi_india.desc&limit=1`,{headers:HDR}).then(r=>r.json()),
       fetch(`${SUPABASE_URL}/rest/v1/bird_detections?select=species_scientific&detected_at=gte.${ms}`,{headers:HDR}).then(r=>r.json()),
     ]);
     const uniqueSp=new Set(species.map(b=>b.species_scientific)).size;
@@ -764,7 +767,7 @@ async function loadMonsoon() {
   try {
     const years=[2022,2023,2024,2025];
     const dates=await Promise.all(years.map(async y=>{
-      const r=await fetch(`${SUPABASE_URL}/rest/v1/climate_readings?select=recorded_at&recorded_at=gte.${y}-06-01&recorded_at=lte.${y}-08-31&precipitation=gt.2&order=recorded_at.asc&limit=1`,{headers:HDR});
+      const r=await fetch(`${SUPABASE_URL}/rest/v1/combined_readings?select=recorded_at&recorded_at=gte.${y}-06-01&recorded_at=lte.${y}-08-31&precipitation=gt.2&order=recorded_at.asc&limit=1`,{headers:HDR});
       const rows=await r.json();
       if(rows.length){const d=new Date(rows[0].recorded_at);return{year:y,dayOfYear:Math.floor((d-new Date(y,0,0))/86400000)};}
       return null;
@@ -789,7 +792,7 @@ async function loadMonsoon() {
 async function loadCharts() {
   try {
     const weekAgo=new Date(Date.now()-7*86400000).toISOString();
-    const res=await fetch(`${SUPABASE_URL}/rest/v1/climate_readings?select=recorded_at,aqi,google_aqi_india,temperature&recorded_at=gte.${weekAgo}&order=recorded_at.asc`,{headers:HDR});
+    const res=await fetch(`${SUPABASE_URL}/rest/v1/combined_readings?select=recorded_at,aqi,google_aqi_india,temperature&recorded_at=gte.${weekAgo}&order=recorded_at.asc`,{headers:HDR});
     const rows=await res.json();
     if(!Array.isArray(rows)||!rows.length)return;
     const step=Math.max(1,Math.floor(rows.length/60));
@@ -824,7 +827,7 @@ async function loadCharts() {
 async function loadYearStats() {
   try {
     const yearStart=`${new Date().getFullYear()}-01-01T00:00:00Z`;
-    const res=await fetch(`${SUPABASE_URL}/rest/v1/climate_readings?select=recorded_at,precipitation,cloudcover,temperature,aqi&recorded_at=gte.${yearStart}&order=recorded_at.asc`,{headers:HDR});
+    const res=await fetch(`${SUPABASE_URL}/rest/v1/combined_readings?select=recorded_at,precipitation,cloudcover,temperature,aqi&recorded_at=gte.${yearStart}&order=recorded_at.asc`,{headers:HDR});
     const rows=await res.json();
     if(!Array.isArray(rows)||!rows.length)return;
 
@@ -859,13 +862,15 @@ async function loadYearStats() {
     }
 
     const totalDays=Object.keys(days).length;
+    const cleanAirPct=Math.round(goodAqi/Math.max(totalDays,1)*100);
     const stats=[
-      {icon:'🌧️', val:totalRain.toFixed(0),  label:'mm rainfall this year'},
-      {icon:'☀️', val:sunnyDays,              label:'sunny days'},
-      {icon:'⛅', val:cloudyDays,             label:'cloudy days'},
-      {icon:'🌦️', val:rainyDays,              label:'rainy days'},
-      {icon:'🔥', val:hotDays,                label:'hot days (>35°C)'},
-      {icon:'🍃', val:goodAqi,                label:'clean air days (AQI≤40)'},
+      {icon:'🌧️', val:totalRain.toFixed(0),       label:'mm rainfall this year'},
+      {icon:'☀️', val:sunnyDays,                   label:'sunny days'},
+      {icon:'⛅', val:cloudyDays,                  label:'cloudy days'},
+      {icon:'🌦️', val:rainyDays,                   label:'rainy days'},
+      {icon:'🔥', val:hotDays,                     label:'hot days (>35°C)'},
+      {icon:'🍃', val:goodAqi,                     label:'clean air days (AQI≤40)'},
+      {icon:'✅', val:cleanAirPct+'%',             label:'of days with clean air'},
     ];
 
     document.getElementById('year-stats-grid').innerHTML=stats.map(s=>`
