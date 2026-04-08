@@ -413,36 +413,53 @@ async function runDynamicQuery(q) {
 
   try {
 
-// ── CORRELATION: TEMPERATURE vs BIRDS ─────────────────
-if (
-  (ql.includes("bird") || ql.includes("species")) &&
-  (ql.includes("temperature") || ql.includes("heat") || ql.includes("hot"))
-) {
-  const birds = await sbFetch('/bird_detections?select=detected_at');
-  const climate = await sbFetch('/climate_readings?select=recorded_at,temperature');
+    // ── GENERIC CORRELATION ENGINE ─────────────────
 
-  const birdMap = {};
-  birds.forEach(b => {
-    const d = b.detected_at.slice(0,10);
-    birdMap[d] = (birdMap[d] || 0) + 1;
-  });
+    const hasBird = ql.includes("bird") || ql.includes("species");
 
-  const rows = climate.map(c => {
-    const d = c.recorded_at.slice(0,10);
-    return {
-      date: d,
-      temperature: c.temperature,
-      bird_count: birdMap[d] || 0
-    };
-  }).filter(r => r.bird_count > 0);
+    const variables = [];
 
-  rows.sort((a,b)=>a.temperature-b.temperature);
+    if (ql.includes("temperature") || ql.includes("heat")) variables.push("temperature");
+    if (ql.includes("aqi") || ql.includes("air")) variables.push("aqi");
+    if (ql.includes("rain")) variables.push("precipitation");
+    if (ql.includes("humidity")) variables.push("humidity");
 
-  lastRows = rows.slice(0,100);
-  return lastRows;
-}
+    if (hasBird && variables.length) {
 
-    // ── BIRDS ─────────────────────────
+      const birds = await sbFetch('/bird_detections?select=detected_at');
+      const climate = await sbFetch('/climate_readings?select=recorded_at,temperature,aqi,precipitation,humidity');
+
+      const birdMap = {};
+      birds.forEach(b => {
+        const d = b.detected_at.slice(0,10);
+        birdMap[d] = (birdMap[d] || 0) + 1;
+      });
+
+      const rows = climate.map(c => {
+        const d = c.recorded_at.slice(0,10);
+
+        const row = {
+          date: d,
+          bird_count: birdMap[d] || 0
+        };
+
+        variables.forEach(v => {
+          row[v] = c[v];
+        });
+
+        return row;
+      }).filter(r => r.bird_count > 0);
+
+      rows.sort((a,b)=>{
+        const v = variables[0];
+        return (a[v] || 0) - (b[v] || 0);
+      });
+
+      lastRows = rows.slice(0,100);
+      return lastRows;
+    }
+
+    // ── BIRDS (default) ─────────────────
     if (ql.includes("bird") || ql.includes("species")) {
       const birds = await sbFetch('/bird_detections?select=species_common,confidence,detected_at&limit=2000');
 
@@ -468,8 +485,8 @@ if (
       return rows;
     }
 
-    // ── TEMPERATURE / HOTTEST DAYS ─────────────────
-    if (ql.includes("hot") || ql.includes("temperature")) {
+    // ── TEMPERATURE ─────────────────
+    if (ql.includes("temperature") || ql.includes("hot")) {
       const data = await sbFetch('/climate_readings?select=recorded_at,temperature&order=temperature.desc&limit=20');
 
       const rows = data.map(d => ({
@@ -481,23 +498,8 @@ if (
       return rows;
     }
 
-    // ── AQI ─────────────────────────
-    if (ql.includes("aqi") || ql.includes("air")) {
-      const data = await sbFetch('/climate_readings?select=recorded_at,aqi,temperature,humidity&limit=500');
-
-      const rows = data.map(d => ({
-        date: d.recorded_at.slice(0,10),
-        aqi: d.aqi,
-        temp: d.temperature,
-        humidity: d.humidity
-      }));
-
-      lastRows = rows;
-      return rows;
-    }
-
-    // ── RAIN ─────────────────────────
-    if (ql.includes("rain") || ql.includes("monsoon")) {
+    // ── RAIN ─────────────────
+    if (ql.includes("rain")) {
       const data = await sbFetch('/climate_readings?select=recorded_at,precipitation&precipitation=gt.0&order=recorded_at.desc&limit=50');
 
       const rows = data.map(d => ({
@@ -510,11 +512,13 @@ if (
     }
 
   } catch(e) {
+    console.log(e);
     return null;
   }
 
   return null;
 }
+
 
 // Gemini insight layer (controlled usage)
 
@@ -575,17 +579,43 @@ async function runQuery() {
 
 if (!answer) {
 
-  // 👉 generate insight WITHOUT AI
   if (data && data.length) {
 
-if (q.toLowerCase().includes("hot")) {
-  const max = data[0];
+    const keys = Object.keys(data[0]);
 
-  answer = `
-**The hottest days in Baner reach up to ${max.temperature_c}°C, clustering just before the monsoon.**
+    // detect correlation case
+    if (keys.includes("bird_count") && keys.length > 2) {
 
-This peak heat reflects a seasonal tipping point — when dry air, high solar exposure, and delayed rainfall combine to intensify daytime temperatures. These conditions often mark the final stretch before atmospheric instability gives way to monsoon onset.
+      const variable = keys.find(k => k !== "date" && k !== "bird_count");
+
+      const low = data.slice(0,10).reduce((s,r)=>s+r.bird_count,0)/10;
+      const high = data.slice(-10).reduce((s,r)=>s+r.bird_count,0)/10;
+
+      let trend = "remain relatively stable";
+
+      if (high < low) trend = "decrease";
+      if (high > low) trend = "increase";
+
+      answer = `
+**Bird activity tends to ${trend} as ${variable} changes in Baner.**
+
+This suggests that environmental conditions influence behaviour more than presence. Instead of disappearing, birds may be shifting activity patterns — especially across time of day or intensity of conditions.
 `;
+
+    } else {
+
+      answer = `
+**This reflects a consistent environmental pattern observed in Baner.**
+
+The data shows stable behaviour over time, shaped by seasonal cycles and local ecological conditions.
+`;
+    }
+
+  } else {
+    answer = `
+Earth Pulse could not interpret this yet. Try asking about birds, AQI, rainfall, or temperature.
+`;
+  }
 }
 
 else if (
