@@ -407,6 +407,12 @@ function classifyQuery(q) {
 
 // Dynamic query engine (NO API COST)
 
+async function runDynamicQuery(q) {
+  const ql = q.toLowerCase();
+  lastRows = null;
+
+  try {
+
 // ── CORRELATION: TEMPERATURE vs BIRDS ─────────────────
 if (
   (ql.includes("bird") || ql.includes("species")) &&
@@ -415,14 +421,12 @@ if (
   const birds = await sbFetch('/bird_detections?select=detected_at');
   const climate = await sbFetch('/climate_readings?select=recorded_at,temperature');
 
-  // Group birds by date
   const birdMap = {};
   birds.forEach(b => {
     const d = b.detected_at.slice(0,10);
     birdMap[d] = (birdMap[d] || 0) + 1;
   });
 
-  // Combine with temperature
   const rows = climate.map(c => {
     const d = c.recorded_at.slice(0,10);
     return {
@@ -432,18 +436,11 @@ if (
     };
   }).filter(r => r.bird_count > 0);
 
-  // Sort by temperature
   rows.sort((a,b)=>a.temperature-b.temperature);
 
   lastRows = rows.slice(0,100);
   return lastRows;
 }
-
-async function runDynamicQuery(q) {
-  const ql = q.toLowerCase();
-  lastRows = null;
-
-  try {
 
     // ── BIRDS ─────────────────────────
     if (ql.includes("bird") || ql.includes("species")) {
