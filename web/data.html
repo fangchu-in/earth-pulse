@@ -407,6 +407,38 @@ function classifyQuery(q) {
 
 // Dynamic query engine (NO API COST)
 
+// ── CORRELATION: TEMPERATURE vs BIRDS ─────────────────
+if (
+  (ql.includes("bird") || ql.includes("species")) &&
+  (ql.includes("temperature") || ql.includes("heat") || ql.includes("hot"))
+) {
+  const birds = await sbFetch('/bird_detections?select=detected_at');
+  const climate = await sbFetch('/climate_readings?select=recorded_at,temperature');
+
+  // Group birds by date
+  const birdMap = {};
+  birds.forEach(b => {
+    const d = b.detected_at.slice(0,10);
+    birdMap[d] = (birdMap[d] || 0) + 1;
+  });
+
+  // Combine with temperature
+  const rows = climate.map(c => {
+    const d = c.recorded_at.slice(0,10);
+    return {
+      date: d,
+      temperature: c.temperature,
+      bird_count: birdMap[d] || 0
+    };
+  }).filter(r => r.bird_count > 0);
+
+  // Sort by temperature
+  rows.sort((a,b)=>a.temperature-b.temperature);
+
+  lastRows = rows.slice(0,100);
+  return lastRows;
+}
+
 async function runDynamicQuery(q) {
   const ql = q.toLowerCase();
   lastRows = null;
@@ -549,14 +581,41 @@ if (!answer) {
   // 👉 generate insight WITHOUT AI
   if (data && data.length) {
 
-    if (q.toLowerCase().includes("hot")) {
-      const max = data[0];
-      answer = `
-**Baner’s peak heat reaches around ${max.temperature_c}°C, typically in late summer.**
+if (q.toLowerCase().includes("hot")) {
+  const max = data[0];
 
-These extreme temperatures appear just before the monsoon, when dry air, clear skies, and strong solar radiation combine to push daytime highs upward.
+  answer = `
+**The hottest days in Baner reach up to ${max.temperature_c}°C, clustering just before the monsoon.**
+
+This peak heat reflects a seasonal tipping point — when dry air, high solar exposure, and delayed rainfall combine to intensify daytime temperatures. These conditions often mark the final stretch before atmospheric instability gives way to monsoon onset.
 `;
-    }
+}
+
+else if (
+  q.toLowerCase().includes("bird") &&
+  (q.toLowerCase().includes("temperature") || q.toLowerCase().includes("heat"))
+) {
+
+  // simple trend check
+  const first = data[0];
+  const last = data[data.length - 1];
+
+  let trend = "";
+
+  if (last.bird_count < first.bird_count) {
+    trend = "tend to decrease";
+  } else if (last.bird_count > first.bird_count) {
+    trend = "tend to increase";
+  } else {
+    trend = "remain relatively stable";
+  }
+
+  answer = `
+**Bird activity appears to ${trend} as temperatures rise in Baner.**
+
+This suggests that higher heat may influence vocal behaviour, activity windows, or detectability — especially during peak daytime temperatures when many species reduce movement.
+`;
+}
 
     else if (q.toLowerCase().includes("bird")) {
       const top = data[0];
@@ -601,6 +660,7 @@ Earth Pulse could not interpret this yet. Try asking about birds, AQI, rainfall,
       html +=
         '<div class="res-card">' +
           '<div style="font-weight:600;color:var(--ep-green);margin-bottom:0.75rem;">📋 Supporting data</div>' +
+'<div style="font-size:0.9rem;color:#6b7280;margin-bottom:0.75rem;">Based on recorded observations since 2022</div>' +
           buildTable(data) +
           '<div class="actions"><button class="act-btn primary" onclick="dlCSV()">⬇ Download CSV</button></div>' +
         '</div>';
