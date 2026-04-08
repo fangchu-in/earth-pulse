@@ -2,3 +2,5 @@ aqi/
 Trash/
 *.log
 .env
+worker.js.txt
+worker.js

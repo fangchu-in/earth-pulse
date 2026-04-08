@@ -382,11 +382,10 @@ async function doSignOut() {
   window.location.href = 'index.html';
 }
 
-// ── AI QUERY ──────────────────────────────────────────────────────────────────
-// The Anthropic API blocks direct browser calls (CORS).
-// We route through a Cloudflare Worker proxy at /api/ai
-// If the worker isn't deployed yet, we do a smart client-side analysis instead.
-var WORKER_URL = 'https://earthpulse-ai.fangchu.workers.dev';
+
+// ── AI QUERY (EARTH PULSE INTELLIGENCE ENGINE) ────────────────────────────────
+
+var WORKER_URL = 'https://earthpulse-ai.fangchu.workers.dev/gemini';
 
 function ask(q) {
   document.getElementById('ai-q').value = q;
@@ -394,59 +393,173 @@ function ask(q) {
   runQuery();
 }
 
+// Intent classifier (lightweight, flexible)
+function classifyQuery(q) {
+  const ql = q.toLowerCase();
+
+  if (ql.match(/most|top|highest|lowest|count/)) return "aggregation";
+  if (ql.match(/compare|vs|correlation|impact|relationship/)) return "comparison";
+  if (ql.match(/trend|over time|monthly|yearly|pattern/)) return "timeseries";
+  if (ql.match(/why|explain|insight/)) return "explanation";
+
+  return "general";
+}
+
+// Dynamic query engine (NO API COST)
+async function runDynamicQuery(q) {
+  const ql = q.toLowerCase();
+  lastRows = null;
+
+  try {
+
+    // ── BIRDS ─────────────────────────
+    if (ql.includes("bird") || ql.includes("species")) {
+      const birds = await sbFetch('/bird_detections?select=species_common,confidence,detected_at&limit=2000');
+
+      const map = {};
+      birds.forEach(b => {
+        if (!map[b.species_common]) {
+          map[b.species_common] = { count: 0, maxConf: 0 };
+        }
+        map[b.species_common].count++;
+        map[b.species_common].maxConf = Math.max(map[b.species_common].maxConf, b.confidence);
+      });
+
+      const rows = Object.entries(map)
+        .map(([species, v]) => ({
+          species,
+          detections: v.count,
+          confidence: Math.round(v.maxConf * 100) + "%"
+        }))
+        .sort((a,b)=>b.detections-a.detections)
+        .slice(0,20);
+
+      lastRows = rows;
+      return rows;
+    }
+
+    // ── AQI / CLIMATE ─────────────────
+    if (ql.includes("aqi") || ql.includes("air") || ql.includes("pollution")) {
+      const data = await sbFetch('/climate_readings?select=recorded_at,aqi,temperature,humidity&limit=500');
+
+      const rows = data.map(d => ({
+        date: d.recorded_at.slice(0,10),
+        aqi: d.aqi,
+        temp: d.temperature,
+        humidity: d.humidity
+      }));
+
+      lastRows = rows;
+      return rows;
+    }
+
+    // ── RAIN ──────────────────────────
+    if (ql.includes("rain") || ql.includes("monsoon")) {
+      const data = await sbFetch('/climate_readings?select=recorded_at,precipitation&precipitation=gt.0&limit=500');
+
+      const rows = data.map(d => ({
+        date: d.recorded_at.slice(0,10),
+        rain_mm: d.precipitation
+      }));
+
+      lastRows = rows;
+      return rows;
+    }
+
+  } catch(e) {
+    return null;
+  }
+
+  return null;
+}
+
+// Gemini insight layer (controlled usage)
+async function callGemini(query, data) {
+  try {
+    const res = await fetch(WORKER_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        query: query,
+        data: data
+      })
+    });
+
+    const json = await res.json();
+    return json.answer || null;
+
+  } catch(e) {
+    return null;
+  }
+}
+
 async function runQuery() {
   var q = (document.getElementById('ai-q').value || '').trim();
   if (!q) return;
+
   var btn = document.getElementById('ai-go');
-  btn.disabled = true; btn.innerHTML = '<span class="spin"></span> Thinking…';
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spin"></span> Observing patterns…';
+
   document.getElementById('ai-result').innerHTML = '';
 
+  let data = null;
+  let answer = null;
+
   try {
-    var context = await gatherContext(q);
+    const intent = classifyQuery(q);
 
-    // Try the Cloudflare Worker proxy first
-    var answer = null;
-    try {
-      var res = await fetch(WORKER_URL + '/query', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ query: q, context: context }),
-        signal: AbortSignal.timeout(15000)
-      });
-      if (res.ok) {
-        var d = await res.json();
-        answer = d.answer || null;
-      }
-    } catch(workerErr) {
-      // Worker not deployed yet — fall through to smart fallback
+    // 1. FREE data engine
+    data = await runDynamicQuery(q);
+
+    // 2. Insight layer (Gemini only if needed)
+    if (data && data.length) {
+      answer = await callGemini(q, data.slice(0, 20));
     }
 
-    // Smart client-side fallback: analyse the data directly
+    // 3. Fallback (no AI)
     if (!answer) {
-      answer = buildSmartAnswer(q, context);
+      answer = `
+**Earth Pulse is still interpreting this question.**
+
+Try asking about:
+• bird activity
+• air quality (AQI)
+• rainfall patterns
+• temperature trends
+
+The system works best when grounded in observable data.
+`;
     }
 
-    saveHistory(q);
+    // Render
+    var html =
+      '<div class="res-card">' +
+        '<div class="res-q">' + escHtml(q) + '</div>' +
+        '<div class="res-body">' + md2html(answer) + '</div>' +
+      '</div>';
 
-    var html = '<div class="res-card">' +
-      '<div style="font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--ep-tan);margin-bottom:0.3rem;">Your question</div>' +
-      '<div class="res-q">' + escHtml(q) + '</div>' +
-      '<div class="res-body">' + md2html(answer) + '</div></div>';
-    if (lastRows && lastRows.length) {
-      html += '<div class="res-card"><div style="font-weight:600;color:var(--ep-green);margin-bottom:0.75rem;">📋 Supporting data (' + lastRows.length + ' rows)</div>' +
-        buildTable(lastRows) +
-        '<div class="actions"><button class="act-btn primary" onclick="dlCSV()">⬇ Download CSV</button></div></div>';
+    if (data && data.length) {
+      html +=
+        '<div class="res-card">' +
+          '<div style="font-weight:600;color:var(--ep-green);margin-bottom:0.75rem;">📋 Supporting data</div>' +
+          buildTable(data) +
+          '<div class="actions"><button class="act-btn primary" onclick="dlCSV()">⬇ Download CSV</button></div>' +
+        '</div>';
     }
+
     document.getElementById('ai-result').innerHTML = html;
 
   } catch(e) {
     document.getElementById('ai-result').innerHTML =
       '<div class="res-card" style="border-color:#fca5a5;">' +
-      '<p style="color:#dc2626;font-weight:600;">Something went wrong</p>' +
-      '<p style="font-size:0.85rem;color:var(--text-muted);">' + escHtml(e.message) + '</p></div>';
+      '<p style="color:#dc2626;">Error: ' + escHtml(e.message) + '</p></div>';
   }
 
-  btn.disabled = false; btn.textContent = 'Ask →';
+  btn.disabled = false;
+  btn.textContent = 'Ask →';
 }
 
 // Client-side smart answer — works without any API key
