@@ -117,7 +117,7 @@
         '<img src="earth-pulse-logo-white.png" alt="' + SITE + '" style="height:38px;width:auto;margin-bottom:0.75rem;opacity:0.88;" onerror="this.style.display=\'none\'">' +
         '<div class="ep-footer-tagline">' + TAGLINE + '</div>' +
         '<div class="ep-footer-links">' + flinks + '</div>' +
-        '<div class="ep-footer-credits">Recording since January 2022 · Data: Open-Meteo (CAMS) · Google Air Quality · BirdNET (Cornell Lab) · Built with curiosity · Built with ❤️ &amp; <a href="https://claude.ai" target="_blank" rel="noopener">Claude</a></div>' +
+        '<div class="ep-footer-credits">Recording since January 2022 · Data: Open-Meteo (CAMS) · Google Air Quality · BirdNET (Cornell Lab) · Weather Union · Built with curiosity · Built with ❤️ &amp; <a href="https://claude.ai" target="_blank" rel="noopener">Claude</a></div>' +
       '</footer>';
   }
 

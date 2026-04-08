@@ -218,6 +218,61 @@ let filtered  = [];
 let lbIdx     = 0;
 let activeSeason = 'all';
 
+// ── Weather Union lookup cache ────────────────────────────────────────────────
+// Keyed by "YYYY-MM-DDTHH" (hourly resolution) → WU row
+let _wuCache = {};
+
+async function loadWUData(photos) {
+  if (!photos.length) return;
+  // Find date range of photos
+  const dates = photos.map(p => new Date(p.captured_at));
+  const minDt = new Date(Math.min(...dates)).toISOString();
+  const maxDt = new Date(Math.max(...dates)).toISOString();
+  try {
+    const r = await fetch(
+      `${SUPABASE_URL}/rest/v1/weather_union_readings` +
+      `?select=recorded_at,temperature,humidity,wind_speed,wind_direction,rain_intensity,rain_accumulation` +
+      `&recorded_at=gte.${minDt}&recorded_at=lte.${maxDt}&limit=10000`,
+      { headers: HDR }
+    );
+    if (!r.ok) return;
+    const rows = await r.json();
+    if (!Array.isArray(rows)) return;
+    // Index by hour key for fast lookup
+    for (const row of rows) {
+      const key = row.recorded_at.slice(0, 13); // "YYYY-MM-DDTHH"
+      if (!_wuCache[key]) _wuCache[key] = row;
+    }
+  } catch(e) { console.warn('WU data load failed:', e.message); }
+}
+
+function getWUForPhoto(capturedAt) {
+  // Try exact hour, then ±1 hour
+  const dt  = new Date(capturedAt);
+  const pad = n => String(n).padStart(2,'0');
+  for (const offset of [0, -1, 1, -2, 2]) {
+    const d   = new Date(dt.getTime() + offset * 3600000);
+    const key = `${d.getUTCFullYear()}-${pad(d.getUTCMonth()+1)}-${pad(d.getUTCDate())}T${pad(d.getUTCHours())}`;
+    if (_wuCache[key]) return _wuCache[key];
+  }
+  return null;
+}
+
+// Merge WU data into photo — WU wins for temp/humidity/wind, fallback to timelapse_frames values
+function enrichPhoto(p) {
+  const wu = getWUForPhoto(p.captured_at);
+  if (!wu) return p; // no WU data — use whatever is stored on the record
+  return {
+    ...p,
+    temperature:      wu.temperature      ?? p.temperature,
+    humidity:         wu.humidity         ?? p.humidity,
+    wind_speed:       wu.wind_speed != null ? wu.wind_speed * 3.6 : p.wind_speed, // m/s → km/h
+    wind_direction:   wu.wind_direction   ?? p.wind_direction,
+    rain_accumulation:wu.rain_accumulation ?? null,
+    _wu_source: true, // flag so buildChips can show source
+  };
+}
+
 // ── Helpers ───────────────────────────────────────────────────────────────────
 function aqiChipClass(v) {
   if (!v) return '';
@@ -266,19 +321,26 @@ function buildChips(p, large=false) {
   if (p.temperature != null)
     chips.push(`<span class="climate-chip chip-temp" style="${s}">🌡️ ${p.temperature.toFixed(1)}°C</span>`);
   if (p.humidity != null)
-    chips.push(`<span class="climate-chip chip-hum" style="${s}">💧 ${p.humidity}%</span>`);
+    chips.push(`<span class="climate-chip chip-hum" style="${s}">💧 ${Math.round(p.humidity)}%</span>`);
   if (p.aqi != null)
     chips.push(`<span class="climate-chip ${aqiChipClass(p.aqi)}" style="${s}">EU AQI ${p.aqi} · ${aqiWord(p.aqi)}</span>`);
   if (p.google_aqi_india)
     chips.push(`<span class="climate-chip ${aqiChipClass(p.google_aqi_india)}" style="${s}">India AQI ${p.google_aqi_india} · ${indiaWord(p.google_aqi_india)}</span>`);
   if (p.dominant_pollutant)
     chips.push(`<span class="climate-chip chip-cloud" style="${s}">${p.dominant_pollutant}</span>`);
-  if (p.precipitation > 0)
-    chips.push(`<span class="climate-chip chip-rain" style="${s}">🌧️ ${p.precipitation}mm rain</span>`);
+  // Rain: prefer WU accumulation, fallback to stored precipitation
+  const rainVal = p.rain_accumulation ?? p.precipitation;
+  if (rainVal > 0)
+    chips.push(`<span class="climate-chip chip-rain" style="${s}">🌧️ ${Number(rainVal).toFixed(1)}mm rain</span>`);
   if (p.cloudcover != null)
     chips.push(`<span class="climate-chip chip-cloud" style="${s}">☁️ ${p.cloudcover}%</span>`);
   if (p.wind_speed != null)
-    chips.push(`<span class="climate-chip chip-cloud" style="${s}">💨 ${p.wind_speed.toFixed(1)} km/h</span>`);
+    chips.push(`<span class="climate-chip chip-cloud" style="${s}">💨 ${Number(p.wind_speed).toFixed(1)} km/h</span>`);
+  // WU source badge — only on large (lightbox) view
+  if (large && p._wu_source)
+    chips.push(`<span class="climate-chip chip-source" style="${s};background:rgba(191,155,123,0.12);color:var(--ep-tan);">📡 Weather Union</span>`);
+  else if (large && !p._wu_source)
+    chips.push(`<span class="climate-chip chip-source" style="${s};">Open-Meteo</span>`);
 
   if (!chips.length)
     chips.push(`<span class="climate-chip chip-source" style="${s}">No climate data for this time</span>`);
@@ -289,7 +351,6 @@ function buildChips(p, large=false) {
 // ── Load data ─────────────────────────────────────────────────────────────────
 async function loadPhotos() {
   try {
-    // Fetch photos and bird species count in parallel
     const [photoRes, birdRes] = await Promise.all([
       fetch(`${SUPABASE_URL}/rest/v1/timelapse_frames?select=*&order=captured_at.desc&limit=2000`, {headers:HDR}),
       fetch(`${SUPABASE_URL}/rest/v1/bird_detections?select=species_scientific`, {headers:HDR}),
@@ -298,14 +359,14 @@ async function loadPhotos() {
     const birds = await birdRes.json();
 
     if (!Array.isArray(data)) { console.error('Error:', data); return; }
-    allPhotos = data;
 
-    // Count unique species
+    // Load WU data for the photo date range, then enrich each photo
+    await loadWUData(data);
+    allPhotos = data.map(enrichPhoto);
+
     const speciesCount = Array.isArray(birds)
-      ? new Set(birds.map(b=>b.species_scientific)).size
-      : 0;
+      ? new Set(birds.map(b=>b.species_scientific)).size : 0;
 
-    // Update bird count in both locations (hero "about" text + stats strip)
     const heroEl = document.getElementById('bird-species-count');
     if (heroEl) heroEl.textContent = speciesCount || '—';
 
@@ -313,7 +374,6 @@ async function loadPhotos() {
     buildPeriodSelect();
     applyFilters();
 
-    // Update stat strip bird count after buildStats renders it
     const statEl = document.getElementById('stat-bird-species');
     if (statEl) statEl.textContent = speciesCount || '—';
 

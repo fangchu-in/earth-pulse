@@ -326,7 +326,7 @@
   <div class="ep-section-inner">
     <span class="ep-section-tag">Acoustic monitoring · BirdNET AI</span>
     <h2 class="ep-section-title" id="birds-heading">Birds detected today</h2>
-    <p class="ep-section-sub">Identified from ambient audio using BirdNET — 228 species possible at these coordinates this season. Click any bird to learn more on Wikipedia.</p>
+    <p class="ep-section-sub">Identified from ambient audio using BirdNET — 228 species possible at these coordinates this season. Click any bird to learn more about them & their presence in the hill.</p>
     <div class="birds-grid" id="birds-grid" role="list">
       <div class="ep-skeleton" style="height:110px"></div>
       <div class="ep-skeleton" style="height:110px"></div>
@@ -708,7 +708,7 @@ async function loadInsights() {
       if(worstG[0]?.google_aqi_india) document.getElementById('stat-worst-aqi-india').textContent=`India ${worstG[0].google_aqi_india} — ${indiaAqiLabel(worstG[0].google_aqi_india)[0]}`;
     }
     document.getElementById('stat-species').textContent=uniqueSp?`${uniqueSp} species`:'Listening…';
-    if(uniqueSp>0){document.getElementById('insight-icon').textContent='🐦';document.getElementById('insight-text').textContent=`${uniqueSp} bird species detected from Baner this month.`;document.getElementById('insight-detail').textContent='Dawn chorus continues to be the most active window. Evening detections begin at sunset.';}
+    if(uniqueSp>0){document.getElementById('insight-icon').textContent='🐦';document.getElementById('insight-text').textContent=`${uniqueSp} bird species detected at Baner Hill this month.`;document.getElementById('insight-detail').textContent='Dawn chorus continues to be the most active window. Evening detections begin at sunset.';}
     else if(worstAqi[0]&&worstAqi[0].aqi>80){document.getElementById('insight-icon').textContent='⚠️';document.getElementById('insight-text').textContent=`AQI reached ${worstAqi[0].aqi} this month.`;document.getElementById('insight-detail').textContent='Consider limiting outdoor activity on high-AQI days.';}
     else if(maxT[0]&&maxT[0].temperature>33){document.getElementById('insight-icon').textContent='🌡️';document.getElementById('insight-text').textContent=`Temperature reached ${maxT[0].temperature?.toFixed(1)}°C this month.`;document.getElementById('insight-detail').textContent='High temperatures typically correlate with increased ozone levels.';}
   } catch(e){console.warn('Insights error:',e);}
