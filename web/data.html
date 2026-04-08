@@ -593,19 +593,19 @@ else if (
   (q.toLowerCase().includes("temperature") || q.toLowerCase().includes("heat"))
 ) {
 
-  // simple trend check
-  const first = data[0];
-  const last = data[data.length - 1];
+  // better trend calculation
+const lowTempAvg = data.slice(0,10).reduce((s,r)=>s+r.bird_count,0) / 10;
+const highTempAvg = data.slice(-10).reduce((s,r)=>s+r.bird_count,0) / 10;
 
-  let trend = "";
+let trend = "";
 
-  if (last.bird_count < first.bird_count) {
-    trend = "tend to decrease";
-  } else if (last.bird_count > first.bird_count) {
-    trend = "tend to increase";
-  } else {
-    trend = "remain relatively stable";
-  }
+if (highTempAvg < lowTempAvg) {
+  trend = "tend to decrease";
+} else if (highTempAvg > lowTempAvg) {
+  trend = "tend to increase";
+} else {
+  trend = "remain relatively stable";
+}
 
   answer = `
 **Bird activity appears to ${trend} as temperatures rise in Baner.**
