@@ -406,6 +406,7 @@ function classifyQuery(q) {
 }
 
 // Dynamic query engine (NO API COST)
+
 async function runDynamicQuery(q) {
   const ql = q.toLowerCase();
   lastRows = null;
@@ -438,8 +439,21 @@ async function runDynamicQuery(q) {
       return rows;
     }
 
-    // ── AQI / CLIMATE ─────────────────
-    if (ql.includes("aqi") || ql.includes("air") || ql.includes("pollution")) {
+    // ── TEMPERATURE / HOTTEST DAYS ─────────────────
+    if (ql.includes("hot") || ql.includes("temperature")) {
+      const data = await sbFetch('/climate_readings?select=recorded_at,temperature&order=temperature.desc&limit=20');
+
+      const rows = data.map(d => ({
+        date: d.recorded_at.slice(0,10),
+        temperature_c: d.temperature
+      }));
+
+      lastRows = rows;
+      return rows;
+    }
+
+    // ── AQI ─────────────────────────
+    if (ql.includes("aqi") || ql.includes("air")) {
       const data = await sbFetch('/climate_readings?select=recorded_at,aqi,temperature,humidity&limit=500');
 
       const rows = data.map(d => ({
@@ -453,9 +467,9 @@ async function runDynamicQuery(q) {
       return rows;
     }
 
-    // ── RAIN ──────────────────────────
+    // ── RAIN ─────────────────────────
     if (ql.includes("rain") || ql.includes("monsoon")) {
-      const data = await sbFetch('/climate_readings?select=recorded_at,precipitation&precipitation=gt.0&limit=500');
+      const data = await sbFetch('/climate_readings?select=recorded_at,precipitation&precipitation=gt.0&order=recorded_at.desc&limit=50');
 
       const rows = data.map(d => ({
         date: d.recorded_at.slice(0,10),
@@ -520,19 +534,31 @@ async function runQuery() {
     }
 
     // 3. Fallback (no AI)
-    if (!answer) {
-      answer = `
+
+if (!answer) {
+  if (data && data.length) {
+    answer = `
+**Here’s what the data shows:**
+
+This response is based directly on recorded observations from Earth Pulse. While deeper pattern analysis is still evolving, the data above reflects real environmental behaviour in Baner.
+
+Try asking:
+• "why does this happen"
+• "what patterns do you see"
+• "how does AQI affect this"
+`;
+  } else {
+    answer = `
 **Earth Pulse is still interpreting this question.**
 
 Try asking about:
 • bird activity
 • air quality (AQI)
-• rainfall patterns
-• temperature trends
-
-The system works best when grounded in observable data.
+• rainfall
+• temperature
 `;
-    }
+  }
+}
 
     // Render
     var html =
