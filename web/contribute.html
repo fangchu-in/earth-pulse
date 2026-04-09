@@ -4,61 +4,49 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Contribute — Earth Pulse · Citizen Science for Baner, Pune</title>
-  <meta name="description" content="Help grow Earth Pulse — a citizen science environmental observatory on the edge of the Western Ghats. Host a sensor node, contribute data, or support the project.">
+  <meta name="description" content="Help grow Earth Pulse — a citizen science environmental observatory on the edge of the Western Ghats. Host a sensor node, contribute photos, or support the project.">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://earth-pulse.org/contribute.html">
   <meta property="og:title" content="Contribute to Earth Pulse — Citizen Science for Pune">
-  <meta property="og:description" content="Join a growing network of environmental sensors across the Sahyadri foothills. Host a node, contribute photos, or support the project with a donation.">
+  <meta property="og:description" content="Join a growing network of environmental sensors across the Sahyadri foothills. Host a node, contribute photos, or support the project.">
   <meta property="og:image" content="https://earth-pulse.org/earth-pulse-logo.png">
   <meta property="og:url" content="https://earth-pulse.org/contribute.html">
   <meta property="og:type" content="website">
+  <meta property="og:locale" content="en_IN">
   <meta name="twitter:card" content="summary_large_image">
+  <meta name="geo.region" content="IN-MH">
   <link rel="icon" type="image/png" href="earth-pulse-logo.png">
   <link rel="stylesheet" href="styles.css">
   <style>
-    /* ── Page-level layout ── */
-    .page-max { max-width:1100px; margin:0 auto; padding:0 2rem; }
-
-    /* ── Progress / status banner ── */
-    .status-banner {
-      background:var(--ep-green); color:var(--ep-cream);
-      padding:0.75rem 2rem; text-align:center;
-      font-size:0.82rem; letter-spacing:0.02em;
-    }
+    /* ── Status banner ── */
+    .status-banner { background:var(--ep-green); color:var(--ep-cream); padding:0.75rem 2rem; text-align:center; font-size:0.82rem; letter-spacing:0.02em; }
     .status-banner strong { color:var(--ep-tan); }
 
     /* ── Mission block ── */
-    .mission-block {
-      background:var(--ep-green); border-radius:var(--radius-xl);
-      padding:2.5rem 3rem; margin-bottom:2rem;
-      display:grid; grid-template-columns:1fr auto;
-      gap:2rem; align-items:center;
-    }
-    @media(max-width:700px){ .mission-block { grid-template-columns:1fr; padding:2rem; } }
+    .mission-block { background:var(--ep-green); border-radius:var(--radius-xl); padding:2.5rem 3rem; margin-bottom:2rem; display:grid; grid-template-columns:1fr auto; gap:2rem; align-items:center; }
+    @media(max-width:700px){ .mission-block{grid-template-columns:1fr;padding:2rem;} }
     .mission-title { font-family:var(--serif); font-size:clamp(1.6rem,3vw,2.2rem); color:var(--ep-cream); margin-bottom:0.6rem; }
     .mission-sub   { font-size:0.92rem; color:rgba(242,240,230,0.72); line-height:1.8; max-width:540px; }
     .mission-stat  { text-align:center; flex-shrink:0; }
     .mission-stat-num   { font-family:var(--serif); font-size:3rem; color:var(--ep-tan); line-height:1; }
     .mission-stat-label { font-size:0.72rem; color:rgba(242,240,230,0.55); text-transform:uppercase; letter-spacing:0.1em; margin-top:4px; }
 
+    /* ── Live stats ── */
+    .live-stats { display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:0.75rem; margin-bottom:2rem; }
+    .live-stat { background:white; border:1px solid var(--border); border-radius:var(--radius-md); padding:1rem 1.1rem; text-align:center; }
+    .live-stat-val { font-family:var(--serif); font-size:1.7rem; color:var(--ep-green); line-height:1; }
+    .live-stat-label { font-size:0.65rem; font-weight:700; text-transform:uppercase; letter-spacing:0.07em; color:var(--text-muted); margin-top:4px; }
+
     /* ── Phase timeline ── */
-    .phases { display:flex; flex-direction:column; gap:0; position:relative; }
-    .phases::before {
-      content:''; position:absolute; left:22px; top:0; bottom:0;
-      width:2px; background:var(--border);
-    }
+    .phases { display:flex; flex-direction:column; position:relative; }
+    .phases::before { content:''; position:absolute; left:22px; top:0; bottom:0; width:2px; background:var(--border); }
     .phase-item { display:flex; gap:1.25rem; align-items:flex-start; padding:0 0 2rem 0; position:relative; }
-    .phase-dot {
-      width:46px; height:46px; border-radius:50%; flex-shrink:0;
-      display:flex; align-items:center; justify-content:center;
-      font-size:1.15rem; position:relative; z-index:1;
-      border:2px solid white;
-    }
+    .phase-dot { width:46px; height:46px; border-radius:50%; flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:1.15rem; position:relative; z-index:1; border:2px solid white; }
     .phase-dot.done   { background:var(--ep-green); }
     .phase-dot.active { background:var(--ep-tan); }
     .phase-dot.next   { background:white; border-color:var(--border-strong); font-size:0.85rem; color:var(--text-muted); }
     .phase-body { padding-top:8px; flex:1; }
-    .phase-tag   { font-size:0.67rem; font-weight:700; text-transform:uppercase; letter-spacing:0.1em; margin-bottom:4px; }
+    .phase-tag { font-size:0.67rem; font-weight:700; text-transform:uppercase; letter-spacing:0.1em; margin-bottom:4px; }
     .phase-tag.done   { color:var(--ep-green); }
     .phase-tag.active { color:var(--ep-tan); }
     .phase-tag.next   { color:var(--text-muted); }
@@ -70,85 +58,88 @@
 
     /* ── Next features grid ── */
     .next-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:1rem; }
-    .next-card { background:white; border:1px solid var(--border); border-radius:var(--radius-lg); padding:1.4rem; }
-    .next-card-icon { font-size:1.8rem; margin-bottom:0.6rem; }
+    .next-card { background:white; border:1px solid var(--border); border-radius:var(--radius-lg); padding:1.4rem; transition:box-shadow 0.15s,transform 0.15s; }
+    .next-card:hover { box-shadow:0 4px 16px rgba(33,67,50,0.08); transform:translateY(-2px); }
+    .next-card.highlight { background:rgba(33,67,50,0.03); border-color:rgba(33,67,50,0.2); }
+    .next-card-icon  { font-size:1.8rem; margin-bottom:0.6rem; }
     .next-card-title { font-family:var(--serif); font-size:1.05rem; color:var(--ep-green); margin-bottom:0.3rem; }
     .next-card-desc  { font-size:0.83rem; color:var(--text-muted); line-height:1.7; }
     .next-card-tag   { display:inline-block; margin-top:0.6rem; font-size:0.67rem; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--ep-tan); background:rgba(191,155,123,0.1); padding:2px 9px; border-radius:20px; }
-    .next-card.highlight { background:rgba(33,67,50,0.03); border-color:rgba(33,67,50,0.2); }
 
-    /* ── Hardware list ── */
+    /* ── Hardware table ── */
+    .hw-wrap { background:white; border:1px solid var(--border); border-radius:var(--radius-lg); overflow:hidden; }
     .hw-table { width:100%; border-collapse:collapse; font-size:0.86rem; }
     .hw-table th { font-size:0.65rem; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--text-muted); padding:0.5rem 0.75rem; text-align:left; border-bottom:2px solid var(--border); }
     .hw-table td { padding:0.75rem; border-bottom:1px solid var(--border); vertical-align:top; line-height:1.5; }
     .hw-table tr:last-child td { border-bottom:none; }
-    .hw-table .item { font-weight:500; color:var(--ep-green); }
+    .hw-table .item  { font-weight:500; color:var(--ep-green); }
     .hw-table .price { font-family:var(--mono); color:var(--ep-tan); white-space:nowrap; }
     .hw-table .note  { color:var(--text-muted); font-size:0.8rem; }
-    .hw-total { background:rgba(33,67,50,0.05); border-radius:0 0 var(--radius-md) var(--radius-md); padding:0.85rem 0.75rem; font-family:var(--serif); font-size:1.1rem; color:var(--ep-green); display:flex; justify-content:space-between; align-items:center; }
+    .hw-total { background:rgba(33,67,50,0.05); padding:0.85rem 0.75rem; font-family:var(--serif); font-size:1.1rem; color:var(--ep-green); display:flex; justify-content:space-between; align-items:center; }
     .hw-total span { font-family:var(--mono); font-size:1rem; }
-    .hw-wrap { background:white; border:1px solid var(--border); border-radius:var(--radius-lg); overflow:hidden; }
 
     /* ── Steps ── */
     .steps { display:flex; flex-direction:column; gap:0.75rem; counter-reset:step; }
     .step  { display:flex; gap:1rem; align-items:flex-start; background:white; border:1px solid var(--border); border-radius:var(--radius-md); padding:1.1rem 1.25rem; counter-increment:step; }
-    .step::before {
-      content:counter(step); font-family:var(--serif); font-size:1.3rem;
-      color:var(--ep-tan); flex-shrink:0; width:28px; text-align:center;
-      line-height:1.4; font-weight:700;
-    }
+    .step::before { content:counter(step); font-family:var(--serif); font-size:1.3rem; color:var(--ep-tan); flex-shrink:0; width:28px; text-align:center; line-height:1.4; font-weight:700; }
     .step-title { font-weight:600; font-size:0.92rem; color:var(--ep-green); margin-bottom:3px; }
     .step-desc  { font-size:0.82rem; color:var(--text-muted); line-height:1.6; }
     .step-code  { font-family:var(--mono); font-size:0.78rem; background:var(--ep-cream-dark); padding:4px 8px; border-radius:4px; margin-top:5px; display:inline-block; color:var(--ep-charcoal); }
 
-    /* ── Donate block ── */
-    .donate-grid { display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; }
-    @media(max-width:600px){ .donate-grid { grid-template-columns:1fr; } }
-    .donate-qr-card {
-      background:white; border:1px solid var(--border); border-radius:var(--radius-xl);
-      padding:2rem; text-align:center; display:flex; flex-direction:column; align-items:center; gap:1rem;
-    }
-    .donate-qr-card img { width:200px; height:200px; border-radius:var(--radius-md); }
-    .donate-upi-id { font-family:var(--mono); font-size:0.95rem; color:var(--ep-green); font-weight:600; background:var(--ep-cream-dark); padding:0.5rem 1rem; border-radius:var(--radius-sm); letter-spacing:0.02em; }
-    .donate-info { background:rgba(33,67,50,0.04); border:1px solid rgba(33,67,50,0.12); border-radius:var(--radius-xl); padding:2rem; display:flex; flex-direction:column; justify-content:center; gap:1.25rem; }
-    .donate-info h3 { font-family:var(--serif); font-size:1.4rem; color:var(--ep-green); }
-    .donate-info p  { font-size:0.88rem; color:var(--text-muted); line-height:1.8; }
-    .donate-tiers { display:flex; flex-direction:column; gap:0.5rem; }
-    .donate-tier  { display:flex; justify-content:space-between; font-size:0.83rem; padding:0.4rem 0; border-bottom:1px solid var(--border); }
-    .donate-tier:last-child { border-bottom:none; }
-    .donate-tier .amount { font-family:var(--mono); font-weight:600; color:var(--ep-green); }
-    .donate-tier .label  { color:var(--text-muted); }
+    /* ── Three ways cards ── */
+    .ways-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:1.25rem; margin-bottom:3rem; }
+    .way-card { border-radius:var(--radius-xl); padding:2rem; }
+    .way-card.green  { background:rgba(33,67,50,0.04);    border:1.5px solid rgba(33,67,50,0.2); }
+    .way-card.tan    { background:rgba(191,155,123,0.06); border:1.5px solid rgba(191,155,123,0.25); }
+    .way-card.white  { background:white;                  border:1px solid var(--border); }
+    .way-icon  { font-size:2rem; margin-bottom:0.75rem; }
+    .way-title { font-family:var(--serif); font-size:1.15rem; color:var(--ep-green); margin-bottom:0.5rem; }
+    .way-desc  { font-size:0.85rem; color:var(--text-muted); line-height:1.7; margin-bottom:1rem; }
+    .way-btn   { display:inline-flex; align-items:center; gap:6px; padding:0.6rem 1.25rem; border-radius:30px; text-decoration:none; font-size:0.85rem; font-weight:500; }
+    .way-btn.green { background:var(--ep-green); color:var(--ep-cream); }
+    .way-btn.tan   { background:var(--ep-tan); color:white; }
+    .way-btn.outline { background:white; color:var(--ep-green); border:1.5px solid var(--ep-green); }
 
     /* ── Interest form ── */
     .interest-form { background:white; border:1px solid var(--border); border-radius:var(--radius-xl); padding:2rem; }
+    .form-grid2 { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
+    @media(max-width:600px){ .form-grid2{grid-template-columns:1fr;} }
     .form-row { margin-bottom:1rem; }
     .form-label { display:block; font-size:0.75rem; font-weight:600; text-transform:uppercase; letter-spacing:0.06em; color:var(--text-muted); margin-bottom:0.35rem; }
-    .form-input, .form-select, .form-textarea {
-      width:100%; padding:0.7rem 0.9rem;
-      border:1.5px solid var(--border-strong); border-radius:var(--radius-sm);
-      font-family:var(--sans); font-size:0.9rem; color:var(--text-primary);
-      background:var(--ep-cream); outline:none; transition:border-color 0.2s;
-      box-sizing:border-box;
-    }
+    .form-input, .form-select, .form-textarea { width:100%; padding:0.7rem 0.9rem; border:1.5px solid var(--border-strong); border-radius:var(--radius-sm); font-family:var(--sans); font-size:0.9rem; color:var(--text-primary); background:var(--ep-cream); outline:none; transition:border-color 0.2s; box-sizing:border-box; }
     .form-input:focus, .form-select:focus, .form-textarea:focus { border-color:var(--ep-green); background:white; }
     .form-textarea { min-height:80px; resize:vertical; }
     .form-submit { width:100%; background:var(--ep-green); color:var(--ep-cream); padding:0.85rem; border:none; border-radius:var(--radius-sm); font-family:var(--sans); font-size:0.95rem; font-weight:500; cursor:pointer; transition:background 0.2s; margin-top:0.5rem; }
     .form-submit:hover:not(:disabled) { background:var(--ep-green-mid); }
     .form-submit:disabled { opacity:0.5; cursor:not-allowed; }
+    .form-status { text-align:center; font-size:0.85rem; margin-top:0.75rem; min-height:1.2rem; }
 
-    /* ── Data stats bar ── */
-    .live-stats { display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:0.75rem; margin-bottom:2rem; }
-    .live-stat { background:white; border:1px solid var(--border); border-radius:var(--radius-md); padding:1rem 1.1rem; text-align:center; }
-    .live-stat-val { font-family:var(--serif); font-size:1.7rem; color:var(--ep-green); line-height:1; }
-    .live-stat-label { font-size:0.65rem; font-weight:700; text-transform:uppercase; letter-spacing:0.07em; color:var(--text-muted); margin-top:4px; }
+    /* ── Donate block ── */
+    .donate-grid { display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; }
+    @media(max-width:600px){ .donate-grid{grid-template-columns:1fr;} }
+    .donate-qr-card { background:white; border:1px solid var(--border); border-radius:var(--radius-xl); padding:2rem; text-align:center; display:flex; flex-direction:column; align-items:center; gap:1rem; }
+    .donate-qr-card img { width:180px; height:180px; border-radius:var(--radius-md); }
+    .donate-upi-id { font-family:var(--mono); font-size:0.95rem; color:var(--ep-green); font-weight:600; background:var(--ep-cream-dark); padding:0.5rem 1rem; border-radius:var(--radius-sm); letter-spacing:0.02em; }
+    .donate-info { background:rgba(33,67,50,0.04); border:1px solid rgba(33,67,50,0.12); border-radius:var(--radius-xl); padding:2rem; display:flex; flex-direction:column; justify-content:center; gap:1.25rem; }
+    .donate-info h3 { font-family:var(--serif); font-size:1.4rem; color:var(--ep-green); }
+    .donate-info p  { font-size:0.88rem; color:var(--text-muted); line-height:1.8; }
+    .donate-tiers { display:flex; flex-direction:column; gap:0; }
+    .donate-tier  { display:flex; justify-content:space-between; font-size:0.83rem; padding:0.5rem 0; border-bottom:1px solid var(--border); }
+    .donate-tier:last-child { border-bottom:none; }
+    .donate-tier .amount { font-family:var(--mono); font-weight:600; color:var(--ep-green); }
+    .donate-tier .label  { color:var(--text-muted); }
 
-    /* ── Open source note ── */
+    /* ── Open source card ── */
     .open-card { background:var(--ep-charcoal); border-radius:var(--radius-xl); padding:2rem 2.5rem; display:grid; grid-template-columns:1fr auto; gap:1.5rem; align-items:center; }
-    @media(max-width:600px){ .open-card { grid-template-columns:1fr; } }
+    @media(max-width:600px){ .open-card{grid-template-columns:1fr;} }
     .open-card h3 { font-family:var(--serif); font-size:1.2rem; color:var(--ep-cream); margin-bottom:0.4rem; }
     .open-card p  { font-size:0.85rem; color:rgba(242,240,230,0.6); line-height:1.7; }
     .open-card a  { display:inline-flex; align-items:center; gap:8px; background:var(--ep-cream); color:var(--ep-green); padding:0.65rem 1.4rem; border-radius:30px; text-decoration:none; font-weight:600; font-size:0.88rem; white-space:nowrap; transition:opacity 0.15s; flex-shrink:0; }
     .open-card a:hover { opacity:0.88; }
+
+    /* ── WU callout ── */
+    .wu-note { background:rgba(33,67,50,0.04); border:1px solid rgba(33,67,50,0.15); border-radius:var(--radius-md); padding:0.85rem 1.1rem; font-size:0.82rem; color:var(--text-muted); line-height:1.7; margin-top:1rem; }
+    .wu-note strong { color:var(--ep-green); }
   </style>
 </head>
 <body>
@@ -156,14 +147,18 @@
 
 <!-- Status banner -->
 <div class="status-banner">
-  🌿 Earth Pulse is <strong>live from Baner, Pune</strong> · <strong id="record-count">37,000+</strong> climate records · <strong id="species-count">—</strong> bird species · Building Phase 2 now
+  🌿 Earth Pulse is <strong>live from Baner, Pune</strong> ·
+  <strong id="record-count">37,500+</strong> climate records ·
+  <strong id="wu-count">208,000+</strong> Weather Union readings ·
+  <strong id="species-count-banner">48+</strong> bird species ·
+  Phase 2 in progress
 </div>
 
 <!-- HERO -->
 <div class="ep-hero">
   <div class="ep-hero-tag">Citizen science · Open data · Western Ghats</div>
   <h1>Help us observe<br><em>the living Earth</em></h1>
-  <p class="ep-hero-sub">Earth Pulse is a hyperlocal environmental observatory — one balcony in Baner, Pune, growing into a network across the Sahyadri foothills. Join us.</p>
+  <p class="ep-hero-sub">Earth Pulse is a hyperlocal environmental observatory — one balcony in Baner, Pune, growing into a network across the Sahyadri foothills. Every sensor, every photo, every node makes it richer.</p>
   <p class="ep-hero-meta">
     Open source · Free data · Started January 2022 ·
     <a href="#contribute" style="color:var(--ep-tan);">Get involved →</a>
@@ -171,27 +166,24 @@
 </div>
 
 <!-- WHAT WE DO -->
-<section class="ep-section alt-bg">
+<section class="ep-section" style="background:white;">
   <div class="ep-section-inner">
-
-    <!-- Live stats -->
     <div class="live-stats" id="live-stats">
       <div class="live-stat"><div class="live-stat-val" id="stat-records">—</div><div class="live-stat-label">Climate records</div></div>
+      <div class="live-stat"><div class="live-stat-val" id="stat-wu">—</div><div class="live-stat-label">WU readings</div></div>
       <div class="live-stat"><div class="live-stat-val" id="stat-birds">—</div><div class="live-stat-label">Bird detections</div></div>
-      <div class="live-stat"><div class="live-stat-val" id="stat-species">—</div><div class="live-stat-label">Species detected</div></div>
+      <div class="live-stat"><div class="live-stat-val" id="stat-species">—</div><div class="live-stat-label">Species heard</div></div>
       <div class="live-stat"><div class="live-stat-val">3+</div><div class="live-stat-label">Years of data</div></div>
-      <div class="live-stat"><div class="live-stat-val">1</div><div class="live-stat-label">Active node</div></div>
-      <div class="live-stat"><div class="live-stat-val">678m</div><div class="live-stat-label">Baner Hill elevation</div></div>
+      <div class="live-stat"><div class="live-stat-val">678m</div><div class="live-stat-label">Baner elevation</div></div>
     </div>
 
-    <!-- Mission block -->
     <div class="mission-block">
       <div>
         <div class="mission-title">Why this place matters</div>
         <p class="mission-sub">
-          Baner Hill is the third highest point within Pune city limits, at 678m (2,224 ft). It is part of the Western Ghats — a UNESCO World Heritage Site and one of Earth's eight biodiversity hotspots. These mountains are older than the Himalayas, contain 30% of India's species in under 6% of its land, and are being monitored by almost nobody at the hyperlocal level.
+          Baner Hill sits at 678m on the edge of the Western Ghats — a UNESCO World Heritage Site and one of Earth's eight biodiversity hotspots. These mountains are older than the Himalayas, contain 30% of India's species in under 6% of its land, and are monitored by almost nobody at the hyperlocal level.
           <br><br>
-          Earth Pulse is the first continuous, open, citizen-science environmental observatory on this edge — recording hourly air quality, temperature, acoustic bird diversity, and hill photography since January 2022.
+          Earth Pulse is the first continuous, open, citizen-science environmental observatory on this edge — recording hourly air quality, hyperlocal weather from Weather Union, acoustic bird diversity, and hill photography since January 2022.
         </p>
       </div>
       <div class="mission-stat">
@@ -199,7 +191,6 @@
         <div class="mission-stat-label">Bird species<br>possible here</div>
       </div>
     </div>
-
   </div>
 </section>
 
@@ -211,19 +202,16 @@
     <p class="ep-section-sub">Earth Pulse is being built in phases. Each phase adds new sensors, new data streams, and new community capability.</p>
 
     <div class="phases">
-
-      <!-- Phase 1 — DONE -->
       <div class="phase-item">
         <div class="phase-dot done">✓</div>
         <div class="phase-body">
           <div class="phase-tag done">Phase 1 · Complete · Jan 2022 – Present</div>
-          <div class="phase-title">Air quality, microclimate & acoustic bird monitoring</div>
-          <div class="phase-desc">
-            Hourly EU AQI, India AQI, PM2.5/PM10, temperature, humidity, wind, solar radiation, and precipitation — logged continuously from one Pi 3B+ in Baner. BirdNET acoustic AI running on a second Pi 3B, detecting and identifying birds by their calls in real time. 37,000+ hourly records. 35+ species detected. All data is public and downloadable.
-          </div>
+          <div class="phase-title">Air quality, microclimate, hyperlocal weather & acoustic bird monitoring</div>
+          <div class="phase-desc">37,500+ hourly climate records since January 2022. BirdNET acoustic AI detecting birds in real time. Google AQI + CAMS Copernicus data pipeline. Weather Union ZWL008983 station logging hyperlocal temperature, humidity, wind, and rain every 15 minutes — 208,000+ readings. Website live at earth-pulse.org. 48+ bird species detected.</div>
           <div class="phase-chips">
-            <span class="phase-chip">Raspberry Pi 3B+</span>
-            <span class="phase-chip">BirdNET AI</span>
+            <span class="phase-chip">Pi 3B+ · AQI logger</span>
+            <span class="phase-chip">Pi 3B · BirdNET AI</span>
+            <span class="phase-chip">Weather Union ZWL008983</span>
             <span class="phase-chip">Google Air Quality API</span>
             <span class="phase-chip">Open-Meteo ECMWF</span>
             <span class="phase-chip">Supabase · Cloudflare</span>
@@ -231,15 +219,12 @@
         </div>
       </div>
 
-      <!-- Phase 2 — ACTIVE -->
       <div class="phase-item">
         <div class="phase-dot active">▶</div>
         <div class="phase-body">
           <div class="phase-tag active">Phase 2 · In Progress · April 2026</div>
           <div class="phase-title">South balcony sensor array — facing the Sahyadri</div>
-          <div class="phase-desc">
-            A second Raspberry Pi 3B deployed on the south-facing balcony, directly facing Baner Hill. This node adds four new data streams simultaneously: a second BirdNET mic capturing the hill-facing soundscape; hourly PM2.5/PM10 from an SDS011 sensor for cross-validation; a timelapse camera capturing the hill every 3 hours through all seasons; and a Soundscape Index (NDSI) that measures the ratio of natural to human sounds — a direct proxy for ecosystem health.
-          </div>
+          <div class="phase-desc">A second Raspberry Pi 3B on the south-facing balcony, directly facing Baner Hill. Second BirdNET mic capturing the hill-facing soundscape. SDS011 PM2.5 sensor for ground-truth air quality. Pi Camera capturing the hill every 3 hours through all seasons. NDSI Soundscape Index measuring the ratio of natural to human sounds — a direct proxy for ecosystem health.</div>
           <div class="phase-chips">
             <span class="phase-chip">Pi 3B · South balcony</span>
             <span class="phase-chip">Second BirdNET mic</span>
@@ -250,267 +235,166 @@
         </div>
       </div>
 
-      <!-- Phase 3 — NEXT -->
       <div class="phase-item">
         <div class="phase-dot next">3</div>
         <div class="phase-body">
           <div class="phase-tag next">Phase 3 · Planned · Late 2026</div>
           <div class="phase-title">Baner Hill Bioacoustic Index & Bird Species Radar</div>
-          <div class="phase-desc">
-            With two mics running at different orientations, we will compute the <strong>Baner Hill Bioacoustic Index</strong> — a weekly 0–100 score combining soundscape health (NDSI), species richness, and detection frequency. We will also build the first acoustic bird direction radar for the Baner-Pashan biodiversity corridor, showing which species are detected from the hill direction vs the city. This will be published weekly.
-          </div>
+          <div class="phase-desc">With two mics at different orientations, compute the Baner Hill Bioacoustic Index — a weekly 0–100 score combining NDSI, species richness, and detection frequency. Build the first acoustic bird direction radar for the Baner–Pashan biodiversity corridor.</div>
           <div class="phase-chips">
             <span class="phase-chip">Bioacoustic Index</span>
             <span class="phase-chip">Bird species radar</span>
             <span class="phase-chip">Dual-mic triangulation</span>
-            <span class="phase-chip">Baner–Pashan corridor</span>
           </div>
         </div>
       </div>
 
-      <!-- Phase 4 — FUTURE -->
       <div class="phase-item">
         <div class="phase-dot next">4</div>
         <div class="phase-body">
           <div class="phase-tag next">Phase 4 · Planned · 2027</div>
-          <div class="phase-title">Remote water & soil sensors + community network</div>
-          <div class="phase-desc">
-            A Pi Zero 2W node, solar-powered, at Baner Lake — measuring water level, turbidity, temperature, and conductivity. Correlating water health with bird detections at the lake (waterbird species are directly tied to water conditions). Simultaneously, open the platform to community contributors who host their own sensor nodes, forming the first distributed environmental mesh across the Baner–Pashan–Aundh ridge.
-          </div>
+          <div class="phase-title">Remote water sensors + community node network</div>
+          <div class="phase-desc">Solar-powered Pi Zero 2W at Baner Lake measuring water level, turbidity, and conductivity. Open the platform to community contributors — forming the first distributed environmental mesh across the Baner–Pashan–Aundh ridge.</div>
           <div class="phase-chips">
-            <span class="phase-chip">Pi Zero 2W</span>
-            <span class="phase-chip">Solar-powered</span>
-            <span class="phase-chip">Baner Lake water sensors</span>
-            <span class="phase-chip">Community node network</span>
+            <span class="phase-chip">Pi Zero 2W · Solar</span>
+            <span class="phase-chip">Baner Lake sensors</span>
+            <span class="phase-chip">Community nodes</span>
           </div>
         </div>
       </div>
 
-      <!-- Phase 5 — VISION -->
       <div class="phase-item" style="padding-bottom:0;">
         <div class="phase-dot next">5</div>
         <div class="phase-body">
           <div class="phase-tag next">Phase 5 · Vision · 2028+</div>
-          <div class="phase-title">Research data API & Western Ghats biodiversity archive</div>
-          <div class="phase-desc">
-            A public JSON API at earth-pulse.org/api — live AQI, temperature, bird detections — consumable by researchers, journalists, and citizen apps. Long-term phenology records (when does the Flame of the Forest bloom? when do the swifts arrive?) becoming a climate change signal dataset unique to this latitude and elevation. Formal collaboration with Pune-based ornithology and ecology groups.
-          </div>
+          <div class="phase-title">Public research API & Western Ghats biodiversity archive</div>
+          <div class="phase-desc">A public JSON API at earth-pulse.org/api. Long-term phenology records — when does the Flame of the Forest bloom, when do the swifts arrive? — becoming a climate change signal dataset unique to this latitude. Formal collaboration with Pune-based ornithology groups.</div>
           <div class="phase-chips">
             <span class="phase-chip">Public research API</span>
             <span class="phase-chip">Phenology archive</span>
-            <span class="phase-chip">Academic collaboration</span>
-            <span class="phase-chip">Open dataset CC-BY 4.0</span>
+            <span class="phase-chip">CC-BY 4.0</span>
           </div>
         </div>
       </div>
-
     </div>
   </div>
 </section>
 
-<!-- NEXT FEATURES BEING BUILT -->
-<section class="ep-section alt-bg">
+<!-- NEXT FEATURES -->
+<section class="ep-section" style="background:white;">
   <div class="ep-section-inner">
     <span class="ep-section-tag">Coming soon</span>
     <h2 class="ep-section-title">What's being built right now</h2>
     <p class="ep-section-sub">These features are in active development as part of Phase 2.</p>
-
     <div class="next-grid">
-
       <div class="next-card highlight">
         <div class="next-card-icon">🏔️</div>
         <div class="next-card-title">Baner Hill timelapse</div>
-        <div class="next-card-desc">A Pi Camera on the south balcony clicking one photo every 3 hours — 6am, 9am, noon, 3pm, 6pm. Every photo annotated with AQI, temperature, humidity, and rainfall at the exact moment it was taken. Watching the hill turn brown in April, explode green in July, go blue-grey with monsoon fog.</div>
+        <div class="next-card-desc">Pi Camera on the south balcony clicking every 3 hours — 6am through 6pm. Every photo annotated with AQI, temperature, humidity, and rainfall at that exact moment. Watching the hill turn brown in April, explode green in July, go blue-grey with monsoon fog.</div>
         <span class="next-card-tag">Phase 2 · In progress</span>
       </div>
-
       <div class="next-card highlight">
         <div class="next-card-icon">🎙️</div>
         <div class="next-card-title">Soundscape health index (NDSI)</div>
-        <div class="next-card-desc">The Normalized Difference Soundscape Index measures biophony (natural sounds: birds, insects, rain) vs anthrophony (human noise: traffic, construction). A score near +1 means a healthy natural soundscape. Near -1 means urban noise dominance. Computed hourly from the hill-facing mic. The first long-term soundscape health record for Baner.</div>
+        <div class="next-card-desc">The Normalized Difference Soundscape Index measures biophony (birds, insects, rain) vs anthrophony (traffic, construction). Score near +1 = healthy natural soundscape. Near -1 = urban noise dominance. First long-term soundscape health record for Baner.</div>
         <span class="next-card-tag">Phase 2 · In progress</span>
       </div>
-
       <div class="next-card highlight">
         <div class="next-card-icon">🧭</div>
         <div class="next-card-title">Bird species radar</div>
-        <div class="next-card-desc">With two mics at different orientations, we will build the first acoustic bird direction radar for the Baner–Pashan biodiversity corridor. Which species come from the hill? Which from the city side? A circular chart showing spatial bird activity — never done acoustically at this resolution in Pune.</div>
+        <div class="next-card-desc">With two mics at different orientations — the first acoustic bird direction radar for the Baner–Pashan biodiversity corridor. Which species come from the hill? Which from the city? A circular chart showing spatial bird activity, never done at this resolution in Pune.</div>
         <span class="next-card-tag">Phase 3 · Planned</span>
       </div>
-
       <div class="next-card highlight">
         <div class="next-card-icon">📊</div>
         <div class="next-card-title">Baner Hill Bioacoustic Index</div>
-        <div class="next-card-desc">A single weekly score (0–100) combining NDSI soundscape health, bird species richness, and detection frequency from the hill-facing node. Easy to share, easy to understand, meaningful over years. Is Baner's natural soundscape getting healthier or sicker? This answers it.</div>
+        <div class="next-card-desc">A single weekly score (0–100) combining NDSI soundscape health, bird species richness, and detection frequency. Easy to share, meaningful over years. Is Baner's natural soundscape getting healthier or sicker? This answers it.</div>
         <span class="next-card-tag">Phase 3 · Planned</span>
       </div>
-
       <div class="next-card">
         <div class="next-card-icon">🔌</div>
         <div class="next-card-title">Research data API</div>
-        <div class="next-card-desc">A public JSON endpoint — live AQI, temperature, top bird species detected — consumable by researchers, other apps, and journalists. earth-pulse.org/api/latest returns current conditions. Free, open, no key required.</div>
+        <div class="next-card-desc">A public JSON endpoint — live AQI, temperature, top bird species — consumable by researchers, other apps, and journalists. earth-pulse.org/api/latest returns current conditions. Free, open, no key required.</div>
         <span class="next-card-tag">Phase 5 · Planned</span>
       </div>
-
       <div class="next-card">
         <div class="next-card-icon">💧</div>
         <div class="next-card-title">Baner Lake water monitor</div>
-        <div class="next-card-desc">A solar-powered Pi Zero 2W at Baner Lake measuring water level (cm), turbidity (clarity), temperature, and dissolved solids. The lake is a migratory bird stop — when its level drops, waterbird detections change. This will be the first continuous water health record for the lake.</div>
+        <div class="next-card-desc">Solar-powered Pi Zero 2W at Baner Lake measuring water level, turbidity, temperature, and dissolved solids. The lake is a migratory bird stop — the first continuous water health record for this location.</div>
         <span class="next-card-tag">Phase 4 · Planned</span>
       </div>
-
     </div>
   </div>
 </section>
 
-<!-- HOW TO CONTRIBUTE -->
+<!-- THREE WAYS TO CONTRIBUTE -->
 <section class="ep-section" id="contribute">
   <div class="ep-section-inner">
     <span class="ep-section-tag">Get involved</span>
     <h2 class="ep-section-title">Three ways to contribute</h2>
     <p class="ep-section-sub">You don't need to be a developer. All three paths matter.</p>
-
-    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.25rem;margin-bottom:3rem;">
-
-      <div style="background:rgba(33,67,50,0.04);border:1.5px solid rgba(33,67,50,0.2);border-radius:var(--radius-xl);padding:2rem;">
-        <div style="font-size:2rem;margin-bottom:0.75rem;">📸</div>
-        <h3 style="font-family:var(--serif);font-size:1.15rem;color:var(--ep-green);margin-bottom:0.5rem;">Contribute photos</h3>
-        <p style="font-size:0.85rem;color:var(--text-muted);line-height:1.7;margin-bottom:1rem;">Have photos of Baner Hill, the Pashan lake area, or the Sahyadri foothills? Upload them to the hill archive. EXIF metadata is read automatically for the date and time. Every photo is annotated with the climate conditions at that moment.</p>
-        <a href="upload.html" style="display:inline-flex;align-items:center;gap:6px;background:var(--ep-green);color:var(--ep-cream);padding:0.6rem 1.25rem;border-radius:30px;text-decoration:none;font-size:0.85rem;font-weight:500;">Upload a photo →</a>
+    <div class="ways-grid">
+      <div class="way-card green">
+        <div class="way-icon">📸</div>
+        <h3 class="way-title">Contribute photos</h3>
+        <p class="way-desc">Have photos of Baner Hill, the Pashan lake area, or the Sahyadri foothills? Upload them to the hill archive. Every photo is annotated with the climate conditions at that moment using EXIF timestamp data.</p>
+        <a href="#" class="way-btn green">Under development →</a>
       </div>
-
-      <div style="background:rgba(191,155,123,0.06);border:1.5px solid rgba(191,155,123,0.25);border-radius:var(--radius-xl);padding:2rem;">
-        <div style="font-size:2rem;margin-bottom:0.75rem;">🖥️</div>
-        <h3 style="font-family:var(--serif);font-size:1.15rem;color:var(--ep-green);margin-bottom:0.5rem;">Host a sensor node</h3>
-        <p style="font-size:0.85rem;color:var(--text-muted);line-height:1.7;margin-bottom:1rem;">If you live in Baner, Pashan, Aundh, or nearby — and have a balcony or outdoor space — you can host a sensor node. Total hardware cost around ₹8,000–15,000 (one-time). Your data joins the network and appears on the map. Setup guide below.</p>
-        <a href="#host" style="display:inline-flex;align-items:center;gap:6px;background:var(--ep-tan);color:white;padding:0.6rem 1.25rem;border-radius:30px;text-decoration:none;font-size:0.85rem;font-weight:500;">See setup guide →</a>
+      <div class="way-card tan">
+        <div class="way-icon">🖥️</div>
+        <h3 class="way-title">Host a sensor node</h3>
+        <p class="way-desc">Live in Baner, Pashan, Aundh, or nearby with a balcony or outdoor space? Host a sensor node. Total hardware under ₹10,000 one-time. Your data joins the network and appears on the live map.</p>
+        <a href="#host" class="way-btn tan">See setup guide →</a>
       </div>
-
-      <div style="background:white;border:1px solid var(--border);border-radius:var(--radius-xl);padding:2rem;">
-        <div style="font-size:2rem;margin-bottom:0.75rem;">❤️</div>
-        <h3 style="font-family:var(--serif);font-size:1.15rem;color:var(--ep-green);margin-bottom:0.5rem;">Support the project</h3>
-        <p style="font-size:0.85rem;color:var(--text-muted);line-height:1.7;margin-bottom:1rem;">Earth Pulse has no funding. Running costs cover hardware, electricity, cloud services, and internet. Even a small donation keeps the sensors running. Every rupee goes directly to the project.</p>
-        <a href="#donate" style="display:inline-flex;align-items:center;gap:6px;background:white;color:var(--ep-green);border:1.5px solid var(--ep-green);padding:0.6rem 1.25rem;border-radius:30px;text-decoration:none;font-size:0.85rem;font-weight:500;">Donate via UPI →</a>
+      <div class="way-card white">
+        <div class="way-icon">❤️</div>
+        <h3 class="way-title">Support the project</h3>
+        <p class="way-desc">Running costs cover hardware, electricity, and cloud services. Every rupee goes directly to the project.</p>
+        <a href="#donate" class="way-btn outline">Donate via UPI →</a>
       </div>
-
     </div>
   </div>
 </section>
 
-<!-- HOST A NODE — HARDWARE GUIDE -->
-<section class="ep-section alt-bg" id="host">
+<!-- HARDWARE GUIDE -->
+<section class="ep-section" style="background:white;" id="host">
   <div class="ep-section-inner">
     <span class="ep-section-tag">Host a sensor node</span>
     <h2 class="ep-section-title">Hardware you'll need</h2>
-    <p class="ep-section-sub">Everything is off-the-shelf. No soldering required. Most parts are available on Amazon India or local electronics stores in Pune (SP Road, Lamington Road).</p>
+    <p class="ep-section-sub">Everything is off-the-shelf. No soldering required. Most parts available on Amazon India or SP Road, Pune.</p>
 
     <div class="hw-wrap" style="margin-bottom:2rem;">
       <table class="hw-table">
-        <thead>
-          <tr><th>Component</th><th>Purpose</th><th>Est. cost</th><th>Notes</th></tr>
-        </thead>
+        <thead><tr><th>Component</th><th>Purpose</th><th>Est. cost</th><th>Notes</th></tr></thead>
         <tbody>
-          <tr>
-            <td class="item">Raspberry Pi 3B or 3B+</td>
-            <td>Main computer — runs all scripts</td>
-            <td class="price">₹3,500–4,500</td>
-            <td class="note">Pi 3B+ recommended. Check OLX Pune for refurbished (₹1,000–1,500).</td>
-          </tr>
-          <tr>
-            <td class="item">USB microphone (cardioid)</td>
-            <td>BirdNET acoustic AI detection</td>
-            <td class="price">₹800–1,200</td>
-            <td class="note">Any USB mic works. Cardioid pattern preferred. Mount outdoors, aim at trees.</td>
-          </tr>
-          <tr>
-            <td class="item">SDS011 PM2.5/PM10 sensor</td>
-            <td>Particulate matter air quality</td>
-            <td class="price">₹1,400–1,800</td>
-            <td class="note">Requires USB-to-serial adapter (CH340, ₹150). Avoid fake FTDI chips.</td>
-          </tr>
-          <tr>
-            <td class="item">Pi Camera Module v2 or v3</td>
-            <td>Hill timelapse every 3 hours</td>
-            <td class="price">₹800–1,500</td>
-            <td class="note">Connects via CSI ribbon. Mount south-facing if possible.</td>
-          </tr>
-          <tr>
-            <td class="item">MicroSD card (32GB+)</td>
-            <td>OS and data storage</td>
-            <td class="price">₹300–500</td>
-            <td class="note">Class 10 / A1 rated. Samsung or SanDisk recommended.</td>
-          </tr>
-          <tr>
-            <td class="item">Power supply (5V 3A USB-C)</td>
-            <td>Power the Pi reliably</td>
-            <td class="price">₹350–500</td>
-            <td class="note">Official Pi PSU or quality third-party. Underpowered PSUs cause crashes.</td>
-          </tr>
-          <tr>
-            <td class="item">Weatherproof enclosure</td>
-            <td>Protect electronics outdoors</td>
-            <td class="price">₹200–500</td>
-            <td class="note">Junction box from hardware store works. Drill ventilation holes for sensors.</td>
-          </tr>
-          <tr>
-            <td class="item">Small heatsinks (4-piece set)</td>
-            <td>Thermal management</td>
-            <td class="price">₹50–80</td>
-            <td class="note">Stick onto CPU, RAM, and USB chip. Prevents throttling in summer heat.</td>
-          </tr>
+          <tr><td class="item">Raspberry Pi 3B or 3B+</td><td>Main computer</td><td class="price">₹3,500–4,500</td><td class="note">Check OLX Pune for refurbished (₹1,000–1,500).</td></tr>
+          <tr><td class="item">USB microphone (cardioid)</td><td>BirdNET acoustic detection</td><td class="price">₹300-400</td><td class="note">Any USB mic works. Mount outdoors, aim at trees.</td></tr>
+          <tr><td class="item">SDS011 PM2.5/PM10 sensor</td><td>Particulate air quality</td><td class="price">₹1,400–1,800</td><td class="note">Needs USB-to-serial adapter (CH340, ₹150).</td></tr>
+          <tr><td class="item">Pi Camera Module v2 or v3</td><td>Hill timelapse</td><td class="price">₹800–1,500</td><td class="note">Mount south-facing if possible. CSI ribbon connector.</td></tr>
+          <tr><td class="item">MicroSD card (32GB+)</td><td>OS and storage</td><td class="price">₹800–1,200</td><td class="note">Class 10 / A1. Samsung or SanDisk.</td></tr>
+          <tr><td class="item">Power supply (5V 3A USB-C)</td><td>Power the Pi</td><td class="price">₹350–500</td><td class="note">Quality PSU — underpowered ones cause crashes.</td></tr>
+          <tr><td class="item">Weatherproof enclosure</td><td>Protect outdoors</td><td class="price">₹200–500</td><td class="note">Junction box from hardware store. Add ventilation holes.</td></tr>
+          <tr><td class="item">Heatsinks (4-piece)</td><td>Thermal management</td><td class="price">₹50–80</td><td class="note">Prevents CPU throttling in Pune summer heat.</td></tr>
         </tbody>
       </table>
-      <div class="hw-total">
-        <span>Estimated total (new)</span>
-        <span>₹7,400–11,080</span>
-      </div>
+      <div class="hw-total"><span>Estimated total (new)</span><span>₹7,400–11,080</span></div>
     </div>
 
-    <!-- Setup steps -->
-    <h3 style="font-family:var(--serif);font-size:1.3rem;color:var(--ep-green);margin-bottom:1rem;">Setup steps</h3>
+    <div class="wu-note">
+      <strong>📡 Weather Union integration:</strong> If you're within range of a Weather Union AWS station, your node can pull hyperlocal temperature, humidity, and wind data automatically — no extra hardware needed. Check <a href="https://www.weatherunion.com" target="_blank" style="color:var(--ep-green);">weatherunion.com</a> for stations near you.
+    </div>
+
+    <h3 style="font-family:var(--serif);font-size:1.3rem;color:var(--ep-green);margin:1.5rem 0 1rem;">Setup steps</h3>
     <div class="steps">
-      <div class="step">
-        <div>
-          <div class="step-title">Flash Raspberry Pi OS Lite (64-bit) onto your microSD</div>
-          <div class="step-desc">Use the official Raspberry Pi Imager. Enable SSH and Wi-Fi during the flash process. Boot the Pi and connect via SSH.
-            <div class="step-code">ssh pi@[your-pi-ip]</div>
-          </div>
-        </div>
-      </div>
-      <div class="step">
-        <div>
-          <div class="step-title">Clone the Earth Pulse repository</div>
-          <div class="step-desc">All scripts, cron jobs, and configuration files are in the public GitHub repository.
-            <div class="step-code">git clone https://github.com/fangchu-in/earth-pulse</div>
-          </div>
-        </div>
-      </div>
-      <div class="step">
-        <div>
-          <div class="step-title">Create your .env file with your credentials</div>
-          <div class="step-desc">You'll need a Google Air Quality API key (free tier) and a Supabase project (free tier). The repository README has step-by-step instructions for each service.
-            <div class="step-code">cp .env.example .env && nano .env</div>
-          </div>
-        </div>
-      </div>
-      <div class="step">
-        <div>
-          <div class="step-title">Run the setup script</div>
-          <div class="step-desc">The setup script installs Python dependencies, configures cron jobs, tests each sensor, and verifies connectivity to the database. Takes about 10 minutes.
-            <div class="step-code">bash setup.sh</div>
-          </div>
-        </div>
-      </div>
-      <div class="step">
-        <div>
-          <div class="step-title">Register your node on the network</div>
-          <div class="step-desc">Once your data is flowing, contact us via the form below. We'll add your node to the Earth Pulse map and your data will appear alongside ours on the site.</div>
-        </div>
-      </div>
+      <div class="step"><div><div class="step-title">Flash Raspberry Pi OS Lite (64-bit)</div><div class="step-desc">Use Raspberry Pi Imager. Enable SSH and Wi-Fi during flash. Boot and connect via SSH.<div class="step-code">ssh pi@[your-pi-ip]</div></div></div></div>
+      <div class="step"><div><div class="step-title">Clone the Earth Pulse repository</div><div class="step-desc">All scripts, cron jobs, and config files are in the public GitHub repo.<div class="step-code">git clone https://github.com/fangchu-in/earth-pulse</div></div></div></div>
+      <div class="step"><div><div class="step-title">Create your .env file</div><div class="step-desc">You'll need a Google Air Quality API key and your NODE_ID (assigned by us). The README walks through each service.<div class="step-code">cp .env.example .env &amp;&amp; nano .env</div></div></div></div>
+      <div class="step"><div><div class="step-title">Run the setup script</div><div class="step-desc">Installs Python dependencies, configures cron jobs, tests sensors, verifies database connectivity. ~10 minutes.<div class="step-code">bash setup.sh</div></div></div></div>
+      <div class="step"><div><div class="step-title">Register your node</div><div class="step-desc">Once data is flowing, use the form below. We'll assign your NODE_ID, add you to the live map, and your data joins the network within 24 hours.</div></div></div>
     </div>
 
     <div style="background:rgba(33,67,50,0.05);border-left:3px solid var(--ep-tan);border-radius:0 var(--radius-sm) var(--radius-sm) 0;padding:1rem 1.25rem;margin-top:1.5rem;font-size:0.85rem;color:var(--text-muted);line-height:1.7;">
-      <strong style="color:var(--ep-green);">Note:</strong> The detailed setup guide is being finalised as Phase 2 hardware is tested. Sign up below and we'll notify you when it's ready — including a full video walkthrough and a troubleshooting guide for common issues.
+      <strong style="color:var(--ep-green);">Note:</strong> The detailed setup guide is being finalised as Phase 2 hardware is tested. Register below and we'll notify you when it's ready — including a video walkthrough and troubleshooting guide.
     </div>
   </div>
 </section>
@@ -522,15 +406,15 @@
     <h2 class="ep-section-title">Want to host a node?</h2>
     <p class="ep-section-sub">Leave your details. We'll get in touch when the setup guide is ready, or sooner if you have questions.</p>
 
-    <div class="interest-form">
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+    <div class="interest-form" id="interest-form">
+      <div class="form-grid2">
         <div class="form-row">
           <label class="form-label">Your name</label>
           <input class="form-input" type="text" id="r-name" placeholder="Ananya S.">
         </div>
         <div class="form-row">
-          <label class="form-label">Email</label>
-          <input class="form-input" type="email" id="r-email" placeholder="you@example.com" required>
+          <label class="form-label">Email *</label>
+          <input class="form-input" type="email" id="r-email" placeholder="you@example.com">
         </div>
       </div>
       <div class="form-row">
@@ -540,75 +424,53 @@
       <div class="form-row">
         <label class="form-label">I want to…</label>
         <select class="form-select" id="r-intent">
-          <option value="host">Host a sensor node at my home/balcony</option>
-          <option value="photos">Contribute photos of the hills</option>
-          <option value="research">Use the data for research</option>
-          <option value="collaborate">Collaborate or partner with the project</option>
-          <option value="curious">Just learn more about the project</option>
+          <option value="Host a sensor node">Host a sensor node at my home/balcony</option>
+          <option value="Contribute photos">Contribute photos of the hills</option>
+          <option value="Research collaboration">Use the data for research</option>
+          <option value="Partnership">Collaborate or partner with the project</option>
+          <option value="Learn more">Just learn more about the project</option>
         </select>
       </div>
       <div class="form-row">
         <label class="form-label">Anything you'd like to say? (optional)</label>
         <textarea class="form-textarea" id="r-message" placeholder="I have a balcony facing the hills and a spare Pi…"></textarea>
       </div>
-      <button class="form-submit" id="r-submit" onclick="submitInterest()">Register interest →</button>
-      <div id="r-status" style="text-align:center;font-size:0.85rem;color:var(--text-muted);margin-top:0.75rem;"></div>
+      <button type="button" class="form-submit" id="r-submit" onclick="submitInterest()">Register interest →</button>
+      <div class="form-status" id="r-status"></div>
     </div>
   </div>
 </section>
 
 <!-- DONATE -->
-<section class="ep-section alt-bg" id="donate">
+<section class="ep-section" style="background:white;" id="donate">
   <div class="ep-section-inner">
     <span class="ep-section-tag">Support the project</span>
     <h2 class="ep-section-title">Keep the sensors running</h2>
-    <p class="ep-section-sub">Earth Pulse is built and maintained by one person, with no funding. Your contribution directly supports hardware, electricity, and cloud costs.</p>
-
+    <p class="ep-section-sub">Your contribution directly supports expansion of the network, hardware, electricity, and cloud costs.</p>
     <div class="donate-grid">
-      <!-- QR + UPI ID -->
       <div class="donate-qr-card">
         <div style="font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-muted);">Scan to pay via any UPI app</div>
-        <img src="upi-qr.png" alt="UPI QR code for Earth Pulse donation — 9967589210@hdfc" onerror="this.style.display='none'">
+        <img src="upi-qr.png" alt="UPI QR code — 9967589210@hdfc" onerror="this.style.display='none'">
         <div>
           <div style="font-size:0.72rem;color:var(--text-muted);margin-bottom:6px;">Or pay to UPI ID</div>
           <div class="donate-upi-id">9967589210@hdfc</div>
         </div>
-        <div style="font-size:0.75rem;color:var(--text-muted);text-align:center;line-height:1.6;">Works with PhonePe, GPay, Paytm,<br>BHIM, and all UPI apps</div>
+        <div style="font-size:0.75rem;color:var(--text-muted);text-align:center;line-height:1.6;">PhonePe · GPay · Paytm · BHIM · all UPI apps</div>
       </div>
-
-      <!-- Info + tiers -->
       <div class="donate-info">
         <div>
           <h3>What your donation funds</h3>
-          <p>Every rupee goes directly to keeping Earth Pulse alive and growing. There is no overhead, no salary, and no middlemen.</p>
+          <p>Every rupee goes directly to keeping Earth Pulse alive and growing.</p>
         </div>
         <div class="donate-tiers">
-          <div class="donate-tier">
-            <span class="label">☁️ One month of cloud services</span>
-            <span class="amount">₹0–50</span>
-          </div>
-          <div class="donate-tier">
-            <span class="label">🔌 Pi electricity for a month</span>
-            <span class="amount">₹80–120</span>
-          </div>
-          <div class="donate-tier">
-            <span class="label">🎙️ A new USB microphone</span>
-            <span class="amount">₹1,000</span>
-          </div>
-          <div class="donate-tier">
-            <span class="label">📷 Pi Camera Module</span>
-            <span class="amount">₹1,200</span>
-          </div>
-          <div class="donate-tier">
-            <span class="label">🌿 Full SDS011 sensor kit</span>
-            <span class="amount">₹2,000</span>
-          </div>
-          <div class="donate-tier">
-            <span class="label">🖥️ New Raspberry Pi 3B+</span>
-            <span class="amount">₹4,000</span>
-          </div>
+          <div class="donate-tier"><span class="label">☁️ One month of cloud services</span><span class="amount">₹0–50</span></div>
+          <div class="donate-tier"><span class="label">🔌 Pi electricity for a month</span><span class="amount">₹80–120</span></div>
+          <div class="donate-tier"><span class="label">🎙️ A new USB microphone</span><span class="amount">₹1,000</span></div>
+          <div class="donate-tier"><span class="label">📷 Pi Camera Module</span><span class="amount">₹1,200</span></div>
+          <div class="donate-tier"><span class="label">🌿 Full SDS011 sensor kit</span><span class="amount">₹2,000</span></div>
+          <div class="donate-tier"><span class="label">🖥️ New Raspberry Pi 3B+</span><span class="amount">₹4,000</span></div>
         </div>
-        <p style="font-size:0.78rem;">This is a personal citizen-science project. Donations are not tax-deductible. No receipts are issued. Thank you for believing in open environmental data.</p>
+        <p style="font-size:0.78rem;">This is a personal citizen-science project. Donations are not tax-deductible. No receipts issued. Thank you for believing in open environmental data.</p>
       </div>
     </div>
   </div>
@@ -634,101 +496,114 @@
 <script src="analytics.js"></script>
 <script src="nav.js"></script>
 <script>
-const SUPABASE_URL = 'https://krmczyqwblsoekceanlj.supabase.co';
-const SUPABASE_KEY = 'sb_publishable_DrHFT5J0vmrkYraUXIlpQQ_gsk1rdq6';
-const HDR = { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` };
+var SUPABASE_URL = 'https://krmczyqwblsoekceanlj.supabase.co';
+var SUPABASE_KEY = 'sb_publishable_DrHFT5J0vmrkYraUXIlpQQ_gsk1rdq6';
+var HDR = { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer '+SUPABASE_KEY };
 
 // ── Live stats ────────────────────────────────────────────────────────────────
-(async function loadStats() {
-  try {
-    // Get counts with exact headers
-    const [crRes, bdRes] = await Promise.all([
-      fetch(SUPABASE_URL+'/rest/v1/climate_readings?select=id&limit=1',
-        {headers:{...HDR,'Prefer':'count=exact'}}),
-      fetch(SUPABASE_URL+'/rest/v1/bird_detections?select=species_scientific&limit=5000',
-        {headers:HDR}),
-    ]);
-    const cr = parseInt(crRes.headers.get('content-range')?.split('/')[1] || '0');
-    const birds = await bdRes.json();
-    const bd = Array.isArray(birds) ? birds.length : 0;
-    const species = Array.isArray(birds) ? new Set(birds.map(b=>b.species_scientific)).size : 0;
-
-    if (cr) document.getElementById('stat-records').textContent = cr.toLocaleString('en-IN');
-    if (bd) document.getElementById('stat-birds').textContent   = bd.toLocaleString('en-IN');
-    if (species) {
-      document.getElementById('stat-species').textContent = species;
-      // Update hero count too
-      const sc = document.getElementById('species-count');
-      const rc = document.getElementById('record-count');
-      if (sc) sc.textContent = species;
-      if (rc && cr) rc.textContent = cr.toLocaleString('en-IN');
-    }
-  } catch(e) { console.warn('Stats error:', e); }
+(function loadStats() {
+  Promise.all([
+    fetch(SUPABASE_URL+'/rest/v1/climate_readings?select=id&limit=1', {headers:Object.assign({},HDR,{'Prefer':'count=exact'})}),
+    fetch(SUPABASE_URL+'/rest/v1/weather_union_readings?select=id&limit=1', {headers:Object.assign({},HDR,{'Prefer':'count=exact'})}),
+    fetch(SUPABASE_URL+'/rest/v1/bird_detections?select=species_scientific&limit=5000', {headers:HDR}),
+  ]).then(function(results) {
+    var crRes = results[0], wuRes = results[1], bdRes = results[2];
+    var cr = parseInt((crRes.headers.get('content-range')||'').split('/')[1]||'0');
+    var wu = parseInt((wuRes.headers.get('content-range')||'').split('/')[1]||'0');
+    return bdRes.json().then(function(birds) {
+      var bd = Array.isArray(birds) ? birds.length : 0;
+      var sp = Array.isArray(birds) ? new Set(birds.map(function(b){return b.species_scientific;})).size : 0;
+      if (cr) {
+        var el = document.getElementById('stat-records');
+        if (el) el.textContent = cr.toLocaleString('en-IN');
+        var rc = document.getElementById('record-count');
+        if (rc) rc.textContent = cr.toLocaleString('en-IN');
+      }
+      if (wu) {
+        var el2 = document.getElementById('stat-wu');
+        if (el2) el2.textContent = wu.toLocaleString('en-IN');
+        var wc = document.getElementById('wu-count');
+        if (wc) wc.textContent = wu.toLocaleString('en-IN');
+      }
+      if (bd) {
+        var el3 = document.getElementById('stat-birds');
+        if (el3) el3.textContent = bd.toLocaleString('en-IN');
+      }
+      if (sp) {
+        var el4 = document.getElementById('stat-species');
+        if (el4) el4.textContent = sp;
+        var sc = document.getElementById('species-count-banner');
+        if (sc) sc.textContent = sp;
+      }
+    });
+  }).catch(function(e){ console.warn('Stats error:', e); });
 })();
 
 // ── Register interest form ────────────────────────────────────────────────────
-async function submitInterest() {
-  const email   = document.getElementById('r-email').value.trim();
-  const name    = document.getElementById('r-name').value.trim();
-  const area    = document.getElementById('r-area').value.trim();
-  const intent  = document.getElementById('r-intent').value;
-  const message = document.getElementById('r-message').value.trim();
-  const status  = document.getElementById('r-status');
-  const btn     = document.getElementById('r-submit');
+function submitInterest() {
+  var email   = (document.getElementById('r-email').value   || '').trim();
+  var name    = (document.getElementById('r-name').value    || '').trim();
+  var area    = (document.getElementById('r-area').value    || '').trim();
+  var intent  = (document.getElementById('r-intent').value  || '');
+  var message = (document.getElementById('r-message').value || '').trim();
+  var status  = document.getElementById('r-status');
+  var btn     = document.getElementById('r-submit');
 
-  if (!email) {
-    status.textContent = 'Please enter your email address.';
+  if (!email || !email.includes('@')) {
+    status.textContent = 'Please enter a valid email address.';
     status.style.color = '#dc2626';
     return;
   }
 
-  btn.disabled = true; btn.textContent = 'Submitting…';
+  btn.disabled = true;
+  btn.textContent = 'Submitting…';
   status.textContent = '';
+  status.style.color = 'var(--text-muted)';
 
-  // Build a composed message that captures all fields
-  const fullMessage = [
-    name    ? `Name: ${name}`           : null,
-    area    ? `Area: ${area}`           : null,
-    `Intent: ${intent}`,
-    message ? `Message: ${message}`     : null,
-  ].filter(Boolean).join('\n');
+  // Build full message capturing all fields
+  var parts = [];
+  if (name)    parts.push('Name: ' + name);
+  if (area)    parts.push('Area: ' + area);
+  parts.push('Intent: ' + intent);
+  if (message) parts.push('Message: ' + message);
+  var fullMessage = parts.join('\n');
 
-  try {
-    // Step 1: Add to newsletter_signups (may fail gracefully if already exists)
-    await fetch(SUPABASE_URL + '/rest/v1/newsletter_signups', {
-      method: 'POST',
-      headers: { ...HDR, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
-      body: JSON.stringify({ email })
-    });
-
-    // Step 2: Store full interest details in contact_messages (this table always accepts inserts)
-    const r = await fetch(SUPABASE_URL + '/rest/v1/contact_messages', {
-      method: 'POST',
-      headers: { ...HDR, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
-      body: JSON.stringify({
-        name:    name || 'Anonymous',
-        email,
-        subject: `Contribute interest: ${intent}`,
-        message: fullMessage || 'Interest registered via contribute page',
-      })
-    });
-
+  // Write to contact_messages (primary — always works with anon key)
+  fetch(SUPABASE_URL+'/rest/v1/contact_messages', {
+    method: 'POST',
+    headers: Object.assign({}, HDR, {'Content-Type':'application/json','Prefer':'return=minimal'}),
+    body: JSON.stringify({
+      name:    name || 'Anonymous',
+      email:   email,
+      subject: 'Contribute interest: ' + intent,
+      message: fullMessage,
+      type:    'Contribute interest'
+    })
+  }).then(function(r) {
     if (r.ok || r.status === 201) {
+      // Also try newsletter signup (may fail silently if duplicate)
+      fetch(SUPABASE_URL+'/rest/v1/newsletter_signups', {
+        method: 'POST',
+        headers: Object.assign({}, HDR, {'Content-Type':'application/json','Prefer':'return=minimal'}),
+        body: JSON.stringify({ email: email, source: 'contribute' })
+      }).catch(function(){});
+
       btn.textContent = '✓ Registered!';
       btn.style.background = 'var(--ep-green-mid)';
-      status.textContent = `Thanks${name ? ', ' + name.split(' ')[0] : ''}! We'll be in touch at ${email}.`;
+      status.textContent = 'Thanks' + (name ? ', ' + name.split(' ')[0] : '') + '! We\'ll be in touch at ' + email + '.';
       status.style.color = 'var(--ep-green)';
     } else {
-      const errText = await r.text();
-      throw new Error('Server error ' + r.status + ': ' + errText.slice(0, 100));
+      r.text().then(function(txt) {
+        throw new Error('Server error ' + r.status + ': ' + txt.slice(0,100));
+      });
     }
-  } catch(e) {
+  }).catch(function(e) {
     console.error('Submit error:', e);
     btn.disabled = false;
     btn.textContent = 'Register interest →';
     status.textContent = 'Something went wrong — please email fangchu@gmail.com directly.';
     status.style.color = '#dc2626';
-  }
+  });
 }
 </script>
 </body>
