@@ -166,7 +166,7 @@ async function populate() {
 async function resendVerify() {
   if (!_sb||!_user) return;
   try {
-    await _sb.auth.resend({ type:'signup', email:_user.email, options:{emailRedirectTo:'https://earthpulse.pages.dev/data.html'} });
+    await _sb.auth.resend({ type:'signup', email:_user.email, options:{emailRedirectTo:'https://earth-pulse.org/data.html'} });
     alert('Verification email resent! Check your inbox.');
   } catch(e) { alert('Error: ' + e.message); }
 }

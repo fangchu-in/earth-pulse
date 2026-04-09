@@ -22,7 +22,7 @@ Allow: /search.html
 Allow: /404.html
 
 # Sitemaps
-Sitemap: https://earthpulse.pages.dev/sitemap.xml
+Sitemap: https://earth-pulse.org/sitemap.xml
 
 # Allow all major crawlers explicitly
 User-agent: Googlebot

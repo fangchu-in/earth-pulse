@@ -285,7 +285,7 @@
               </div>
               <div class="preview-body" id="preview-body"></div>
               <div class="preview-footer">
-                Earth Pulse · earthpulse.pages.dev · Baner, Pune<br>
+                Earth Pulse · earth-pulse.org · Baner, Pune<br>
                 <span style="color:var(--ep-tan);">Unsubscribe</span>
               </div>
             </div>
@@ -370,7 +370,7 @@ var TEMPLATES = {
 <h3>📸 Hill photo of the month</h3>
 <p>[Add hill photo link or description here]</p>
 <hr>
-<p><a href="https://earthpulse.pages.dev">View the full dataset →</a></p>`
+<p><a href="https://earth-pulse.org">View the full dataset →</a></p>`
   },
   'new-bird': {
     subject: 'New bird detected in Baner! 🐦 [Species name] heard for the first time this year',
@@ -379,7 +379,7 @@ var TEMPLATES = {
 <h3>[Species common name] (<em>[Scientific name]</em>)</h3>
 <p>First detected at <strong>[time]</strong> today with <strong>[confidence]% confidence</strong>. This is the <strong>[Nth] species</strong> detected in Baner so far this year.</p>
 <p><strong>About this bird:</strong> [Brief description — habitat, behaviour, migration status]</p>
-<p><a href="https://earthpulse.pages.dev/species.html?bird=[scientific_name]">View full detection profile →</a></p>
+<p><a href="https://earth-pulse.org/species.html?bird=[scientific_name]">View full detection profile →</a></p>
 <hr>
 <p style="font-size:0.85em;color:#666;">You're receiving this because you opted in for bird detection alerts on Earth Pulse.</p>`
   },
@@ -393,7 +393,7 @@ var TEMPLATES = {
 <tr style="background:#f0f4f0;"><td style="padding:0.5rem 1rem;font-weight:600;">Dominant pollutant</td><td style="padding:0.5rem 1rem;" colspan="2">[pollutant]</td></tr>
 </table>
 <p><strong>Recommendation:</strong> [health_recommendation]</p>
-<p><a href="https://earthpulse.pages.dev/climate.html">See full AQI history →</a></p>`
+<p><a href="https://earth-pulse.org/climate.html">See full AQI history →</a></p>`
   },
   'monsoon': {
     subject: '🌧️ Monsoon update from Baner — [date]',
@@ -403,7 +403,7 @@ var TEMPLATES = {
 <p>Total rainfall recorded: <strong>[total]mm</strong>. This compares to <strong>[prev_year]mm</strong> in the same period last year.</p>
 <h3>Birds responding to the rains</h3>
 <p>Monsoon species are beginning to appear — <strong>[monsoon_birds]</strong> have been detected following the first rains.</p>
-<p><a href="https://earthpulse.pages.dev/monsoon.html">View monsoon tracker →</a></p>`
+<p><a href="https://earth-pulse.org/monsoon.html">View monsoon tracker →</a></p>`
   },
   'blank': {
     subject: '',
@@ -666,7 +666,7 @@ async function loadOverview() {
       ['Pi 3B+ (Weather Union)',  wuAge<20    ? 'ok-dot':'warn-dot', wuAge<20    ? 'Logging ('+wuAge+'m ago)' : '⚠️ Last WU log '+wuAge+'m ago — check log_weather_union.py'],
       ['Pi 3B (BirdNET)',         birdAge<70  ? 'ok-dot':'warn-dot', birdAge<70  ? 'Listening ('+birdAge+'m ago)' : 'No detection for '+birdAge+'m'],
       ['Supabase',                'ok-dot',   'Connected · RLS enabled on all tables'],
-      ['Cloudflare Pages',        'ok-dot',   'Live · earthpulse.pages.dev'],
+      ['Cloudflare Pages',        'ok-dot',   'Live · earth-pulse.org'],
       ['AI Worker (Claude)',      'ok-dot',   'earthpulse-ai.fangchu.workers.dev'],
       ['Email Worker (Resend)',   'ok-dot',   'earthpulse-email.fangchu.workers.dev'],
     ].map(function(r){ return '<div class="kv"><span class="kv-k"><span class="status-dot '+r[1]+'"></span>'+r[0]+'</span><span class="kv-v">'+r[2]+'</span></div>'; }).join('');
@@ -758,7 +758,7 @@ async function loadSystem() {
       {title:'🗄 Supabase', dot:'ok-dot',
        rows:[['Database','✅ Connected'],['RLS','✅ Enabled on all tables'],['Storage','✅ timelapse bucket public'],['Auth','✅ Email auth enabled']]},
       {title:'☁ Cloudflare Pages + R2', dot:'ok-dot',
-       rows:[['Deployment','✅ Live at earthpulse.pages.dev'],['CDN','✅ Global edge network'],['R2 Storage','earthpulse-files bucket'],['Deploy','Via GitHub push to main branch']]},
+       rows:[['Deployment','✅ Live at earth-pulse.org'],['CDN','✅ Global edge network'],['R2 Storage','earthpulse-files bucket'],['Deploy','Via GitHub push to main branch']]},
     ];
 
     document.getElementById('sys-grid').innerHTML = cards.map(function(c){
