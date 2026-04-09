@@ -243,11 +243,17 @@ async function loadRange(days, btn) {
   document.getElementById('record-count').textContent = 'Loading…';
   document.getElementById('error-msg').style.display = 'none';
 
-  const from = new Date(Date.now()-days*86400000).toISOString();
-  const cols = 'recorded_at,aqi,google_aqi_india,pm2_5,pm10,temperature,humidity,wind_speed,wind_direction,solar_radiation,precipitation,weather_source';
+  // Use IST midnight as the start point, not UTC
+  const nowIST = new Date(new Date().toLocaleString('en-US',{timeZone:'Asia/Kolkata'}));
+  const from   = new Date(nowIST.getTime() - days*86400000).toISOString();
+
+  // Supabase default limit is 1000 — override based on range
+  // 7d=168rows, 30d=720, 90d=2160, 365d=8760, all=50000
+  const limit  = days<=7?200:days<=30?800:days<=90?2500:days<=365?10000:50000;
+  const cols   = 'recorded_at,aqi,google_aqi_india,pm2_5,pm10,temperature,humidity,wind_speed,wind_direction,solar_radiation,precipitation,weather_source';
 
   try {
-    const res  = await fetch(`${SB}/rest/v1/combined_readings?select=${cols}&recorded_at=gte.${from}&order=recorded_at.asc`,{headers:HDR});
+    const res  = await fetch(`${SB}/rest/v1/combined_readings?select=${cols}&recorded_at=gte.${from}&order=recorded_at.asc&limit=${limit}`,{headers:HDR});
     const body = await res.json();
     if (!res.ok||!Array.isArray(body)) { document.getElementById('error-msg').textContent=body?.message||'Error loading data.'; document.getElementById('error-msg').style.display='block'; return; }
     _rows = body;
@@ -352,9 +358,9 @@ function renderCharts() {
 
   dc('aqi');
   charts['aqi']=new Chart(document.getElementById('aqiChart'),{type:'line',data:{labels:lb,datasets:[
-    {label:'EU AQI',data:s.map(r=>r.aqi),borderColor:'#214332',backgroundColor:'rgba(33,67,50,0.07)',tension:0.3,pointRadius:0,borderWidth:1.5,fill:true},
-    {label:'India AQI',data:s.map(r=>r.google_aqi_india),borderColor:'#BF9B7B',backgroundColor:'transparent',tension:0.3,pointRadius:0,borderWidth:1,borderDash:[4,3]},
-  ]},options:{...baseOpts,scales:{...baseOpts.scales,y:{...baseOpts.scales.y,title:{display:true,text:'AQI'}}}}});
+    {label:'EU AQI',data:s.map(r=>r.aqi||null),borderColor:'#214332',backgroundColor:'rgba(33,67,50,0.07)',tension:0.3,pointRadius:0,borderWidth:1.5,fill:true,spanGaps:true},
+    {label:'India AQI',data:s.map(r=>r.google_aqi_india||null),borderColor:'#BF9B7B',backgroundColor:'transparent',tension:0.3,pointRadius:0,borderWidth:1,borderDash:[4,3],spanGaps:true},
+  ]},options:{...baseOpts,scales:{...baseOpts.scales,y:{...baseOpts.scales.y,min:0,title:{display:true,text:'AQI'}}}}});
 
   dc('temp');
   charts['temp']=new Chart(document.getElementById('tempChart'),{type:'line',data:{labels:lb,datasets:[
@@ -367,8 +373,8 @@ function renderCharts() {
 
   dc('rain');
   charts['rain']=new Chart(document.getElementById('rainChart'),{type:'bar',data:{labels:lb,datasets:[
-    {label:'Precipitation (mm)',data:s.map(r=>r.precipitation||0),backgroundColor:'rgba(33,67,50,0.5)',borderRadius:2}
-  ]},options:{...baseOpts,scales:{...baseOpts.scales,y:{...baseOpts.scales.y,title:{display:true,text:'mm'}}}}});
+    {label:'Precipitation (mm)',data:s.map(r=>r.precipitation>0?r.precipitation:null),backgroundColor:'rgba(33,67,50,0.5)',borderRadius:2}
+  ]},options:{...baseOpts,scales:{...baseOpts.scales,y:{...baseOpts.scales.y,min:0,title:{display:true,text:'mm'}}}}});
 
   dc('solar');
   charts['solar']=new Chart(document.getElementById('solarChart'),{type:'line',data:{labels:lb,datasets:[
@@ -376,26 +382,48 @@ function renderCharts() {
   ]},options:{...baseOpts,scales:{...baseOpts.scales,y:{...baseOpts.scales.y,title:{display:true,text:'W/m²'}}}}});
 }
 
-// ── AI NARRATIVE ──────────────────────────────────────────────────────────────
+// ── AI NARRATIVE — Gemini primary (free), Claude fallback ────────────────────
 async function loadAI() {
   const el=document.getElementById('ai-text');
   el.className='ai-text loading'; el.textContent='Analysing climate patterns…';
   try {
     const aR=_rows.filter(r=>r.aqi>0), tR=_rows.filter(r=>r.temperature!=null);
     const goodPct=aR.length?Math.round(aR.filter(r=>r.aqi<=50).length/aR.length*100):0;
-    const context=`Baner, Pune (18.55°N 73.78°E), Western Ghats edge, 560m.
-Period: last ${_days} days. Records: ${_rows.length}.
-Avg EU AQI: ${avg(aR,'aqi')?.toFixed(1)||'—'} (${goodPct}% hours ≤50).
-Avg temperature: ${avg(tR,'temperature')?.toFixed(1)||'—'}°C.
-Avg humidity: ${avg(_rows.filter(r=>r.humidity),'humidity')?.toFixed(0)||'—'}%.
-Total rainfall: ${_rows.reduce((s,r)=>s+(r.precipitation||0),0).toFixed(1)}mm.
-AQI spikes >100: ${aR.filter(r=>r.aqi>100).length} hours.
-Heat stress >35°C: ${tR.filter(r=>r.temperature>35).length} hours.`;
-    const res=await fetch(`${WRK}/query`,{method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({query:`In 3 short sentences for Baner residents, describe what these numbers mean for daily life. Include one specific actionable tip (best time to exercise outdoors, whether to use air purifier, etc). Be warm, specific, and avoid jargon.`,context})});
-    const d=await res.json();
-    el.className='ai-text'; el.textContent=d.answer||'Analysis unavailable.';
-  } catch{el.className='ai-text'; el.textContent='Analysis temporarily unavailable.';}
+    const data={
+      period_days:_days, records:_rows.length,
+      avg_aqi:avg(aR,'aqi')?.toFixed(1)||null,
+      pct_clean_air:goodPct,
+      avg_temp:avg(tR,'temperature')?.toFixed(1)||null,
+      avg_humidity:avg(_rows.filter(r=>r.humidity),'humidity')?.toFixed(0)||null,
+      total_rain_mm:_rows.reduce((s,r)=>s+(r.precipitation||0),0).toFixed(1),
+      aqi_spikes_over_100:aR.filter(r=>r.aqi>100).length,
+      heat_stress_hours:tR.filter(r=>r.temperature>35).length
+    };
+    const query=`In 3 short sentences for Baner residents, describe what these climate numbers mean for daily life. Include one actionable tip (best time to exercise, whether to use air purifier, etc). Be warm, specific, avoid jargon.`;
+
+    // Try Gemini first (free)
+    let answer = null;
+    try {
+      const r=await fetch(`${WRK}/gemini`,{method:'POST',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({query,data})});
+      const d=await r.json();
+      answer = d.answer||null;
+    } catch(e){ console.warn('Gemini failed, trying Claude'); }
+
+    // Fallback to Claude
+    if (!answer) {
+      try {
+        const context=`Location: Baner, Pune (18.55°N 73.78°E), Western Ghats edge, 560m.\n${JSON.stringify(data)}`;
+        const r=await fetch(`${WRK}/query`,{method:'POST',headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({query,context})});
+        const d=await r.json();
+        answer = d.answer||null;
+      } catch(e){ console.warn('Claude also failed'); }
+    }
+
+    el.className='ai-text';
+    el.textContent = answer || 'Analysis temporarily unavailable — AI service not responding.';
+  } catch(e){ el.className='ai-text'; el.textContent='Analysis temporarily unavailable.'; }
 }
 
 // ── EVENTS THIS YEAR ──────────────────────────────────────────────────────────
@@ -452,31 +480,43 @@ async function loadHourlyAQI() {
 // ── SEASONAL WIND ─────────────────────────────────────────────────────────────
 async function loadSeasonalWind() {
   try {
-    const res=await fetch(`${SB}/rest/v1/combined_readings?select=recorded_at,wind_direction,wind_speed&wind_direction=not.is.null&limit=10000`,{headers:HDR});
+    // Fetch all-time wind data (not limited to current range) for seasonal patterns
+    const res=await fetch(`${SB}/rest/v1/combined_readings?select=recorded_at,wind_direction,wind_speed&wind_direction=gt.0&wind_speed=gt.0&limit=20000`,{headers:{...HDR,'Prefer':'count=exact'}});
     const rows=await res.json();
-    if(!Array.isArray(rows)) return;
+    if(!Array.isArray(rows)||!rows.length) return;
+
     const dirs=['N','NE','E','SE','S','SW','W','NW'];
+    // Arrow shows where wind is COMING FROM (so N wind blows southward → ↓)
     const arrows={N:'↓',NE:'↙',E:'←',SE:'↖',S:'↑',SW:'↗',W:'→',NW:'↘'};
-    function season(r,months){
-      const m=new Date(r.recorded_at).getMonth()+1;
-      return months.includes(m);
-    }
+
     function windFor(filterFn){
       const sub=rows.filter(filterFn);
-      if(!sub.length) return {dir:'—',arrow:'?',spd:'—'};
-      const ad=sub.reduce((s,r)=>s+r.wind_direction,0)/sub.length;
+      if(!sub.length) return {dir:'No data',arrow:'—',spd:'—',count:0};
+      // Circular mean for wind direction
+      const sinSum=sub.reduce((s,r)=>s+Math.sin(r.wind_direction*Math.PI/180),0);
+      const cosSum=sub.reduce((s,r)=>s+Math.cos(r.wind_direction*Math.PI/180),0);
+      const meanDeg=(Math.atan2(sinSum/sub.length,cosSum/sub.length)*180/Math.PI+360)%360;
+      const dir=dirs[Math.round(meanDeg/45)%8]||'N';
       const as=sub.reduce((s,r)=>s+(r.wind_speed||0),0)/sub.length;
-      const dir=dirs[Math.round(ad/45)%8];
-      return {dir,arrow:arrows[dir]||'?',spd:(as*3.6).toFixed(1)};
+      return {dir,arrow:arrows[dir]||'↓',spd:(as*3.6).toFixed(1),count:sub.length};
     }
+
     const seasons=[
-      {label:'Pre-monsoon (Mar–May)', fn:r=>season(r,[3,4,5]),  note:'Hot westerly winds off the Ghats'},
-      {label:'Monsoon (Jun–Sep)',     fn:r=>season(r,[6,7,8,9]),note:'SW monsoon — rain-bearing winds'},
-      {label:'Winter (Oct–Feb)',      fn:r=>season(r,[10,11,12,1,2]),note:'Cool NE winds from the Deccan plateau'},
+      {label:'Pre-monsoon (Mar–May)', fn:r=>{const m=new Date(r.recorded_at).getMonth()+1;return m>=3&&m<=5;},  note:'Hot westerly winds off the Ghats'},
+      {label:'Monsoon (Jun–Sep)',     fn:r=>{const m=new Date(r.recorded_at).getMonth()+1;return m>=6&&m<=9;},  note:'SW monsoon — rain-bearing winds'},
+      {label:'Winter (Oct–Feb)',      fn:r=>{const m=new Date(r.recorded_at).getMonth()+1;return m>=10||m<=2;}, note:'Cool NE winds from the Deccan plateau'},
     ];
+
     document.getElementById('wind-grid').innerHTML=seasons.map(s=>{
       const w=windFor(s.fn);
-      return `<div class="compass-card"><div class="compass-label">${s.label}</div><span class="compass-arrow">${w.arrow}</span><div class="compass-dir">${w.dir}</div><div class="compass-spd">${w.spd} km/h avg</div><div class="compass-note">${s.note}</div></div>`;
+      const noData = w.count===0;
+      return `<div class="compass-card">
+        <div class="compass-label">${s.label}</div>
+        <span class="compass-arrow" style="font-size:${noData?'1.2rem':'2.2rem'};color:${noData?'var(--text-muted)':'inherit'}">${w.arrow}</span>
+        <div class="compass-dir">${w.dir}</div>
+        <div class="compass-spd">${noData?'No data yet':w.spd+' km/h avg'}</div>
+        <div class="compass-note">${s.note}${w.count>0?' · '+w.count.toLocaleString()+' readings':''}</div>
+      </div>`;
     }).join('');
   } catch(e){console.warn('Wind:',e);}
 }
@@ -484,18 +524,27 @@ async function loadSeasonalWind() {
 // ── BIRD vs AQI ───────────────────────────────────────────────────────────────
 async function loadBirdAQI() {
   const ys=new Date(new Date().getFullYear(),0,1).toISOString();
+  const noteEl=document.getElementById('bird-aqi-note');
   try {
     const [bRes,aRes]=await Promise.all([
-      fetch(`${SB}/rest/v1/bird_detections?select=detected_at&detected_at=gte.${ys}`,{headers:HDR}),
-      fetch(`${SB}/rest/v1/combined_readings?select=recorded_at,aqi&recorded_at=gte.${ys}&aqi=gt.0`,{headers:HDR}),
+      fetch(`${SB}/rest/v1/bird_detections?select=detected_at&detected_at=gte.${ys}&limit=5000`,{headers:HDR}),
+      fetch(`${SB}/rest/v1/combined_readings?select=recorded_at,aqi&recorded_at=gte.${ys}&aqi=gt.0&limit=10000`,{headers:HDR}),
     ]);
     const birds=await bRes.json(), aqis=await aRes.json();
-    if(!Array.isArray(birds)||!birds.length){document.getElementById('bird-aqi-note').textContent='Not enough bird data yet — BirdNET has been running since early April. Check back in a few weeks.';return;}
+    const totalBirdDays=Array.isArray(birds)?new Set(birds.map(b=>b.detected_at.slice(0,10))).size:0;
+
+    if(!Array.isArray(birds)||!birds.length||totalBirdDays<2){
+      noteEl.textContent=`BirdNET started logging in April 2026 — only ${totalBirdDays} day${totalBirdDays!==1?'s':''} of data so far. This chart will become meaningful after a few more weeks of detections.`;
+      return;
+    }
     const bd={}, ad={}, ac={};
     for(const b of birds){const d=b.detected_at.slice(0,10);bd[d]=(bd[d]||0)+1;}
     for(const r of aqis){const d=r.recorded_at.slice(0,10);ad[d]=(ad[d]||0)+r.aqi;ac[d]=(ac[d]||0)+1;}
     const pts=Object.keys(bd).filter(d=>ac[d]).map(d=>({x:Math.round(ad[d]/ac[d]),y:bd[d],d}));
-    if(!pts.length) return;
+    if(pts.length<2){
+      noteEl.textContent=`${pts.length} overlapping day(s) between bird detections and AQI data. More data needed for a meaningful correlation — check back after monsoon season.`;
+      return;
+    }
     dc('birdAqi');
     charts['birdAqi']=new Chart(document.getElementById('birdAqiChart'),{type:'scatter',data:{datasets:[{
       label:'Bird detections vs AQI',data:pts,backgroundColor:'rgba(33,67,50,0.55)',pointRadius:6,pointHoverRadius:8
@@ -505,14 +554,14 @@ async function loadBirdAQI() {
         x:{title:{display:true,text:'Daily avg AQI'},grid:{color:'rgba(0,0,0,0.04)'},ticks:{font:{size:10},color:'#6b6b6b'}},
         y:{title:{display:true,text:'Bird detections'},grid:{color:'rgba(0,0,0,0.04)'},ticks:{font:{size:10},color:'#6b6b6b'}}
       }}});
-    // Simple correlation note
     if(pts.length>=5){
       const meanX=pts.reduce((s,p)=>s+p.x,0)/pts.length, meanY=pts.reduce((s,p)=>s+p.y,0)/pts.length;
       const num=pts.reduce((s,p)=>s+(p.x-meanX)*(p.y-meanY),0);
       const den=Math.sqrt(pts.reduce((s,p)=>s+(p.x-meanX)**2,0)*pts.reduce((s,p)=>s+(p.y-meanY)**2,0));
       const r=den?+(num/den).toFixed(2):0;
-      const rNote=r<-0.3?`Negative correlation (r=${r}) — birds tend to be less active on high-AQI days. A meaningful ecological signal.`:r>0.3?`Positive correlation (r=${r}) — unexpectedly, more birds detected on higher-AQI days. Could indicate other factors (rain, season, time of day).`:`Weak correlation (r=${r}) so far — need more data across more seasons. Check back after monsoon.`;
-      document.getElementById('bird-aqi-note').textContent=rNote;
+      noteEl.textContent=r<-0.3?`Negative correlation (r=${r}) — fewer birds on high-AQI days. A meaningful ecological signal.`:r>0.3?`Positive correlation (r=${r}) — more birds on higher-AQI days. Likely seasonal factors.`:`Weak correlation (r=${r}) with ${pts.length} data points so far. Check back after monsoon for a stronger signal.`;
+    } else {
+      noteEl.textContent=`${pts.length} data points so far. A meaningful pattern needs at least 2–3 weeks of data.`;
     }
   } catch(e){console.warn('Bird AQI:',e);}
 }
