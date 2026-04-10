@@ -13,20 +13,21 @@
     { href:'birds.html',          label:'Birds' },
     { href:'climate.html',        label:'Climate' },
     { href:'hill.html',           label:'Baner Hill' },
-    { href:'index.html#insights', label:'Insights' },
+    { href:'weekly.html',         label:'Weekly' },
     { href:'about.html',          label:'About' },
   ];
 
   var FOOTER_LINKS = [
-    { href:'index.html',    label:'Home' },
-    { href:'birds.html',    label:'Birds' },
-    { href:'species.html',  label:'Species' },
-    { href:'climate.html',  label:'Climate' },
-    { href:'hill.html',     label:'Baner Hill' },
-    { href:'register.html', label:'Register / Sign in' },
+    { href:'index.html',      label:'Home' },
+    { href:'birds.html',      label:'Birds' },
+    { href:'species.html',    label:'Species' },
+    { href:'climate.html',    label:'Climate' },
+    { href:'hill.html',       label:'Baner Hill' },
+    { href:'weekly.html',     label:'Weekly Blog' },
+    { href:'register.html',   label:'Register / Sign in' },
     { href:'contribute.html', label:'Contribute' },
-    { href:'about.html',    label:'About' },
-    { href:'contact.html',  label:'Contact' },
+    { href:'about.html',      label:'About' },
+    { href:'contact.html',    label:'Contact' },
   ];
 
   function page() { return window.location.pathname.split('/').pop() || 'index.html'; }
@@ -38,7 +39,6 @@
       if (raw) {
         var d = JSON.parse(raw);
         if (d && d.user && d.expires_at) {
-          // expires_at is Unix timestamp in seconds
           if (d.expires_at * 1000 > Date.now()) return { email: d.user.email || '', ok: true };
         }
       }
@@ -57,7 +57,6 @@
             return { email: d2.user.email || '', ok: true };
           }
         }
-        // Also check for access_token directly (some versions store differently)
         if (k.indexOf('supabase.auth.token') !== -1) {
           var raw3 = localStorage.getItem(k);
           if (!raw3) continue;

@@ -7,53 +7,53 @@
   <meta name="description" id="page-desc" content="Weekly environmental report from Baner, Pune.">
   <link rel="canonical" id="page-canonical" href="https://www.earth-pulse.org/weekly-post.html">
   <link rel="icon" type="image/png" href="earth-pulse-logo.png">
-  <!-- BlogPosting schema — filled by JS -->
   <script type="application/ld+json" id="schema-blog"></script>
   <link rel="stylesheet" href="styles.css">
   <style>
-    /* ── Layout ── */
     .wp-outer { max-width: 780px; margin: 0 auto; padding: 2.5rem 1.5rem 4rem; }
 
-    /* ── Back nav ── */
     .wp-back { display:inline-flex; align-items:center; gap:0.4rem; font-size:0.82rem; font-weight:600; color:var(--ep-green); text-decoration:none; margin-bottom:2rem; }
-    .wp-back:hover { text-decoration: underline; }
+    .wp-back:hover { text-decoration:underline; }
 
-    /* ── Header ── */
+    /* ── Hill photo hero ── */
+    .wp-hill-photo {
+      width:100%; aspect-ratio:16/7; object-fit:cover;
+      border-radius:var(--radius-xl); border:1px solid var(--border);
+      display:block; background:var(--ep-cream-dark);
+      margin-bottom:2rem;
+    }
+    .wp-hill-placeholder {
+      width:100%; aspect-ratio:16/7;
+      border-radius:var(--radius-xl); border:1px solid var(--border);
+      background:linear-gradient(135deg,rgba(33,67,50,0.07) 0%,rgba(191,155,123,0.1) 100%);
+      display:flex; align-items:center; justify-content:center;
+      flex-direction:column; gap:0.5rem; margin-bottom:2rem;
+      color:var(--text-muted); font-size:0.82rem;
+    }
+    .wp-hill-caption { font-family:var(--mono); font-size:0.68rem; color:var(--text-muted); margin-top:-1.5rem; margin-bottom:2rem; text-align:right; }
+
     .wp-eyebrow { font-size:0.7rem; font-weight:700; text-transform:uppercase; letter-spacing:0.12em; color:var(--ep-tan); margin-bottom:0.75rem; }
     .wp-title { font-family:var(--serif); font-size:clamp(1.7rem,4vw,2.4rem); color:var(--ep-green); line-height:1.2; margin-bottom:1rem; }
     .wp-meta  { font-size:0.8rem; color:var(--text-muted); margin-bottom:2rem; font-family:var(--mono); }
 
     /* ── Pulse score hero ── */
     .pulse-hero {
-      background: var(--ep-green); border-radius: var(--radius-xl);
-      padding: 2rem 2.5rem; display:flex; align-items:center; gap:2.5rem; flex-wrap:wrap;
-      margin-bottom: 2.5rem;
+      background:var(--ep-green); border-radius:var(--radius-xl);
+      padding:2rem 2.5rem; display:flex; align-items:center; gap:2.5rem; flex-wrap:wrap;
+      margin-bottom:2.5rem;
     }
     .pulse-score-big { text-align:center; flex-shrink:0; }
-    .pulse-num { font-family:var(--serif); font-size:4rem; color:var(--ep-tan); line-height:1; }
+    .pulse-num   { font-family:var(--serif); font-size:4rem; color:var(--ep-tan); line-height:1; }
     .pulse-label { font-size:0.68rem; text-transform:uppercase; letter-spacing:0.1em; color:rgba(242,240,230,0.6); }
     .pulse-text h3 { font-family:var(--serif); font-size:1.3rem; color:var(--ep-cream); margin-bottom:0.4rem; }
-    .pulse-text p  { font-size:0.88rem; color:rgba(242,240,230,0.7); line-height:1.6; }
+    .pulse-text p  { font-size:0.88rem; color:rgba(242,240,230,0.75); line-height:1.6; }
     .pulse-delta { display:inline-block; margin-top:0.5rem; font-family:var(--mono); font-size:0.8rem; padding:0.2rem 0.7rem; border-radius:20px; }
-    .delta-up-good { background:rgba(34,197,94,0.2); color:#86efac; }
-    .delta-down-bad { background:rgba(220,38,38,0.2); color:#fca5a5; }
-    .delta-neu { background:rgba(255,255,255,0.1); color:rgba(242,240,230,0.6); }
+    .delta-up-good  { background:rgba(34,197,94,0.2);  color:#86efac; }
+    .delta-down-bad { background:rgba(220,38,38,0.2);  color:#fca5a5; }
+    .delta-neu      { background:rgba(255,255,255,0.1); color:rgba(242,240,230,0.6); }
 
-    /* ── Narrative ── */
-    .wp-narrative { font-size:1.05rem; line-height:1.8; color:var(--text-secondary); margin-bottom:2.5rem; border-left:3px solid var(--ep-tan); padding-left:1.25rem; }
-
-    /* ── Section headers ── */
     .wp-section { margin-bottom:2.5rem; }
     .wp-section-title { font-family:var(--serif); font-size:1.3rem; color:var(--ep-green); margin-bottom:1rem; display:flex; align-items:center; gap:0.5rem; }
-
-    /* ── Data grid ── */
-    .data-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(145px,1fr)); gap:0.75rem; }
-    .data-cell { background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-md); padding:0.9rem 1rem; }
-    .data-cell-label { font-size:0.67rem; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--text-muted); margin-bottom:0.3rem; }
-    .data-cell-val   { font-family:var(--serif); font-size:1.5rem; color:var(--ep-green); line-height:1; }
-    .data-cell-sub   { font-size:0.72rem; color:var(--text-muted); margin-top:0.25rem; }
-    .data-cell-delta { font-family:var(--mono); font-size:0.7rem; margin-top:0.3rem; }
-    .d-up   { color:#dc2626; } .d-down { color:#16a34a; } .d-neu  { color:var(--text-muted); }
 
     /* ── AQI bar ── */
     .aqi-bar-wrap { background:var(--ep-cream-dark); border-radius:var(--radius-md); padding:1rem 1.25rem; margin-bottom:1rem; }
@@ -62,79 +62,116 @@
     .aqi-bar-pin { position:absolute; top:-5px; width:3px; height:20px; background:var(--ep-green); border-radius:2px; transform:translateX(-50%); }
     .aqi-bar-vals { display:flex; justify-content:space-between; font-family:var(--mono); font-size:0.7rem; color:var(--text-muted); margin-top:0.4rem; }
 
-    /* ── Bird highlight card ── */
+    /* ── Data grid ── */
+    .data-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(145px,1fr)); gap:0.75rem; }
+    .data-cell { background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-md); padding:0.9rem 1rem; }
+    .data-cell-label { font-size:0.67rem; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--text-muted); margin-bottom:0.3rem; }
+    .data-cell-val   { font-family:var(--serif); font-size:1.5rem; color:var(--ep-green); line-height:1; }
+    .data-cell-sub   { font-size:0.72rem; color:var(--text-muted); margin-top:0.25rem; }
+    .data-cell-delta { font-family:var(--mono); font-size:0.7rem; margin-top:0.3rem; }
+    .d-up { color:#dc2626; } .d-down { color:#16a34a; } .d-neu { color:var(--text-muted); }
+
+    /* ── Bird cards ── */
     .bird-highlight {
       background:rgba(33,67,50,0.05); border:1px solid rgba(33,67,50,0.12);
       border-radius:var(--radius-lg); padding:1.25rem 1.5rem;
       display:flex; gap:1.25rem; align-items:flex-start; margin-bottom:1rem;
     }
-    .bird-highlight-icon { font-size:2.5rem; flex-shrink:0; }
+    .bird-highlight-icon  { font-size:2.5rem; flex-shrink:0; }
     .bird-highlight-title { font-family:var(--serif); font-size:1.1rem; color:var(--ep-green); margin-bottom:0.2rem; }
     .bird-highlight-sci   { font-size:0.75rem; color:var(--text-muted); font-style:italic; margin-bottom:0.5rem; }
     .bird-highlight-body  { font-size:0.88rem; color:var(--text-secondary); line-height:1.6; }
     .bird-highlight-cta   { display:inline-block; margin-top:0.75rem; font-size:0.82rem; font-weight:600; color:var(--ep-green); text-decoration:none; }
     .bird-highlight-cta:hover { text-decoration:underline; }
 
-    /* ── Moments row ── */
+    /* ── Moments ── */
     .moments-row { display:grid; grid-template-columns:1fr 1fr; gap:0.75rem; }
     @media(max-width:500px){ .moments-row { grid-template-columns:1fr; } }
-    .moment-card { background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-md); padding:1rem 1.1rem; }
+    .moment-card  { background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-md); padding:1rem 1.1rem; }
     .moment-icon  { font-size:1.5rem; margin-bottom:0.4rem; }
     .moment-label { font-size:0.67rem; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--text-muted); margin-bottom:0.2rem; }
     .moment-val   { font-family:var(--serif); font-size:1.2rem; color:var(--ep-green); }
     .moment-sub   { font-size:0.75rem; color:var(--text-muted); margin-top:0.2rem; }
 
-    /* ── Comparison block ── */
+    /* ── Compare ── */
     .compare-row { display:grid; grid-template-columns:repeat(3,1fr); gap:0.75rem; }
     @media(max-width:500px){ .compare-row { grid-template-columns:1fr; } }
-    .compare-cell { background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-md); padding:0.9rem 1rem; text-align:center; }
+    .compare-cell  { background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-md); padding:0.9rem 1rem; text-align:center; }
     .compare-label { font-size:0.67rem; font-weight:600; text-transform:uppercase; letter-spacing:0.07em; color:var(--text-muted); margin-bottom:0.4rem; }
     .compare-arrow { font-size:1.4rem; display:block; }
     .compare-desc  { font-size:0.78rem; color:var(--text-secondary); margin-top:0.2rem; }
 
-    /* ── Week ahead ── */
-    .forecast-block {
-      background:var(--ep-green); color:var(--ep-cream);
-      border-radius:var(--radius-lg); padding:1.5rem 1.75rem;
-    }
+    /* ── Seasonal context ── */
+    .context-block { background:rgba(191,155,123,0.1); border:1px solid rgba(191,155,123,0.25); border-radius:var(--radius-lg); padding:1.25rem 1.5rem; margin-bottom:2.5rem; }
+    .context-block p { font-size:0.9rem; color:var(--text-secondary); line-height:1.7; margin:0; }
+
+    /* ── Forecast block ── */
+    .forecast-block { background:var(--ep-green); color:var(--ep-cream); border-radius:var(--radius-lg); padding:1.5rem 1.75rem; }
     .forecast-block h3 { font-family:var(--serif); font-size:1.2rem; margin-bottom:0.75rem; color:var(--ep-cream); }
     .forecast-stats { display:flex; gap:1.5rem; flex-wrap:wrap; margin-bottom:1rem; }
     .forecast-stat  { font-family:var(--mono); font-size:0.82rem; color:rgba(242,240,230,0.75); }
     .forecast-stat strong { color:var(--ep-tan); }
     .forecast-text  { font-size:0.9rem; color:rgba(242,240,230,0.8); line-height:1.6; }
 
-    /* ── Seasonal context ── */
-    .context-block { background:rgba(191,155,123,0.1); border:1px solid rgba(191,155,123,0.25); border-radius:var(--radius-lg); padding:1.25rem 1.5rem; }
-    .context-block p { font-size:0.9rem; color:var(--text-secondary); line-height:1.7; margin:0; }
-
     /* ── Closing ── */
-    .wp-closing { font-size:1rem; line-height:1.8; color:var(--text-secondary); font-style:italic; text-align:center; padding:2rem 1rem; border-top:1px solid var(--border); margin-top:2.5rem; }
+    .wp-closing { font-size:1rem; line-height:1.8; color:var(--text-secondary); font-style:italic; text-align:center; padding:2rem 1rem 1.5rem; border-top:1px solid var(--border); margin-top:2.5rem; }
+
+    /* ── Next report banner ── */
+    .next-report-banner {
+      background:rgba(33,67,50,0.05); border:1px solid rgba(33,67,50,0.12);
+      border-radius:var(--radius-lg); padding:1.25rem 1.5rem;
+      display:flex; align-items:center; gap:1rem; flex-wrap:wrap;
+      margin-top:1.5rem;
+    }
+    .next-report-icon  { font-size:1.75rem; flex-shrink:0; }
+    .next-report-text  { flex:1; }
+    .next-report-text strong { font-size:0.9rem; color:var(--ep-green); display:block; margin-bottom:0.2rem; }
+    .next-report-text span   { font-size:0.82rem; color:var(--text-muted); }
+
+    /* ── Subscribe CTA ── */
+    .wp-subscribe {
+      background:var(--ep-green); border-radius:var(--radius-xl);
+      padding:2rem 2.5rem; text-align:center; margin-top:2rem;
+    }
+    .wp-subscribe h3 { font-family:var(--serif); font-size:1.3rem; color:var(--ep-cream); margin-bottom:0.5rem; }
+    .wp-subscribe p  { font-size:0.88rem; color:rgba(242,240,230,0.7); margin-bottom:1.25rem; }
+    .wp-subscribe-form { display:flex; gap:0.5rem; max-width:400px; margin:0 auto; flex-wrap:wrap; justify-content:center; }
+    .wp-subscribe-form input {
+      flex:1; min-width:200px; padding:0.65rem 1rem; border-radius:var(--radius-sm);
+      border:none; font-family:var(--sans); font-size:0.9rem;
+      background:rgba(242,240,230,0.95); color:var(--ep-green);
+    }
+    .wp-subscribe-form input::placeholder { color:rgba(33,67,50,0.45); }
+    .wp-subscribe-form button {
+      padding:0.65rem 1.25rem; background:var(--ep-tan); color:white;
+      border:none; border-radius:var(--radius-sm); font-weight:700;
+      font-size:0.88rem; cursor:pointer; font-family:var(--sans);
+      transition:opacity 0.15s;
+    }
+    .wp-subscribe-form button:hover { opacity:0.88; }
+    .wp-subscribe-note { font-size:0.72rem; color:rgba(242,240,230,0.45); margin-top:0.75rem; }
+
+    /* ── Share ── */
+    .share-row { display:flex; gap:0.75rem; flex-wrap:wrap; margin-top:1.5rem; }
+    .share-btn { display:inline-flex; align-items:center; gap:0.4rem; padding:0.5rem 1rem; border-radius:var(--radius-sm); font-size:0.8rem; font-weight:600; text-decoration:none; border:1px solid var(--border); color:var(--ep-green); background:white; cursor:pointer; transition:background 0.15s; font-family:var(--sans); }
+    .share-btn:hover { background:var(--ep-cream-dark); }
 
     /* ── Nav row ── */
     .wp-nav-row { display:flex; justify-content:space-between; align-items:center; padding:1.5rem 0; border-top:1px solid var(--border); margin-top:1rem; }
     .wp-nav-link { font-size:0.85rem; font-weight:600; color:var(--ep-green); text-decoration:none; }
     .wp-nav-link:hover { text-decoration:underline; }
     .wp-nav-link.disabled { color:var(--text-muted); pointer-events:none; }
-
-    /* ── Share buttons ── */
-    .share-row { display:flex; gap:0.75rem; flex-wrap:wrap; margin-top:1.5rem; }
-    .share-btn { display:inline-flex; align-items:center; gap:0.4rem; padding:0.5rem 1rem; border-radius:var(--radius-sm); font-size:0.8rem; font-weight:600; text-decoration:none; border:1px solid var(--border); color:var(--ep-green); background:white; cursor:pointer; transition:background 0.15s; }
-    .share-btn:hover { background:var(--ep-cream-dark); }
-
-    .ep-skeleton-inline { height:1.5rem; width:200px; display:inline-block; vertical-align:middle; border-radius:4px; }
   </style>
 </head>
 <body>
 <div id="ep-nav"></div>
 
 <div class="wp-outer" id="wp-content">
-  <!-- Loading state -->
   <a class="wp-back" href="weekly.html">← All weekly reports</a>
+  <div class="ep-skeleton" style="height:200px;border-radius:1rem;margin-bottom:2rem;"></div>
   <div class="ep-skeleton" style="height:1rem;width:180px;margin-bottom:1rem;"></div>
   <div class="ep-skeleton" style="height:3rem;margin-bottom:1rem;"></div>
-  <div class="ep-skeleton" style="height:1rem;width:260px;margin-bottom:2rem;"></div>
   <div class="ep-skeleton" style="height:140px;border-radius:1rem;margin-bottom:2rem;"></div>
-  <div class="ep-skeleton" style="height:5rem;margin-bottom:2rem;"></div>
 </div>
 
 <div id="ep-footer"></div>
@@ -145,62 +182,100 @@ const SUPABASE_KEY = 'sb_publishable_DrHFT5J0vmrkYraUXIlpQQ_gsk1rdq6';
 const HDR = { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` };
 
 function fmtDate(d) { return new Date(d).toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'}); }
-function fmtDateShort(d) { return new Date(d).toLocaleDateString('en-IN',{day:'numeric',month:'short'}); }
 function fmtHour(h) {
   if (h == null) return '—';
   const ampm = h < 12 ? 'AM' : 'PM';
-  const h12  = h % 12 || 12;
-  return `${h12}:00 ${ampm}`;
+  return `${h % 12 || 12}:00 ${ampm}`;
 }
 function deltaArrow(now, prev, lowerBetter = true) {
   if (prev == null) return { arrow:'→', cls:'d-neu', text:'vs last week' };
   const d = now - prev;
   if (d === 0) return { arrow:'→', cls:'d-neu', text:'same as last week' };
   const improving = lowerBetter ? d < 0 : d > 0;
-  return {
-    arrow: d > 0 ? '↑' : '↓',
-    cls: improving ? 'd-down' : 'd-up',
-    text: `${d > 0 ? '+' : ''}${Math.round(d * 10) / 10} vs last week`
-  };
+  return { arrow: d > 0 ? '↑' : '↓', cls: improving ? 'd-down' : 'd-up', text: `${d > 0 ? '+' : ''}${Math.round(d * 10) / 10} vs last week` };
 }
 function aqiPct(v, max = 150) { return Math.min(100, Math.round(v / max * 100)); }
 function pulseLabel(s) { return s >= 65 ? 'Healthy' : s >= 45 ? 'Moderate' : 'Stressed'; }
 function pulseClass(s) { return s >= 65 ? 'delta-up-good' : s >= 45 ? 'delta-neu' : 'delta-down-bad'; }
 
+// Fetch nearest hill photo to the week
+async function fetchHillPhoto(weekStart, weekEnd) {
+  try {
+    const from = `${weekStart}T00:00:00+05:30`;
+    const to   = `${weekEnd}T23:59:59+05:30`;
+    const res  = await fetch(
+      `${SUPABASE_URL}/rest/v1/timelapse_frames?select=r2_url,captured_at,filename&captured_at=gte.${encodeURIComponent(from)}&captured_at=lte.${encodeURIComponent(to)}&order=captured_at.desc&limit=1`,
+      { headers: HDR }
+    );
+    const rows = await res.json();
+    return Array.isArray(rows) && rows[0] ? rows[0] : null;
+  } catch(e) { return null; }
+}
+
+// Next Monday 6am IST from today
+function nextReportDate() {
+  const now = new Date();
+  const ist = new Date(now.getTime() + 5.5 * 3600000);
+  const day = ist.getUTCDay(); // 0=Sun, 1=Mon
+  const daysUntilMon = day === 1 ? 7 : (8 - day) % 7 || 7;
+  const nextMon = new Date(ist.getTime() + daysUntilMon * 86400000);
+  return nextMon.toLocaleDateString('en-IN', { weekday:'long', day:'numeric', month:'long', timeZone:'UTC' });
+}
+
+async function handleSubscribe(e) {
+  e.preventDefault();
+  const input  = e.target.querySelector('input');
+  const btn    = e.target.querySelector('button');
+  const email  = input.value.trim();
+  if (!email) return;
+  btn.textContent = 'Subscribing…'; btn.disabled = true;
+  try {
+    const r = await fetch(`${SUPABASE_URL}/rest/v1/newsletter_signups`, {
+      method:'POST', headers:{...HDR,'Content-Type':'application/json','Prefer':'return=minimal'},
+      body: JSON.stringify({ email })
+    });
+    if (r.ok || r.status === 409) {
+      btn.textContent = '✓ Subscribed!';
+      input.value = '';
+    } else throw new Error();
+  } catch { btn.textContent = 'Try again'; btn.disabled = false; }
+}
+
 async function loadPost() {
   const slug = new URLSearchParams(location.search).get('week');
-  if (!slug) { document.getElementById('wp-content').innerHTML = `<p>No week specified. <a href="weekly.html">View all posts →</a></p>`; return; }
-
-  // Fetch this post + adjacent posts for prev/next nav
-  const [postRes, allRes] = await Promise.all([
-    fetch(`${SUPABASE_URL}/rest/v1/weekly_posts?slug=eq.${slug}&select=*`, { headers: HDR }),
-    fetch(`${SUPABASE_URL}/rest/v1/weekly_posts?select=slug,week_start&order=week_start.desc&limit=100`, { headers: HDR }),
-  ]);
-  const posts = await postRes.json();
-  const allPosts = await allRes.json();
-  const p = Array.isArray(posts) && posts[0];
-  if (!p) {
-    document.getElementById('wp-content').innerHTML = `<p>Post not found. <a href="weekly.html">View all posts →</a></p>`;
+  if (!slug) {
+    document.getElementById('wp-content').innerHTML = `<p>No week specified. <a href="weekly.html">View all posts →</a></p>`;
     return;
   }
 
-  // Update head meta
+  const [postRes, allRes] = await Promise.all([
+    fetch(`${SUPABASE_URL}/rest/v1/weekly_posts?slug=eq.${slug}&select=*`, { headers: HDR }),
+    fetch(`${SUPABASE_URL}/rest/v1/weekly_posts?select=slug&order=week_start.desc&limit=100`, { headers: HDR }),
+  ]);
+  const posts    = await postRes.json();
+  const allPosts = await allRes.json();
+  const p = Array.isArray(posts) && posts[0];
+  if (!p) {
+    document.getElementById('wp-content').innerHTML = `<p style="padding:2rem;color:var(--text-muted)">Post not found. <a href="weekly.html">View all posts →</a></p>`;
+    return;
+  }
+
+  // Fetch hill photo in parallel
+  const hillPhoto = await fetchHillPhoto(p.week_start, p.week_end);
+
+  // Update head
   document.getElementById('page-title').textContent = p.title;
   document.getElementById('page-desc').content = p.meta_description || p.title;
   document.getElementById('page-canonical').href = `https://www.earth-pulse.org/weekly-post.html?week=${slug}`;
-
-  // BlogPosting schema
   document.getElementById('schema-blog').textContent = JSON.stringify({
-    "@context": "https://schema.org",
-    "@type": "BlogPosting",
-    "headline": p.title,
-    "description": p.meta_description,
-    "datePublished": p.published_at,
-    "dateModified": p.published_at,
-    "author": { "@type": "Organization", "name": "Earth Pulse", "url": "https://www.earth-pulse.org" },
-    "publisher": { "@type": "Organization", "name": "Earth Pulse", "logo": { "@type": "ImageObject", "url": "https://www.earth-pulse.org/earth-pulse-logo.png" }},
-    "mainEntityOfPage": { "@type": "WebPage", "@id": `https://www.earth-pulse.org/weekly-post.html?week=${slug}` },
-    "keywords": ["Baner AQI", "Pune air quality", "Western Ghats birds", "Baner weather", "citizen science Pune"],
+    "@context":"https://schema.org","@type":"BlogPosting",
+    "headline": p.title, "description": p.meta_description,
+    "datePublished": p.published_at, "dateModified": p.published_at,
+    "author":    {"@type":"Organization","name":"Earth Pulse","url":"https://www.earth-pulse.org"},
+    "publisher": {"@type":"Organization","name":"Earth Pulse","logo":{"@type":"ImageObject","url":"https://www.earth-pulse.org/earth-pulse-logo.png"}},
+    "mainEntityOfPage":{"@type":"WebPage","@id":`https://www.earth-pulse.org/weekly-post.html?week=${slug}`},
+    "keywords":["Baner AQI","Pune air quality","Western Ghats birds","Baner weather","citizen science Pune"],
+    "image": hillPhoto?.r2_url || "https://www.earth-pulse.org/earth-pulse-logo.png",
   });
 
   // Prev / next
@@ -209,47 +284,48 @@ async function loadPost() {
   const prevSlug = allSlugs[idx + 1] || null;
   const nextSlug = allSlugs[idx - 1] || null;
 
-  // AQI bar pin positions
+  // AQI bar pins
   const highPct = aqiPct(p.aqi_high);
   const lowPct  = aqiPct(p.aqi_low);
 
   // Deltas
-  const aqiDelta  = deltaArrow(p.aqi_avg, null);  // we don't store prev avg, use spike days
   const spikeDelta = p.aqi_prev_spikes != null
-    ? (p.aqi_spike_days < p.aqi_prev_spikes ? `↓ ${p.aqi_prev_spikes - p.aqi_spike_days} fewer spike days` :
-       p.aqi_spike_days > p.aqi_prev_spikes ? `↑ ${p.aqi_spike_days - p.aqi_prev_spikes} more spike days` : '→ same')
+    ? (p.aqi_spike_days < p.aqi_prev_spikes ? `↓ ${p.aqi_prev_spikes - p.aqi_spike_days} fewer spike days`
+     : p.aqi_spike_days > p.aqi_prev_spikes ? `↑ ${p.aqi_spike_days - p.aqi_prev_spikes} more spike days` : '→ same')
     : '';
-  const birdDelta = p.bird_detections_prev != null
-    ? deltaArrow(p.bird_detections_total, p.bird_detections_prev, false)
-    : null;
+  const birdDelta  = p.bird_detections_prev != null ? deltaArrow(p.bird_detections_total, p.bird_detections_prev, false) : null;
   const pulseDelta = p.pulse_prev != null ? p.pulse_score - p.pulse_prev : null;
   const pulseDeltaText = pulseDelta == null ? '' : pulseDelta > 0 ? `↑ ${pulseDelta} from last week` : pulseDelta < 0 ? `↓ ${Math.abs(pulseDelta)} from last week` : '→ same as last week';
 
-  // Seasonal context sentences
+  // Seasonal context
   let seasonalHtml = '';
   if (p.same_week_last_year_aqi != null || p.same_week_last_year_temp != null) {
-    const aqiChange = p.same_week_last_year_aqi != null
-      ? (p.aqi_avg < p.same_week_last_year_aqi ? `${Math.round(p.same_week_last_year_aqi - p.aqi_avg)} points lower` : `${Math.round(p.aqi_avg - p.same_week_last_year_aqi)} points higher`)
-      : '';
-    const tempChange = p.same_week_last_year_temp != null
-      ? (p.temp_avg < p.same_week_last_year_temp ? `${(p.same_week_last_year_temp - p.temp_avg).toFixed(1)}°C cooler` : `${(p.temp_avg - p.same_week_last_year_temp).toFixed(1)}°C warmer`)
-      : '';
+    const aqiChange  = p.same_week_last_year_aqi  != null ? (p.aqi_avg < p.same_week_last_year_aqi  ? `${Math.round(p.same_week_last_year_aqi - p.aqi_avg)} points lower` : `${Math.round(p.aqi_avg - p.same_week_last_year_aqi)} points higher`) : '';
+    const tempChange = p.same_week_last_year_temp != null ? (p.temp_avg < p.same_week_last_year_temp ? `${(p.same_week_last_year_temp - p.temp_avg).toFixed(1)}°C cooler` : `${(p.temp_avg - p.same_week_last_year_temp).toFixed(1)}°C warmer`) : '';
     const parts = [aqiChange && `AQI was ${aqiChange} than the same week last year`, tempChange && `temperatures ran ${tempChange}`].filter(Boolean);
     if (parts.length) seasonalHtml = `<div class="context-block"><p>📅 <strong>Same week last year:</strong> ${parts.join(', ')}. Long-term monitoring reveals patterns invisible to daily observation.</p></div>`;
   }
 
-  // Share text
-  const shareText = `🌿 Earth Pulse Weekly: AQI ${p.aqi_low}–${p.aqi_high}, ${p.bird_species_count} bird species, Pulse Score ${p.pulse_score}. Baner, Pune. ${p.week_start} week.`;
+  // Hill photo HTML
+  const hillPhotoHtml = hillPhoto?.r2_url
+    ? `<img class="wp-hill-photo" src="${hillPhoto.r2_url}" alt="Baner Hill — ${new Date(hillPhoto.captured_at).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric',timeZone:'Asia/Kolkata'})}" loading="eager" onerror="this.style.display='none'">
+       <p class="wp-hill-caption">📷 Baner Hill · ${new Date(hillPhoto.captured_at).toLocaleDateString('en-IN',{weekday:'short',day:'numeric',month:'short',hour:'2-digit',minute:'2-digit',hour12:true,timeZone:'Asia/Kolkata'})}</p>`
+    : `<div class="wp-hill-placeholder"><span style="font-size:2.5rem">🏔️</span><span>Hill photos coming with Phase 2 camera deployment</span></div>`;
+
+  // Share
+  const shareText = `🌿 Earth Pulse Weekly: AQI ${p.aqi_low}–${p.aqi_high}, ${p.bird_species_count} bird species, Pulse Score ${p.pulse_score}. Baner, Pune.`;
   const shareUrl  = `https://www.earth-pulse.org/weekly-post.html?week=${slug}`;
 
   document.getElementById('wp-content').innerHTML = `
     <a class="wp-back" href="weekly.html">← All weekly reports</a>
 
+    ${hillPhotoHtml}
+
     <div class="wp-eyebrow">Earth Pulse Weekly · ${fmtDate(p.week_start)} – ${fmtDate(p.week_end)}</div>
     <h1 class="wp-title">${p.title.replace('Earth Pulse Weekly: ','')}</h1>
     <p class="wp-meta">Auto-generated from ${(p.bird_detections_total||0) + 168} sensor readings · Published ${new Date(p.published_at).toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'})}</p>
 
-    <!-- PULSE SCORE HERO -->
+    <!-- PULSE SCORE -->
     <div class="pulse-hero">
       <div class="pulse-score-big">
         <div class="pulse-num">${p.pulse_score ?? '—'}</div>
@@ -265,7 +341,6 @@ async function loadPost() {
     <!-- AIR QUALITY -->
     <div class="wp-section">
       <div class="wp-section-title">💨 Air Quality</div>
-
       <div class="aqi-bar-wrap">
         <div class="aqi-bar-label">AQI range this week (EU scale)</div>
         <div class="aqi-bar-track">
@@ -274,28 +349,11 @@ async function loadPost() {
         </div>
         <div class="aqi-bar-vals"><span>Low: ${p.aqi_low}</span><span>High: ${p.aqi_high}</span></div>
       </div>
-
       <div class="data-grid">
-        <div class="data-cell">
-          <div class="data-cell-label">Avg AQI</div>
-          <div class="data-cell-val">${p.aqi_avg ?? '—'}</div>
-          <div class="data-cell-sub">EU scale</div>
-        </div>
-        <div class="data-cell">
-          <div class="data-cell-label">Good air hours</div>
-          <div class="data-cell-val">${p.aqi_good_pct ?? '—'}%</div>
-          <div class="data-cell-sub">AQI ≤ 40</div>
-        </div>
-        <div class="data-cell">
-          <div class="data-cell-label">Spike days</div>
-          <div class="data-cell-val">${p.aqi_spike_days ?? 0}</div>
-          <div class="data-cell-sub">AQI > 100 ${spikeDelta ? `· ${spikeDelta}` : ''}</div>
-        </div>
-        <div class="data-cell">
-          <div class="data-cell-label">Humidity avg/peak</div>
-          <div class="data-cell-val">${p.humidity_avg ?? '—'}%</div>
-          <div class="data-cell-sub">Peak: ${p.humidity_peak ?? '—'}%</div>
-        </div>
+        <div class="data-cell"><div class="data-cell-label">Avg AQI</div><div class="data-cell-val">${p.aqi_avg ?? '—'}</div><div class="data-cell-sub">EU scale</div></div>
+        <div class="data-cell"><div class="data-cell-label">Good air hours</div><div class="data-cell-val">${p.aqi_good_pct ?? '—'}%</div><div class="data-cell-sub">AQI ≤ 40</div></div>
+        <div class="data-cell"><div class="data-cell-label">Spike days</div><div class="data-cell-val">${p.aqi_spike_days ?? 0}</div><div class="data-cell-sub">AQI > 100 ${spikeDelta ? `· ${spikeDelta}` : ''}</div></div>
+        <div class="data-cell"><div class="data-cell-label">Humidity avg/peak</div><div class="data-cell-val">${p.humidity_avg ?? '—'}%</div><div class="data-cell-sub">Peak: ${p.humidity_peak ?? '—'}%</div></div>
       </div>
     </div>
 
@@ -303,33 +361,16 @@ async function loadPost() {
     <div class="wp-section">
       <div class="wp-section-title">🌡️ Temperature & Rain</div>
       <div class="data-grid">
-        <div class="data-cell">
-          <div class="data-cell-label">High</div>
-          <div class="data-cell-val">${p.temp_high ?? '—'}°</div>
-          <div class="data-cell-sub">°C this week</div>
-        </div>
-        <div class="data-cell">
-          <div class="data-cell-label">Low</div>
-          <div class="data-cell-val">${p.temp_low ?? '—'}°</div>
-          <div class="data-cell-sub">°C this week</div>
-        </div>
-        <div class="data-cell">
-          <div class="data-cell-label">Total rain</div>
-          <div class="data-cell-val">${p.rain_total ?? 0}</div>
-          <div class="data-cell-sub">mm · ${p.rain_days ?? 0} rainy days</div>
-        </div>
-        <div class="data-cell">
-          <div class="data-cell-label">Avg temperature</div>
-          <div class="data-cell-val">${p.temp_avg ?? '—'}°</div>
-          <div class="data-cell-sub">°C</div>
-        </div>
+        <div class="data-cell"><div class="data-cell-label">High</div><div class="data-cell-val">${p.temp_high ?? '—'}°</div><div class="data-cell-sub">°C this week</div></div>
+        <div class="data-cell"><div class="data-cell-label">Low</div><div class="data-cell-val">${p.temp_low ?? '—'}°</div><div class="data-cell-sub">°C this week</div></div>
+        <div class="data-cell"><div class="data-cell-label">Total rain</div><div class="data-cell-val">${p.rain_total ?? 0}</div><div class="data-cell-sub">mm · ${p.rain_days ?? 0} rainy days</div></div>
+        <div class="data-cell"><div class="data-cell-label">Avg temperature</div><div class="data-cell-val">${p.temp_avg ?? '—'}°</div><div class="data-cell-sub">°C</div></div>
       </div>
     </div>
 
     <!-- BIRDS -->
     <div class="wp-section">
       <div class="wp-section-title">🐦 Birds of the Week</div>
-
       ${p.discovery_species ? `
       <div class="bird-highlight">
         <div class="bird-highlight-icon">🌟</div>
@@ -340,7 +381,6 @@ async function loadPost() {
           <a class="bird-highlight-cta" href="species.html?bird=${encodeURIComponent((p.discovery_sci||'').replace(/ /g,'_'))}">Read the ${p.discovery_species} species profile →</a>
         </div>
       </div>` : ''}
-
       ${p.most_active_species && p.most_active_species !== p.discovery_species ? `
       <div class="bird-highlight" style="background:rgba(191,155,123,0.07);">
         <div class="bird-highlight-icon">🔊</div>
@@ -349,28 +389,15 @@ async function loadPost() {
           <div class="bird-highlight-body">Dominated the soundscape with ${p.most_active_count} detections — ${p.bird_detections_total ? Math.round(p.most_active_count/p.bird_detections_total*100) : '—'}% of all recordings this week.</div>
         </div>
       </div>` : ''}
-
       <div class="data-grid">
-        <div class="data-cell">
-          <div class="data-cell-label">Total detections</div>
-          <div class="data-cell-val">${p.bird_detections_total ?? 0}</div>
-          ${birdDelta ? `<div class="data-cell-delta ${birdDelta.cls}">${birdDelta.arrow} ${birdDelta.text}</div>` : ''}
-        </div>
-        <div class="data-cell">
-          <div class="data-cell-label">Species heard</div>
-          <div class="data-cell-val">${p.bird_species_count ?? 0}</div>
-          <div class="data-cell-sub">unique species</div>
-        </div>
-        <div class="data-cell">
-          <div class="data-cell-label">Peak hour</div>
-          <div class="data-cell-val" style="font-size:1.1rem;">${fmtHour(p.peak_activity_hour)}</div>
-          <div class="data-cell-sub">most active time IST</div>
-        </div>
+        <div class="data-cell"><div class="data-cell-label">Total detections</div><div class="data-cell-val">${p.bird_detections_total ?? 0}</div>${birdDelta ? `<div class="data-cell-delta ${birdDelta.cls}">${birdDelta.arrow} ${birdDelta.text}</div>` : ''}</div>
+        <div class="data-cell"><div class="data-cell-label">Species heard</div><div class="data-cell-val">${p.bird_species_count ?? 0}</div><div class="data-cell-sub">unique species</div></div>
+        <div class="data-cell"><div class="data-cell-label">Peak hour</div><div class="data-cell-val" style="font-size:1.1rem;">${fmtHour(p.peak_activity_hour)}</div><div class="data-cell-sub">most active IST</div></div>
       </div>
       <p style="text-align:center;margin-top:1rem;"><a href="birds.html" style="color:var(--ep-green);font-weight:500;font-size:0.85rem;">View full species log →</a></p>
     </div>
 
-    <!-- MOMENTS THAT MATTERED -->
+    <!-- MOMENTS -->
     <div class="wp-section">
       <div class="wp-section-title">✨ Moments That Mattered</div>
       <div class="moments-row">
@@ -396,22 +423,21 @@ async function loadPost() {
         <div class="compare-cell">
           <div class="compare-label">Air Quality</div>
           <span class="compare-arrow">${p.aqi_prev_spikes != null ? (p.aqi_spike_days <= p.aqi_prev_spikes ? '↓' : '↑') : '→'}</span>
-          <div class="compare-desc">${p.aqi_prev_spikes != null ? (p.aqi_spike_days <= p.aqi_prev_spikes ? 'Improved' : 'Worsened') : 'No comparison'}</div>
+          <div class="compare-desc">${p.aqi_prev_spikes != null ? (p.aqi_spike_days <= p.aqi_prev_spikes ? 'Improved' : 'Worsened') : 'No comparison yet'}</div>
         </div>
         <div class="compare-cell">
           <div class="compare-label">Bird Activity</div>
           <span class="compare-arrow">${birdDelta ? birdDelta.arrow : '→'}</span>
-          <div class="compare-desc">${birdDelta ? (birdDelta.cls === 'd-down' ? 'Increased' : birdDelta.cls === 'd-up' ? 'Decreased' : 'Stable') : 'No comparison'}</div>
+          <div class="compare-desc">${birdDelta ? (birdDelta.cls === 'd-down' ? 'Increased' : birdDelta.cls === 'd-up' ? 'Decreased' : 'Stable') : 'No comparison yet'}</div>
         </div>
         <div class="compare-cell">
           <div class="compare-label">Pulse Score</div>
           <span class="compare-arrow">${pulseDelta != null ? (pulseDelta > 0 ? '↑' : pulseDelta < 0 ? '↓' : '→') : '→'}</span>
-          <div class="compare-desc">${pulseDelta != null ? (pulseDelta > 0 ? `+${pulseDelta} pts` : pulseDelta < 0 ? `${pulseDelta} pts` : 'Steady') : '—'}</div>
+          <div class="compare-desc">${pulseDelta != null ? (pulseDelta > 0 ? `+${pulseDelta} pts` : pulseDelta < 0 ? `${pulseDelta} pts` : 'Steady') : 'No comparison yet'}</div>
         </div>
       </div>
     </div>
 
-    <!-- SEASONAL CONTEXT -->
     ${seasonalHtml}
 
     <!-- WEEK AHEAD -->
@@ -423,12 +449,33 @@ async function loadPost() {
           <span class="forecast-stat">🌧️ <strong>${p.forecast_rain_mm ?? 0}mm</strong> forecast</span>
           <span class="forecast-stat">☔ <strong>${p.forecast_rain_prob ?? 0}%</strong> rain probability</span>
         </div>
-        <p class="forecast-text">${p.week_ahead || `Temperatures of ${p.forecast_temp_low}–${p.forecast_temp_high}°C expected. ${p.forecast_rain_mm > 0 ? `${p.forecast_rain_mm}mm rain possible.` : 'Dry conditions likely.'}`}</p>
+        <p class="forecast-text">${p.week_ahead || `Temperatures of ${p.forecast_temp_low}–${p.forecast_temp_high}°C expected. ${(p.forecast_rain_mm||0) > 0 ? `${p.forecast_rain_mm}mm rain possible.` : 'Dry conditions likely.'}`}</p>
       </div>
     </div>
 
     <!-- CLOSING -->
     <div class="wp-closing">${p.closing || 'The Sahyadri continues its quiet vigil over Baner.'}</div>
+
+    <!-- NEXT REPORT BANNER -->
+    <div class="next-report-banner">
+      <div class="next-report-icon">📅</div>
+      <div class="next-report-text">
+        <strong>Next report drops Monday, 6am</strong>
+        <span>The next Earth Pulse Weekly publishes on ${nextReportDate()} — auto-generated from a full week of sensor data.</span>
+      </div>
+      <a href="weekly.html" style="font-size:0.82rem;font-weight:600;color:var(--ep-green);text-decoration:none;white-space:nowrap;flex-shrink:0;">All reports →</a>
+    </div>
+
+    <!-- SUBSCRIBE -->
+    <div class="wp-subscribe">
+      <h3>🌿 Get the weekly report in your inbox</h3>
+      <p>One email every Monday morning. Air quality, birds, weather — Baner's pulse, delivered.</p>
+      <form class="wp-subscribe-form" onsubmit="handleSubscribe(event)">
+        <input type="email" placeholder="your@email.com" required autocomplete="email">
+        <button type="submit">Subscribe free</button>
+      </form>
+      <p class="wp-subscribe-note">No spam. ~1 email per week. Unsubscribe anytime.</p>
+    </div>
 
     <!-- SHARE -->
     <div class="share-row">
