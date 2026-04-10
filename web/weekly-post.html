@@ -423,7 +423,7 @@ async function loadPost() {
           <span class="forecast-stat">🌧️ <strong>${p.forecast_rain_mm ?? 0}mm</strong> forecast</span>
           <span class="forecast-stat">☔ <strong>${p.forecast_rain_prob ?? 0}%</strong> rain probability</span>
         </div>
-        <p class="forecast-text">${p.week_ahead || 'Forecast data unavailable.'}</p>
+        <p class="forecast-text">${p.week_ahead || `Temperatures of ${p.forecast_temp_low}–${p.forecast_temp_high}°C expected. ${p.forecast_rain_mm > 0 ? `${p.forecast_rain_mm}mm rain possible.` : 'Dry conditions likely.'}`}</p>
       </div>
     </div>
 
