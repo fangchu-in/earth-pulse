@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Earth Pulse Weekly — Baner's Environmental Chronicle</title>
+  <meta name="description" content="Auto-generated weekly reports on air quality, weather, and bird biodiversity in Baner, Pune. Every Sunday since 2026.">
+  <link rel="canonical" href="https://www.earth-pulse.org/weekly.html">
+  <link rel="icon" type="image/png" href="earth-pulse-logo.png">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .weekly-hero {
+      max-width: 1100px; margin: 0 auto; padding: 3rem 2rem 2rem;
+      text-align: center;
+    }
+    .weekly-hero h1 { font-family: var(--serif); font-size: clamp(2rem,5vw,3.2rem); color: var(--ep-green); margin-bottom: 0.5rem; }
+    .weekly-hero p  { font-size: 1rem; color: var(--text-muted); max-width: 520px; margin: 0 auto; }
+
+    .posts-grid {
+      max-width: 1100px; margin: 2rem auto; padding: 0 2rem;
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(310px,1fr)); gap: 1.5rem;
+    }
+    .post-card {
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg);
+      padding: 1.5rem; text-decoration: none; color: inherit; display: flex; flex-direction: column;
+      transition: box-shadow 0.15s, transform 0.12s;
+    }
+    .post-card:hover { box-shadow: 0 6px 24px rgba(33,67,50,0.1); transform: translateY(-2px); }
+    .post-card-dates { font-family: var(--mono); font-size: 0.72rem; color: var(--ep-tan); margin-bottom: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.07em; }
+    .post-card-title { font-family: var(--serif); font-size: 1.15rem; color: var(--ep-green); margin-bottom: 0.75rem; line-height: 1.35; }
+    .post-card-hook  { font-size: 0.85rem; color: var(--text-secondary); line-height: 1.6; flex: 1; }
+    .post-card-stats { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border); }
+    .post-stat { font-family: var(--mono); font-size: 0.72rem; color: var(--text-muted); }
+    .post-stat strong { color: var(--ep-green); }
+    .pulse-badge {
+      display: inline-flex; align-items: center; gap: 0.3rem;
+      background: var(--ep-green); color: var(--ep-cream); border-radius: 20px;
+      padding: 0.2rem 0.7rem; font-size: 0.72rem; font-weight: 700;
+      font-family: var(--mono); margin-left: auto; align-self: flex-start;
+    }
+    .pulse-badge.good  { background: #16a34a; }
+    .pulse-badge.ok    { background: #ca8a04; }
+    .pulse-badge.poor  { background: #dc2626; }
+
+    .posts-empty { text-align: center; padding: 4rem; color: var(--text-muted); }
+    .posts-loading { display: flex; gap: 1.5rem; flex-wrap: wrap; padding: 0 2rem; max-width: 1100px; margin: 2rem auto; }
+    .skeleton-card { flex: 1; min-width: 280px; height: 220px; border-radius: var(--radius-lg); }
+  </style>
+</head>
+<body>
+<div id="ep-nav"></div>
+
+<div class="weekly-hero">
+  <p style="font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:var(--ep-tan);margin-bottom:0.75rem;">Every Sunday · Auto-generated from live data</p>
+  <h1>Earth Pulse Weekly</h1>
+  <p>A weekly chronicle of air, weather, and wildlife in Baner — computed every Sunday from thousands of hourly readings.</p>
+</div>
+
+<div id="posts-container">
+  <div class="posts-loading">
+    <div class="ep-skeleton skeleton-card"></div>
+    <div class="ep-skeleton skeleton-card"></div>
+    <div class="ep-skeleton skeleton-card"></div>
+  </div>
+</div>
+
+<div id="ep-footer"></div>
+<script src="nav.js"></script>
+<script>
+const SUPABASE_URL = 'https://krmczyqwblsoekceanlj.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_DrHFT5J0vmrkYraUXIlpQQ_gsk1rdq6';
+const HDR = { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` };
+
+function pulseClass(s) { return s >= 65 ? 'good' : s >= 40 ? 'ok' : 'poor'; }
+function fmtDate(d) {
+  return new Date(d).toLocaleDateString('en-IN', { day:'numeric', month:'short', year:'numeric' });
+}
+
+async function loadPosts() {
+  try {
+    const res = await fetch(
+      `${SUPABASE_URL}/rest/v1/weekly_posts?select=slug,week_start,week_end,title,narrative_hook,aqi_low,aqi_high,temp_low,temp_high,rain_total,bird_species_count,pulse_score&order=week_start.desc&limit=52`,
+      { headers: HDR }
+    );
+    const posts = await res.json();
+    const container = document.getElementById('posts-container');
+
+    if (!Array.isArray(posts) || !posts.length) {
+      container.innerHTML = `<div class="posts-empty"><p style="font-size:2rem">🌿</p><p>First weekly post coming this Sunday.</p></div>`;
+      return;
+    }
+
+    container.innerHTML = `<div class="posts-grid">${posts.map(p => `
+      <a class="post-card" href="weekly-post.html?week=${p.slug}">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+          <div class="post-card-dates">${fmtDate(p.week_start)} – ${fmtDate(p.week_end)}</div>
+          ${p.pulse_score != null ? `<div class="pulse-badge ${pulseClass(p.pulse_score)}">⚡ ${p.pulse_score}</div>` : ''}
+        </div>
+        <div class="post-card-title">${p.title.replace('Earth Pulse Weekly: ','').replace(/\|.*$/,'').trim()}</div>
+        <div class="post-card-hook">${p.narrative_hook ? p.narrative_hook.slice(0,140)+'…' : ''}</div>
+        <div class="post-card-stats">
+          <span class="post-stat">AQI <strong>${p.aqi_low}–${p.aqi_high}</strong></span>
+          <span class="post-stat">🌡️ <strong>${p.temp_low}–${p.temp_high}°C</strong></span>
+          ${p.rain_total > 0 ? `<span class="post-stat">🌧️ <strong>${p.rain_total}mm</strong></span>` : ''}
+          <span class="post-stat">🐦 <strong>${p.bird_species_count} sp.</strong></span>
+        </div>
+      </a>`).join('')}</div>`;
+  } catch(e) { console.warn('Weekly posts error:', e); }
+}
+
+loadPosts();
+</script>
+</body>
+</html>
