@@ -20,6 +20,9 @@ import time
 from datetime import timedelta
 from zoneinfo import ZoneInfo
 
+# At top of file, after imports:
+from alert import send_alert, check_data_gap
+
 # ── Load .env (key never hardcoded here) ─────────────────────────────────────
 def load_env(path="/home/fangchu/earth_pulse/.env"):
     env = {}
@@ -220,10 +223,13 @@ def push_to_supabase(row):
         f"{SUPABASE_URL}/rest/v1/climate_readings",
         json=row, headers=headers, timeout=10
     )
-    if response.status_code in [200, 201]:
+    if response.status_code in [200, 201, 204]:
         print("  ✅ Supabase: saved")
+    elif response.status_code == 409:
+        print("  ✅ Supabase: already exists (no change needed)")
     else:
         print(f"  ⚠️  Supabase failed ({response.status_code}): {response.text[:200]}")
+        send_alert('Supabase push failed', f'HTTP {response.status_code}: {response.text[:200]}', 'aqi')
 
 
 def ensure_csv_header():
@@ -243,6 +249,7 @@ def ensure_csv_header():
 # ── Main ──────────────────────────────────────────────────────────────────────
 
 def main():
+    check_data_gap('climate_readings', 'recorded_at', 130, 'aqi')
     now_ist = datetime.datetime.now(IST)
     print(f"\n🌍 Earth Pulse AQI Logger — {now_ist.strftime('%Y-%m-%d %H:%M IST')}")
 
@@ -252,13 +259,15 @@ def main():
 
     if aqi_response is None or weather_response is None:
         print("❌ Open-Meteo failed after retries. Aborting.")
+        send_alert('Open-Meteo failed', 'aqi.py could not reach Open-Meteo after 3 retries', 'aqi')
         return
 
     try:
         aqi_data     = aqi_response.json()
         weather_data = weather_response.json()
     except Exception as e:
-        print(f"❌ JSON parsing failed: {e}")
+        print(f'❌ JSON parsing failed: {e}')
+        send_alert('AQI script error', f'JSON parsing failed: {e}', 'aqi')
         return
 
     # Build lookup dict: IST-aware datetime → array index

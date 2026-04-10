@@ -6,3 +6,4 @@ worker.js.txt
 worker.js
 *.js
 *.js.txt
+on_pi/
