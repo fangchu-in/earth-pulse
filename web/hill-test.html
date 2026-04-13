@@ -141,9 +141,9 @@
       position:relative; border-radius:10px; overflow:hidden;
       border:1px solid #1a2e1a; margin-bottom:1rem;
       cursor:col-resize; user-select:none;
-      height:280px; background:#000;
+      height:400px; background:#000;
     }
-    @media(max-width:600px){ .sat-slider-wrap { height:200px; } }
+    @media(max-width:600px){ .sat-slider-wrap { height:240px; } }
     .sat-slider-wrap img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; image-rendering:pixelated; }
     .sat-clip { position:absolute; inset:0; }
     .sat-divider { position:absolute; top:0; bottom:0; width:3px; background:#fff; box-shadow:0 0 10px rgba(255,255,255,0.9); transform:translateX(-50%); pointer-events:none; }
@@ -157,7 +157,9 @@
     .ndvi-tabs { display:flex; gap:6px; margin-bottom:10px; }
     .ndvi-tab { flex:1; padding:8px; text-align:center; font-size:0.72rem; letter-spacing:1px; border:1px solid #1a2e1a; background:transparent; color:#374151; border-radius:6px; cursor:pointer; transition:all 0.15s; font-family:var(--mono); }
     .ndvi-tab.active { background:#052e16; border-color:#16a34a; color:#4ade80; }
-    .ndvi-img-wrap { border-radius:8px; overflow:hidden; position:relative; background:#000; }
+    .ndvi-img-wrap { border-radius:8px; overflow:hidden; position:relative; background:#030a03;
+      max-width:58%; margin:0 auto; }
+    @media(max-width:700px){ .ndvi-img-wrap { max-width:85%; } }
     .ndvi-img-wrap img { width:100%; display:block; image-rendering:pixelated; }
     .ndvi-overlay { position:absolute; top:8px; left:8px; background:rgba(0,0,0,0.75); padding:4px 10px; border-radius:4px; font-size:0.68rem; color:#4ade80; letter-spacing:1px; }
     .ndvi-legend { display:flex; height:12px; border-radius:4px; overflow:hidden; margin:10px 0 4px; }
@@ -283,10 +285,10 @@
       <div style="font-size:0.72rem;color:#4ade80;letter-spacing:2px;margin-bottom:8px;text-transform:uppercase;">Before &amp; After — Drag to Compare</div>
       <div class="sat-slider-wrap" id="satSlider">
         <!-- 2026 underneath -->
-        <img id="sliderImg2026" src="https://pub-c44c2d0f0bf74514ad250dea0f54e847.r2.dev/satellite_images/satellite_2026_rgb.png" alt="Baner Hill 2026 Sentinel-2">
+        <img id="sliderImg2026" src="" alt="Baner Hill 2026 Sentinel-2">
         <!-- 1990 clipped -->
         <div class="sat-clip" id="sliderClip" style="clip-path:inset(0 50% 0 0);">
-          <img src="https://pub-c44c2d0f0bf74514ad250dea0f54e847.r2.dev/satellite_images/satellite_1990_rgb.png" alt="Baner Hill 1990 Landsat-5" style="filter:sepia(40%) contrast(1.1);">
+          <img src="" alt="Baner Hill 1990 Landsat-5" style="filter:sepia(40%) contrast(1.1);">
         </div>
         <div class="sat-divider" id="satDivider" style="left:50%;">
           <div class="sat-handle">⇔</div>
@@ -303,7 +305,7 @@
         <button class="ndvi-tab" onclick="setNdviTab('monsoon',this)">MONSOON PEAK 2025 · mean 0.480</button>
       </div>
       <div class="ndvi-img-wrap">
-        <img id="ndviImg" src="https://pub-c44c2d0f0bf74514ad250dea0f54e847.r2.dev/satellite_images/satellite_2026_ndvi_heatmap.png" alt="NDVI heatmap Baner Hill">
+        <img id="ndviImg" src="" alt="NDVI heatmap Baner Hill">
         <div class="ndvi-overlay" id="ndviOverlayText">DRY SEASON · Mean NDVI 0.248 · Max 0.724</div>
       </div>
       <div class="ndvi-legend">
@@ -333,57 +335,113 @@
 <!-- ══ IMPACT NARRATIVE ═════════════════════════════════════════════════════ -->
 <div class="impact-block">
   <div class="impact-inner">
-    <div class="impact-eyebrow">Satellite Science · 35-Year Analysis</div>
+    <div class="impact-eyebrow">Satellite Science · 35-Year Analysis · Landsat-5 + Sentinel-2</div>
     <h2 class="impact-headline">What the satellites found</h2>
-    <p class="impact-subhead">We did not ask volunteers what happened to Baner Hill. We did not rely on memory, or photographs, or guesswork. We asked satellites. Two of them answered.</p>
+    <p class="impact-subhead">We did not ask volunteers what happened to Baner Hill. We did not rely on memory, photographs, or guesswork. We asked satellites. Two of them answered — and the numbers are extraordinary.</p>
+
+    <!-- Full NDVI table -->
+    <div style="margin-bottom:2rem;overflow-x:auto;">
+      <div class="impact-chapter-year" style="margin-bottom:0.75rem;">Complete 35-Year Record — Every Measurement</div>
+      <table class="impact-table" style="min-width:560px;">
+        <thead>
+          <tr><th>Year</th><th>NDVI</th><th>vs 1990</th><th>Condition</th><th>What happened</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>1990</td><td>0.074</td><td>—</td><td>Bare laterite rock</td><td>Baseline. Lower than a dirt road.</td></tr>
+          <tr><td>1993</td><td>0.085</td><td>+15%</td><td>Bare rock</td><td>Negligible change. Wind-blown grass only.</td></tr>
+          <tr><td>1996</td><td>0.084</td><td>+14%</td><td>Bare rock</td><td>Flat. No measurable recovery.</td></tr>
+          <tr><td>1999</td><td>0.085</td><td>+15%</td><td>Bare rock</td><td>9 years after baseline — still bare.</td></tr>
+          <tr><td>2002</td><td>0.108</td><td>+46%</td><td>Sparse scrub</td><td>First trace of pioneer shrubs.</td></tr>
+          <tr><td>2005</td><td>0.131</td><td>+77%</td><td>Sparse scrub</td><td>Fragile. Easily reversed by drought.</td></tr>
+          <tr><td>2008</td><td>0.154</td><td>+108%</td><td>Early scrub cover</td><td>Reached double baseline for first time.</td></tr>
+          <tr style="background:rgba(234,88,12,0.06);"><td>2010</td><td>0.090</td><td>+22%</td><td style="color:#b45309;">⚠ Drought/fire dip</td><td>Lost nearly all gains. Likely fire or severe drought.</td></tr>
+          <tr><td>2012</td><td>0.114</td><td>+54%</td><td>Sparse, re-recovering</td><td>Bouncing back from the 2010 setback.</td></tr>
+          <tr><td>2015</td><td>0.138</td><td>+86%</td><td>Early scrub</td><td>25 years in — still fragile, still sparse.</td></tr>
+          <tr style="background:rgba(34,197,94,0.06);"><td>2017</td><td>0.211</td><td><strong style="color:var(--ep-green)">+185% ★</strong></td><td style="color:var(--ep-green);">Emerging canopy</td><td>Inflection point. Human reforestation registers from orbit.</td></tr>
+          <tr><td>2019</td><td>0.215</td><td><strong style="color:var(--ep-green)">+191%</strong></td><td>Consolidating</td><td>Canopy thickening. Gains holding across dry season.</td></tr>
+          <tr><td>2021</td><td>0.268</td><td><strong style="color:var(--ep-green)">+262%</strong></td><td>Greening</td><td>Largest single-period jump since monitoring began.</td></tr>
+          <tr><td>2023</td><td>0.267</td><td><strong style="color:var(--ep-green)">+261%</strong></td><td>Greening</td><td>Stable at new baseline. Recovery now structural.</td></tr>
+          <tr style="background:rgba(34,197,94,0.08);"><td>2025</td><td>0.278</td><td><strong style="color:var(--ep-green)">+278%</strong></td><td style="color:var(--ep-green);">Greening — active</td><td>Current reading. Monsoon peak 0.480. Max pixel 0.957.</td></tr>
+          <tr style="background:rgba(33,67,50,0.08);border-top:2px dashed var(--ep-green);"><td><em>2035 target</em></td><td><strong style="color:var(--ep-green)">0.550</strong></td><td><strong style="color:var(--ep-green)">+644%</strong></td><td style="color:var(--ep-green);">Mature secondary forest</td><td>Achievable with sustained south-slope planting. 51% of the way there.</td></tr>
+        </tbody>
+      </table>
+    </div>
 
     <div class="impact-grid">
       <div>
         <div class="impact-chapter">
           <div class="impact-chapter-year">1990 — The Baseline</div>
           <div class="impact-chapter-title">A Hill of Rock and Dust</div>
-          <div class="impact-chapter-body">In 1990, Baner Hill had an NDVI score of <strong style="color:var(--ep-green)">0.074</strong>. NDVI measures how much near-infrared light vegetation reflects — healthy dense forest scores above 0.70. Baner Hill scored lower than a dirt road. This is what the Landsat-5 sensor measured, band by band, pixel by pixel, from 705 kilometres above the Earth.</div>
+          <div class="impact-chapter-body">NDVI 0.074. Healthy tropical forest scores above 0.70 — dense Amazon canopy reaches 0.90+. Baner Hill in 1990 scored lower than a dirt road. This is what Landsat-5 measured, band by band, pixel by pixel, from 705 km above the Earth. Not an estimate. A measurement.</div>
         </div>
-
         <div class="impact-chapter">
-          <div class="impact-chapter-year">1990 – 2015 — The Long Silence</div>
-          <div class="impact-chapter-title">25 Years of Bare Numbers</div>
-          <div class="impact-chapter-body">For twenty-five years, the NDVI barely moved. The 2010 dip back to 0.090 — after a slow climb to 0.154 — is the satellite recording a drought, a fire, or heavy grazing. It did so silently, indifferently, truthfully.</div>
+          <div class="impact-chapter-year">1990–2015 — The Long Silence</div>
+          <div class="impact-chapter-title">25 Years of Barely Moving Numbers</div>
+          <div class="impact-chapter-body">NDVI hovered between 0.074 and 0.154 — slow natural colonisation of pioneer grass, repeatedly knocked back. The 2010 crash from 0.154 to 0.090 erased 6 years of fragile recovery in one season. The hill had no resilience. It needed root depth, soil organic matter, and canopy — all of which only come from deliberate, sustained planting.</div>
         </div>
-
-        <table class="impact-table">
-          <thead><tr><th>Year</th><th>NDVI</th><th>Condition</th></tr></thead>
-          <tbody>
-            <tr><td>1990</td><td>0.074</td><td>Bare laterite rock</td></tr>
-            <tr><td>1999</td><td>0.085</td><td>Still bare</td></tr>
-            <tr><td>2008</td><td>0.154</td><td>Early scrub — fragile</td></tr>
-            <tr><td>2010</td><td>0.090</td><td>Dip — drought / fire?</td></tr>
-            <tr><td>2015</td><td>0.138</td><td>Sparse, recovering</td></tr>
-          </tbody>
-        </table>
-      </div>
-
-      <div>
         <div class="impact-chapter">
           <div class="impact-chapter-year">2017 — The Inflection Point</div>
-          <div class="impact-chapter-title">The Moment Human Work Became Visible from Space</div>
-          <div class="impact-chapter-body">In 2017, NDVI jumped to <strong style="color:var(--ep-green)">0.211</strong>. A jump of this magnitude does not happen by accident. Scrub does not spontaneously double its greenness in two years on a rocky hill in a semi-arid climate. This is the satellite recording the cumulative effect of human intervention — saplings reaching canopy size, root systems stabilising soil, closed cover creating micro-habitats. The reforestation work done by volunteers who carried water up this hill crossed a threshold that a spacecraft 700 kilometres above the Earth could finally measure.</div>
+          <div class="impact-chapter-title">When Human Work Became Visible from Space</div>
+          <div class="impact-chapter-body">NDVI jumped from 0.138 to 0.211 — a 53% rise in two years. Scrub does not do this spontaneously on semi-arid laterite. This is the satellite recording volunteers carrying water uphill, fencing saplings against grazing, returning every monsoon. Planted trees reached a size where their canopy finally registered on Sentinel-2. After 2017, gains did not reverse. The hill had crossed a threshold of ecological resilience.</div>
         </div>
-
-        <div class="ndvi-callout">
-          <strong>Today: +278% greener than 1990.</strong> The current dry-season NDVI of 0.278 is 278% higher than the 1990 baseline of 0.074. During the monsoon of 2025, Sentinel-2 recorded a peak pixel value of <strong>0.957</strong> on the north slope — within the range of dense Amazon rainforest. The entire hill's mean NDVI during monsoon reached <strong>0.480</strong>, a 94% surge over the dry season reading.
-        </div>
-
+      </div>
+      <div>
         <div class="impact-chapter">
-          <div class="impact-chapter-year">Where the Work Remains</div>
-          <div class="impact-chapter-title">The South Slope — NDVI 0.11–0.14</div>
-          <div class="impact-chapter-body">The NDVI heatmap is not just a celebration. It is a map of unfinished work. The south-facing slope shows NDVI values between 0.11 and 0.14 — barely above the 1990 baseline. South-facing slopes in Pune receive more direct solar radiation, lose moisture faster. They are the hardest terrain to restore — and they are where the next planting effort should go. The satellite has done the work of identifying them.</div>
+          <div class="impact-chapter-year">2021–2025 — The Acceleration</div>
+          <div class="impact-chapter-title">Compounding Ecological Returns</div>
+          <div class="impact-chapter-body">NDVI jumped from 0.215 to 0.268 between 2019 and 2021 — the largest two-year gain ever recorded here. This is reforestation ecology compounding: canopy creates shade, shade retains soil moisture, moisture allows understory, understory attracts seed-dispersing birds, birds bring new species. Each layer makes the next easier. The 2025 dry-season reading of 0.278 is 3.7× the 1990 baseline — in the season when the hill should look least green.</div>
+        </div>
+        <div class="ndvi-callout">
+          <strong>The monsoon pulse: NDVI 0.957.</strong> During August 2025, Sentinel-2 recorded individual pixels on the north slope at 0.957 — within the range of dense Amazon rainforest. The whole-hill mean reached 0.480 during monsoon: a 94% surge above the dry reading. This is what a recovering forest does — it inhales every monsoon with increasing intensity. In 1990 there was nothing to inhale with.
+        </div>
+        <div class="impact-chapter">
+          <div class="impact-chapter-year">The Target — How Far Remains</div>
+          <div class="impact-chapter-title">0.55 by 2035: The Recovery Goal</div>
+          <div class="impact-chapter-body">A dry-season NDVI of <strong style="color:var(--ep-green)">0.55</strong> represents mature secondary forest — the ecological equivalent of a functioning Ghats forest patch. Baner Hill at 0.278 is <strong style="color:var(--ep-green)">51% of the way there</strong>. At the current rate of +0.005 NDVI/year, the natural trajectory reaches 0.55 around 2080. Targeted planting in the south and south-west zones — still at 0.11–0.14 — can cut that timeline significantly. Every sapling in the right zone changes the number.</div>
         </div>
       </div>
     </div>
 
+    <!-- PLANT HERE section -->
+    <div style="margin-top:2.5rem;padding-top:2rem;border-top:2px solid var(--ep-green);">
+      <div class="impact-eyebrow" style="margin-bottom:0.4rem;">Volunteer Intelligence · NDVI-Guided Deployment</div>
+      <h3 style="font-family:var(--serif);font-size:1.5rem;color:var(--ep-green);margin:0 0 0.4rem;">🌱 Plant Here — Where the Hill Needs You Most</h3>
+      <p style="font-size:0.87rem;color:var(--text-muted);line-height:1.7;margin-bottom:1.5rem;">The NDVI heatmap above is not just a scientific image — it is a volunteer deployment map. Every orange and yellow zone is a call to action. These areas have NDVI below 0.25 and have not recovered since 1990. They will not recover without intervention.</p>
+
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1rem;margin-bottom:1.25rem;">
+        <div style="border:2px solid #ef4444;border-radius:var(--radius-md);padding:1rem;background:rgba(239,68,68,0.04);">
+          <div style="font-size:0.64rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#ef4444;margin-bottom:0.3rem;">🔴 Priority 1 — Plant Immediately</div>
+          <div style="font-family:var(--serif);font-size:0.95rem;color:var(--ep-green);margin-bottom:0.3rem;">South-West Corridor</div>
+          <div style="font-family:var(--mono);font-size:1.5rem;font-weight:700;color:#ef4444;line-height:1;">0.11 <span style="font-size:0.7rem;color:var(--text-muted);">NDVI</span></div>
+          <div style="font-size:0.77rem;color:var(--text-muted);margin-top:0.5rem;line-height:1.65;">Bare laterite. High fire risk. Accessible from the western trail. <strong style="color:var(--ep-green);">Recommended:</strong> Karvi, Teak, Flame of the Forest. Plant in groups of 7–10 for mutual protection.</div>
+        </div>
+        <div style="border:2px solid #ef4444;border-radius:var(--radius-md);padding:1rem;background:rgba(239,68,68,0.04);">
+          <div style="font-size:0.64rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#ef4444;margin-bottom:0.3rem;">🔴 Priority 2 — This Monsoon Season</div>
+          <div style="font-family:var(--serif);font-size:0.95rem;color:var(--ep-green);margin-bottom:0.3rem;">South-Facing Mid-Slope</div>
+          <div style="font-family:var(--mono);font-size:1.5rem;font-weight:700;color:#ef4444;line-height:1;">0.14 <span style="font-size:0.7rem;color:var(--text-muted);">NDVI</span></div>
+          <div style="font-size:0.77rem;color:var(--text-muted);margin-top:0.5rem;line-height:1.65;">Direct solar exposure all day. Loses moisture fastest. Needs drought-tolerant deep-rooters. <strong style="color:var(--ep-green);">Recommended:</strong> Neem, Pongamia, Bel. Plant in clusters of 5 to create shared shade.</div>
+        </div>
+        <div style="border:2px solid #f59e0b;border-radius:var(--radius-md);padding:1rem;background:rgba(245,158,11,0.04);">
+          <div style="font-size:0.64rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#f59e0b;margin-bottom:0.3rem;">🟡 Priority 3 — Gap-Fill &amp; Support</div>
+          <div style="font-family:var(--serif);font-size:0.95rem;color:var(--ep-green);margin-bottom:0.3rem;">East Face Trail Corridor</div>
+          <div style="font-family:var(--mono);font-size:1.5rem;font-weight:700;color:#f59e0b;line-height:1;">0.38 <span style="font-size:0.7rem;color:var(--text-muted);">NDVI</span></div>
+          <div style="font-size:0.77rem;color:var(--text-muted);margin-top:0.5rem;line-height:1.65;">Recovering but patchy. Trail-edge erosion visible. <strong style="color:var(--ep-green);">Recommended:</strong> Bamboo for slope stabilisation, Hirda, Indian Gooseberry. Check survival of prior plantings.</div>
+        </div>
+        <div style="border:1px solid rgba(34,197,94,0.35);border-radius:var(--radius-md);padding:1rem;background:rgba(34,197,94,0.04);">
+          <div style="font-size:0.64rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#16a34a;margin-bottom:0.3rem;">🟢 Protect — Do Not Disturb</div>
+          <div style="font-family:var(--serif);font-size:0.95rem;color:var(--ep-green);margin-bottom:0.3rem;">North Slope &amp; Summit</div>
+          <div style="font-family:var(--mono);font-size:1.5rem;font-weight:700;color:#22c55e;line-height:1;">0.67–0.72 <span style="font-size:0.7rem;color:var(--text-muted);">NDVI</span></div>
+          <div style="font-size:0.77rem;color:var(--text-muted);margin-top:0.5rem;line-height:1.65;">Dense established canopy. Monsoon peak reaches 0.957 here. This is what the whole hill can become. Protect from encroachment and overgrazing. Focus volunteer energy on south zones.</div>
+        </div>
+      </div>
+
+      <div style="padding:0.85rem 1.1rem;background:rgba(33,67,50,0.05);border-radius:var(--radius-sm);font-size:0.82rem;color:var(--text-muted);line-height:1.7;">
+        <strong style="color:var(--ep-green);">Best planting window:</strong> June 1–15 — before the monsoon peaks, so saplings establish root systems with the first rains. &nbsp;|&nbsp; <strong style="color:var(--ep-green);">This map updates annually</strong> after the post-monsoon Sentinel-2 pass each November. Zone NDVI values from 2026 dry-season Sentinel-2 composite at 10m resolution.
+      </div>
+    </div>
+
     <p class="impact-source">
-      Data sources: Landsat-5 C02 T1_L2 (USGS/NASA, 1988–1992 composite), Sentinel-2 SR Harmonized (ESA/Copernicus, Nov 2025–Apr 2026 dry composite; Jun–Oct 2025 monsoon peak composite). Processed via Google Earth Engine. Coordinates: 18.5520°N, 73.7854°E, 1.2km radius. Analysis by Earth Pulse — earth-pulse.org
+      Data: Landsat-5 C02 T1_L2 (USGS/NASA, 1988–1992 composite), Sentinel-2 SR Harmonized (ESA/Copernicus, Nov 2025–Apr 2026 dry; Jun–Oct 2025 monsoon peak via qualityMosaic). Google Earth Engine. Coordinates: 18.5520°N, 73.7854°E, 1.2km radius. NDVI = (B8−B4)/(B8+B4). Target NDVI 0.55 based on comparable recovered secondary Ghats forest benchmarks. Zone classifications approximate — updated annually post-monsoon. Earth Pulse — earth-pulse.org
     </p>
   </div>
 </div>
@@ -490,13 +548,12 @@ const HDR = { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` 
 
 // ── R2 image URLs — update these after uploading PNGs ─────────────────────
 // 1. Upload the 4 PNGs to your R2 bucket
-// 2. Replace "pub-YOURR2BUCKET" with your actual R2 public domain
-// R2 Bucket is at https://pub-c44c2d0f0bf74514ad250dea0f54e847.r2.dev/satellite_images/
+// R2 image URLs — hi-res versions uploaded to satellite_images/ folder
 const R2 = {
-  img1990:   'https://pub-c44c2d0f0bf74514ad250dea0f54e847.r2.dev/satellite_images/satellite_1990_rgb.png',
-  img2026:   'https://pub-c44c2d0f0bf74514ad250dea0f54e847.r2.dev/satellite_images/satellite_2026_rgb.png',
-  ndviDry:   'https://pub-c44c2d0f0bf74514ad250dea0f54e847.r2.dev/satellite_images/satellite_2026_ndvi_heatmap.png',
-  ndviMon:   'https://pub-c44c2d0f0bf74514ad250dea0f54e847.r2.dev/satellite_images/satellite_monsoon_2025_ndvi.png',
+  img1990:   'https://pub-c44c2d0f0bf74514ad250dea0f54e847.r2.dev/satellite_images/satellite_1990_rgb_hires.jpg',
+  img2026:   'https://pub-c44c2d0f0bf74514ad250dea0f54e847.r2.dev/satellite_images/satellite_2026_rgb_hires.jpg',
+  ndviDry:   'https://pub-c44c2d0f0bf74514ad250dea0f54e847.r2.dev/satellite_images/satellite_2026_ndvi_heatmap_hires.jpg',
+  ndviMon:   'https://pub-c44c2d0f0bf74514ad250dea0f54e847.r2.dev/satellite_images/satellite_monsoon_2025_ndvi_hires.jpg',
 };
 
 // Set satellite image sources from R2
