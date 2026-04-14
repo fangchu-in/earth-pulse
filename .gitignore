@@ -7,3 +7,4 @@ worker.js
 *.js
 *.js.txt
 on_pi/
+satellite_images/
