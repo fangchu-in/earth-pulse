@@ -119,7 +119,8 @@
       '<div class="ep-mob-drawer" id="ep-mob-drawer" role="dialog" aria-label="Navigation menu" aria-hidden="true">' +
         '<div class="ep-mob-inner">' +
           drawerLinks +
-          '<div class="ep-mob-sep"></div>' +
+          '<a href="search.html" class="ep-mob-link">&#128269; Search</a>' +
+        '<div class="ep-mob-sep"></div>' +
           drawerAuth +
         '</div>' +
       '</div>' +
@@ -153,7 +154,7 @@
           '.ep-nav-links{display:none!important;}' +
           '.ep-nav-right{display:none!important;}' +
           '.ep-hamburger{display:flex!important;}' +
-          '.ep-nav-logo-full{max-width:38px;object-fit:cover;object-position:left center;}' +
+          '.ep-nav-logo-full{height:24px!important;width:auto!important;max-width:none;}' +
         '}' +
       '</style>';
 

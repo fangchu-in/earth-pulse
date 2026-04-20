@@ -11,7 +11,8 @@
   <!-- Open Graph / WhatsApp -->
   <meta property="og:title" content="Earth Pulse — Live AQI, Hyperlocal Weather & Birds | Baner, Pune">
   <meta property="og:description" content="Hyperlocal air quality, Weather Union data and acoustic bird monitoring from the Western Ghats edge. 37,000+ hourly records since 2022. Free citizen science data for Baner, Pune.">
-  <meta property="og:image" content="https://earth-pulse.org/earth-pulse-logo.png">
+  <meta property="og:image" content="https://earth-pulse.org/earth-pulse-logo-og.png">
+  <meta name="twitter:image" content="https://earth-pulse.org/earth-pulse-logo-og.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:url" content="https://earth-pulse.org/">
@@ -20,7 +21,6 @@
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Earth Pulse — Live AQI, Hyperlocal Weather & Birds | Baner, Pune">
   <meta name="twitter:description" content="Live AQI, hyperlocal weather and bird detections from Baner, Pune. Weather Union station 2.5km away. Open citizen science since January 2022.">
-  <meta name="twitter:image" content="https://earth-pulse.org/earth-pulse-logo.png">
   <meta name="geo.region" content="IN-MH">
   <meta name="geo.placename" content="Baner, Pune, Maharashtra">
   <meta property="og:locale" content="en_IN">
@@ -111,8 +111,10 @@
     .forecast-section-label { display:flex; align-items:center; gap:0.5rem; margin-bottom:0.75rem; }
     .forecast-section-label span { font-size:0.67rem; font-weight:700; text-transform:uppercase; letter-spacing:0.1em; color:var(--text-muted); }
     .forecast-section-label::before, .forecast-section-label::after { content:''; flex:1; height:1px; background:var(--border); }
-    .forecast-days { display:grid; grid-template-columns:repeat(3,1fr); gap:0.85rem; }
-    @media(max-width:700px){ .forecast-days { grid-template-columns:1fr; gap:0.5rem; } }
+    .forecast-days { display:grid; grid-template-columns:repeat(4,1fr); gap:0.85rem; }
+    @media(max-width:900px){ .forecast-days { grid-template-columns:1fr 1fr; gap:0.65rem; } }
+    @media(max-width:500px){ .forecast-days { grid-template-columns:1fr; gap:0.5rem; } }
+    .fc-yesterday { background:rgba(33,67,50,0.04); border-color:rgba(33,67,50,0.2); cursor:default; }
     .fc-day {
       background:white; border:1px solid var(--border); border-radius:var(--radius-lg);
       padding:1rem 1.25rem; display:grid;
@@ -276,7 +278,7 @@
 <!-- 3-DAY FORECAST (Open-Meteo ECMWF — clickable for full detail) -->
 <div class="forecast-outer" id="forecast-outer" style="display:none;">
   <div class="forecast-section-label">
-    <span>3-day forecast · Baner, Pune · Open-Meteo ECMWF</span>
+    <span>Yesterday (WU) · Today · Tomorrow · Day after · Baner, Pune</span>
   </div>
   <div class="forecast-days" id="forecast-days"></div>
 </div>
@@ -956,38 +958,87 @@ async function loadForecast() {
     const data = await res.json();
     if (!data.daily || !data.daily.time) return;
     _forecastData = data;
+    const d   = data.daily;
+    const now = new Date();
 
-    const d      = data.daily;
-    const now    = new Date();
+    // Yesterday from Weather Union Supabase readings
+    var yesterdayCard = '';
+    try {
+      var ystIST = new Date(now.getTime() + now.getTimezoneOffset()*60000 + 5.5*3600000);
+      ystIST.setDate(ystIST.getDate() - 1);
+      ystIST.setHours(0,0,0,0);
+      var ystUTC  = new Date(ystIST.getTime() - 5.5*3600000);
+      var ystEnd  = new Date(ystIST.getTime() + 86400000 - 5.5*3600000);
+      var ystFrom = ystUTC.toISOString().replace(/\.\d+Z$/, 'Z');
+      var ystTo   = ystEnd.toISOString().replace(/\.\d+Z$/, 'Z');
+      var wuRes   = await fetch(
+        SUPABASE_URL + '/rest/v1/weather_union_readings' +
+        '?select=temperature,wind_speed,rain_accumulation' +
+        '&recorded_at=gte.' + ystFrom +
+        '&recorded_at=lt.'  + ystTo +
+        '&limit=200&order=recorded_at.asc',
+        {headers: HDR}
+      );
+      var wuRows = await wuRes.json();
+      if (Array.isArray(wuRows) && wuRows.length) {
+        var temps  = wuRows.map(function(r){return r.temperature;}).filter(function(v){return v!=null;});
+        var rains  = wuRows.map(function(r){return r.rain_accumulation;}).filter(function(v){return v!=null;});
+        var winds  = wuRows.map(function(r){return r.wind_speed;}).filter(function(v){return v!=null;});
+        var yMax   = temps.length ? Math.round(Math.max.apply(null,temps)) : null;
+        var yMin   = temps.length ? Math.round(Math.min.apply(null,temps)) : null;
+        var yRain  = rains.length ? Math.max.apply(null,rains) : 0;
+        var yWind  = winds.length ? Math.round(Math.max.apply(null,winds)*3.6) : null;
+        var yLabel = ystIST.toLocaleDateString('en-IN',{weekday:'short',day:'numeric',month:'short'});
+        var yRainLine = yRain > 0
+          ? '<div class="fc-rain">' + yRain.toFixed(1) + 'mm rain</div>'
+          : '<div class="fc-rain" style="color:var(--text-muted);">' + (yWind||'—') + 'km/h max wind</div>';
+        yesterdayCard =
+          '<div class="fc-day fc-yesterday" style="cursor:default;" title="Weather Union observed data for yesterday · ' + wuRows.length + ' readings · No hourly popup for historical data">' +
+            '<div class="fc-icon">&#128336;</div>' +
+            '<div>' +
+              '<div class="fc-label">' + yLabel + '</div>' +
+              '<div class="fc-desc" style="font-size:0.72rem;color:var(--ep-tan);font-weight:600;">WU observed</div>' +
+              yRainLine +
+              '<div class="fc-hint">Hyperlocal station &#8250;</div>' +
+            '</div>' +
+            '<div class="fc-temps-col">' +
+              '<div class="fc-max">' + (yMax !== null ? yMax+'°' : '—') + '</div>' +
+              '<div class="fc-min">' + (yMin !== null ? yMin+'°C' : '') + '</div>' +
+            '</div>' +
+          '</div>';
+      }
+    } catch(wuErr) { console.warn('WU yesterday:', wuErr); }
+
+    // Today / Tomorrow / Day after — Open-Meteo forecast
     const labels = ['Today','Tomorrow',
       new Date(now.getTime()+2*86400000).toLocaleDateString('en-IN',{weekday:'short',day:'numeric',month:'short'})];
-
-    const html = d.time.slice(0,3).map((date, i) => {
-      const max   = Math.round(d.temperature_2m_max[i]);
-      const min   = Math.round(d.temperature_2m_min[i]);
-      const rain  = d.precipitation_sum[i] || 0;
-      const rProb = d.precipitation_probability_max ? (d.precipitation_probability_max[i] || 0) : 0;
-      const wind  = Math.round(d.windspeed_10m_max[i]);
-      const code  = d.weathercode[i];
-      const rainLine = rain > 0
-        ? `<div class="fc-rain">🌧️ ${rain.toFixed(1)}mm · ${rProb}% chance</div>`
-        : `<div class="fc-rain" style="color:var(--text-muted);">${wind}km/h max wind</div>`;
-      return `<div class="fc-day${i===0?' today':''}" onclick="openWx(${i})" role="button" tabindex="0" aria-label="Weather detail for ${labels[i]}">
-        <div class="fc-icon">${wmoIcon(code)}</div>
-        <div>
-          <div class="fc-label">${labels[i]}</div>
-          <div class="fc-desc">${wmoDesc(code)}</div>
-          ${rainLine}
-          <div class="fc-hint">Tap for full details ›</div>
-        </div>
-        <div class="fc-temps-col">
-          <div class="fc-max">${max}°</div>
-          <div class="fc-min">${min}°C</div>
-        </div>
-      </div>`;
+    const omCards = d.time.slice(0,3).map(function(date, i) {
+      var max  = Math.round(d.temperature_2m_max[i]);
+      var min  = Math.round(d.temperature_2m_min[i]);
+      var rain = d.precipitation_sum[i] || 0;
+      var rProb= d.precipitation_probability_max ? (d.precipitation_probability_max[i]||0) : 0;
+      var wind = Math.round(d.windspeed_10m_max[i]);
+      var code = d.weathercode[i];
+      var rainLine = rain > 0
+        ? '<div class="fc-rain">' + rain.toFixed(1) + 'mm ' + '·' + ' ' + rProb + '% chance</div>'
+        : '<div class="fc-rain" style="color:var(--text-muted);">' + wind + 'km/h max wind</div>';
+      var srcNote = i > 0 ? '<div class="fc-hint" style="font-size:0.6rem;opacity:0.65;">Open-Meteo forecast</div>' : '';
+      return '<div class="fc-day' + (i===0?' today':'') + '" onclick="openWx(' + i + ')" role="button" tabindex="0" aria-label="Weather detail for ' + labels[i] + '">' +
+        '<div class="fc-icon">' + wmoIcon(code) + '</div>' +
+        '<div>' +
+          '<div class="fc-label">' + labels[i] + '</div>' +
+          '<div class="fc-desc">' + wmoDesc(code) + '</div>' +
+          rainLine + srcNote +
+          '<div class="fc-hint">Tap for details ›</div>' +
+        '</div>' +
+        '<div class="fc-temps-col">' +
+          '<div class="fc-max">' + max + '°</div>' +
+          '<div class="fc-min">' + min + '°C</div>' +
+        '</div>' +
+      '</div>';
     }).join('');
 
-    document.getElementById('forecast-days').innerHTML = html;
+    document.getElementById('forecast-days').innerHTML = yesterdayCard + omCards;
     document.getElementById('forecast-outer').style.display = 'block';
   } catch(e) { console.warn('Forecast error:', e); }
 }
@@ -1469,13 +1520,18 @@ function goToBirdPage(p) {
   loadYearStats();
   loadWeatherUnion();
   try {
-    const r = await fetch(`${SUPABASE_URL}/rest/v1/bird_detections?select=species_scientific`,{headers:HDR});
-    const rows = await r.json();
-    if(Array.isArray(rows)){
-      const count = new Set(rows.map(b=>b.species_scientific)).size;
-      const el = document.getElementById('species-count');
-      if(el) el.textContent = count;
+    var _spAll=[],_spOff=0;
+    while(true){
+      var _spRes=await fetch(SUPABASE_URL+'/rest/v1/bird_detections?select=species_scientific&limit=1000&offset='+_spOff,{headers:HDR});
+      var _spRows=await _spRes.json();
+      if(!Array.isArray(_spRows)||!_spRows.length) break;
+      _spAll=_spAll.concat(_spRows);
+      if(_spRows.length<1000) break;
+      _spOff+=1000;
     }
+    var _spCount=new Set(_spAll.map(function(b){return b.species_scientific;})).size;
+    var _spEl=document.getElementById('species-count');
+    if(_spEl) _spEl.textContent=_spCount;
   } catch(e){}
 })();
 </script>
