@@ -1,0 +1,1237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Monsoon &amp; Rain — Baner, Pune | Earth Pulse</title>
+  <meta name="description" content="How rain arrives, behaves, and changes Baner. First rain dates, monsoon tracker, intensity breakdown, rain impact on birds and air quality — since January 2022.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://earth-pulse.org/rain.html">
+  <meta property="og:title" content="Monsoon &amp; Rain — Earth Pulse · Baner, Pune">
+  <meta property="og:description" content="How rain arrives, behaves, and changes this place. 4 years of monsoon data from the Sahyadri foothills.">
+  <meta property="og:image" content="https://earth-pulse.org/earth-pulse-logo-og.png">
+  <meta property="og:url" content="https://earth-pulse.org/rain.html">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="en_IN">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="geo.region" content="IN-MH">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+  <style>
+    /* ── Layout ── */
+    .r-page { max-width:1100px; margin:0 auto; padding:0 2rem 4rem; }
+    .r-grid2 { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
+    .r-grid3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:1rem; }
+    .r-grid4 { display:grid; grid-template-columns:repeat(4,1fr); gap:1rem; }
+    @media(max-width:800px){ .r-grid2,.r-grid3,.r-grid4{grid-template-columns:1fr 1fr;} }
+    @media(max-width:500px){ .r-grid2,.r-grid3,.r-grid4{grid-template-columns:1fr;} }
+
+    /* ── Section ── */
+    .r-section { margin:2.5rem 0; }
+    .r-section-head { display:flex; align-items:baseline; gap:0.75rem; margin-bottom:1rem; border-bottom:2px solid rgba(74,127,165,0.15); padding-bottom:0.5rem; }
+    .r-section-title { font-family:var(--serif); font-size:1.3rem; color:var(--ep-green); margin:0; }
+    .r-section-sub { font-size:0.78rem; color:var(--text-muted); }
+
+    /* ── Cards ── */
+    .r-card { background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-lg); padding:1.25rem 1.4rem; }
+    .r-card.rain-accent { background:#1E3A52; border-color:#1E3A52; }
+    .r-card.rain-accent .r-label { color:rgba(168,200,224,0.7); }
+    .r-card.rain-accent .r-val   { color:#F2F0E6; }
+    .r-card.wet  { background:rgba(74,127,165,0.06); border-color:rgba(74,127,165,0.2); }
+    .r-card.cool { background:rgba(33,67,50,0.05);  border-color:rgba(33,67,50,0.18); }
+    .r-label { font-size:0.68rem; font-weight:700; text-transform:uppercase; letter-spacing:0.09em; color:var(--text-muted); margin-bottom:0.3rem; }
+    .r-val   { font-family:var(--serif); font-size:2rem; color:var(--ep-green); line-height:1; }
+    .r-val.lg { font-size:2.8rem; }
+    .r-val.sm { font-size:1.4rem; }
+    .r-val.rain-blue { color:#4A7FA5; }
+    .r-unit  { font-size:0.78rem; color:var(--text-muted); margin-top:0.2rem; }
+
+    /* ── Insight box ── */
+    .r-insight { background:var(--ep-green); border-radius:var(--radius-lg); padding:1.1rem 1.4rem; display:flex; gap:0.75rem; align-items:flex-start; margin:1rem 0; }
+    .r-insight-icon { font-size:1.3rem; flex-shrink:0; }
+    .r-insight-text { font-size:0.85rem; color:rgba(242,240,230,0.88); line-height:1.7; }
+    .r-insight-text strong { color:var(--ep-tan); }
+
+    /* ── Today now card ── */
+    .today-rain-card { background:#1E3A52; border-radius:var(--radius-lg); padding:1.5rem 1.75rem; display:flex; align-items:center; gap:1.5rem; flex-wrap:wrap; margin-bottom:1rem; }
+    .today-rain-icon { font-size:3rem; line-height:1; flex-shrink:0; }
+    .today-rain-main { flex:1; }
+    .today-rain-mm   { font-family:var(--serif); font-size:2.8rem; color:#F2F0E6; line-height:1; }
+    .today-rain-lbl  { font-size:0.85rem; color:rgba(168,200,224,0.8); margin-top:0.25rem; }
+    .rain-tag { background:rgba(255,255,255,0.12); border-radius:2rem; padding:4px 14px; font-size:0.82rem; font-weight:600; color:#F2F0E6; white-space:nowrap; align-self:flex-start; }
+    .rain-tag.heavy { background:rgba(220,38,38,0.25); }
+    .rain-tag.mod   { background:rgba(74,127,165,0.4); }
+    .rain-tag.light { background:rgba(168,200,224,0.25); }
+
+    /* ── Forecast strip ── */
+    .fc-strip { display:flex; gap:0.5rem; overflow-x:auto; padding-bottom:4px; }
+    .fc-strip::-webkit-scrollbar { display:none; }
+    .fc-pill { flex-shrink:0; background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-md); padding:0.65rem 0.85rem; text-align:center; min-width:76px; }
+    .fc-pill.today-fc { background:rgba(74,127,165,0.08); border-color:rgba(74,127,165,0.35); }
+    .fc-pill-day  { font-size:0.65rem; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--text-muted); margin-bottom:3px; }
+    .fc-pill-icon { font-size:1.2rem; margin:3px 0; }
+    .fc-pill-mm   { font-family:var(--serif); font-size:1.05rem; color:#4A7FA5; }
+    .fc-pill-sub  { font-size:0.62rem; color:var(--text-muted); margin-top:2px; }
+
+    /* ── Year bar rows ── */
+    .year-rows { display:flex; flex-direction:column; gap:0.55rem; }
+    .year-row { display:flex; align-items:center; gap:0.75rem; }
+    .yr-label { font-family:var(--mono); font-size:0.75rem; color:var(--text-muted); width:38px; flex-shrink:0; }
+    .yr-bar-wrap { flex:1; background:var(--ep-cream-dark); border-radius:4px; height:8px; overflow:hidden; }
+    .yr-bar { height:100%; border-radius:4px; background:#4A7FA5; }
+    .yr-bar.current { background:var(--ep-tan); }
+    .yr-val { font-family:var(--mono); font-size:0.75rem; color:#4A7FA5; font-weight:600; width:56px; text-align:right; }
+    .yr-val.current { color:var(--ep-tan); }
+
+    /* ── Monthly grid ── */
+    .month-yr-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:0.85rem; }
+    @media(max-width:700px){ .month-yr-grid { grid-template-columns:1fr 1fr; } }
+    .month-yr-card { background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-lg); padding:1rem 1.1rem; }
+    .month-yr-card.current { border-color:rgba(74,127,165,0.4); background:rgba(74,127,165,0.04); }
+    .myc-yr   { font-size:0.7rem; color:var(--text-muted); margin-bottom:5px; }
+    .myc-mm   { font-family:var(--serif); font-size:1.7rem; color:#4A7FA5; line-height:1; }
+    .myc-unit { font-size:0.75rem; color:var(--text-muted); }
+    .myc-days { font-size:0.76rem; color:var(--text-muted); margin-top:4px; }
+    .myc-bar  { margin-top:8px; height:5px; background:var(--ep-cream-dark); border-radius:3px; overflow:hidden; }
+    .myc-bar-fill { height:100%; background:#4A7FA5; border-radius:3px; }
+
+    /* ── Monsoon tracker ── */
+    .tracker-wrap { background:#1E3A52; border-radius:var(--radius-lg); padding:1.5rem 1.75rem; }
+    .tracker-title { font-family:var(--serif); font-size:1rem; color:rgba(168,200,224,0.8); margin-bottom:1rem; }
+    .tracker-rows { display:flex; flex-direction:column; gap:1rem; }
+    .tracker-row { display:grid; grid-template-columns:42px 1fr 62px; align-items:center; gap:0.75rem; }
+    .tr-yr { font-size:0.85rem; font-weight:600; color:#F2F0E6; }
+    .tr-bar-bg { height:10px; background:rgba(255,255,255,0.12); border-radius:5px; overflow:hidden; }
+    .tr-bar { height:100%; border-radius:5px; transition:width 0.8s ease; }
+    .tr-bar.yr2026 { background:var(--ep-tan); }
+    .tr-bar.yr2025 { background:#7FB8D8; }
+    .tr-bar.yr2024 { background:#5E9EC0; }
+    .tr-bar.yr2023 { background:#4A7FA5; }
+    .tr-bar.yr2022 { background:#3A6680; }
+    .tr-mm { font-size:0.9rem; color:#F2F0E6; text-align:right; }
+    .tracker-note { margin-top:1rem; background:rgba(255,255,255,0.07); border-radius:var(--radius-md); padding:0.75rem 1rem; font-size:0.85rem; color:rgba(242,240,230,0.8); }
+    .tracker-note strong { color:var(--ep-tan); }
+
+    /* ── First rain timeline ── */
+    .fr-timeline { position:relative; padding-left:28px; }
+    .fr-timeline::before { content:''; position:absolute; left:8px; top:4px; bottom:4px; width:2px; background:rgba(74,127,165,0.3); border-radius:1px; }
+    .fr-item { position:relative; margin-bottom:1.1rem; display:flex; align-items:flex-start; gap:0.85rem; }
+    .fr-dot { position:absolute; left:-22px; top:5px; width:10px; height:10px; border-radius:50%; background:rgba(74,127,165,0.4); border:2px solid var(--bg-card); box-shadow:0 0 0 2px #4A7FA5; }
+    .fr-dot.current { background:var(--ep-tan); box-shadow:0 0 0 2px var(--ep-tan); }
+    .fr-yr   { font-weight:600; font-size:0.9rem; color:var(--ep-green); min-width:40px; }
+    .fr-date { font-family:var(--serif); font-size:1.15rem; color:#4A7FA5; line-height:1; }
+    .fr-note { font-size:0.75rem; color:var(--text-muted); margin-top:2px; }
+
+    /* ── Pattern cards ── */
+    .pattern-card { background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-lg); padding:1.1rem 1.25rem; border-left:3px solid #4A7FA5; }
+    .pc-label { font-size:0.68rem; font-weight:700; text-transform:uppercase; letter-spacing:0.09em; color:var(--text-muted); margin-bottom:0.4rem; }
+    .pc-val   { font-family:var(--serif); font-size:1.7rem; color:var(--ep-green); line-height:1; margin-bottom:0.2rem; }
+    .pc-sub   { font-size:0.78rem; color:var(--text-muted); }
+
+    /* ── Intensity bars ── */
+    .int-row { display:grid; grid-template-columns:120px 1fr 80px; align-items:center; gap:0.75rem; padding:0.4rem 0; }
+    .int-label { font-size:0.82rem; display:flex; align-items:center; gap:6px; }
+    .int-dot { width:9px; height:9px; border-radius:50%; flex-shrink:0; }
+    .int-bar-bg { height:10px; background:var(--ep-cream-dark); border-radius:5px; overflow:hidden; }
+    .int-bar { height:100%; border-radius:5px; }
+    .int-count { font-family:var(--mono); font-size:0.75rem; color:var(--text-muted); text-align:right; }
+
+    /* ── Rain events ── */
+    .event-item { background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-md); padding:0.9rem 1.1rem; display:flex; align-items:center; gap:1rem; }
+    .ev-rank { font-family:var(--serif); font-size:1.6rem; color:rgba(74,127,165,0.3); width:32px; flex-shrink:0; line-height:1; }
+    .ev-info { flex:1; }
+    .ev-date { font-size:0.75rem; color:var(--text-muted); }
+    .ev-mm   { font-family:var(--serif); font-size:1.2rem; color:#4A7FA5; line-height:1; }
+    .ev-note { font-size:0.75rem; color:var(--text-muted); margin-top:2px; }
+    .ev-bar-wrap { width:80px; flex-shrink:0; }
+    .ev-bar { height:5px; background:#4A7FA5; border-radius:3px; }
+
+    /* ── Phase cards ── */
+    .phase-card { border-radius:var(--radius-lg); padding:1.25rem; text-align:center; }
+    .phase-early { background:rgba(33,67,50,0.06); border:1px solid rgba(33,67,50,0.15); }
+    .phase-peak  { background:#1E3A52; border:1px solid #1E3A52; }
+    .phase-late  { background:rgba(191,155,123,0.08); border:1px solid rgba(191,155,123,0.2); }
+    .ph-label { font-size:0.66rem; font-weight:700; text-transform:uppercase; letter-spacing:0.1em; margin-bottom:6px; }
+    .phase-early .ph-label { color:var(--text-muted); }
+    .phase-peak  .ph-label { color:rgba(168,200,224,0.7); }
+    .phase-late  .ph-label { color:var(--ep-tan); }
+    .ph-months { font-size:0.8rem; margin-bottom:8px; }
+    .phase-early .ph-months { color:var(--text-muted); }
+    .phase-peak  .ph-months { color:rgba(242,240,230,0.7); }
+    .phase-late  .ph-months { color:var(--text-muted); }
+    .ph-mm { font-family:var(--serif); font-size:1.9rem; line-height:1; margin-bottom:4px; }
+    .phase-early .ph-mm { color:var(--ep-green); }
+    .phase-peak  .ph-mm { color:#A8C8E0; }
+    .phase-late  .ph-mm { color:var(--ep-tan); }
+    .ph-note { font-size:0.72rem; }
+    .phase-early .ph-note { color:var(--text-muted); }
+    .phase-peak  .ph-note { color:rgba(242,240,230,0.55); }
+    .phase-late  .ph-note { color:var(--ep-tan); opacity:0.7; }
+
+    /* ── Impact ── */
+    .impact-cols { display:flex; gap:1rem; align-items:flex-end; margin-bottom:0.75rem; }
+    .impact-col  { flex:1; text-align:center; }
+    .ic-label { font-size:0.65rem; color:var(--text-muted); margin-bottom:4px; text-transform:uppercase; letter-spacing:0.07em; }
+    .ic-val   { font-family:var(--serif); font-size:1.6rem; line-height:1; }
+    .ic-dry   { color:#D4A827; }
+    .ic-wet   { color:#4A7FA5; }
+    .ic-unit  { font-size:0.68rem; color:var(--text-muted); }
+    .ic-arrow { font-size:1.2rem; color:var(--ep-green); align-self:center; flex-shrink:0; }
+
+    /* ── AQI cards ── */
+    .aqi-cols { display:grid; grid-template-columns:1fr 1fr 1fr; gap:1rem; }
+    @media(max-width:600px){ .aqi-cols{grid-template-columns:1fr 1fr;} }
+    .aqi-col { background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-lg); padding:1rem 1.1rem; text-align:center; }
+    .aqi-col-label { font-size:0.68rem; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--text-muted); margin-bottom:6px; }
+    .aqi-val { font-family:var(--serif); font-size:2rem; line-height:1; margin-bottom:4px; }
+    .aqi-before { color:#dc2626; }
+    .aqi-during { color:#4A7FA5; }
+    .aqi-after  { color:var(--ep-green); }
+    .aqi-note   { font-size:0.72rem; color:var(--text-muted); }
+    .aqi-improve { background:var(--ep-green); border-radius:var(--radius-lg); padding:1rem 1.1rem; text-align:center; }
+    .aqi-improve-pct { font-family:var(--serif); font-size:2rem; color:#B8E4CB; line-height:1; margin-bottom:4px; }
+    .aqi-improve-lbl { font-size:0.75rem; color:rgba(242,240,230,0.75); }
+
+    /* ── Chart ── */
+    .r-chart-wrap { position:relative; }
+    .r-chart-wrap canvas { max-height:240px; }
+
+    /* ── Summary card ── */
+    .summary-card { background:var(--ep-green); border-radius:var(--radius-lg); padding:1.75rem 2rem; margin-top:2.5rem; }
+    .sc-label  { font-size:0.68rem; font-weight:700; text-transform:uppercase; letter-spacing:0.1em; color:var(--ep-tan); margin-bottom:0.65rem; }
+    .sc-title  { font-family:var(--serif); font-size:1.5rem; color:var(--ep-cream); line-height:1.25; margin-bottom:0.75rem; }
+    .sc-text   { font-size:0.9rem; color:rgba(242,240,230,0.8); line-height:1.7; }
+    .share-bar { display:flex; gap:0.5rem; flex-wrap:wrap; margin-top:1.25rem; }
+    .share-btn { display:inline-flex; align-items:center; gap:5px; padding:0.45rem 1rem; border-radius:2rem; font-size:0.78rem; font-weight:600; cursor:pointer; border:none; font-family:var(--sans); transition:opacity 0.15s; text-decoration:none; }
+    .share-btn:hover { opacity:0.85; }
+    .share-wa { background:#25D366; color:#fff; }
+    .share-tw { background:#000; color:#fff; }
+    .share-fb { background:#1877F2; color:#fff; }
+    .share-cp { background:rgba(255,255,255,0.12); color:var(--ep-cream); }
+
+    /* ── Source note ── */
+    .src-note { font-size:0.72rem; color:var(--text-muted); background:rgba(74,127,165,0.06); border:1px solid rgba(74,127,165,0.15); border-radius:var(--radius-sm); padding:0.5rem 0.85rem; margin-top:1rem; }
+
+    /* ── Share toast ── */
+    .share-toast { position:fixed; bottom:2rem; left:50%; transform:translateX(-50%); background:var(--ep-green); color:var(--ep-cream); padding:0.6rem 1.4rem; border-radius:2rem; font-size:0.85rem; z-index:9999; opacity:0; transition:opacity 0.3s; pointer-events:none; }
+    .share-toast.show { opacity:1; }
+  </style>
+</head>
+<body>
+<div id="ep-nav"></div>
+
+<div class="ep-hero" style="padding-bottom:1.5rem;">
+  <div class="ep-hero-tag">&#127783;&#65039; Monsoon &amp; Rain · Baner, Pune · Sahyadri Foothills · Since January 2022</div>
+  <h1>The Monsoon &amp; Baner</h1>
+  <p class="ep-hero-sub">How rain arrives, behaves, and changes this place — measured continuously since January 2022. First rains, monsoon totals, intensity breakdowns, and how rain reshapes birds and air quality.</p>
+  <p class="ep-hero-meta">
+    Open-Meteo ECMWF + Weather Union ZWL008983 · combined_readings ·
+    <a href="climate.html" style="color:var(--ep-tan);">&#8592; Climate overview</a>
+  </p>
+</div>
+
+<div class="r-page">
+
+  <!-- ── 1. TODAY ── -->
+  <div class="r-section">
+    <div class="r-section-head">
+      <h2 class="r-section-title">&#127783;&#65039; Today's rain</h2>
+      <span class="r-section-sub">Current precipitation + 7-day forecast</span>
+    </div>
+    <div class="today-rain-card">
+      <div class="today-rain-icon" id="today-icon">&#8987;</div>
+      <div class="today-rain-main">
+        <div class="today-rain-mm" id="today-mm">— mm</div>
+        <div class="today-rain-lbl" id="today-lbl">Loading today's rainfall…</div>
+      </div>
+      <div class="rain-tag" id="today-tag">—</div>
+    </div>
+    <div class="r-card" style="padding:1rem 1.1rem;">
+      <div class="r-label" style="margin-bottom:0.75rem;">7-day forecast · Open-Meteo ECMWF model</div>
+      <div class="fc-strip" id="fc-strip">
+        <div class="ep-skeleton" style="height:88px;width:76px;border-radius:var(--radius-md);flex-shrink:0;"></div>
+        <div class="ep-skeleton" style="height:88px;width:76px;border-radius:var(--radius-md);flex-shrink:0;"></div>
+        <div class="ep-skeleton" style="height:88px;width:76px;border-radius:var(--radius-md);flex-shrink:0;"></div>
+        <div class="ep-skeleton" style="height:88px;width:76px;border-radius:var(--radius-md);flex-shrink:0;"></div>
+        <div class="ep-skeleton" style="height:88px;width:76px;border-radius:var(--radius-md);flex-shrink:0;"></div>
+        <div class="ep-skeleton" style="height:88px;width:76px;border-radius:var(--radius-md);flex-shrink:0;"></div>
+        <div class="ep-skeleton" style="height:88px;width:76px;border-radius:var(--radius-md);flex-shrink:0;"></div>
+      </div>
+    </div>
+    <div class="r-insight" id="today-insight" style="display:none;">
+      <div class="r-insight-icon">&#128167;</div>
+      <div class="r-insight-text" id="today-insight-text"></div>
+    </div>
+  </div>
+
+  <!-- ── 2. THIS DAY ACROSS YEARS ── -->
+  <div class="r-section">
+    <div class="r-section-head">
+      <h2 class="r-section-title">This day across years</h2>
+      <span class="r-section-sub" id="today-date-label">—</span>
+    </div>
+    <div class="r-card" id="day-table-wrap">
+      <div class="ep-skeleton" style="height:140px;border-radius:var(--radius-md);"></div>
+    </div>
+    <div class="r-insight" id="day-insight" style="display:none;">
+      <div class="r-insight-icon">&#128197;</div>
+      <div class="r-insight-text" id="day-insight-text"></div>
+    </div>
+  </div>
+
+  <!-- ── 3. THIS MONTH ACROSS YEARS ── -->
+  <div class="r-section">
+    <div class="r-section-head">
+      <h2 class="r-section-title">This month across years</h2>
+      <span class="r-section-sub" id="month-lbl">—</span>
+    </div>
+    <div class="month-yr-grid" id="month-yr-grid">
+      <div class="ep-skeleton" style="height:110px;border-radius:var(--radius-lg);"></div>
+      <div class="ep-skeleton" style="height:110px;border-radius:var(--radius-lg);"></div>
+      <div class="ep-skeleton" style="height:110px;border-radius:var(--radius-lg);"></div>
+      <div class="ep-skeleton" style="height:110px;border-radius:var(--radius-lg);"></div>
+    </div>
+    <div class="r-insight" id="month-insight" style="display:none;">
+      <div class="r-insight-icon">&#128197;</div>
+      <div class="r-insight-text" id="month-insight-text"></div>
+    </div>
+  </div>
+
+  <!-- ── 4. MONSOON TRACKER ── -->
+  <div class="r-section">
+    <div class="r-section-head">
+      <h2 class="r-section-title">Monsoon tracker</h2>
+      <span class="r-section-sub">Cumulative June–September rainfall — all years</span>
+    </div>
+    <div class="tracker-wrap">
+      <div class="tracker-title">&#127754; Total monsoon season rainfall (mm)</div>
+      <div class="tracker-rows" id="tracker-rows">
+        <div class="ep-skeleton" style="height:80px;border-radius:var(--radius-md);"></div>
+      </div>
+      <div class="tracker-note" id="tracker-note" style="display:none;"></div>
+    </div>
+  </div>
+
+  <!-- ── 5. FIRST RAIN ── -->
+  <div class="r-section">
+    <div class="r-section-head">
+      <h2 class="r-section-title">When the first rain came</h2>
+      <span class="r-section-sub">The exact day the monsoon first touched Baner</span>
+    </div>
+    <div class="r-card">
+      <div class="fr-timeline" id="fr-timeline">
+        <div class="ep-skeleton" style="height:120px;border-radius:var(--radius-md);"></div>
+      </div>
+    </div>
+    <div class="r-insight" id="fr-insight" style="display:none;">
+      <div class="r-insight-icon">&#127807;</div>
+      <div class="r-insight-text" id="fr-insight-text"></div>
+    </div>
+  </div>
+
+  <!-- ── 6. RAIN PATTERN ── -->
+  <div class="r-section">
+    <div class="r-section-head">
+      <h2 class="r-section-title">The pattern of rain</h2>
+      <span class="r-section-sub">Not just totals — how often, how long the gaps, how reliably it comes</span>
+    </div>
+    <div class="r-grid3" id="pattern-grid">
+      <div class="ep-skeleton" style="height:90px;border-radius:var(--radius-lg);"></div>
+      <div class="ep-skeleton" style="height:90px;border-radius:var(--radius-lg);"></div>
+      <div class="ep-skeleton" style="height:90px;border-radius:var(--radius-lg);"></div>
+    </div>
+  </div>
+
+  <!-- ── 7. INTENSITY ── -->
+  <div class="r-section">
+    <div class="r-section-head">
+      <h2 class="r-section-title">Rain intensity breakdown</h2>
+      <span class="r-section-sub">Drizzle feels different from a downpour — this year's rain classified</span>
+    </div>
+    <div class="r-card" id="intensity-bars">
+      <div class="ep-skeleton" style="height:100px;border-radius:var(--radius-md);"></div>
+    </div>
+    <div class="r-insight" id="intensity-insight" style="display:none;">
+      <div class="r-insight-icon">&#127783;&#65039;</div>
+      <div class="r-insight-text" id="intensity-insight-text"></div>
+    </div>
+  </div>
+
+  <!-- ── 8. YEARLY CHART ── -->
+  <div class="r-section">
+    <div class="r-section-head">
+      <h2 class="r-section-title">Year-by-year rainfall</h2>
+      <span class="r-section-sub">Monthly rainfall overlaid — all years together</span>
+    </div>
+    <div class="r-card">
+      <div class="r-chart-wrap"><canvas id="yearlyChart" height="200"></canvas></div>
+      <div style="font-size:0.7rem;color:var(--text-muted);text-align:right;margin-top:4px;">Monthly total rainfall (mm) · Baner, Pune · Open-Meteo + WU</div>
+    </div>
+  </div>
+
+  <!-- ── 9. RAIN EVENTS ── -->
+  <div class="r-section">
+    <div class="r-section-head">
+      <h2 class="r-section-title">Biggest rain days on record</h2>
+      <span class="r-section-sub">Ranked by daily rainfall since January 2022</span>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:0.6rem;" id="events-list">
+      <div class="ep-skeleton" style="height:65px;border-radius:var(--radius-md);"></div>
+      <div class="ep-skeleton" style="height:65px;border-radius:var(--radius-md);"></div>
+      <div class="ep-skeleton" style="height:65px;border-radius:var(--radius-md);"></div>
+    </div>
+  </div>
+
+  <!-- ── 10. MONSOON PHASES ── -->
+  <div class="r-section">
+    <div class="r-section-head">
+      <h2 class="r-section-title">How the monsoon behaves</h2>
+      <span class="r-section-sub">Early onset · roaring peak · slow withdrawal — averaged across all years</span>
+    </div>
+    <div class="r-grid3" id="phase-cards">
+      <div class="ep-skeleton" style="height:120px;border-radius:var(--radius-lg);"></div>
+      <div class="ep-skeleton" style="height:120px;border-radius:var(--radius-lg);"></div>
+      <div class="ep-skeleton" style="height:120px;border-radius:var(--radius-lg);"></div>
+    </div>
+    <div class="r-card" style="margin-top:1rem;">
+      <div class="r-chart-wrap"><canvas id="behaviourChart" height="180"></canvas></div>
+    </div>
+  </div>
+
+  <!-- ── 11. IMPACT: BIRDS + TEMP ── -->
+  <div class="r-section">
+    <div class="r-section-head">
+      <h2 class="r-section-title">What rain does to Baner</h2>
+      <span class="r-section-sub">Rain reshapes bird behaviour, cools the air, and clears the sky</span>
+    </div>
+    <div class="r-grid2">
+      <div class="r-card">
+        <div class="r-label" style="margin-bottom:0.85rem;">&#128038; Bird activity — rainy vs dry hours</div>
+        <div class="impact-cols">
+          <div class="impact-col">
+            <div class="ic-label">Dry hour</div>
+            <div class="ic-val ic-dry" id="birds-dry">—</div>
+            <div class="ic-unit">detections/hr</div>
+          </div>
+          <div class="ic-arrow">&#8594;</div>
+          <div class="impact-col">
+            <div class="ic-label">Rainy hour</div>
+            <div class="ic-val ic-wet" id="birds-wet">—</div>
+            <div class="ic-unit">detections/hr</div>
+          </div>
+        </div>
+        <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.7;" id="birds-note">Loading…</div>
+      </div>
+      <div class="r-card">
+        <div class="r-label" style="margin-bottom:0.85rem;">&#127777;&#65039; Temperature drop after rain</div>
+        <div class="impact-cols">
+          <div class="impact-col">
+            <div class="ic-label">Before rain</div>
+            <div class="ic-val ic-dry" id="temp-before">—</div>
+            <div class="ic-unit">&#176;C avg</div>
+          </div>
+          <div class="ic-arrow">&#8594;</div>
+          <div class="impact-col">
+            <div class="ic-label">After rain</div>
+            <div class="ic-val ic-wet" id="temp-after">—</div>
+            <div class="ic-unit">&#176;C avg</div>
+          </div>
+        </div>
+        <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.7;" id="temp-note">Loading…</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 12. RAIN + AQI ── -->
+  <div class="r-section">
+    <div class="r-section-head">
+      <h2 class="r-section-title">Rain cleans the air</h2>
+      <span class="r-section-sub">Average AQI before, during, and after rainfall events</span>
+    </div>
+    <div class="aqi-cols">
+      <div class="aqi-col">
+        <div class="aqi-col-label">Before rain</div>
+        <div class="aqi-val aqi-before" id="aqi-before">—</div>
+        <div class="aqi-note">avg AQI in 6h before</div>
+      </div>
+      <div class="aqi-col">
+        <div class="aqi-col-label">During rain</div>
+        <div class="aqi-val aqi-during" id="aqi-during">—</div>
+        <div class="aqi-note">avg AQI while raining</div>
+      </div>
+      <div class="aqi-improve">
+        <div class="aqi-improve-pct" id="aqi-pct">—</div>
+        <div class="aqi-improve-lbl" id="aqi-lbl">improvement after rain</div>
+      </div>
+    </div>
+    <div class="r-insight" id="aqi-insight" style="display:none;">
+      <div class="r-insight-icon">&#129527;</div>
+      <div class="r-insight-text" id="aqi-insight-text"></div>
+    </div>
+  </div>
+
+  <!-- ── 13. SUMMARY ── -->
+  <div class="summary-card" id="summary-card">
+    <div class="sc-label">&#10024; What this monsoon means</div>
+    <div class="sc-title" id="sc-title">Computing the picture…</div>
+    <div class="sc-text" id="sc-text">Analysing all rain data since 2022…</div>
+    <div class="share-bar">
+      <a class="share-btn share-wa" id="share-wa" href="#" target="_blank" rel="noopener">&#128172; WhatsApp</a>
+      <a class="share-btn share-tw" id="share-tw" href="#" target="_blank" rel="noopener">&#120143; Twitter/X</a>
+      <a class="share-btn share-fb" id="share-fb" href="#" target="_blank" rel="noopener">&#127760; Facebook</a>
+      <button class="share-btn share-cp" onclick="copyLink()">&#128203; Copy link</button>
+    </div>
+  </div>
+
+  <div class="src-note" style="margin-top:1.5rem;">
+    <strong>Data sources:</strong> Open-Meteo ECMWF (Jan 2022 – Sep 2025) · Weather Union station ZWL008983 (Oct 2025 onwards, 2.5km away). Both sources combined via <code>combined_readings</code> view — WU observed data takes priority where available.
+  </div>
+
+</div><!-- /r-page -->
+
+<div class="share-toast" id="share-toast">Link copied!</div>
+<div id="ep-footer"></div>
+<script src="analytics.js"></script>
+<script src="nav.js"></script>
+<script>
+var SB  = 'https://krmczyqwblsoekceanlj.supabase.co';
+var KEY = 'sb_publishable_DrHFT5J0vmrkYraUXIlpQQ_gsk1rdq6';
+var H   = { 'apikey': KEY, 'Authorization': 'Bearer ' + KEY };
+
+var MONTHS_LONG  = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+var MONTHS_SHORT = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+var DAY_NAMES    = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+var ALL_YEARS    = [2022, 2023, 2024, 2025, 2026];
+
+/* ── IST helpers ── */
+function istNow() {
+  var now = new Date();
+  return new Date(now.getTime() + now.getTimezoneOffset()*60000 + 5.5*3600000);
+}
+function p2(n) { return n < 10 ? '0'+n : ''+n; }
+function istDate(yr, mo, dy) {
+  return yr+'-'+p2(mo)+'-'+p2(dy)+'T00:00:00%2B05%3A30';
+}
+function istDateEnd(yr, mo, dy) {
+  return yr+'-'+p2(mo)+'-'+p2(dy)+'T23:59:59%2B05%3A30';
+}
+function istMonthStart(yr, mo) {
+  return yr+'-'+p2(mo)+'-01T00:00:00%2B05%3A30';
+}
+function istYearStart(yr) {
+  return yr+'-01-01T00:00:00%2B05%3A30';
+}
+function fmtDate(ts) {
+  return new Date(ts).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric',timeZone:'Asia/Kolkata'});
+}
+function ge(id) { return document.getElementById(id); }
+
+function sbGet(path) {
+  return fetch(SB + path, {headers: H}).then(function(r){ return r.json(); });
+}
+
+function mmFmt(mm) { return (Math.round(mm*10)/10)+''; }
+
+function rainIcon(mm) {
+  if (mm<=0)   return '&#9728;&#65039;';
+  if (mm<2.5)  return '&#127746;&#65039;';
+  if (mm<10)   return '&#127783;&#65039;';
+  if (mm<35)   return '&#9928;&#65039;';
+  return '&#127754;';
+}
+function rainTagText(mm) {
+  if (mm<=0)   return 'No rain';
+  if (mm<2.5)  return 'Light drizzle';
+  if (mm<10)   return 'Moderate rain';
+  if (mm<35)   return 'Heavy rain';
+  return '&#9888;&#65039; Very heavy rain';
+}
+function rainTagClass(mm) {
+  if (mm<=0)  return '';
+  if (mm<10)  return 'light';
+  if (mm<35)  return 'mod';
+  return 'heavy';
+}
+
+/* ── IST state ── */
+var IST = istNow();
+var CY  = IST.getUTCFullYear();
+var CM  = IST.getUTCMonth() + 1;
+var CD  = IST.getUTCDate();
+
+/* ── 1. TODAY ── */
+async function loadToday() {
+  var start = istDate(CY, CM, CD);
+  var end   = istDateEnd(CY, CM, CD);
+  try {
+    var rows = await sbGet('/rest/v1/combined_readings?select=precipitation&recorded_at=gte.'+start+'&recorded_at=lte.'+end+'&limit=30');
+    var total = 0;
+    if (Array.isArray(rows)) rows.forEach(function(r){ total += parseFloat(r.precipitation)||0; });
+    total = Math.round(total*10)/10;
+    ge('today-icon').innerHTML = rainIcon(total);
+    ge('today-mm').textContent = total + ' mm';
+    ge('today-lbl').textContent = 'Total rainfall recorded today in Baner';
+    var tag = ge('today-tag');
+    tag.innerHTML = rainTagText(total);
+    tag.className = 'rain-tag ' + rainTagClass(total);
+
+    var iEl = ge('today-insight');
+    var iTxt = ge('today-insight-text');
+    if (total > 10) {
+      iTxt.innerHTML = 'Heavy rain today. Expect <strong>cooler temperatures</strong> and improved air quality through the evening.';
+    } else if (total > 0) {
+      iTxt.innerHTML = 'Light rain today — enough to cool the air briefly. Baner\'s hills look their best after even a small shower.';
+    } else {
+      iTxt.innerHTML = 'No rain recorded today so far. ' + (CM>=6&&CM<=9 ? 'The monsoon has been quiet today.' : 'A dry day in Baner.');
+    }
+    iEl.style.display = 'flex';
+  } catch(e) {
+    ge('today-mm').textContent = '—';
+    ge('today-lbl').textContent = 'Could not load today\'s data';
+  }
+  loadForecast();
+}
+
+async function loadForecast() {
+  try {
+    var res  = await fetch('https://api.open-meteo.com/v1/forecast?latitude=18.5526&longitude=73.7819&daily=precipitation_sum,weathercode&timezone=Asia%2FKolkata&forecast_days=7');
+    var data = await res.json();
+    var days  = data.daily.time;
+    var prec  = data.daily.precipitation_sum;
+    var todayStr = CY+'-'+p2(CM)+'-'+p2(CD);
+    var html = '';
+    for (var i=0; i<days.length; i++) {
+      var d  = new Date(days[i]+'T00:00:00');
+      var mm = prec[i] || 0;
+      var isToday = days[i] === todayStr;
+      html +=
+        '<div class="fc-pill'+(isToday?' today-fc':'')+'">' +
+          '<div class="fc-pill-day">'+(isToday?'Today':DAY_NAMES[d.getDay()])+'</div>' +
+          '<div class="fc-pill-icon">'+rainIcon(mm)+'</div>' +
+          '<div class="fc-pill-mm">'+mmFmt(mm)+' mm</div>' +
+          '<div class="fc-pill-sub">'+(mm>0?rainTagText(mm):'Dry')+'</div>' +
+        '</div>';
+    }
+    ge('fc-strip').innerHTML = html;
+  } catch(e) {
+    ge('fc-strip').innerHTML = '<span style="font-size:0.82rem;color:var(--text-muted);">Forecast unavailable</span>';
+  }
+}
+
+/* ── 2. THIS DAY ACROSS YEARS ── */
+async function loadThisDay() {
+  ge('today-date-label').textContent = CD + ' ' + MONTHS_LONG[CM-1] + ' in previous years';
+  var promises = ALL_YEARS.map(function(yr) {
+    var start = istDate(yr, CM, CD);
+    var end   = istDateEnd(yr, CM, CD);
+    return sbGet('/rest/v1/combined_readings?select=precipitation&recorded_at=gte.'+start+'&recorded_at=lte.'+end+'&limit=30')
+      .then(function(rows) {
+        var total = 0;
+        if (Array.isArray(rows)) rows.forEach(function(r){ total+=parseFloat(r.precipitation)||0; });
+        return {yr:yr, mm:Math.round(total*10)/10};
+      });
+  });
+  try {
+    var results = await Promise.all(promises);
+    var maxMM = Math.max.apply(null, results.map(function(r){return r.mm;}));
+    var sumMM = results.reduce(function(s,r){return s+r.mm;},0);
+    var avgMM = Math.round((sumMM/results.length)*10)/10;
+    var html = '<table style="width:100%;border-collapse:collapse;">' +
+      '<thead><tr>' +
+        '<th style="font-size:0.68rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);padding:4px 0;border-bottom:1px solid var(--border);text-align:left;">Year</th>' +
+        '<th style="font-size:0.68rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);padding:4px 0;border-bottom:1px solid var(--border);text-align:left;">Rainfall</th>' +
+        '<th style="border-bottom:1px solid var(--border);min-width:100px;"></th>' +
+        '<th style="border-bottom:1px solid var(--border);"></th>' +
+      '</tr></thead><tbody>';
+    results.forEach(function(r) {
+      var barW = maxMM > 0 ? Math.round(r.mm/maxMM*100) : 0;
+      var isCur = r.yr === CY;
+      var badge = r.mm === 0 ?
+        '<span class="ep-badge" style="background:rgba(234,179,8,0.1);color:#92400e;font-size:0.65rem;">Dry</span>' :
+        r.mm > avgMM*1.4 ?
+        '<span class="ep-badge ep-badge-rare" style="font-size:0.65rem;">Wet</span>' :
+        '<span class="ep-badge ep-badge-common" style="font-size:0.65rem;">Normal</span>';
+      html +=
+        '<tr style="'+(isCur?'background:rgba(74,127,165,0.05);':'')+'">'+
+          '<td style="padding:8px 0;border-bottom:1px solid var(--border);font-weight:'+(isCur?'600':'400')+';color:var(--ep-green);font-size:0.88rem;">'+r.yr+(isCur?' &#10022;':'')+'</td>'+
+          '<td style="padding:8px 0;border-bottom:1px solid var(--border);font-family:var(--serif);font-size:1.15rem;color:#4A7FA5;width:80px;">'+r.mm+' mm</td>'+
+          '<td style="padding:8px 0;border-bottom:1px solid var(--border);">'+
+            '<div style="height:8px;background:var(--ep-cream-dark);border-radius:4px;overflow:hidden;">'+
+              '<div style="height:100%;width:'+barW+'%;background:'+(isCur?'var(--ep-tan)':'#4A7FA5')+';border-radius:4px;"></div>'+
+            '</div>'+
+          '</td>'+
+          '<td style="padding:8px 0 8px 10px;border-bottom:1px solid var(--border);">'+badge+'</td>'+
+        '</tr>';
+    });
+    html += '</tbody></table>';
+    ge('day-table-wrap').innerHTML = html;
+
+    var curMM = results.filter(function(r){return r.yr===CY;})[0];
+    if (curMM) {
+      var el = ge('day-insight');
+      var pct = avgMM > 0 ? Math.round(((curMM.mm-avgMM)/avgMM)*100) : null;
+      if (avgMM === 0) {
+        ge('day-insight-text').innerHTML = 'This date is typically dry across all years on record.';
+      } else if (pct !== null && pct > 30) {
+        ge('day-insight-text').innerHTML = 'Today is <strong>'+Math.abs(pct)+'% wetter</strong> than the average for this date ('+avgMM+' mm). An unusually rainy day.';
+      } else if (pct !== null && pct < -30) {
+        ge('day-insight-text').innerHTML = 'Today is drier than average for this date. Historical mean: <strong>'+avgMM+' mm</strong>.';
+      } else {
+        ge('day-insight-text').innerHTML = 'Today is about average for this date. Historical mean: <strong>'+avgMM+' mm</strong>.';
+      }
+      el.style.display = 'flex';
+    }
+  } catch(e) { ge('day-table-wrap').innerHTML = '<span style="color:var(--text-muted);">Could not load year-on-day data</span>'; }
+}
+
+/* ── 3. THIS MONTH ACROSS YEARS ── */
+async function loadThisMonth() {
+  ge('month-lbl').textContent = MONTHS_LONG[CM-1] + ' — all years compared';
+  var promises = ALL_YEARS.map(function(yr) {
+    var nextM = CM===12?1:CM+1;
+    var nextY = CM===12?yr+1:yr;
+    var start = istMonthStart(yr, CM);
+    var end   = istMonthStart(nextY, nextM);
+    return sbGet('/rest/v1/combined_readings?select=recorded_at,precipitation&recorded_at=gte.'+start+'&recorded_at=lt.'+end+'&limit=800')
+      .then(function(rows) {
+        var total=0, dayMap={};
+        if (Array.isArray(rows)) rows.forEach(function(r){
+          var p=parseFloat(r.precipitation)||0;
+          total+=p;
+          if(p>0.1){ var dk=r.recorded_at.substring(0,10); dayMap[dk]=true; }
+        });
+        return {yr:yr, mm:Math.round(total*10)/10, rainyDays:Object.keys(dayMap).length};
+      });
+  });
+  try {
+    var results = await Promise.all(promises);
+    var maxMM = Math.max.apply(null, results.map(function(r){return r.mm;}));
+    var avgMM = Math.round(results.reduce(function(s,r){return s+r.mm;},0)/results.length);
+    var html = '';
+    results.forEach(function(r) {
+      var barW = maxMM > 0 ? Math.round(r.mm/maxMM*100) : 0;
+      var isCur = r.yr === CY;
+      html +=
+        '<div class="month-yr-card'+(isCur?' current':'')+'">'+
+          '<div class="myc-yr">'+r.yr+(isCur?' &#8592; this year':'')+'</div>'+
+          '<div><span class="myc-mm">'+r.mm+'</span><span class="myc-unit"> mm</span></div>'+
+          '<div class="myc-days">&#127783;&#65039; '+r.rainyDays+' rainy days</div>'+
+          '<div class="myc-bar"><div class="myc-bar-fill" style="width:'+barW+'%"></div></div>'+
+        '</div>';
+    });
+    ge('month-yr-grid').innerHTML = html;
+    var cur = results.filter(function(r){return r.yr===CY;})[0];
+    if (cur && avgMM > 0) {
+      var pct = Math.round(((cur.mm-avgMM)/avgMM)*100);
+      ge('month-insight-text').innerHTML =
+        MONTHS_LONG[CM-1]+' '+CY+' is <strong>'+(pct>=0?pct+'% wetter':Math.abs(pct)+'% drier')+'</strong> than the average for this month ('+avgMM+' mm).';
+      ge('month-insight').style.display = 'flex';
+    }
+  } catch(e) { ge('month-yr-grid').innerHTML = '<span style="color:var(--text-muted);">Could not load monthly data</span>'; }
+}
+
+/* ── 4. MONSOON TRACKER ── */
+async function loadMonsoonTracker() {
+  var promises = ALL_YEARS.map(function(yr) {
+    var start = istMonthStart(yr, 6);
+    var end   = istMonthStart(yr, 10);
+    return sbGet('/rest/v1/combined_readings?select=precipitation&recorded_at=gte.'+start+'&recorded_at=lt.'+end+'&limit=3000')
+      .then(function(rows) {
+        var total = 0;
+        if (Array.isArray(rows)) rows.forEach(function(r){ total+=parseFloat(r.precipitation)||0; });
+        return {yr:yr, mm:Math.round(total)};
+      });
+  });
+  try {
+    var results = await Promise.all(promises);
+    var maxMM = Math.max.apply(null, results.map(function(r){return r.mm;}));
+    var barCls = {2022:'yr2022',2023:'yr2023',2024:'yr2024',2025:'yr2025',2026:'yr2026'};
+    var html = '';
+    results.slice().reverse().forEach(function(r) {
+      var barW = maxMM > 0 ? Math.round(r.mm/maxMM*96) : 0;
+      html +=
+        '<div class="tracker-row">'+
+          '<div class="tr-yr" style="'+(r.yr===CY?'color:var(--ep-tan);':'')+'">'+r.yr+'</div>'+
+          '<div class="tr-bar-bg"><div class="tr-bar '+(barCls[r.yr]||'yr2022')+'" style="width:'+barW+'%"></div></div>'+
+          '<div class="tr-mm">'+r.mm+' mm</div>'+
+        '</div>';
+    });
+    ge('tracker-rows').innerHTML = html;
+    var cur  = results.filter(function(r){return r.yr===CY;})[0];
+    var prev = results.filter(function(r){return r.yr===CY-1;})[0];
+    if (cur && prev && prev.mm > 0) {
+      var pct = Math.round(((cur.mm-prev.mm)/prev.mm)*100);
+      var noteEl = ge('tracker-note');
+      noteEl.innerHTML = '<strong>'+CY+' monsoon:</strong> '+cur.mm+' mm so far &nbsp;·&nbsp; '+(pct>=0?'+'+pct+'%':pct+'%')+' vs '+prev.yr;
+      noteEl.style.display = 'block';
+    }
+  } catch(e) { ge('tracker-rows').innerHTML = '<span style="color:rgba(242,240,230,0.5);">Could not load monsoon totals</span>'; }
+}
+
+/* ── 5. FIRST RAIN ── */
+async function loadFirstRain() {
+  var promises = ALL_YEARS.map(function(yr) {
+    var start = istMonthStart(yr, 6);
+    var end   = istMonthStart(yr, 9);
+    return sbGet('/rest/v1/combined_readings?select=recorded_at,precipitation&recorded_at=gte.'+start+'&recorded_at=lt.'+end+'&precipitation=gt.0.5&order=recorded_at.asc&limit=5')
+      .then(function(rows) {
+        if (!Array.isArray(rows)||!rows.length) return {yr:yr, date:null};
+        return {yr:yr, date:new Date(rows[0].recorded_at)};
+      });
+  });
+  try {
+    var results = await Promise.all(promises);
+    function dayOfYear(d) {
+      return Math.floor((d-new Date(d.getFullYear(),0,0))/86400000);
+    }
+    var validDays = results.filter(function(r){return r.date;}).map(function(r){return dayOfYear(r.date);});
+    var avgDOY = validDays.length ? Math.round(validDays.reduce(function(a,b){return a+b;},0)/validDays.length) : null;
+    var html = '';
+    results.forEach(function(r) {
+      var isCur = r.yr === CY;
+      var dateStr = r.date ? (r.date.getDate()+' '+MONTHS_LONG[r.date.getMonth()]) : 'No data yet';
+      var note = '';
+      if (r.date && avgDOY) {
+        var diff = avgDOY - dayOfYear(r.date);
+        if (Math.abs(diff) > 2) {
+          note = diff > 0 ? (Math.abs(diff)+' days earlier than avg') : (Math.abs(diff)+' days later than avg');
+        } else { note = 'On average schedule'; }
+      }
+      html +=
+        '<div class="fr-item">'+
+          '<div class="fr-dot'+(isCur?' current':'')+'"></div>'+
+          '<div class="fr-yr">'+r.yr+'</div>'+
+          '<div>'+
+            '<div class="fr-date">'+dateStr+'</div>'+
+            (note ? '<div class="fr-note">'+note+'</div>' : '')+
+          '</div>'+
+        '</div>';
+    });
+    ge('fr-timeline').innerHTML = html;
+    var cur = results.filter(function(r){return r.yr===CY;})[0];
+    var iEl = ge('fr-insight');
+    if (cur && cur.date && avgDOY) {
+      var diff = avgDOY - dayOfYear(cur.date);
+      if (Math.abs(diff)<=2) {
+        ge('fr-insight-text').innerHTML = 'The '+CY+' monsoon arrived <strong>exactly on schedule</strong> — right on the historical average for Baner.';
+      } else if (diff>0) {
+        ge('fr-insight-text').innerHTML = 'The '+CY+' monsoon arrived <strong>'+Math.abs(diff)+' days earlier</strong> than the Baner average. An early and welcome start.';
+      } else {
+        ge('fr-insight-text').innerHTML = 'The '+CY+' monsoon was <strong>'+Math.abs(diff)+' days late</strong> compared to the historical average.';
+      }
+      iEl.style.display = 'flex';
+    } else if (cur && !cur.date) {
+      ge('fr-insight-text').innerHTML = 'The monsoon has not yet arrived in '+CY+'. Historical average arrival: <strong>mid-June</strong>.';
+      iEl.style.display = 'flex';
+    }
+  } catch(e) { ge('fr-timeline').innerHTML = '<span style="color:var(--text-muted);">Could not load first-rain data</span>'; }
+}
+
+/* ── 6. RAIN PATTERN ── */
+async function loadRainPattern() {
+  var start = istYearStart(CY);
+  try {
+    var all=[], off=0;
+    while(true){
+      var rows = await sbGet('/rest/v1/combined_readings?select=recorded_at,precipitation&recorded_at=gte.'+start+'&limit=1000&offset='+off);
+      if(!Array.isArray(rows)||!rows.length) break;
+      all=all.concat(rows); if(rows.length<1000) break; off+=1000;
+    }
+    var dayMap={};
+    all.forEach(function(r){
+      var dk=r.recorded_at.substring(0,10);
+      if(!dayMap[dk]) dayMap[dk]=0;
+      dayMap[dk]+=parseFloat(r.precipitation)||0;
+    });
+    var days=Object.keys(dayMap).sort();
+    var rainyDays=0, curDry=0, maxDry=0, curWet=0, maxWet=0;
+    days.forEach(function(dk){
+      var mm=dayMap[dk];
+      if(mm>=0.5){ rainyDays++; if(curDry>maxDry)maxDry=curDry; curDry=0; curWet++; if(curWet>maxWet)maxWet=curWet; }
+      else{ curDry++; curWet=0; }
+    });
+    if(curDry>maxDry) maxDry=curDry;
+    var pct = days.length>0 ? Math.round(rainyDays/days.length*100) : 0;
+    ge('pattern-grid').innerHTML =
+      '<div class="pattern-card"><div class="pc-label">Rainy days this year</div><div class="pc-val">'+rainyDays+'</div><div class="pc-sub">days with measurable rain</div></div>'+
+      '<div class="pattern-card"><div class="pc-label">Longest dry spell</div><div class="pc-val">'+maxDry+'</div><div class="pc-sub">consecutive days without rain</div></div>'+
+      '<div class="pattern-card"><div class="pc-label">Rain frequency</div><div class="pc-val">'+pct+'%</div><div class="pc-sub">of days have had rain this year</div></div>';
+  } catch(e) { ge('pattern-grid').innerHTML = '<span style="color:var(--text-muted);">Could not compute pattern</span>'; }
+}
+
+/* ── 7. INTENSITY ── */
+async function loadIntensity() {
+  var start = istYearStart(CY);
+  try {
+    var all=[], off=0;
+    while(true){
+      var rows = await sbGet('/rest/v1/combined_readings?select=recorded_at,precipitation&recorded_at=gte.'+start+'&precipitation=gt.0&limit=1000&offset='+off);
+      if(!Array.isArray(rows)||!rows.length) break;
+      all=all.concat(rows); if(rows.length<1000) break; off+=1000;
+    }
+    var dayMap={};
+    all.forEach(function(r){
+      var dk=r.recorded_at.substring(0,10);
+      if(!dayMap[dk]) dayMap[dk]=0;
+      dayMap[dk]+=parseFloat(r.precipitation)||0;
+    });
+    var counts={light:0,moderate:0,heavy:0,extreme:0};
+    Object.values(dayMap).forEach(function(mm){
+      if(mm<2.5)       counts.light++;
+      else if(mm<10)   counts.moderate++;
+      else if(mm<35)   counts.heavy++;
+      else             counts.extreme++;
+    });
+    var total = counts.light+counts.moderate+counts.heavy+counts.extreme;
+    var maxC  = Math.max(counts.light,counts.moderate,counts.heavy,counts.extreme,1);
+    function intRow(label,dotColor,barColor,count){
+      var barW = Math.round(count/maxC*100);
+      var pct  = total>0?Math.round(count/total*100):0;
+      return '<div class="int-row">'+
+        '<div class="int-label"><div class="int-dot" style="background:'+dotColor+'"></div>'+label+'</div>'+
+        '<div class="int-bar-bg"><div class="int-bar" style="width:'+barW+'%;background:'+barColor+'"></div></div>'+
+        '<div class="int-count">'+count+' days ('+pct+'%)</div>'+
+      '</div>';
+    }
+    ge('intensity-bars').innerHTML =
+      intRow('Light (0–2.5 mm)','#A8C8E0','#A8C8E0',counts.light)+
+      intRow('Moderate (2.5–10 mm)','#4A7FA5','#4A7FA5',counts.moderate)+
+      intRow('Heavy (10–35 mm)','#1E3A52','#1E3A52',counts.heavy)+
+      intRow('Extreme (>35 mm)','#7c3aed','#7c3aed',counts.extreme);
+    var dom = 'light';
+    if(counts.heavy>=counts.light&&counts.heavy>=counts.moderate) dom='heavy';
+    else if(counts.moderate>=counts.light) dom='moderate';
+    var txt = dom==='light' ?
+      'Most rain days this year have been light drizzle — consistent moisture but not the big storms yet.' :
+      dom==='moderate' ?
+      'Moderate rain dominates this year. The kind that fills tanks slowly and keeps the hill green.' :
+      'Heavy rain events dominate this year — intense bursts accounting for most of the annual total.';
+    ge('intensity-insight-text').textContent = txt;
+    ge('intensity-insight').style.display = 'flex';
+  } catch(e) { ge('intensity-bars').innerHTML = '<span style="color:var(--text-muted);">Could not compute intensity data</span>'; }
+}
+
+/* ── 8. YEARLY CHART ── */
+async function loadYearlyChart() {
+  var COLORS = {2022:'rgba(74,127,165,0.55)',2023:'rgba(74,127,165,0.65)',2024:'rgba(30,58,82,0.7)',2025:'rgba(30,58,82,0.8)',2026:'rgba(191,155,123,0.9)'};
+  var BORDERS= {2022:'#4A7FA5',2023:'#3A6680',2024:'#2D5F85',2025:'#1E3A52',2026:'#BF9B7B'};
+  var promises = ALL_YEARS.map(function(yr) {
+    var monthPs = [];
+    for (var m=1; m<=12; m++) {
+      (function(mo){
+        var nM=mo===12?1:mo+1, nY=mo===12?yr+1:yr;
+        monthPs.push(
+          sbGet('/rest/v1/combined_readings?select=precipitation&recorded_at=gte.'+istMonthStart(yr,mo)+'&recorded_at=lt.'+istMonthStart(nY,nM)+'&limit=800')
+            .then(function(rows){
+              var total=0;
+              if(Array.isArray(rows)) rows.forEach(function(r){total+=parseFloat(r.precipitation)||0;});
+              return {mo:mo, mm:Math.round(total*10)/10};
+            })
+        );
+      })(m);
+    }
+    return Promise.all(monthPs).then(function(ms){
+      ms.sort(function(a,b){return a.mo-b.mo;});
+      return {yr:yr, data:ms.map(function(m){return m.mm;})};
+    });
+  });
+  try {
+    var allData = await Promise.all(promises);
+    var datasets = allData.map(function(d) {
+      return {
+        label:''+d.yr, data:d.data,
+        borderColor:BORDERS[d.yr]||'#4A7FA5',
+        backgroundColor:COLORS[d.yr]||'rgba(74,127,165,0.4)',
+        borderWidth:d.yr===CY?3:1.5, tension:0.4, fill:false,
+        pointRadius:d.yr===CY?4:2
+      };
+    });
+    new Chart(ge('yearlyChart'),{
+      type:'line',
+      data:{labels:MONTHS_SHORT, datasets:datasets},
+      options:{responsive:true,maintainAspectRatio:false,
+        plugins:{legend:{position:'top',labels:{font:{size:11},boxWidth:14}}},
+        scales:{
+          y:{beginAtZero:true,grid:{color:'rgba(0,0,0,0.05)'},ticks:{font:{size:10},color:'#6b6b6b',callback:function(v){return v+' mm';}}},
+          x:{grid:{display:false},ticks:{font:{size:11},color:'#6b6b6b'}}
+        }
+      }
+    });
+  } catch(e) { ge('yearlyChart').parentElement.innerHTML='<span style="color:var(--text-muted);">Could not load chart</span>'; }
+}
+
+/* ── 9. RAIN EVENTS ── */
+async function loadRainEvents() {
+  var promises = ALL_YEARS.map(function(yr) {
+    var start = istYearStart(yr);
+    var end   = istYearStart(yr+1);
+    return sbGet('/rest/v1/combined_readings?select=recorded_at,precipitation&recorded_at=gte.'+start+'&recorded_at=lt.'+end+'&precipitation=gt.0&limit=10000')
+      .then(function(rows) {
+        var dayMap={};
+        if(Array.isArray(rows)) rows.forEach(function(r){
+          var dk=r.recorded_at.substring(0,10);
+          if(!dayMap[dk]) dayMap[dk]=0;
+          dayMap[dk]+=parseFloat(r.precipitation)||0;
+        });
+        return Object.keys(dayMap).map(function(dk){ return {date:dk, mm:Math.round(dayMap[dk]*10)/10}; });
+      });
+  });
+  try {
+    var all = await Promise.all(promises);
+    var flat = [].concat.apply([], all);
+    flat.sort(function(a,b){return b.mm-a.mm;});
+    var top = flat.slice(0,7);
+    var maxMM = top.length ? top[0].mm : 1;
+    var html = '';
+    top.forEach(function(e, i) {
+      var d   = new Date(e.date+'T00:00:00');
+      var dStr = d.getDate()+' '+MONTHS_LONG[d.getMonth()]+' '+d.getFullYear();
+      var barW = Math.round(e.mm/maxMM*100);
+      var note = e.mm>=35?'&#9888;&#65039; Extreme rainfall event':e.mm>=10?'&#9928;&#65039; Heavy rain day':'&#127783;&#65039; Significant rain day';
+      html +=
+        '<div class="event-item">'+
+          '<div class="ev-rank">'+(i+1)+'</div>'+
+          '<div class="ev-info">'+
+            '<div class="ev-date">'+dStr+'</div>'+
+            '<div class="ev-mm">'+e.mm+' mm</div>'+
+            '<div class="ev-note">'+note+'</div>'+
+          '</div>'+
+          '<div class="ev-bar-wrap"><div class="ev-bar" style="width:'+barW+'%"></div></div>'+
+        '</div>';
+    });
+    ge('events-list').innerHTML = html || '<span style="color:var(--text-muted);">No rain events found</span>';
+  } catch(e) { ge('events-list').innerHTML = '<span style="color:var(--text-muted);">Could not load rain events</span>'; }
+}
+
+/* ── 10. MONSOON PHASES ── */
+async function loadBehaviour() {
+  var moTotals = new Array(12).fill(0);
+  var moCounts = new Array(12).fill(0);
+  var promises = [];
+  ALL_YEARS.forEach(function(yr){
+    for(var m=1;m<=12;m++){
+      (function(mo){
+        var nM=mo===12?1:mo+1, nY=mo===12?yr+1:yr;
+        promises.push(
+          sbGet('/rest/v1/combined_readings?select=precipitation&recorded_at=gte.'+istMonthStart(yr,mo)+'&recorded_at=lt.'+istMonthStart(nY,nM)+'&limit=800')
+            .then(function(rows){
+              var total=0;
+              if(Array.isArray(rows)) rows.forEach(function(r){total+=parseFloat(r.precipitation)||0;});
+              moTotals[mo-1]+=Math.round(total); moCounts[mo-1]++;
+            })
+        );
+      })(m);
+    }
+  });
+  try {
+    await Promise.all(promises);
+    var avgs = moTotals.map(function(t,i){ return moCounts[i]>0?Math.round(t/moCounts[i]):0; });
+    var early= avgs[5];
+    var peak = Math.round((avgs[6]+avgs[7])/2);
+    var late = avgs[8];
+    ge('phase-cards').innerHTML =
+      '<div class="phase-card phase-early"><div class="ph-label">Early Monsoon</div><div class="ph-months">June</div><div class="ph-mm">'+early+' mm</div><div class="ph-note">avg monthly total</div></div>'+
+      '<div class="phase-card phase-peak"><div class="ph-label">Peak Monsoon</div><div class="ph-months">July \u2013 August</div><div class="ph-mm">'+peak+' mm</div><div class="ph-note">avg monthly total</div></div>'+
+      '<div class="phase-card phase-late"><div class="ph-label">Withdrawal</div><div class="ph-months">September</div><div class="ph-mm">'+late+' mm</div><div class="ph-note">avg monthly total</div></div>';
+    new Chart(ge('behaviourChart'),{
+      type:'bar',
+      data:{
+        labels:MONTHS_SHORT,
+        datasets:[{
+          label:'Avg monthly rainfall (mm)',
+          data:avgs,
+          backgroundColor:avgs.map(function(v,i){
+            if(i===5)     return 'rgba(74,127,165,0.6)';
+            if(i===6||i===7) return 'rgba(30,58,82,0.85)';
+            if(i===8)     return 'rgba(74,127,165,0.7)';
+            return 'rgba(200,220,235,0.5)';
+          }),
+          borderRadius:4
+        }]
+      },
+      options:{responsive:true,maintainAspectRatio:false,
+        plugins:{legend:{display:false}},
+        scales:{
+          y:{beginAtZero:true,grid:{color:'rgba(0,0,0,0.05)'},ticks:{font:{size:10},color:'#6b6b6b',callback:function(v){return v+' mm';}}},
+          x:{grid:{display:false},ticks:{font:{size:11},color:'#6b6b6b'}}
+        }
+      }
+    });
+  } catch(e) { ge('phase-cards').innerHTML='<span style="color:var(--text-muted);">Could not load phase data</span>'; }
+}
+
+/* ── 11. IMPACT: BIRDS ── */
+async function loadBirdImpact() {
+  var since = (CY-1)+'-'+p2(CM)+'-'+p2(CD)+'T00:00:00Z';
+  try {
+    var birdRows = await sbGet('/rest/v1/bird_detections?select=detected_at&detected_at=gte.'+since+'&limit=10000');
+    var rainRows = await sbGet('/rest/v1/combined_readings?select=recorded_at,precipitation&recorded_at=gte.'+since+'&limit=10000');
+    var rainByHr={};
+    if(Array.isArray(rainRows)) rainRows.forEach(function(r){
+      var hr=r.recorded_at.substring(0,13);
+      rainByHr[hr]=(rainByHr[hr]||0)+(parseFloat(r.precipitation)||0);
+    });
+    var birdByHr={};
+    if(Array.isArray(birdRows)) birdRows.forEach(function(b){
+      var hr=b.detected_at.substring(0,13);
+      birdByHr[hr]=(birdByHr[hr]||0)+1;
+    });
+    var dryC=0,dryH=0,wetC=0,wetH=0;
+    Object.keys(rainByHr).forEach(function(hr){
+      var pp=rainByHr[hr]||0, bc=birdByHr[hr]||0;
+      if(pp>0.5){wetC+=bc;wetH++;}else{dryC+=bc;dryH++;}
+    });
+    var dryAvg=dryH>0?Math.round(dryC/dryH*10)/10:0;
+    var wetAvg=wetH>0?Math.round(wetC/wetH*10)/10:0;
+    ge('birds-dry').textContent = dryAvg;
+    ge('birds-wet').textContent = wetAvg;
+    if(wetAvg>dryAvg){
+      var pct=dryAvg>0?Math.round((wetAvg-dryAvg)/dryAvg*100):0;
+      ge('birds-note').innerHTML='<strong>+'+pct+'% more bird detections on rainy hours</strong> — rain activates the hill. Many species call more after showers.';
+    } else if(wetAvg<dryAvg){
+      var pct=Math.round((dryAvg-wetAvg)/dryAvg*100);
+      ge('birds-note').innerHTML='Bird activity drops <strong>'+pct+'% during rain</strong> — most birds shelter during showers, resuming immediately after.';
+    } else {
+      ge('birds-note').textContent='Bird activity is similar in rainy and dry hours at this location.';
+    }
+  } catch(e){ ge('birds-dry').textContent='—'; ge('birds-wet').textContent='—'; ge('birds-note').textContent='Could not compute bird-rain correlation.'; }
+}
+
+/* ── 11b. IMPACT: TEMP ── */
+async function loadTempImpact() {
+  var since = (CY-1)+'-'+p2(CM)+'-'+p2(CD)+'T00:00:00Z';
+  try {
+    var rows = await sbGet('/rest/v1/combined_readings?select=recorded_at,temperature,precipitation&recorded_at=gte.'+since+'&limit=10000');
+    if(!Array.isArray(rows)||!rows.length) throw new Error('no data');
+    var byHr={};
+    rows.forEach(function(r){ byHr[r.recorded_at.substring(0,13)]=r; });
+    var hrs=Object.keys(byHr).sort();
+    var beforeT=[], afterT=[];
+    for(var i=2;i<hrs.length-2;i++){
+      var r=byHr[hrs[i]];
+      if(!r||!r.precipitation||parseFloat(r.precipitation)<1) continue;
+      var bp=byHr[hrs[i-2]], an=byHr[hrs[i+2]];
+      if(bp&&bp.temperature) beforeT.push(parseFloat(bp.temperature));
+      if(an&&an.temperature) afterT.push(parseFloat(an.temperature));
+    }
+    function arrAvg(a){ return a.length?Math.round(a.reduce(function(x,y){return x+y;},0)/a.length*10)/10:null; }
+    var bef=arrAvg(beforeT), aft=arrAvg(afterT);
+    if(bef&&aft){
+      ge('temp-before').textContent=bef+'\u00b0';
+      ge('temp-after').textContent=aft+'\u00b0';
+      var drop=Math.round((bef-aft)*10)/10;
+      ge('temp-note').innerHTML=drop>0?'Rain cools Baner by an average of <strong>\u2212'+drop+'\u00b0C</strong>. Felt within 2 hours of a shower.':'Temperature change after rain is minimal (\u00b1'+Math.abs(drop)+'\u00b0C).';
+    } else {
+      ge('temp-before').textContent='—\u00b0'; ge('temp-after').textContent='—\u00b0';
+      ge('temp-note').textContent='Not enough rain events to compute temperature impact yet.';
+    }
+  } catch(e){ ge('temp-before').textContent='—\u00b0'; ge('temp-after').textContent='—\u00b0'; ge('temp-note').textContent='Could not load temperature data.'; }
+}
+
+/* ── 12. AQI + RAIN ── FIX: use 'aqi' not 'eu_aqi' ── */
+async function loadAQIRain() {
+  var since = (CY-1)+'-'+p2(CM)+'-'+p2(CD)+'T00:00:00Z';
+  try {
+    /* combined_readings column is 'aqi', not 'eu_aqi' */
+    var rows = await sbGet('/rest/v1/combined_readings?select=recorded_at,precipitation,aqi&recorded_at=gte.'+since+'&aqi=not.is.null&limit=10000');
+    if(!Array.isArray(rows)||!rows.length) throw new Error('no data');
+    var byHr={};
+    rows.forEach(function(r){ byHr[r.recorded_at.substring(0,13)]=r; });
+    var hrs=Object.keys(byHr).sort();
+    var beforeAQI=[], duringAQI=[], afterAQI=[];
+    for(var i=6;i<hrs.length-6;i++){
+      var r=byHr[hrs[i]];
+      if(!r||!r.precipitation||parseFloat(r.precipitation)<0.5) continue;
+      if(!r.aqi) continue;
+      for(var b=1;b<=6;b++){ var p=byHr[hrs[i-b]]; if(p&&p.aqi) beforeAQI.push(parseFloat(p.aqi)); }
+      duringAQI.push(parseFloat(r.aqi));
+      for(var a=1;a<=6;a++){ var n=byHr[hrs[i+a]]; if(n&&n.aqi) afterAQI.push(parseFloat(n.aqi)); }
+    }
+    function arrAvg(a){ return a.length?Math.round(a.reduce(function(x,y){return x+y;},0)/a.length):null; }
+    var bAQI=arrAvg(beforeAQI), dAQI=arrAvg(duringAQI), aAQI=arrAvg(afterAQI);
+    if(bAQI) ge('aqi-before').textContent=bAQI;
+    if(dAQI) ge('aqi-during').textContent=dAQI;
+    if(bAQI&&aAQI&&bAQI>0){
+      var imp=Math.round((bAQI-aAQI)/bAQI*100);
+      ge('aqi-pct').textContent=(imp>0?imp:0)+'%';
+      ge('aqi-lbl').textContent='AQI improvement in 6h after rain';
+      var iEl=ge('aqi-insight'), iTxt=ge('aqi-insight-text');
+      if(imp>15){
+        iTxt.innerHTML='Rain is a powerful air purifier in Baner. AQI drops by <strong>'+imp+'%</strong> within 6 hours of a shower.';
+      } else if(imp>0){
+        iTxt.innerHTML='A modest <strong>'+imp+'%</strong> AQI improvement after rain — the effect is real but the baseline here is already relatively clean.';
+      } else {
+        iTxt.textContent='Rain does not consistently improve AQI here — local sources (traffic, construction) resume quickly after showers.';
+      }
+      iEl.style.display='flex';
+    }
+  } catch(e){ /* silently skip if no AQI data */ }
+}
+
+/* ── 13. SUMMARY ── */
+async function buildSummary() {
+  var start = istYearStart(CY);
+  try {
+    var all=[], off=0;
+    while(true){
+      var rows=await sbGet('/rest/v1/combined_readings?select=recorded_at,precipitation&recorded_at=gte.'+start+'&limit=1000&offset='+off);
+      if(!Array.isArray(rows)||!rows.length) break;
+      all=all.concat(rows); if(rows.length<1000) break; off+=1000;
+    }
+    var total=0, dayMap={};
+    all.forEach(function(r){
+      var dk=r.recorded_at.substring(0,10), p=parseFloat(r.precipitation)||0;
+      total+=p;
+      if(!dayMap[dk]) dayMap[dk]=0; dayMap[dk]+=p;
+    });
+    var rdCount=Object.keys(dayMap).filter(function(dk){return dayMap[dk]>=0.5;}).length;
+    total=Math.round(total);
+    var title = total>0 ? CY+' so far: '+total+' mm across '+rdCount+' rainy days' : 'Watching the sky \u00b7 '+MONTHS_LONG[CM-1]+' '+CY;
+    var body  = 'Baner has received '+total+' mm of rain across '+rdCount+' days so far in '+CY+'. Earth Pulse tracks every drop — from the first monsoon shower in June to the last withdrawing rains in September, compared against '+(CY-2022)+' years of continuous local data.';
+    ge('sc-title').textContent = title;
+    ge('sc-text').textContent  = body;
+    var pageUrl   = 'https://earth-pulse.org/rain.html';
+    var shareText = '\u26c5 '+title+' \u2014 Baner, Pune. '+pageUrl;
+    ge('share-wa').href = 'https://wa.me/?text='+encodeURIComponent(shareText);
+    ge('share-tw').href = 'https://twitter.com/intent/tweet?text='+encodeURIComponent(shareText);
+    ge('share-fb').href = 'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(pageUrl);
+  } catch(e){
+    ge('sc-title').textContent='Earth Pulse \u00b7 Monsoon '+CY;
+    ge('sc-text').textContent='Tracking every drop of rain in Baner since January 2022.';
+  }
+}
+
+function copyLink() {
+  var url='https://earth-pulse.org/rain.html';
+  if(navigator.clipboard){
+    navigator.clipboard.writeText(url).then(function(){
+      var t=ge('share-toast'); t.className='share-toast show';
+      setTimeout(function(){t.className='share-toast';},2200);
+    });
+  }
+}
+
+/* ── INIT ── */
+(function(){
+  loadToday();
+  loadThisDay();
+  loadThisMonth();
+  loadMonsoonTracker();
+  loadFirstRain();
+  loadRainPattern();
+  loadIntensity();
+  loadYearlyChart();
+  loadRainEvents();
+  loadBehaviour();
+  loadBirdImpact();
+  loadTempImpact();
+  loadAQIRain();
+  buildSummary();
+})();
+</script>
+</body>
+</html>
