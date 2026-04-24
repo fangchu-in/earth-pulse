@@ -1,2 +1,4 @@
 Trash/
 *.log
+__pycache__/
+*.pyc
