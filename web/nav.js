@@ -1,5 +1,6 @@
 /* Earth Pulse — nav.js
    Auth-aware navigation with hamburger menu for mobile.
+   Climate has dropdown (desktop) / accordion (mobile) with sub-pages.
    Supabase v2 key: "sb-[project-ref]-auth-token"
    where project-ref = "krmczyqwblsoekceanlj"
 */
@@ -11,23 +12,30 @@
   var LINKS = [
     { href:'index.html',      label:'Home' },
     { href:'birds.html',      label:'Birds' },
-    { href:'climate.html',    label:'Climate' },
+    { href:'climate.html',    label:'Climate', dropdown:[
+        { href:'temperature.html', label:'Temperature',    icon:'&#127777;&#65039;' },
+        { href:'rain.html',        label:'Monsoon & Rain', icon:'&#127783;&#65039;' },
+        { href:'aqi.html',         label:'Air Quality',    icon:'&#127807;'         },
+    ]},
     { href:'hill.html',       label:'Baner Hill' },
     { href:'weekly.html',     label:'Weekly' },
     { href:'about.html',      label:'About' },
   ];
 
   var FOOTER_LINKS = [
-    { href:'index.html',      label:'Home' },
-    { href:'birds.html',      label:'Birds' },
-    { href:'species.html',    label:'Species' },
-    { href:'climate.html',    label:'Climate' },
-    { href:'hill.html',       label:'Baner Hill' },
-    { href:'weekly.html',     label:'Weekly Blog' },
-    { href:'register.html',   label:'Register / Sign in' },
-    { href:'contribute.html', label:'Contribute' },
-    { href:'about.html',      label:'About' },
-    { href:'contact.html',    label:'Contact' },
+    { href:'index.html',       label:'Home' },
+    { href:'birds.html',       label:'Birds' },
+    { href:'species.html',     label:'Species' },
+    { href:'climate.html',     label:'Climate' },
+    { href:'temperature.html', label:'Temperature' },
+    { href:'rain.html',        label:'Monsoon & Rain' },
+    { href:'aqi.html',         label:'Air Quality' },
+    { href:'hill.html',        label:'Baner Hill' },
+    { href:'weekly.html',      label:'Weekly Blog' },
+    { href:'register.html',    label:'Register / Sign in' },
+    { href:'contribute.html',  label:'Contribute' },
+    { href:'about.html',       label:'About' },
+    { href:'contact.html',     label:'Contact' },
   ];
 
   function page() { return window.location.pathname.split('/').pop() || 'index.html'; }
@@ -71,10 +79,23 @@
     var pg = page();
     var isAdmin = session.ok && session.email === 'fangchu@gmail.com';
 
-    /* Desktop nav links */
+    /* Desktop nav links — Climate gets a hover dropdown */
     var links = LINKS.map(function(l) {
-      var active = pg === l.href.split('#')[0] ? ' class="active"' : '';
-      return '<li><a href="' + l.href + '"' + active + '>' + l.label + '</a></li>';
+      var isActive    = pg === l.href.split('#')[0];
+      var isSubActive = l.dropdown && l.dropdown.some(function(s){ return pg === s.href; });
+      if (l.dropdown) {
+        var dropItems = l.dropdown.map(function(s) {
+          var sa = pg === s.href ? ' class="ep-drop-item ep-drop-active"' : ' class="ep-drop-item"';
+          return '<li><a href="' + s.href + '"' + sa + '>' + s.icon + ' ' + s.label + '</a></li>';
+        }).join('');
+        return '<li class="ep-has-drop' + (isActive || isSubActive ? ' active' : '') + '">' +
+          '<a href="' + l.href + '"' + (isActive ? ' class="active"' : '') + '>' +
+            l.label + ' <svg class="ep-drop-caret" width="9" height="6" viewBox="0 0 9 6" fill="none"><path d="M1 1l3.5 4L8 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>' +
+          '</a>' +
+          '<ul class="ep-dropdown" role="menu">' + dropItems + '</ul>' +
+        '</li>';
+      }
+      return '<li><a href="' + l.href + '"' + (isActive ? ' class="active"' : '') + '>' + l.label + '</a></li>';
     }).join('');
 
     /* Desktop CTA */
@@ -85,9 +106,24 @@
       cta = '<a href="register.html" class="ep-nav-cta">Register</a>';
     }
 
-    /* Mobile drawer links */
+    /* Mobile drawer links — Climate gets an accordion */
     var drawerLinks = LINKS.map(function(l) {
-      var isCurrent = pg === l.href.split('#')[0];
+      var isCurrent    = pg === l.href.split('#')[0];
+      var isSubCurrent = l.dropdown && l.dropdown.some(function(s){ return pg === s.href; });
+      if (l.dropdown) {
+        var subLinks = l.dropdown.map(function(s) {
+          var sc = pg === s.href;
+          return '<a href="' + s.href + '" class="ep-mob-link ep-mob-sub' + (sc ? ' ep-mob-active' : '') + '">' + s.icon + ' ' + s.label + '</a>';
+        }).join('');
+        /* Auto-expand if currently on climate or a sub-page */
+        var openCls = (isCurrent || isSubCurrent) ? ' ep-mob-group-open' : '';
+        return '<div class="ep-mob-group' + openCls + '">' +
+          '<button class="ep-mob-link ep-mob-group-hd' + (isCurrent || isSubCurrent ? ' ep-mob-active' : '') + '" aria-expanded="' + (isCurrent || isSubCurrent ? 'true' : 'false') + '">' +
+            l.label + ' <svg class="ep-mob-arrow" width="9" height="6" viewBox="0 0 9 6" fill="none"><path d="M1 1l3.5 4L8 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>' +
+          '</button>' +
+          '<div class="ep-mob-sub-list">' + subLinks + '</div>' +
+        '</div>';
+      }
       return '<a href="' + l.href + '" class="ep-mob-link' + (isCurrent ? ' ep-mob-active' : '') + '">' + l.label + '</a>';
     }).join('');
 
@@ -120,15 +156,27 @@
         '<div class="ep-mob-inner">' +
           drawerLinks +
           '<a href="search.html" class="ep-mob-link">&#128269; Search</a>' +
-        '<div class="ep-mob-sep"></div>' +
+          '<div class="ep-mob-sep"></div>' +
           drawerAuth +
         '</div>' +
       '</div>' +
       '<div class="ep-mob-overlay" id="ep-mob-overlay" aria-hidden="true"></div>' +
       '<style>' +
+        /* Nav right */
         '.ep-nav-right{display:flex;align-items:center;gap:0.4rem;}' +
         '.ep-nav-search-btn{display:flex;align-items:center;padding:0.4rem;border-radius:var(--radius-sm,6px);color:var(--text-muted,#888);text-decoration:none;transition:color 0.2s;}' +
         '.ep-nav-search-btn:hover{color:var(--ep-green,#214332);}' +
+        /* Desktop dropdown */
+        '.ep-has-drop{position:relative;}' +
+        '.ep-has-drop>a{display:inline-flex;align-items:center;gap:3px;}' +
+        '.ep-drop-caret{opacity:0.55;transition:transform 0.18s;}' +
+        '.ep-has-drop:hover .ep-drop-caret{transform:rotate(180deg);}' +
+        '.ep-dropdown{display:none;position:absolute;top:calc(100% + 8px);left:50%;transform:translateX(-50%);background:#fff;border:1px solid var(--border,#e5e0d8);border-radius:10px;box-shadow:0 10px 32px rgba(0,0,0,0.13);padding:5px;min-width:200px;z-index:200;list-style:none;}' +
+        '.ep-dropdown::before{content:"";position:absolute;top:-6px;left:50%;transform:translateX(-50%);border:6px solid transparent;border-top:0;border-bottom-color:#fff;filter:drop-shadow(0 -1px 0 var(--border,#e5e0d8));}' +
+        '.ep-drop-item{display:flex;align-items:center;gap:8px;padding:8px 13px;border-radius:7px;font-size:0.84rem;color:var(--text-secondary,#444);text-decoration:none;white-space:nowrap;transition:background 0.12s,color 0.12s;}' +
+        '.ep-drop-item:hover{background:rgba(33,67,50,0.07);color:var(--ep-green,#214332);}' +
+        '.ep-drop-active{background:rgba(33,67,50,0.07);color:var(--ep-green,#214332);font-weight:600;}' +
+        '.ep-has-drop:hover .ep-dropdown{display:block;}' +
         /* Hamburger */
         '.ep-hamburger{display:none;flex-direction:column;justify-content:center;align-items:center;gap:5px;width:40px;height:40px;padding:8px;background:transparent;border:none;cursor:pointer;border-radius:var(--radius-sm,6px);flex-shrink:0;}' +
         '.ep-hamburger span{display:block;width:20px;height:2px;background:var(--ep-green,#214332);border-radius:2px;transition:transform 0.22s ease,opacity 0.18s ease;}' +
@@ -137,12 +185,22 @@
         '.ep-hamburger.open span:nth-child(2){opacity:0;transform:scaleX(0);}' +
         '.ep-hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}' +
         /* Drawer */
-        '.ep-mob-drawer{position:fixed;top:62px;left:0;right:0;z-index:299;background:var(--ep-cream,#F2F0E6);border-bottom:1px solid var(--border,#e5e0d8);box-shadow:0 12px 40px rgba(0,0,0,0.14);transform:translateY(-12px);opacity:0;pointer-events:none;transition:transform 0.22s ease,opacity 0.2s ease;visibility:hidden;}' +
+        '.ep-mob-drawer{position:fixed;top:62px;left:0;right:0;z-index:299;background:var(--ep-cream,#F2F0E6);border-bottom:1px solid var(--border,#e5e0d8);box-shadow:0 12px 40px rgba(0,0,0,0.14);transform:translateY(-12px);opacity:0;pointer-events:none;transition:transform 0.22s ease,opacity 0.2s ease;visibility:hidden;overflow-y:auto;max-height:calc(100vh - 62px);}' +
         '.ep-mob-drawer.open{transform:translateY(0);opacity:1;pointer-events:auto;visibility:visible;}' +
         '.ep-mob-inner{max-width:480px;margin:0 auto;padding:0.75rem 1.25rem 1.5rem;}' +
-        '.ep-mob-link{display:flex;align-items:center;padding:0.72rem 0.85rem;font-size:0.95rem;color:var(--text-secondary,#444);text-decoration:none;border-radius:var(--radius-sm,6px);font-family:var(--sans,sans-serif);font-weight:400;transition:background 0.12s,color 0.12s;margin-bottom:1px;}' +
+        '.ep-mob-link{display:flex;align-items:center;padding:0.72rem 0.85rem;font-size:0.95rem;color:var(--text-secondary,#444);text-decoration:none;border-radius:var(--radius-sm,6px);font-family:var(--sans,sans-serif);font-weight:400;transition:background 0.12s,color 0.12s;margin-bottom:1px;width:100%;box-sizing:border-box;background:none;border:none;cursor:pointer;text-align:left;}' +
         '.ep-mob-link:hover{background:rgba(33,67,50,0.07);color:var(--ep-green,#214332);}' +
         '.ep-mob-active{background:rgba(33,67,50,0.08);color:var(--ep-green,#214332);font-weight:600;}' +
+        /* Mobile accordion */
+        '.ep-mob-group{margin-bottom:1px;}' +
+        '.ep-mob-group-hd{display:flex;align-items:center;justify-content:space-between;}' +
+        '.ep-mob-arrow{margin-left:auto;opacity:0.5;flex-shrink:0;transition:transform 0.2s ease;}' +
+        '.ep-mob-sub-list{overflow:hidden;max-height:0;transition:max-height 0.25s ease;}' +
+        '.ep-mob-group-open .ep-mob-sub-list{max-height:220px;}' +
+        '.ep-mob-group-open .ep-mob-arrow{transform:rotate(180deg);}' +
+        '.ep-mob-sub{padding-left:2.2rem;font-size:0.88rem;color:var(--text-muted,#666);}' +
+        '.ep-mob-sub:hover,.ep-mob-sub.ep-mob-active{color:var(--ep-green,#214332);}' +
+        /* Divider / auth */
         '.ep-mob-sep{height:1px;background:var(--border,#e5e0d8);margin:0.6rem 0;}' +
         '.ep-mob-auth{color:var(--ep-green,#214332);font-weight:600;}' +
         '.ep-mob-signout{color:var(--text-muted,#999);font-size:0.88rem;}' +
@@ -158,7 +216,7 @@
         '}' +
       '</style>';
 
-    /* ── Interaction ── */
+    /* ── Interactions ── */
     var hamburger = document.getElementById('ep-hamburger');
     var drawer    = document.getElementById('ep-mob-drawer');
     var overlay   = document.getElementById('ep-mob-overlay');
@@ -189,11 +247,21 @@
     if (overlay)   overlay.addEventListener('click', closeMenu);
     document.addEventListener('keydown', function(e){ if (e.key === 'Escape' && isOpen()) closeMenu(); });
 
-    /* Close on any drawer link click */
+    /* Mobile climate accordion toggle */
     if (drawer) {
+      var grpHds = drawer.querySelectorAll('.ep-mob-group-hd');
+      for (var gi = 0; gi < grpHds.length; gi++) {
+        grpHds[gi].addEventListener('click', function() {
+          var grp = this.parentElement;
+          var willOpen = !grp.classList.contains('ep-mob-group-open');
+          grp.classList.toggle('ep-mob-group-open');
+          this.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
+        });
+      }
+      /* Close drawer on any leaf link click (not the accordion header) */
       var anchors = drawer.querySelectorAll('a');
       for (var i = 0; i < anchors.length; i++) {
-        anchors[i].addEventListener('click', function(e) {
+        anchors[i].addEventListener('click', function() {
           if (this.id !== 'ep-mob-signout-btn') closeMenu();
         });
       }
@@ -213,7 +281,7 @@
       });
     }
 
-    /* Close drawer on resize to desktop */
+    /* Close on resize to desktop */
     window.addEventListener('resize', function() {
       if (window.innerWidth > 680 && isOpen()) closeMenu();
     });

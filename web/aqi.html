@@ -1,0 +1,1020 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Air Quality — Baner, Pune | Earth Pulse</title>
+  <meta name="description" content="Hyperlocal air quality analysis for Baner, Pune. Live AQI, pollution spikes, cleanest hours, and multi-year trends since January 2022. India AQI + EU AQI.">
+  <meta name="keywords" content="Baner Pune AQI, Pune air quality, Baner air quality today, Pune pollution, Western Ghats air quality, India AQI Pune">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://earth-pulse.org/aqi.html">
+  <meta property="og:title" content="Air Quality in Baner, Pune — Earth Pulse">
+  <meta property="og:description" content="How breathable is Baner? Live AQI, cleanest hours, and 3-year trends from the Sahyadri foothills.">
+  <meta property="og:image" content="https://earth-pulse.org/earth-pulse-logo-og.png">
+  <meta property="og:url" content="https://earth-pulse.org/aqi.html">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="en_IN">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="geo.region" content="IN-MH">
+  <meta name="geo.placename" content="Baner, Pune, Maharashtra">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Dataset","name":"Air Quality Index — Baner, Pune","description":"Continuous hourly AQI monitoring in Baner, Pune. India AQI from Google Air Quality API, EU AQI from Open-Meteo CAMS. Since January 2022.","url":"https://earth-pulse.org/aqi.html","license":"https://creativecommons.org/licenses/by/4.0/","creator":{"@type":"Organization","name":"Earth Pulse","url":"https://earth-pulse.org"},"spatialCoverage":{"@type":"Place","name":"Baner, Pune, Maharashtra, India","geo":{"@type":"GeoCoordinates","latitude":18.5526156,"longitude":73.7818663}},"measurementTechnique":"Google Air Quality API (India AQI, CPCB) + Open-Meteo CAMS (EU AQI) — logged hourly"}</script>
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+  <style>
+    .a-page { max-width:1100px; margin:0 auto; padding:0 2rem 4rem; }
+    .a-grid2 { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
+    .a-grid3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:1rem; }
+    .a-grid4 { display:grid; grid-template-columns:repeat(4,1fr); gap:1rem; }
+    @media(max-width:800px){ .a-grid2,.a-grid3,.a-grid4{grid-template-columns:1fr 1fr;} }
+    @media(max-width:500px){ .a-grid2,.a-grid3,.a-grid4{grid-template-columns:1fr;} }
+    .a-section { margin:2.5rem 0; }
+    .a-section-head { display:flex; align-items:baseline; gap:0.75rem; margin-bottom:1rem; border-bottom:2px solid rgba(33,67,50,0.1); padding-bottom:0.5rem; }
+    .a-section-title { font-family:var(--serif); font-size:1.3rem; color:var(--ep-green); margin:0; }
+    .a-section-sub { font-size:0.78rem; color:var(--text-muted); }
+    .a-card { background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-lg); padding:1.25rem 1.4rem; }
+    .a-label { font-size:0.68rem; font-weight:700; text-transform:uppercase; letter-spacing:0.09em; color:var(--text-muted); margin-bottom:0.3rem; }
+    .a-val   { font-family:var(--serif); font-size:2rem; color:var(--ep-green); line-height:1; }
+    .a-val.lg { font-size:2.8rem; }
+    .a-val.sm { font-size:1.4rem; }
+    .a-unit  { font-size:0.78rem; color:var(--text-muted); margin-top:0.2rem; }
+
+    /* India AQI colour bands (0-500 CPCB) */
+    .aqi-good     { color:#22c55e; }
+    .aqi-sat      { color:#eab308; }
+    .aqi-moderate { color:#f97316; }
+    .aqi-poor     { color:#ef4444; }
+    .aqi-vp       { color:#7c3aed; }
+    .aqi-severe   { color:#7f1d1d; }
+    .aqibg-good     { background:rgba(34,197,94,0.08); border-color:rgba(34,197,94,0.25); }
+    .aqibg-sat      { background:rgba(234,179,8,0.07);  border-color:rgba(234,179,8,0.25); }
+    .aqibg-moderate { background:rgba(249,115,22,0.07); border-color:rgba(249,115,22,0.25);}
+    .aqibg-poor     { background:rgba(239,68,68,0.07);  border-color:rgba(239,68,68,0.25); }
+
+    /* EU AQI colour bands (0-100 EAQI) */
+    .euaqi-good { color:#22c55e; }
+    .euaqi-fair { color:#84cc16; }
+    .euaqi-mod  { color:#eab308; }
+    .euaqi-poor { color:#f97316; }
+    .euaqi-vp   { color:#ef4444; }
+    .euaqi-ep   { color:#7c3aed; }
+
+    /* Live AQI — two cards side by side */
+    .live-aqi-duo { display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-bottom:1rem; }
+    @media(max-width:600px){ .live-aqi-duo { grid-template-columns:1fr; } }
+    .live-card { border-radius:var(--radius-lg); padding:1.5rem 1.75rem; border:1px solid var(--border); }
+    .live-card-primary { background:var(--ep-green); border-color:var(--ep-green); }
+    .live-card-secondary { background:rgba(33,67,50,0.04); }
+    .live-num  { font-family:var(--serif); font-size:4rem; line-height:1; font-weight:400; }
+    .live-num.india { color:var(--ep-cream); }
+    .live-scale-lbl { font-size:0.68rem; font-weight:700; text-transform:uppercase; letter-spacing:0.1em; margin-bottom:0.3rem; color:rgba(242,240,230,0.6); }
+    .live-cat { font-family:var(--serif); font-size:1.25rem; line-height:1.2; margin-bottom:0.4rem; }
+    .live-sub { font-size:0.8rem; line-height:1.6; }
+    .live-delta { display:inline-flex; align-items:center; gap:4px; font-size:0.76rem; font-weight:600; padding:2px 10px; border-radius:2rem; margin-top:0.65rem; }
+    .delta-better { background:rgba(34,197,94,0.15); color:#16a34a; }
+    .delta-worse  { background:rgba(239,68,68,0.12); color:#dc2626; }
+    .delta-same   { background:rgba(0,0,0,0.05);     color:var(--text-muted); }
+    .pollutant-pill { display:inline-block; font-size:0.68rem; padding:2px 8px; border-radius:10px; background:rgba(242,240,230,0.15); color:var(--ep-cream); margin-top:0.5rem; font-weight:600; }
+
+    .a-insight { background:var(--ep-green); border-radius:var(--radius-lg); padding:1.1rem 1.4rem; display:flex; gap:0.75rem; align-items:flex-start; margin:1rem 0; }
+    .a-insight-icon { font-size:1.3rem; flex-shrink:0; }
+    .a-insight-text { font-size:0.85rem; color:rgba(242,240,230,0.88); line-height:1.7; }
+    .a-insight-text strong { color:var(--ep-tan); }
+
+    .band-row { display:flex; align-items:center; gap:0.75rem; padding:0.38rem 0; }
+    .band-label { font-size:0.74rem; color:var(--text-muted); width:110px; flex-shrink:0; }
+    .band-bar-bg { flex:1; background:var(--ep-cream-dark); border-radius:4px; height:10px; overflow:hidden; }
+    .band-bar { height:100%; border-radius:4px; transition:width 0.8s; }
+    .band-pct { font-family:var(--mono); font-size:0.72rem; color:var(--text-muted); width:36px; text-align:right; }
+
+    .year-rows { display:flex; flex-direction:column; gap:0.5rem; }
+    .year-row { display:flex; align-items:center; gap:0.75rem; }
+    .yr-label { font-family:var(--mono); font-size:0.75rem; color:var(--text-muted); width:38px; flex-shrink:0; }
+    .yr-bar-bg { flex:1; background:var(--ep-cream-dark); border-radius:4px; height:8px; overflow:hidden; }
+    .yr-bar-fill { height:100%; border-radius:4px; background:var(--ep-green); }
+    .yr-bar-fill.cur { background:var(--ep-tan); }
+    .yr-val { font-family:var(--mono); font-size:0.75rem; color:var(--ep-green); font-weight:600; width:44px; text-align:right; }
+
+    .spike-card { background:rgba(239,68,68,0.05); border:1px solid rgba(239,68,68,0.15); border-radius:var(--radius-lg); padding:1.1rem 1.25rem; }
+    .spike-val  { font-family:var(--serif); font-size:2rem; color:#dc2626; line-height:1; }
+
+    .cas-wrap { display:flex; align-items:center; gap:1.25rem; }
+    .cas-gauge { position:relative; width:100px; height:100px; flex-shrink:0; }
+    .cas-gauge svg { width:100px; height:100px; }
+    .cas-pct-text { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-family:var(--serif); font-size:1.5rem; color:var(--ep-green); }
+    .cas-detail { font-size:0.82rem; color:var(--text-muted); line-height:1.75; }
+
+    .rec-row { display:flex; justify-content:space-between; align-items:center; padding:0.55rem 0; border-bottom:1px solid var(--border); font-size:0.83rem; }
+    .rec-row:last-child { border-bottom:none; }
+    .rec-label { color:var(--text-muted); }
+    .rec-val   { font-family:var(--serif); font-size:1.15rem; color:var(--ep-green); font-weight:600; }
+    .rec-date  { font-family:var(--mono); font-size:0.7rem; color:var(--ep-tan); }
+
+    .a-chart-wrap canvas { max-height:220px; }
+    .src-note { font-size:0.72rem; color:var(--text-muted); background:rgba(33,67,50,0.04); border:1px solid rgba(33,67,50,0.1); border-radius:var(--radius-sm); padding:0.5rem 0.85rem; margin-top:1.5rem; }
+    .share-bar { display:flex; gap:0.5rem; flex-wrap:wrap; margin-top:1.5rem; padding-top:1rem; border-top:1px solid var(--border); }
+    .share-btn { display:inline-flex; align-items:center; gap:5px; padding:0.45rem 1rem; border-radius:2rem; font-size:0.78rem; font-weight:600; cursor:pointer; border:none; font-family:var(--sans); transition:opacity 0.15s; }
+    .share-btn:hover { opacity:0.85; }
+    .swa { background:#25D366; color:#fff; }
+    .stw { background:#000; color:#fff; }
+    .scp { background:var(--ep-cream-dark); color:var(--ep-green); border:1px solid var(--border-strong); }
+    .share-toast { position:fixed; bottom:2rem; left:50%; transform:translateX(-50%); background:var(--ep-green); color:var(--ep-cream); padding:0.6rem 1.4rem; border-radius:2rem; font-size:0.85rem; z-index:9999; opacity:0; transition:opacity 0.3s; pointer-events:none; }
+    .share-toast.show { opacity:1; }
+  </style>
+</head>
+<body>
+<div id="ep-nav"></div>
+
+<div class="ep-hero" style="padding-bottom:1.5rem;">
+  <div class="ep-hero-tag">&#127807; Air Quality · Baner, Pune · Sahyadri Foothills · Since January 2022</div>
+  <h1>Air Quality in Baner</h1>
+  <p class="ep-hero-sub">How breathable is this place, when, and why — tracked continuously since January 2022. India AQI (CPCB, 0–500) from Google Air Quality. EU AQI (EAQI, 0–100) from Open-Meteo CAMS. Both shown separately — never mixed.</p>
+  <p class="ep-hero-meta">Google Air Quality API · Open-Meteo CAMS · <a href="climate.html" style="color:var(--ep-tan);">&#8592; Climate overview</a></p>
+</div>
+
+<div class="a-page">
+
+  <!-- ── 1. LIVE NOW — two cards side by side ── -->
+  <div class="a-section">
+    <div class="a-section-head">
+      <h2 class="a-section-title">Right now</h2>
+      <span class="a-section-sub">Both AQI systems · updates every hour</span>
+    </div>
+    <div class="live-aqi-duo">
+      <!-- India AQI card (Google, CPCB 0-500) -->
+      <div class="live-card live-card-primary" id="india-card">
+        <div class="live-scale-lbl">India AQI · CPCB 0–500 · Google Air Quality</div>
+        <div class="live-num india" id="india-num">—</div>
+        <div class="live-cat" id="india-cat" style="color:var(--ep-tan);">Loading…</div>
+        <div class="live-sub" id="india-sub" style="color:rgba(242,240,230,0.7);"></div>
+        <div id="india-pollutant"></div>
+        <div id="india-delta"></div>
+      </div>
+      <!-- EU AQI card (Open-Meteo CAMS, EAQI 0-100) -->
+      <div class="live-card live-card-secondary a-card" id="eu-card">
+        <div class="a-label">EU AQI · EAQI 0–100 · Open-Meteo CAMS</div>
+        <div class="a-val lg" id="eu-num">—</div>
+        <div style="font-family:var(--serif);font-size:1.1rem;color:var(--ep-green);margin-bottom:4px;" id="eu-cat">—</div>
+        <div style="font-size:0.8rem;color:var(--text-muted);line-height:1.6;" id="eu-sub"></div>
+        <div id="eu-delta" style="margin-top:0.65rem;"></div>
+        <div style="font-size:0.7rem;color:var(--text-muted);margin-top:0.75rem;padding-top:0.75rem;border-top:1px solid var(--border);">EU AQI uses European standards. Lower is cleaner. Available since Jan 2022.</div>
+      </div>
+    </div>
+    <!-- 7-day trend chart with dd/mm x-axis -->
+    <div class="a-card" style="padding:1rem 1.4rem;">
+      <div class="a-label" style="margin-bottom:0.75rem;">Last 7 days · EU AQI (0–100) · daily averages</div>
+      <div class="a-chart-wrap"><canvas id="weekChart" height="100"></canvas></div>
+    </div>
+    <div class="a-insight" id="live-insight" style="display:none;">
+      <div class="a-insight-icon">&#127807;</div>
+      <div class="a-insight-text" id="live-insight-text"></div>
+    </div>
+  </div>
+
+  <!-- ── 2. THIS DAY ACROSS YEARS — EU AQI (all years have it) ── -->
+  <div class="a-section">
+    <div class="a-section-head">
+      <h2 class="a-section-title">This day across years</h2>
+      <span class="a-section-sub" id="day-label">— · EU AQI (consistent across all years)</span>
+    </div>
+    <div class="a-grid2">
+      <div class="a-card">
+        <div class="a-label">Today vs historical average</div>
+        <div class="a-val lg" id="day-today">—</div>
+        <div class="a-unit" id="day-delta-label">EU AQI</div>
+      </div>
+      <div class="a-card">
+        <div class="a-label">This date in previous years · EU AQI</div>
+        <div class="year-rows" id="day-year-rows"></div>
+      </div>
+    </div>
+    <div class="a-insight" id="day-insight" style="display:none;">
+      <div class="a-insight-icon">&#128197;</div>
+      <div class="a-insight-text" id="day-insight-text"></div>
+    </div>
+  </div>
+
+  <!-- ── 3. MONTHLY VIEW — EU AQI for trends, India AQI for this month if available ── -->
+  <div class="a-section">
+    <div class="a-section-head">
+      <h2 class="a-section-title">Monthly view</h2>
+      <span class="a-section-sub" id="month-label-head">—</span>
+    </div>
+    <div class="a-grid2" style="margin-bottom:1rem;">
+      <div class="a-card">
+        <div class="a-label" id="this-month-title">This month</div>
+        <div class="a-grid3" style="gap:0.5rem;margin-top:0.5rem;">
+          <div>
+            <div style="font-size:0.62rem;color:var(--text-muted);font-weight:700;text-transform:uppercase;letter-spacing:0.07em;">Avg EU AQI</div>
+            <div class="a-val" id="month-avg">—</div>
+          </div>
+          <div>
+            <div style="font-size:0.62rem;color:var(--text-muted);font-weight:700;text-transform:uppercase;letter-spacing:0.07em;">Lowest</div>
+            <div class="a-val euaqi-good" id="month-low">—</div>
+          </div>
+          <div>
+            <div style="font-size:0.62rem;color:var(--text-muted);font-weight:700;text-transform:uppercase;letter-spacing:0.07em;">Highest</div>
+            <div class="a-val euaqi-poor" id="month-high">—</div>
+          </div>
+        </div>
+        <div style="font-size:0.68rem;color:var(--text-muted);margin-top:0.65rem;">EU AQI scale 0–100. Values shown are genuine — not converted.</div>
+      </div>
+      <div class="a-card">
+        <div class="a-label">This month — year on year · EU AQI</div>
+        <div class="year-rows" id="month-year-rows"></div>
+      </div>
+    </div>
+    <div class="a-card">
+      <div class="a-label" style="margin-bottom:0.85rem;">Month-on-month this year · avg EU AQI</div>
+      <div class="a-chart-wrap"><canvas id="momChart" height="100"></canvas></div>
+    </div>
+    <div class="a-insight" id="month-insight" style="display:none;">
+      <div class="a-insight-icon">&#128200;</div>
+      <div class="a-insight-text" id="month-insight-text"></div>
+    </div>
+  </div>
+
+  <!-- ── 4. AQI DISTRIBUTION — EU AQI bands ── -->
+  <div class="a-section">
+    <div class="a-section-head">
+      <h2 class="a-section-title">AQI distribution</h2>
+      <span class="a-section-sub">% of hours in each EU AQI band — this year</span>
+    </div>
+    <div class="a-grid2">
+      <div class="a-card">
+        <div class="a-label" style="margin-bottom:0.85rem;">Hours in each band · EU AQI (0–100) · <span id="dist-year">—</span></div>
+        <div id="band-bars"></div>
+      </div>
+      <div class="a-card">
+        <div class="a-label" style="margin-bottom:0.75rem;">Distribution chart</div>
+        <div class="a-chart-wrap"><canvas id="distChart" height="200"></canvas></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 5. POLLUTION SPIKES — EU AQI ≥ 50 ── -->
+  <div class="a-section">
+    <div class="a-section-head">
+      <h2 class="a-section-title">Pollution spikes</h2>
+      <span class="a-section-sub">Hours with EU AQI &#8805; 50 (Moderate or worse) · this year</span>
+    </div>
+    <div class="a-grid4" style="margin-bottom:1rem;">
+      <div class="spike-card"><div class="a-label">Spikes this month</div><div class="spike-val" id="spike-month">—</div><div class="a-unit">hours EU AQI &#8805;50</div></div>
+      <div class="spike-card"><div class="a-label">vs last month</div><div class="spike-val" id="spike-vs">—</div><div class="a-unit" id="spike-vs-label">—</div></div>
+      <div class="a-card"><div class="a-label">Peak spike hour</div><div class="a-val sm" id="spike-hour">—</div><div class="a-unit">most common spike time</div></div>
+      <div class="a-card"><div class="a-label">Weekday vs weekend</div><div class="a-val sm" id="spike-wkday">—</div><div class="a-unit" id="spike-wkday-label">—</div></div>
+    </div>
+    <div class="a-insight" id="spike-insight" style="display:none;">
+      <div class="a-insight-icon">&#128308;</div>
+      <div class="a-insight-text" id="spike-insight-text"></div>
+    </div>
+  </div>
+
+  <!-- ── 6. DAY vs NIGHT ── -->
+  <div class="a-section">
+    <div class="a-section-head">
+      <h2 class="a-section-title">Day vs night air quality</h2>
+      <span class="a-section-sub">Human activity drives the pattern · EU AQI · this month</span>
+    </div>
+    <div class="a-grid2">
+      <div class="a-card">
+        <div class="a-grid2" style="gap:0.75rem;">
+          <div>
+            <div style="font-size:0.68rem;color:var(--text-muted);font-weight:700;text-transform:uppercase;letter-spacing:0.07em;">&#9728;&#65039; Daytime avg</div>
+            <div class="a-val" id="day-aqi-avg">—</div>
+            <div class="a-unit">EU AQI · 6am–6pm</div>
+          </div>
+          <div>
+            <div style="font-size:0.68rem;color:var(--text-muted);font-weight:700;text-transform:uppercase;letter-spacing:0.07em;">&#127769; Nighttime avg</div>
+            <div class="a-val" id="night-aqi-avg">—</div>
+            <div class="a-unit">EU AQI · 6pm–6am</div>
+          </div>
+        </div>
+        <div style="margin-top:1rem;padding-top:0.85rem;border-top:1px solid var(--border);">
+          <div class="a-label">Night cleaner by</div>
+          <div class="a-val sm euaqi-good" id="night-cleaner">—</div>
+          <div class="a-unit">EU AQI points vs daytime average</div>
+        </div>
+      </div>
+      <div class="a-card">
+        <div class="a-label" style="margin-bottom:0.75rem;">EU AQI by hour · this month</div>
+        <div class="a-chart-wrap"><canvas id="dayNightChart" height="180"></canvas></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 7. CLEANEST / DIRTIEST HOUR ── -->
+  <div class="a-section">
+    <div class="a-section-head">
+      <h2 class="a-section-title">Best &amp; worst hours to go outside</h2>
+      <span class="a-section-sub">Average EU AQI by hour · last 365 days · useful for runners, cyclists, parents</span>
+    </div>
+    <div class="a-card" style="margin-bottom:1rem;">
+      <div class="a-label" style="margin-bottom:0.75rem;">Average EU AQI by hour of day · Y axis = EU AQI (0–100) · X axis = hour (IST)</div>
+      <div class="a-chart-wrap"><canvas id="hourChart" height="140"></canvas></div>
+    </div>
+    <div class="a-grid2">
+      <div class="a-card" style="background:rgba(34,197,94,0.05);border-color:rgba(34,197,94,0.2);">
+        <div class="a-label">&#127807; Cleanest hour</div>
+        <div class="a-val lg euaqi-good" id="cleanest-hour">—</div>
+        <div class="a-unit" id="cleanest-aqi">avg EU AQI —</div>
+        <div style="font-size:0.8rem;color:var(--text-muted);margin-top:0.5rem;">Best window for outdoor exercise, open windows, and children playing outdoors.</div>
+      </div>
+      <div class="a-card" style="background:rgba(239,68,68,0.05);border-color:rgba(239,68,68,0.2);">
+        <div class="a-label">&#128662; Dirtiest hour</div>
+        <div class="a-val lg euaqi-poor" id="dirtiest-hour">—</div>
+        <div class="a-unit" id="dirtiest-aqi">avg EU AQI —</div>
+        <div style="font-size:0.8rem;color:var(--text-muted);margin-top:0.5rem;">Peak traffic and human activity. Avoid prolonged outdoor exposure at this time.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 8. CLEAN AIR SCORE ── -->
+  <div class="a-section">
+    <div class="a-section-head">
+      <h2 class="a-section-title">Clean air score</h2>
+      <span class="a-section-sub">% of hours with EU AQI &lt; 25 (Good) — this year vs previous years</span>
+    </div>
+    <div class="a-grid2">
+      <div class="a-card" style="background:rgba(34,197,94,0.04);border-color:rgba(34,197,94,0.18);">
+        <div class="a-label">Clean air hours this year</div>
+        <div class="cas-wrap" style="margin-top:0.75rem;">
+          <div class="cas-gauge">
+            <svg viewBox="0 0 36 36">
+              <circle cx="18" cy="18" r="15.9" fill="none" stroke="var(--ep-cream-dark)" stroke-width="3"/>
+              <circle id="cas-arc" cx="18" cy="18" r="15.9" fill="none" stroke="#22c55e" stroke-width="3" stroke-dasharray="0 100" stroke-dashoffset="25" stroke-linecap="round" style="transition:stroke-dasharray 1s ease;"/>
+            </svg>
+            <div class="cas-pct-text" id="cas-pct">—%</div>
+          </div>
+          <div class="cas-detail" id="cas-detail">Loading…</div>
+        </div>
+      </div>
+      <div class="a-card">
+        <div class="a-label" style="margin-bottom:0.85rem;">Clean air score by year · EU AQI &lt;25</div>
+        <div class="year-rows" id="cas-year-rows"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 9. AQI × WEATHER ── -->
+  <div class="a-section">
+    <div class="a-section-head">
+      <h2 class="a-section-title">AQI &times; weather</h2>
+      <span class="a-section-sub">Rain washes the air · wind disperses pollution · EU AQI</span>
+    </div>
+    <div class="a-grid2">
+      <div class="a-card">
+        <div class="a-label" style="margin-bottom:0.85rem;">&#127783;&#65039; After rain vs dry periods</div>
+        <div style="display:flex;gap:1rem;align-items:flex-end;margin-bottom:0.75rem;">
+          <div style="flex:1;text-align:center;">
+            <div style="font-size:0.65rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:4px;">Dry period</div>
+            <div class="a-val" id="aqi-dry">—</div>
+            <div class="a-unit">EU AQI</div>
+          </div>
+          <div style="font-size:1.2rem;color:var(--ep-green);align-self:center;">&#8594;</div>
+          <div style="flex:1;text-align:center;">
+            <div style="font-size:0.65rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:4px;">After rain</div>
+            <div class="a-val euaqi-good" id="aqi-wet">—</div>
+            <div class="a-unit">EU AQI</div>
+          </div>
+        </div>
+        <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.7;" id="rain-aqi-note">Loading…</div>
+      </div>
+      <div class="a-card">
+        <div class="a-label" style="margin-bottom:0.85rem;">&#127788;&#65039; Wind speed vs AQI</div>
+        <div style="display:flex;gap:1rem;align-items:flex-end;margin-bottom:0.75rem;">
+          <div style="flex:1;text-align:center;">
+            <div style="font-size:0.65rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:4px;">Calm (&lt;10 km/h)</div>
+            <div class="a-val" id="aqi-calm">—</div>
+            <div class="a-unit">EU AQI</div>
+          </div>
+          <div style="font-size:1.2rem;color:var(--ep-green);align-self:center;">&#8594;</div>
+          <div style="flex:1;text-align:center;">
+            <div style="font-size:0.65rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:4px;">Windy (&gt;20 km/h)</div>
+            <div class="a-val euaqi-good" id="aqi-windy">—</div>
+            <div class="a-unit">EU AQI</div>
+          </div>
+        </div>
+        <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.7;" id="wind-aqi-note">Loading…</div>
+      </div>
+    </div>
+    <div class="a-insight" id="weather-aqi-insight" style="display:none;">
+      <div class="a-insight-icon">&#127807;</div>
+      <div class="a-insight-text" id="weather-aqi-text"></div>
+    </div>
+  </div>
+
+  <!-- ── 10. RECORDS ── -->
+  <div class="a-section">
+    <div class="a-section-head">
+      <h2 class="a-section-title">All-time records</h2>
+      <span class="a-section-sub">Since January 2022 · EU AQI</span>
+    </div>
+    <div class="a-grid2">
+      <div class="a-card" style="background:rgba(34,197,94,0.04);border-color:rgba(34,197,94,0.18);">
+        <div class="rec-row">
+          <div><div class="rec-label">&#127807; Cleanest day ever</div><div class="rec-date" id="rec-clean-date">—</div></div>
+          <div class="rec-val euaqi-good" id="rec-clean">—</div>
+        </div>
+        <div class="rec-row">
+          <div><div class="rec-label">Longest clean streak (EU AQI&lt;25)</div><div class="rec-date" id="rec-streak-dates">—</div></div>
+          <div class="rec-val" id="rec-streak">—</div>
+        </div>
+        <div class="rec-row">
+          <div><div class="rec-label">Cleanest this year</div><div class="rec-date" id="rec-clean-yr-date">—</div></div>
+          <div class="rec-val euaqi-good" id="rec-clean-yr">—</div>
+        </div>
+      </div>
+      <div class="a-card" style="background:rgba(239,68,68,0.04);border-color:rgba(239,68,68,0.15);">
+        <div class="rec-row">
+          <div><div class="rec-label">&#127787;&#65039; Worst day ever</div><div class="rec-date" id="rec-worst-date">—</div></div>
+          <div class="rec-val euaqi-vp" id="rec-worst">—</div>
+        </div>
+        <div class="rec-row">
+          <div><div class="rec-label">Longest polluted streak (&gt;50)</div><div class="rec-date" id="rec-poll-dates">—</div></div>
+          <div class="rec-val" id="rec-poll">—</div>
+        </div>
+        <div class="rec-row">
+          <div><div class="rec-label">Worst this year</div><div class="rec-date" id="rec-worst-yr-date">—</div></div>
+          <div class="rec-val euaqi-vp" id="rec-worst-yr">—</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 11. AI INSIGHT ── -->
+  <div class="a-section">
+    <div class="a-section-head">
+      <h2 class="a-section-title">What this month means</h2>
+      <span class="a-section-sub">AI-generated · gemini-2.5-flash-lite · updated daily</span>
+    </div>
+    <div class="a-card" id="ai-card">
+      <div class="ep-skeleton" style="height:80px;border-radius:var(--radius-md);"></div>
+    </div>
+  </div>
+
+  <div class="src-note">
+    <strong>Data sources:</strong> Google Air Quality API (India AQI, CPCB 0–500 scale, primary) · Open-Meteo CAMS (EU AQI 0–100, EAQI standard, available Jan 2022 onwards). The two AQI systems use different pollutant weightings and scales — they are shown separately and never mathematically converted. Historical analysis uses EU AQI for consistency across all years. Logged hourly · Baner, Pune · 18.5526°N, 73.7819°E.
+  </div>
+
+  <div class="share-bar">
+    <span style="font-size:0.78rem;color:var(--text-muted);align-self:center;">Share:</span>
+    <button class="share-btn swa" onclick="shareAQI('whatsapp')">&#128172; WhatsApp</button>
+    <button class="share-btn stw" onclick="shareAQI('twitter')">&#120143; Twitter/X</button>
+    <button class="share-btn scp" onclick="shareAQI('copy')">&#128203; Copy link</button>
+  </div>
+
+</div><!-- /a-page -->
+
+<div class="share-toast" id="share-toast">Link copied!</div>
+<div id="ep-footer"></div>
+<script src="analytics.js"></script>
+<script src="nav.js"></script>
+<script>
+var SB  = 'https://krmczyqwblsoekceanlj.supabase.co';
+var KEY = 'sb_publishable_DrHFT5J0vmrkYraUXIlpQQ_gsk1rdq6';
+var H   = { 'apikey': KEY, 'Authorization': 'Bearer ' + KEY };
+var AI  = 'https://earthpulse-ai.fangchu.workers.dev';
+var MONTHS_LONG  = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+var MONTHS_SHORT = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+var ALL_YEARS    = [2022, 2023, 2024, 2025, 2026];
+
+function istNow() { var now=new Date(); return new Date(now.getTime()+now.getTimezoneOffset()*60000+5.5*3600000); }
+function istHour(ts) { var d=new Date(ts); return Math.floor((d.getTime()+d.getTimezoneOffset()*60000+5.5*3600000)/3600000)%24; }
+function p2(n) { return n<10?'0'+n:''+n; }
+function istDate(yr,mo,dy)    { return yr+'-'+p2(mo)+'-'+p2(dy)+'T00:00:00%2B05%3A30'; }
+function istDateEnd(yr,mo,dy) { return yr+'-'+p2(mo)+'-'+p2(dy)+'T23:59:59%2B05%3A30'; }
+function istMonthStart(yr,mo) { return yr+'-'+p2(mo)+'-01T00:00:00%2B05%3A30'; }
+function istYearStart(yr)     { return yr+'-01-01T00:00:00%2B05%3A30'; }
+function fmtDate(ts) { return new Date(ts).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric',timeZone:'Asia/Kolkata'}); }
+function fmtDay(ts)  { return new Date(ts).toLocaleDateString('en-IN',{day:'2-digit',month:'2-digit',timeZone:'Asia/Kolkata'}); }
+function ge(id) { return document.getElementById(id); }
+function sbGet(path) { return fetch(SB+path,{headers:H}).then(function(r){return r.json();}); }
+
+var IST = istNow();
+var CY  = IST.getUTCFullYear();
+var CM  = IST.getUTCMonth()+1;
+var CD  = IST.getUTCDate();
+
+/* ── AQI category helpers — kept strictly separate ── */
+
+/* India AQI (CPCB 0-500) */
+function indiaCategory(v) {
+  if (v<=50)  return {cat:'Good',         cls:'aqi-good',     bg:'aqibg-good',    desc:'Air quality is good. Great time for outdoor exercise.'};
+  if (v<=100) return {cat:'Satisfactory', cls:'aqi-sat',      bg:'aqibg-sat',     desc:'Moderate. Sensitive individuals may experience mild discomfort.'};
+  if (v<=200) return {cat:'Moderate',     cls:'aqi-moderate', bg:'aqibg-moderate',desc:'Avoid prolonged outdoor activity if you have respiratory conditions.'};
+  if (v<=300) return {cat:'Poor',         cls:'aqi-poor',     bg:'aqibg-poor',    desc:'General population may feel effects. Limit outdoor exposure.'};
+  if (v<=400) return {cat:'Very Poor',    cls:'aqi-vp',       bg:'aqibg-poor',    desc:'Health warnings. Avoid all outdoor activity.'};
+  return              {cat:'Severe',      cls:'aqi-severe',   bg:'aqibg-poor',    desc:'Emergency conditions. Stay indoors.'};
+}
+
+/* EU AQI (EAQI 0-100) */
+function euCategory(v) {
+  if (v<=20)  return {cat:'Good',              cls:'euaqi-good', desc:'Very clean air. No restrictions.'};
+  if (v<=40)  return {cat:'Fair',              cls:'euaqi-fair', desc:'Good air quality. Suitable for all.'};
+  if (v<=60)  return {cat:'Moderate',          cls:'euaqi-mod',  desc:'Acceptable. Sensitive groups take care.'};
+  if (v<=80)  return {cat:'Poor',              cls:'euaqi-poor', desc:'Unhealthy for sensitive groups.'};
+  if (v<=100) return {cat:'Very Poor',         cls:'euaqi-vp',   desc:'Unhealthy. Limit prolonged outdoor exertion.'};
+  return              {cat:'Extremely Poor',   cls:'euaqi-ep',   desc:'Hazardous. Avoid outdoor activity.'};
+}
+
+/* EU AQI band colour for charts */
+function euAQIColor(v) {
+  if (!v) return 'rgba(200,200,200,0.3)';
+  if (v<=20)  return 'rgba(34,197,94,0.7)';
+  if (v<=40)  return 'rgba(132,204,22,0.7)';
+  if (v<=60)  return 'rgba(234,179,8,0.7)';
+  if (v<=80)  return 'rgba(249,115,22,0.7)';
+  if (v<=100) return 'rgba(239,68,68,0.7)';
+  return 'rgba(124,58,237,0.7)';
+}
+
+/* ── 1. LIVE NOW ── */
+async function loadLive() {
+  try {
+    var rows = await sbGet('/rest/v1/climate_readings?select=recorded_at,google_aqi_india,aqi,dominant_pollutant&order=recorded_at.desc&limit=1');
+    if (!Array.isArray(rows)||!rows[0]) return;
+    var r = rows[0];
+
+    /* India AQI card */
+    if (r.google_aqi_india != null) {
+      var iv = r.google_aqi_india;
+      var ic = indiaCategory(iv);
+      ge('india-num').textContent = iv;
+      ge('india-num').className   = 'live-num india';
+      ge('india-cat').textContent = ic.cat;
+      ge('india-sub').textContent = ic.desc;
+      if (r.dominant_pollutant) {
+        ge('india-pollutant').innerHTML = '<span class="pollutant-pill">Dominant: '+r.dominant_pollutant.toUpperCase()+'</span>';
+      }
+      /* vs 7-day India avg */
+      var wk = await sbGet('/rest/v1/climate_readings?select=google_aqi_india&google_aqi_india=not.is.null&order=recorded_at.desc&limit=168');
+      if (Array.isArray(wk)&&wk.length) {
+        var wvals = wk.map(function(x){return x.google_aqi_india;}).filter(function(x){return x!=null;});
+        var wavg  = wvals.length?Math.round(wvals.reduce(function(a,b){return a+b;},0)/wvals.length):null;
+        if (wavg) {
+          var diff=iv-wavg, sign=diff>0?'+':'';
+          var cls=diff<-5?'delta-better':diff>5?'delta-worse':'delta-same';
+          ge('india-delta').innerHTML='<span class="live-delta '+cls+'">'+(diff<0?'&#128309;':diff>0?'&#128308;':'&#9899;')+' '+sign+diff+' vs 7-day avg ('+wavg+')</span>';
+          var insText = diff<-10?'India AQI is <strong>noticeably cleaner</strong> than the past week. Good time for outdoor activity.':
+                        diff>10?'India AQI is <strong>worse than recent days</strong>. Air quality has deteriorated.':
+                        'India AQI is <strong>consistent</strong> with the past week — no significant change.';
+          ge('live-insight-text').innerHTML=insText;
+          ge('live-insight').style.display='flex';
+        }
+      }
+    } else {
+      ge('india-num').textContent = 'N/A';
+      ge('india-cat').textContent = 'No Google data';
+      ge('india-sub').textContent = 'Google Air Quality API data unavailable for this hour.';
+    }
+
+    /* EU AQI card */
+    if (r.aqi != null) {
+      var ev = r.aqi;
+      var ec = euCategory(ev);
+      ge('eu-num').textContent = ev;
+      ge('eu-num').className   = 'a-val lg '+ec.cls;
+      ge('eu-cat').textContent = ec.cat;
+      ge('eu-cat').className   = 'font-family:var(--serif);font-size:1.1rem;'+ec.cls;
+      ge('eu-sub').textContent = ec.desc;
+      /* vs 7-day EU avg */
+      var ewk = await sbGet('/rest/v1/climate_readings?select=aqi&aqi=not.is.null&order=recorded_at.desc&limit=168');
+      if (Array.isArray(ewk)&&ewk.length) {
+        var evals=ewk.map(function(x){return x.aqi;}).filter(function(x){return x!=null;});
+        var eavg=evals.length?Math.round(evals.reduce(function(a,b){return a+b;},0)/evals.length):null;
+        if (eavg) {
+          var ediff=ev-eavg, esign=ediff>0?'+':'';
+          var ecls=ediff<-3?'delta-better':ediff>3?'delta-worse':'delta-same';
+          ge('eu-delta').innerHTML='<span class="live-delta '+ecls+'">'+(ediff<0?'&#128309;':ediff>0?'&#128308;':'&#9899;')+' '+esign+ediff+' vs 7-day avg ('+eavg+')</span>';
+        }
+      }
+    }
+
+    loadWeekChart();
+  } catch(e) { console.warn('Live AQI:', e); }
+}
+
+/* Week chart — EU AQI with dd/mm x-axis */
+async function loadWeekChart() {
+  try {
+    var rows = await sbGet('/rest/v1/climate_readings?select=recorded_at,aqi&aqi=not.is.null&order=recorded_at.desc&limit=168');
+    if (!Array.isArray(rows)) return;
+    rows.reverse();
+    /* Group by day, take daily average — avoids 168 crowded x-axis labels */
+    var dayMap={}, dayOrder=[];
+    rows.forEach(function(r) {
+      var dk=fmtDay(r.recorded_at);
+      if(!dayMap[dk]){dayMap[dk]={sum:0,n:0};dayOrder.push(dk);}
+      dayMap[dk].sum+=r.aqi; dayMap[dk].n++;
+    });
+    var labels=[], data=[], colors=[];
+    dayOrder.forEach(function(dk){
+      var avg=Math.round(dayMap[dk].sum/dayMap[dk].n);
+      labels.push(dk); data.push(avg); colors.push(euAQIColor(avg));
+    });
+    new Chart(ge('weekChart'),{
+      type:'bar',
+      data:{labels:labels,datasets:[{data:data,backgroundColor:colors,borderRadius:4}]},
+      options:{responsive:true,plugins:{legend:{display:false},tooltip:{callbacks:{label:function(ctx){return 'EU AQI: '+ctx.parsed.y;}}}},scales:{
+        x:{grid:{display:false},ticks:{font:{size:10},color:'#6b6b6b'},title:{display:true,text:'Date (dd/mm)',font:{size:10},color:'#6b6b6b'}},
+        y:{beginAtZero:true,max:100,grid:{color:'rgba(0,0,0,0.05)'},ticks:{font:{size:10},color:'#6b6b6b'},title:{display:true,text:'EU AQI',font:{size:10},color:'#6b6b6b'}}
+      }}
+    });
+  } catch(e) {}
+}
+
+/* ── 2. THIS DAY ACROSS YEARS — EU AQI only (consistent all years) ── */
+async function loadThisDay() {
+  ge('day-label').textContent = CD+' '+MONTHS_LONG[CM-1]+' · EU AQI across the years';
+  var promises = ALL_YEARS.map(function(yr) {
+    return sbGet('/rest/v1/climate_readings?select=aqi&recorded_at=gte.'+istDate(yr,CM,CD)+'&recorded_at=lte.'+istDateEnd(yr,CM,CD)+'&aqi=not.is.null&limit=30')
+      .then(function(rows) {
+        var vals=(Array.isArray(rows)?rows:[]).map(function(r){return r.aqi;}).filter(function(x){return x!=null;});
+        return {yr:yr, avg:vals.length?Math.round(vals.reduce(function(a,b){return a+b;},0)/vals.length):null};
+      });
+  });
+  try {
+    var results = await Promise.all(promises);
+    var valid = results.filter(function(r){return r.avg!=null;});
+    var maxVal = Math.max.apply(null,valid.map(function(r){return r.avg;}));
+    var prevYrs = valid.filter(function(r){return r.yr<CY;});
+    var histAvg = prevYrs.length?Math.round(prevYrs.reduce(function(s,r){return s+r.avg;},0)/prevYrs.length):null;
+    var cur = results.filter(function(r){return r.yr===CY;})[0];
+
+    if (cur&&cur.avg!=null) {
+      var ec=euCategory(cur.avg);
+      ge('day-today').textContent=cur.avg;
+      ge('day-today').className='a-val lg '+ec.cls;
+      if (histAvg) {
+        var diff=cur.avg-histAvg, sign=diff>0?'+':'';
+        var cls=diff<-3?'euaqi-good':diff>3?'euaqi-poor':'';
+        ge('day-delta-label').innerHTML='EU AQI &nbsp;<span class="'+cls+'">'+sign+diff+' vs historical avg ('+histAvg+')</span>';
+        ge('day-insight-text').innerHTML=diff<-5?'Today is <strong>'+Math.abs(diff)+' points cleaner</strong> (EU AQI) than the historical average for this date ('+histAvg+'). Relatively clean conditions.':
+          diff>5?'Today is <strong>'+diff+' points more polluted</strong> than the historical average for this date ('+histAvg+').':
+          'Today\'s air quality is <strong>close to the historical average</strong> for this date (EU AQI '+histAvg+').';
+        ge('day-insight').style.display='flex';
+      }
+    }
+
+    var html='';
+    valid.forEach(function(r){
+      var barW=maxVal>0?Math.round(r.avg/maxVal*100):0;
+      var isCur=r.yr===CY;
+      var ec=euCategory(r.avg);
+      html+='<div class="year-row"><span class="yr-label">'+r.yr+'</span><div class="yr-bar-bg"><div class="yr-bar-fill'+(isCur?' cur':'')+'" style="width:'+barW+'%"></div></div><span class="yr-val'+(isCur?' cur':'')+' '+ec.cls+'">'+r.avg+'</span></div>';
+    });
+    ge('day-year-rows').innerHTML=html||'<span style="font-size:0.8rem;color:var(--text-muted);">No data for this date</span>';
+  } catch(e) {}
+}
+
+/* ── 3. MONTHLY VIEW — EU AQI ── */
+async function loadMonthly() {
+  var moName=MONTHS_LONG[CM-1];
+  ge('month-label-head').textContent=moName+' · EU AQI across the years';
+  ge('this-month-title').textContent=moName+' '+CY;
+
+  var nM=CM===12?1:CM+1, nY=CM===12?CY+1:CY;
+  try {
+    var rows=await sbGet('/rest/v1/climate_readings?select=aqi&recorded_at=gte.'+istMonthStart(CY,CM)+'&recorded_at=lt.'+istMonthStart(nY,nM)+'&aqi=not.is.null&limit=800');
+    if(Array.isArray(rows)&&rows.length){
+      var vals=rows.map(function(r){return r.aqi;}).filter(function(x){return x!=null;});
+      if(vals.length){
+        ge('month-avg').textContent=Math.round(vals.reduce(function(a,b){return a+b;},0)/vals.length);
+        ge('month-low').textContent=Math.min.apply(null,vals);
+        ge('month-high').textContent=Math.max.apply(null,vals);
+      }
+    }
+  } catch(e) {}
+
+  /* Year-on-year */
+  var yrPromises=ALL_YEARS.map(function(yr){
+    var nM2=CM===12?1:CM+1, nY2=CM===12?yr+1:yr;
+    return sbGet('/rest/v1/climate_readings?select=aqi&recorded_at=gte.'+istMonthStart(yr,CM)+'&recorded_at=lt.'+istMonthStart(nY2,nM2)+'&aqi=not.is.null&limit=800')
+      .then(function(rows){
+        var vals=(Array.isArray(rows)?rows:[]).map(function(r){return r.aqi;}).filter(function(x){return x!=null;});
+        return {yr:yr, avg:vals.length?Math.round(vals.reduce(function(a,b){return a+b;},0)/vals.length):null};
+      });
+  });
+  try {
+    var yrResults=await Promise.all(yrPromises);
+    var valid=yrResults.filter(function(r){return r.avg!=null;});
+    var maxVal=Math.max.apply(null,valid.map(function(r){return r.avg;}));
+    var html='';
+    valid.forEach(function(r){
+      var barW=maxVal>0?Math.round(r.avg/maxVal*100):0;
+      var isCur=r.yr===CY;
+      var ec=euCategory(r.avg);
+      html+='<div class="year-row"><span class="yr-label">'+r.yr+'</span><div class="yr-bar-bg"><div class="yr-bar-fill'+(isCur?' cur':'')+'" style="width:'+barW+'%"></div></div><span class="yr-val'+(isCur?' cur':'')+' '+ec.cls+'">'+r.avg+'</span></div>';
+    });
+    ge('month-year-rows').innerHTML=html;
+    if(valid.length>=2){
+      var trend=valid[valid.length-1].avg-valid[0].avg;
+      ge('month-insight-text').innerHTML=trend<-3?moName+' air quality has <strong>improved by '+Math.abs(trend)+' EU AQI points</strong> since 2022.':
+        trend>3?moName+' EU AQI has <strong>worsened by '+trend+' points</strong> since 2022. Worth monitoring.':
+        moName+' air quality has been <strong>broadly stable</strong> across all years (\u00b1'+Math.abs(trend)+' pts).';
+      ge('month-insight').style.display='flex';
+    }
+  } catch(e) {}
+
+  /* Month-on-month this year */
+  var momPs=[];
+  for(var m=1;m<=CM;m++){(function(mo){
+    var nM2=mo===12?1:mo+1, nY2=mo===12?CY+1:CY;
+    momPs.push(sbGet('/rest/v1/climate_readings?select=aqi&recorded_at=gte.'+istMonthStart(CY,mo)+'&recorded_at=lt.'+istMonthStart(nY2,nM2)+'&aqi=not.is.null&limit=800')
+      .then(function(rows){var vals=(Array.isArray(rows)?rows:[]).map(function(r){return r.aqi;}).filter(function(x){return x!=null;});return {mo:mo,avg:vals.length?Math.round(vals.reduce(function(a,b){return a+b;},0)/vals.length):null};}));
+  })(m);}
+  try {
+    var momR=await Promise.all(momPs);
+    var momL=[],momD=[];
+    momR.forEach(function(r){momL.push(MONTHS_SHORT[r.mo-1]);momD.push(r.avg);});
+    new Chart(ge('momChart'),{type:'bar',data:{labels:momL,datasets:[{data:momD,backgroundColor:momD.map(euAQIColor),borderRadius:4}]},
+      options:{responsive:true,plugins:{legend:{display:false}},scales:{
+        x:{grid:{display:false},ticks:{font:{size:11},color:'#6b6b6b'}},
+        y:{beginAtZero:true,max:100,grid:{color:'rgba(0,0,0,0.05)'},ticks:{font:{size:10},color:'#6b6b6b'},title:{display:true,text:'EU AQI',font:{size:10},color:'#6b6b6b'}}
+      }}
+    });
+  } catch(e) {}
+}
+
+/* ── 4+8: DISTRIBUTION + CLEAN AIR SCORE — EU AQI ── */
+async function loadDistribution() {
+  ge('dist-year').textContent=CY;
+  try {
+    var all=[],off=0;
+    while(true){
+      var rows=await sbGet('/rest/v1/climate_readings?select=aqi&recorded_at=gte.'+istYearStart(CY)+'&aqi=not.is.null&limit=1000&offset='+off);
+      if(!Array.isArray(rows)||!rows.length) break;
+      all=all.concat(rows); if(rows.length<1000) break; off+=1000;
+    }
+    var vals=all.map(function(r){return r.aqi;}).filter(function(x){return x!=null;});
+    var bands={good:0,fair:0,mod:0,poor:0,vp:0,ep:0};
+    vals.forEach(function(v){
+      if(v<=20)       bands.good++;
+      else if(v<=40)  bands.fair++;
+      else if(v<=60)  bands.mod++;
+      else if(v<=80)  bands.poor++;
+      else if(v<=100) bands.vp++;
+      else            bands.ep++;
+    });
+    var total=vals.length||1;
+    function pct(n){return Math.round(n/total*100);}
+    var BDEFS=[
+      {key:'good',label:'0–20 Good',     color:'#22c55e'},
+      {key:'fair',label:'21–40 Fair',    color:'#84cc16'},
+      {key:'mod', label:'41–60 Moderate',color:'#eab308'},
+      {key:'poor',label:'61–80 Poor',    color:'#f97316'},
+      {key:'vp',  label:'81–100 V.Poor', color:'#ef4444'},
+      {key:'ep',  label:'>100 Extreme',  color:'#7c3aed'},
+    ];
+    var bHtml='';
+    BDEFS.forEach(function(bd){
+      var p=pct(bands[bd.key]);
+      bHtml+='<div class="band-row"><span class="band-label">'+bd.label+'</span><div class="band-bar-bg"><div class="band-bar" style="width:'+p+'%;background:'+bd.color+'"></div></div><span class="band-pct">'+p+'%</span></div>';
+    });
+    ge('band-bars').innerHTML=bHtml;
+
+    new Chart(ge('distChart'),{type:'bar',
+      data:{labels:BDEFS.map(function(b){return b.label;}),datasets:[{data:BDEFS.map(function(b){return bands[b.key];}),backgroundColor:BDEFS.map(function(b){return b.color+'cc';}),borderRadius:4}]},
+      options:{responsive:true,plugins:{legend:{display:false}},scales:{
+        x:{grid:{display:false},ticks:{font:{size:9},color:'#6b6b6b',maxRotation:45}},
+        y:{grid:{color:'rgba(0,0,0,0.05)'},ticks:{font:{size:10},color:'#6b6b6b'},title:{display:true,text:'Hours',font:{size:10},color:'#6b6b6b'}}
+      }}
+    });
+
+    /* Clean air score — EU AQI < 25 (Good band) */
+    var cleanHrs=bands.good;
+    var casPct=Math.round(cleanHrs/total*100);
+    ge('cas-pct').textContent=casPct+'%';
+    var arc=ge('cas-arc');
+    if(arc) arc.setAttribute('stroke-dasharray',casPct+' '+(100-casPct));
+    ge('cas-detail').innerHTML='<strong>'+cleanHrs.toLocaleString('en-IN')+'</strong> hours with EU AQI below 25 (Good) out of '+total.toLocaleString('en-IN')+' recorded this year.<br>Baner has clean air <strong>'+casPct+'%</strong> of the time so far in '+CY+'.';
+
+    /* Year-by-year clean air scores — with pagination */
+    var casPromises=ALL_YEARS.filter(function(yr){return yr<=CY;}).map(function(yr){
+      return (async function(){
+        var yAll=[],yOff=0;
+        while(true){
+          var yRows=await sbGet('/rest/v1/climate_readings?select=aqi&recorded_at=gte.'+istYearStart(yr)+'&aqi=not.is.null&limit=1000&offset='+yOff);
+          if(!Array.isArray(yRows)||!yRows.length) break;
+          yAll=yAll.concat(yRows); if(yRows.length<1000) break; yOff+=1000;
+        }
+        var vs=yAll.map(function(r){return r.aqi;}).filter(function(x){return x!=null;});
+        var clean=vs.filter(function(v){return v<25;}).length;
+        return {yr:yr, pct:vs.length?Math.round(clean/vs.length*100):null};
+      })();
+    });
+    var casResults=await Promise.all(casPromises);
+    var casHtml='';
+    casResults.filter(function(r){return r.pct!=null;}).forEach(function(r){
+      var isCur=r.yr===CY;
+      casHtml+='<div class="year-row"><span class="yr-label">'+r.yr+'</span><div class="yr-bar-bg"><div class="yr-bar-fill'+(isCur?' cur':'')+'" style="width:'+r.pct+'%"></div></div><span class="yr-val'+(isCur?' cur':'')+'">'+r.pct+'%</span></div>';
+    });
+    ge('cas-year-rows').innerHTML=casHtml;
+  } catch(e){console.warn('Distribution:',e);}
+}
+
+/* ── 5. SPIKES — EU AQI ≥ 50 ── */
+async function loadSpikes() {
+  var nM=CM===12?1:CM+1, nY=CM===12?CY+1:CY;
+  var lM=CM===1?12:CM-1, lY=CM===1?CY-1:CY;
+  try {
+    var thisM=await sbGet('/rest/v1/climate_readings?select=recorded_at,aqi&recorded_at=gte.'+istMonthStart(CY,CM)+'&recorded_at=lt.'+istMonthStart(nY,nM)+'&aqi=not.is.null&limit=800');
+    var lastM=await sbGet('/rest/v1/climate_readings?select=aqi&recorded_at=gte.'+istMonthStart(lY,lM)+'&recorded_at=lt.'+istMonthStart(CY,CM)+'&aqi=not.is.null&limit=800');
+    function spikes(rows){return (Array.isArray(rows)?rows:[]).filter(function(r){return r.aqi>=50;}).length;}
+    var ts=spikes(thisM), ls=spikes(lastM), diff=ts-ls;
+    ge('spike-month').textContent=ts;
+    ge('spike-vs').textContent=diff>=0?'+'+diff:diff;
+    ge('spike-vs').className='spike-val '+(diff>0?'euaqi-poor':diff<0?'euaqi-good':'');
+    ge('spike-vs-label').textContent='vs '+MONTHS_LONG[lM-1];
+
+    var spikeRows=(Array.isArray(thisM)?thisM:[]).filter(function(r){return r.aqi>=50;});
+    if(spikeRows.length){
+      var hc=new Array(24).fill(0);
+      spikeRows.forEach(function(r){hc[istHour(r.recorded_at)]++;});
+      var peakH=hc.indexOf(Math.max.apply(null,hc));
+      ge('spike-hour').textContent=p2(peakH)+':00 IST';
+    } else { ge('spike-hour').textContent='None this month'; }
+
+    var wkday=0,wkend=0;
+    spikeRows.forEach(function(r){var d=new Date(r.recorded_at).getDay();if(d===0||d===6)wkend++;else wkday++;});
+    ge('spike-wkday').textContent=wkday/5>wkend/2?'Weekdays worse':'Weekends worse';
+    ge('spike-wkday-label').textContent=wkday/5>wkend/2?'Traffic-driven':'Weekend activity';
+
+    ge('spike-insight-text').innerHTML=ts>0?MONTHS_LONG[CM-1]+' has seen <strong>'+ts+' hour'+(ts!==1?'s':'')+' above EU AQI 50</strong>.'+(diff>0?' That\'s '+diff+' more than last month.':diff<0?' That\'s '+Math.abs(diff)+' fewer — improving.':' Same as last month.'):'<strong>No pollution spikes (EU AQI\u226550) in '+MONTHS_LONG[CM-1]+'</strong>. Exceptionally clean month.';
+    ge('spike-insight').style.display='flex';
+  } catch(e) {}
+}
+
+/* ── 6. DAY vs NIGHT — EU AQI ── */
+async function loadDayNight() {
+  var nM=CM===12?1:CM+1, nY=CM===12?CY+1:CY;
+  try {
+    var rows=await sbGet('/rest/v1/climate_readings?select=recorded_at,aqi&recorded_at=gte.'+istMonthStart(CY,CM)+'&recorded_at=lt.'+istMonthStart(nY,nM)+'&aqi=not.is.null&limit=800');
+    if(!Array.isArray(rows)||!rows.length) return;
+    var dayV=[],nightV=[];
+    var hSums=new Array(24).fill(0),hCounts=new Array(24).fill(0);
+    rows.forEach(function(r){
+      var h=istHour(r.recorded_at);
+      hSums[h]+=r.aqi; hCounts[h]++;
+      if(h>=6&&h<18) dayV.push(r.aqi); else nightV.push(r.aqi);
+    });
+    var dAvg=dayV.length?Math.round(dayV.reduce(function(a,b){return a+b;},0)/dayV.length):null;
+    var nAvg=nightV.length?Math.round(nightV.reduce(function(a,b){return a+b;},0)/nightV.length):null;
+    if(dAvg) ge('day-aqi-avg').textContent=dAvg;
+    if(nAvg) ge('night-aqi-avg').textContent=nAvg;
+    if(dAvg&&nAvg){var d=dAvg-nAvg;ge('night-cleaner').textContent=Math.abs(d);ge('night-cleaner').className='a-val sm '+(d>0?'euaqi-good':'euaqi-poor');}
+
+    var hAvgs=hSums.map(function(s,i){return hCounts[i]?Math.round(s/hCounts[i]):null;});
+    var lbs=[]; for(var i=0;i<24;i++) lbs.push(p2(i)+':00');
+    new Chart(ge('dayNightChart'),{type:'bar',data:{labels:lbs,datasets:[{data:hAvgs,backgroundColor:hAvgs.map(euAQIColor),borderRadius:3}]},
+      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{
+        x:{grid:{display:false},ticks:{font:{size:9},color:'#6b6b6b',maxTicksLimit:8}},
+        y:{beginAtZero:true,max:100,grid:{color:'rgba(0,0,0,0.05)'},ticks:{font:{size:10},color:'#6b6b6b'},title:{display:true,text:'EU AQI',font:{size:10},color:'#6b6b6b'}}
+      }}
+    });
+  } catch(e) {}
+}
+
+/* ── 7. CLEANEST / DIRTIEST HOUR — EU AQI ── */
+async function loadHourCurve() {
+  var sinceTs=new Date(Date.now()-365*86400000).toISOString().replace(/\.\d+Z$/,'Z');
+  try {
+    var all=[],off=0;
+    while(true){
+      var rows=await sbGet('/rest/v1/climate_readings?select=recorded_at,aqi&recorded_at=gte.'+sinceTs+'&aqi=not.is.null&limit=1000&offset='+off);
+      if(!Array.isArray(rows)||!rows.length) break;
+      all=all.concat(rows); if(rows.length<1000) break; off+=1000;
+    }
+    var hS=new Array(24).fill(0),hC=new Array(24).fill(0);
+    all.forEach(function(r){var h=istHour(r.recorded_at);hS[h]+=r.aqi;hC[h]++;});
+    var avgs=hS.map(function(s,i){return hC[i]?Math.round(s/hC[i]):null;});
+    var vavgs=avgs.filter(function(v){return v!=null;});
+    var cleanH=avgs.indexOf(Math.min.apply(null,vavgs));
+    var dirtyH=avgs.indexOf(Math.max.apply(null,vavgs));
+    ge('cleanest-hour').textContent=p2(cleanH)+':00 IST';
+    ge('cleanest-aqi').textContent='Avg EU AQI '+avgs[cleanH];
+    ge('dirtiest-hour').textContent=p2(dirtyH)+':00 IST';
+    ge('dirtiest-aqi').textContent='Avg EU AQI '+avgs[dirtyH];
+
+    var lbs=[]; for(var i=0;i<24;i++) lbs.push(p2(i)+':00');
+    new Chart(ge('hourChart'),{type:'line',
+      data:{labels:lbs,datasets:[{data:avgs,borderColor:'#214332',backgroundColor:'rgba(33,67,50,0.08)',tension:0.4,pointRadius:0,borderWidth:2,fill:true,spanGaps:true}]},
+      options:{responsive:true,plugins:{legend:{display:false}},scales:{
+        x:{grid:{display:false},ticks:{font:{size:9},color:'#6b6b6b',maxTicksLimit:8},title:{display:true,text:'Hour (IST)',font:{size:10},color:'#6b6b6b'}},
+        y:{beginAtZero:true,max:100,grid:{color:'rgba(0,0,0,0.05)'},ticks:{font:{size:10},color:'#6b6b6b'},title:{display:true,text:'EU AQI',font:{size:10},color:'#6b6b6b'}}
+      }}
+    });
+  } catch(e) {}
+}
+
+/* ── 9. AQI × WEATHER — EU AQI ── */
+async function loadWeatherCorrelation() {
+  try {
+    var all=[],off=0;
+    while(true){
+      var rows=await sbGet('/rest/v1/climate_readings?select=aqi,precipitation,wind_speed&recorded_at=gte.'+istYearStart(CY)+'&aqi=not.is.null&limit=1000&offset='+off);
+      if(!Array.isArray(rows)||!rows.length) break;
+      all=all.concat(rows); if(rows.length<1000) break; off+=1000;
+    }
+    var dryA=[],wetA=[],calmA=[],windyA=[];
+    all.forEach(function(r){
+      var pp=parseFloat(r.precipitation)||0, ws=parseFloat(r.wind_speed)||0;
+      if(pp>0.5) wetA.push(r.aqi); else dryA.push(r.aqi);
+      if(ws<10)  calmA.push(r.aqi);
+      if(ws>20)  windyA.push(r.aqi);
+    });
+    function avg(a){return a.length?Math.round(a.reduce(function(x,y){return x+y;},0)/a.length):null;}
+    var dA=avg(dryA),wA=avg(wetA),cA=avg(calmA),wdA=avg(windyA);
+    if(dA) ge('aqi-dry').textContent=dA;
+    if(wA) ge('aqi-wet').textContent=wA;
+    if(cA) ge('aqi-calm').textContent=cA;
+    if(wdA) ge('aqi-windy').textContent=wdA;
+    if(dA&&wA){
+      var ri=dA-wA;
+      ge('rain-aqi-note').innerHTML=ri>3?'Rain reduces Baner\'s EU AQI by <strong>'+ri+' points</strong> on average. A measurable improvement.':'Minimal rain effect (\u00b1'+Math.abs(ri)+' pts) — local sources resume quickly.';
+    }
+    if(cA&&wdA){
+      var wi=cA-wdA;
+      ge('wind-aqi-note').innerHTML=wi>3?'Wind above 20 km/h reduces EU AQI by <strong>'+wi+' points</strong> — dispersing pollutants.':'Wind has limited effect here (\u00b1'+Math.abs(wi)+' pts).';
+    }
+    if(dA&&wA&&cA&&wdA){
+      var bigger=(dA-wA)>=(cA-wdA)?'rain':'wind';
+      ge('weather-aqi-text').innerHTML=bigger==='rain'?'<strong>Rain is the bigger air purifier</strong> in Baner. EU AQI drops by '+(dA-wA)+' points after a shower. Open windows after rain.':'<strong>Wind cleans the air more effectively</strong> than rain in Baner. EU AQI drops by '+(cA-wdA)+' points on breezy days (>20 km/h).';
+      ge('weather-aqi-insight').style.display='flex';
+    }
+  } catch(e) {}
+}
+
+/* ── 10. RECORDS — EU AQI ── */
+async function loadRecords() {
+  try {
+    var results=await Promise.all([
+      sbGet('/rest/v1/climate_readings?select=aqi,recorded_at&aqi=not.is.null&order=aqi.asc&limit=1'),
+      sbGet('/rest/v1/climate_readings?select=aqi,recorded_at&aqi=not.is.null&order=aqi.desc&limit=1'),
+      sbGet('/rest/v1/climate_readings?select=aqi,recorded_at&aqi=not.is.null&order=aqi.asc&limit=1&recorded_at=gte.'+istYearStart(CY)),
+      sbGet('/rest/v1/climate_readings?select=aqi,recorded_at&aqi=not.is.null&order=aqi.desc&limit=1&recorded_at=gte.'+istYearStart(CY)),
+    ]);
+    function setRec(vId,dId,rows){if(Array.isArray(rows)&&rows[0]){ge(vId).textContent=rows[0].aqi;ge(dId).textContent=fmtDate(rows[0].recorded_at);}}
+    setRec('rec-clean','rec-clean-date',results[0]);
+    setRec('rec-worst','rec-worst-date',results[1]);
+    setRec('rec-clean-yr','rec-clean-yr-date',results[2]);
+    setRec('rec-worst-yr','rec-worst-yr-date',results[3]);
+
+    /* Streaks */
+    var allRows=await sbGet('/rest/v1/climate_readings?select=recorded_at,aqi&aqi=not.is.null&order=recorded_at.asc&limit=10000');
+    if(Array.isArray(allRows)&&allRows.length){
+      var cS=0,mC=0,mCS='',cSt='',pS=0,mP=0,mPS='';
+      allRows.forEach(function(r){
+        if(r.aqi<25){if(cS===0)cSt=r.recorded_at;cS++;if(cS>mC){mC=cS;mCS=cSt;}pS=0;}
+        else if(r.aqi>50){pS++;if(pS>mP){mP=pS;mPS=r.recorded_at;}cS=0;}
+        else{cS=0;pS=0;}
+      });
+      ge('rec-streak').textContent=mC+' hrs';
+      ge('rec-streak-dates').textContent=mCS?fmtDate(mCS):'';
+      ge('rec-poll').textContent=mP+' hrs';
+      ge('rec-poll-dates').textContent=mPS?fmtDate(mPS):'';
+    }
+  } catch(e) {}
+}
+
+/* ── 11. AI INSIGHT — gemini-2.5-flash-lite ── */
+async function loadAI() {
+  var mo=MONTHS_LONG[CM-1]+' '+CY;
+  var prompt='You are a hyperlocal air quality analyst for Baner, Pune, India. Write 2-3 concise sentences about what the air quality data means for residents this month ('+mo+'). Focus on: is it better or worse than usual, practical advice (best times to go outside, open windows), any seasonal context. Keep it conversational and useful. Do not mention AQI scales or data sources.';
+  try {
+    var r=await fetch(AI+'/gemini',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt:prompt,model:'gemini-2.5-flash-lite'})});
+    var d=await r.json();
+    var text=d.text||d.content||'';
+    ge('ai-card').innerHTML='<div style="font-size:0.9rem;color:var(--text-muted);line-height:1.85;">'+text+'</div><div style="font-size:0.68rem;color:var(--text-muted);margin-top:0.75rem;opacity:0.6;">Generated by gemini-2.5-flash-lite \u00b7 '+mo+'</div>';
+  } catch(e){ge('ai-card').innerHTML='<p style="font-size:0.85rem;color:var(--text-muted);">AI insight unavailable right now.</p>';}
+}
+
+/* ── SHARE ── */
+function shareAQI(platform) {
+  var url='https://earth-pulse.org/aqi.html';
+  var text='\ud83c\udf3f Air quality in Baner, Pune — live AQI, cleanest hours, and 3-year trends from the Sahyadri foothills. '+url;
+  if(platform==='whatsapp') window.open('https://wa.me/?text='+encodeURIComponent(text),'_blank');
+  else if(platform==='twitter') window.open('https://twitter.com/intent/tweet?text='+encodeURIComponent(text),'_blank');
+  else{navigator.clipboard.writeText(url).then(function(){var t=ge('share-toast');t.className='share-toast show';setTimeout(function(){t.className='share-toast';},2200);});}
+}
+
+/* ── INIT ── */
+(function(){
+  loadLive();
+  loadThisDay();
+  loadMonthly();
+  loadDistribution();
+  loadSpikes();
+  loadDayNight();
+  loadHourCurve();
+  loadWeatherCorrelation();
+  loadRecords();
+  loadAI();
+})();
+</script>
+</body>
+</html>
