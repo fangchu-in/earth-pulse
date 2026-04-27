@@ -3,43 +3,45 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Temperature — Baner, Pune | Earth Pulse</title>
-  <meta name="description" content="Hyperlocal temperature analysis for Baner, Pune. Live readings, multi-year trends, heat stress hours, day vs night patterns, and historical records since January 2022.">
+  <title>Temperature in Baner, Pune — Live Data &amp; 4-Year Trends | Earth Pulse</title>
+  <meta name="description" content="Live temperature in Baner, Pune with 4-year historical trends, heat stress analysis, comfort index, day vs night patterns, and records since January 2022. Hyperlocal Weather Union + Open-Meteo data.">
+  <meta name="keywords" content="Baner Pune temperature, Pune heat wave 2026, Baner temperature today, Pune weather history, Western Ghats temperature, heat stress Pune, Baner climate data">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://earth-pulse.org/temperature.html">
-  <meta property="og:title" content="Temperature in Baner, Pune — Earth Pulse">
-  <meta property="og:description" content="Hyperlocal temperature since 2022. Heat stress, comfort index, multi-year trends, and records from the Sahyadri foothills.">
-  <meta property="og:image" content="https://earth-pulse.org/earth-pulse-logo.png">
+  <meta property="og:title" content="Temperature in Baner, Pune — 4-Year Trends &amp; Live Data | Earth Pulse">
+  <meta property="og:description" content="How hot is Baner? Live temperature, heat stress hours, multi-year warming trends, and daily patterns from the Sahyadri foothills. Data since January 2022.">
+  <meta property="og:image" content="https://earth-pulse.org/earth-pulse-logo-og.png">
   <meta property="og:url" content="https://earth-pulse.org/temperature.html">
   <meta property="og:type" content="website">
   <meta property="og:locale" content="en_IN">
+  <meta name="twitter:card" content="summary_large_image">
   <meta name="geo.region" content="IN-MH">
-  <link rel="icon" type="image/png" href="earth-pulse-logo.png">
+  <meta name="geo.placename" content="Baner, Pune, Maharashtra">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Dataset","name":"Temperature Records — Baner, Pune","description":"Continuous hourly temperature monitoring in Baner, Pune since January 2022. Includes heat stress analysis, day-night patterns, multi-year trends, and extreme weather events from the Sahyadri foothills.","url":"https://earth-pulse.org/temperature.html","license":"https://creativecommons.org/licenses/by/4.0/","creator":{"@type":"Organization","name":"Earth Pulse","url":"https://earth-pulse.org"},"spatialCoverage":{"@type":"Place","name":"Baner, Pune, Maharashtra, India","geo":{"@type":"GeoCoordinates","latitude":18.5526156,"longitude":73.7818663}},"measurementTechnique":"Weather Union ZWL008983 AWS (Oct 2025+) and Open-Meteo ECMWF (Jan 2022–Sep 2025) — logged hourly","temporalCoverage":"2022-01-01/.."}</script>
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="manifest" href="/site.webmanifest">
   <link rel="stylesheet" href="styles.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
   <style>
-    /* ── Layout ── */
     .t-page { max-width:1100px; margin:0 auto; padding:0 2rem 4rem; }
     .t-grid2 { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
     .t-grid3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:1rem; }
     .t-grid4 { display:grid; grid-template-columns:repeat(4,1fr); gap:1rem; }
     @media(max-width:800px){ .t-grid2,.t-grid3,.t-grid4{grid-template-columns:1fr 1fr;} }
     @media(max-width:500px){ .t-grid2,.t-grid3,.t-grid4{grid-template-columns:1fr;} }
-
-    /* ── Section ── */
     .t-section { margin:2.5rem 0; }
     .t-section-head { display:flex; align-items:baseline; gap:0.75rem; margin-bottom:1rem; border-bottom:2px solid rgba(33,67,50,0.12); padding-bottom:0.5rem; }
     .t-section-title { font-family:var(--serif); font-size:1.3rem; color:var(--ep-green); margin:0; }
     .t-section-sub { font-size:0.78rem; color:var(--text-muted); }
-
-    /* ── Cards ── */
     .t-card { background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-lg); padding:1.25rem 1.4rem; }
     .t-card.accent { background:var(--ep-green); border-color:var(--ep-green); }
     .t-card.accent .t-label { color:rgba(242,240,230,0.6); }
     .t-card.accent .t-val   { color:var(--ep-cream); }
     .t-card.accent .t-unit  { color:rgba(242,240,230,0.7); }
     .t-card.warm  { background:rgba(234,88,12,0.06); border-color:rgba(234,88,12,0.2); }
-    .t-card.cool  { background:rgba(33,67,50,0.05); border-color:rgba(33,67,50,0.18); }
+    .t-card.cool  { background:rgba(33,67,50,0.05);  border-color:rgba(33,67,50,0.18); }
     .t-label { font-size:0.68rem; font-weight:700; text-transform:uppercase; letter-spacing:0.09em; color:var(--text-muted); margin-bottom:0.3rem; }
     .t-val   { font-family:var(--serif); font-size:2rem; color:var(--ep-green); line-height:1; }
     .t-val.lg { font-size:2.8rem; }
@@ -49,34 +51,21 @@
     .delta-up   { color:#dc2626; }
     .delta-down { color:#16a34a; }
     .delta-neu  { color:var(--text-muted); }
-
-    /* ── Source pill ── */
     .src-pill { display:inline-block; font-size:0.6rem; font-weight:700; padding:1px 7px; border-radius:20px; text-transform:uppercase; letter-spacing:0.06em; margin-top:0.35rem; }
-    .src-wu   { background:rgba(33,67,50,0.1);  color:var(--ep-green); }
-    .src-om   { background:rgba(191,155,123,0.15); color:var(--ep-tan); }
-
-    /* ── Insight box ── */
+    .src-wu   { background:rgba(33,67,50,0.1);       color:var(--ep-green); }
+    .src-om   { background:rgba(191,155,123,0.15);   color:var(--ep-tan); }
     .t-insight { background:var(--ep-green); border-radius:var(--radius-lg); padding:1.1rem 1.4rem; display:flex; gap:0.75rem; align-items:flex-start; margin:1rem 0; }
     .t-insight-icon { font-size:1.3rem; flex-shrink:0; }
     .t-insight-text { font-size:0.85rem; color:rgba(242,240,230,0.88); line-height:1.7; }
     .t-insight-text strong { color:var(--ep-tan); }
-
-    /* ── Chart wrapper ── */
-    .t-chart-wrap { position:relative; }
     .t-chart-wrap canvas { max-height:220px; }
-
-    /* ── Heat band bar ── */
     .band-row { display:flex; align-items:center; gap:0.75rem; padding:0.4rem 0; }
     .band-label { font-size:0.78rem; color:var(--text-muted); width:80px; flex-shrink:0; }
     .band-bar-wrap { flex:1; background:var(--ep-cream-dark); border-radius:4px; height:10px; overflow:hidden; }
     .band-bar { height:100%; border-radius:4px; transition:width 0.8s; }
     .band-pct { font-family:var(--mono); font-size:0.72rem; color:var(--text-muted); width:36px; text-align:right; flex-shrink:0; }
-
-    /* ── Hour curve ── */
     .hour-labels { display:flex; justify-content:space-between; margin-top:3px; }
     .hour-labels span { font-family:var(--mono); font-size:0.55rem; color:var(--text-muted); }
-
-    /* ── Year grid ── */
     .year-rows { display:flex; flex-direction:column; gap:0.5rem; }
     .year-row { display:flex; align-items:center; gap:0.75rem; }
     .yr-label { font-family:var(--mono); font-size:0.75rem; color:var(--text-muted); width:38px; flex-shrink:0; }
@@ -84,25 +73,17 @@
     .yr-bar { height:100%; border-radius:4px; background:var(--ep-green); }
     .yr-val { font-family:var(--mono); font-size:0.75rem; color:var(--ep-green); font-weight:600; width:52px; text-align:right; }
     .yr-src { font-size:0.6rem; color:var(--ep-tan); }
-
-    /* ── Records ── */
     .record-row { display:flex; justify-content:space-between; align-items:center; padding:0.55rem 0; border-bottom:1px solid var(--border); font-size:0.83rem; }
     .record-row:last-child { border-bottom:none; }
     .rec-label { color:var(--text-muted); }
     .rec-val   { font-family:var(--serif); font-size:1.1rem; color:var(--ep-green); font-weight:600; }
     .rec-date  { font-family:var(--mono); font-size:0.7rem; color:var(--ep-tan); margin-top:1px; }
-
-    /* ── Comfort gauge ── */
     .comfort-gauge-wrap { display:flex; align-items:center; gap:1rem; }
     .comfort-gauge { position:relative; width:90px; height:90px; flex-shrink:0; }
     .comfort-gauge svg { width:90px; height:90px; }
     .comfort-pct-text { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-family:var(--serif); font-size:1.4rem; color:var(--ep-green); }
     .comfort-detail { font-size:0.82rem; color:var(--text-muted); line-height:1.7; }
-
-    /* ── Source note ── */
     .src-note { font-size:0.72rem; color:var(--text-muted); background:rgba(191,155,123,0.08); border:1px solid rgba(191,155,123,0.2); border-radius:var(--radius-sm); padding:0.5rem 0.85rem; margin-top:1rem; }
-
-    /* ── Forecast strip ── */
     .fc-strip { display:flex; gap:0.5rem; overflow-x:auto; padding-bottom:4px; }
     .fc-strip::-webkit-scrollbar { display:none; }
     .fc-pill { flex-shrink:0; background:white; border:1px solid var(--border); border-radius:var(--radius-md); padding:0.6rem 0.85rem; text-align:center; min-width:72px; }
@@ -112,14 +93,10 @@
     .fc-pill-max  { font-family:var(--serif); font-size:1.1rem; color:var(--ep-green); }
     .fc-pill-min  { font-size:0.72rem; color:var(--text-muted); }
     .fc-pill-rain { font-family:var(--mono); font-size:0.6rem; color:#1d4ed8; margin-top:2px; }
-
-    /* ── Warming trend arrow ── */
     .trend-arrow { display:inline-flex; align-items:center; gap:4px; font-size:0.8rem; font-weight:600; padding:2px 10px; border-radius:20px; }
     .trend-up   { background:rgba(220,38,38,0.08); color:#dc2626; }
     .trend-down { background:rgba(22,163,74,0.08);  color:#16a34a; }
     .trend-flat { background:rgba(0,0,0,0.05);       color:var(--text-muted); }
-
-    /* ── Share bar ── */
     .share-bar { display:flex; gap:0.5rem; flex-wrap:wrap; margin-top:1.5rem; padding-top:1rem; border-top:1px solid var(--border); }
     .share-btn { display:inline-flex; align-items:center; gap:5px; padding:0.45rem 1rem; border-radius:2rem; font-size:0.78rem; font-weight:600; cursor:pointer; border:none; font-family:var(--sans); transition:opacity 0.15s; }
     .share-btn:hover { opacity:0.85; }
@@ -132,7 +109,6 @@
 </head>
 <body>
 <div id="ep-nav"></div>
-
 <div class="ep-hero" style="padding-bottom:1.5rem;">
   <div class="ep-hero-tag">&#127777;&#65039; Temperature · Baner, Pune · Sahyadri Foothills · Since January 2022</div>
   <h1>Temperature in Baner</h1>
@@ -145,7 +121,7 @@
 
 <div class="t-page">
 
-  <!-- ── SECTION 1: TODAY ── -->
+  <!-- 1. LIVE + FORECAST -->
   <div class="t-section">
     <div class="t-section-head">
       <h2 class="t-section-title">Right now</h2>
@@ -174,8 +150,6 @@
         <div class="t-unit" id="live-date">—</div>
       </div>
     </div>
-
-    <!-- Forecast strip -->
     <div class="t-card" style="padding:1rem 1.1rem;">
       <div class="t-label" style="margin-bottom:0.75rem;">6-day forecast · Open-Meteo ECMWF model</div>
       <div class="fc-strip" id="fc-strip">
@@ -190,7 +164,7 @@
     </div>
   </div>
 
-  <!-- ── SECTION 2: THIS DAY ACROSS YEARS ── -->
+  <!-- 2. THIS DAY ACROSS YEARS -->
   <div class="t-section">
     <div class="t-section-head">
       <h2 class="t-section-title">This day across years</h2>
@@ -205,7 +179,6 @@
         <div class="t-label">Today vs 4-year average</div>
         <div class="t-val lg" id="today-temp">—</div>
         <div class="t-unit">°C · <span id="today-delta-label" class="t-delta">—</span></div>
-        <div style="margin-top:0.85rem;" id="today-avg-line" style="font-size:0.8rem;color:var(--text-muted);"></div>
       </div>
       <div class="t-card">
         <div class="t-label">This day in previous years</div>
@@ -214,7 +187,7 @@
     </div>
   </div>
 
-  <!-- ── SECTION 3: THIS MONTH ACROSS YEARS ── -->
+  <!-- 3. THIS MONTH ACROSS YEARS -->
   <div class="t-section">
     <div class="t-section-head">
       <h2 class="t-section-title">This month across years</h2>
@@ -237,7 +210,7 @@
     </div>
   </div>
 
-  <!-- ── SECTION 4: TEMPERATURE DISTRIBUTION ── -->
+  <!-- 4. TEMPERATURE DISTRIBUTION -->
   <div class="t-section">
     <div class="t-section-head">
       <h2 class="t-section-title">Temperature distribution</h2>
@@ -255,7 +228,7 @@
     </div>
   </div>
 
-  <!-- ── SECTION 5: HEAT STRESS ── -->
+  <!-- 5. HEAT STRESS -->
   <div class="t-section">
     <div class="t-section-head">
       <h2 class="t-section-title">Heat stress</h2>
@@ -275,12 +248,12 @@
       <div class="t-card warm">
         <div class="t-label">Longest heat streak</div>
         <div class="t-val" id="heat-streak">—</div>
-        <div class="t-unit">consecutive days &#8805; 35°C avg</div>
+        <div class="t-unit">consecutive days reaching &#8805; 35°C</div>
       </div>
       <div class="t-card warm">
         <div class="t-label">Hottest month so far</div>
         <div class="t-val sm" id="heat-month">—</div>
-        <div class="t-unit" id="heat-month-avg">avg °C this year</div>
+        <div class="t-unit" id="heat-month-avg">—</div>
       </div>
     </div>
     <div id="heat-insight" class="t-insight" style="display:none;margin-top:1rem;">
@@ -289,7 +262,7 @@
     </div>
   </div>
 
-  <!-- ── SECTION 6: COMFORT INDEX ── -->
+  <!-- 6. COMFORT INDEX -->
   <div class="t-section">
     <div class="t-section-head">
       <h2 class="t-section-title">Comfort index</h2>
@@ -307,7 +280,7 @@
             </svg>
             <div class="comfort-pct-text" id="comfort-pct">—%</div>
           </div>
-          <div class="comfort-detail" id="comfort-detail">Loading comfort data…</div>
+          <div class="comfort-detail" id="comfort-detail">Loading…</div>
         </div>
       </div>
       <div class="t-card cool">
@@ -317,7 +290,7 @@
     </div>
   </div>
 
-  <!-- ── SECTION 7: DAY vs NIGHT ── -->
+  <!-- 7. DAY vs NIGHT -->
   <div class="t-section">
     <div class="t-section-head">
       <h2 class="t-section-title">Day vs night temperature</h2>
@@ -351,7 +324,7 @@
     </div>
   </div>
 
-  <!-- ── SECTION 8: DAILY CURVE ── -->
+  <!-- 8. DAILY CURVE -->
   <div class="t-section">
     <div class="t-section-head">
       <h2 class="t-section-title">Typical day in Baner</h2>
@@ -367,11 +340,11 @@
     </div>
   </div>
 
-  <!-- ── SECTION 9: VARIABILITY ── -->
+  <!-- 9. VARIABILITY -->
   <div class="t-section">
     <div class="t-section-head">
       <h2 class="t-section-title">Daily temperature range</h2>
-      <span class="t-section-sub">Max − Min each day · high range = unstable weather · low range = humid/cloudy</span>
+      <span class="t-section-sub">Max &#8722; Min each day · high range = unstable weather · low range = humid/cloudy</span>
     </div>
     <div class="t-grid2">
       <div class="t-card">
@@ -396,7 +369,7 @@
     </div>
   </div>
 
-  <!-- ── SECTION 10: TEMP + RAIN LINK ── -->
+  <!-- 10. TEMP + RAIN -->
   <div class="t-section">
     <div class="t-section-head">
       <h2 class="t-section-title">Temperature &amp; rain</h2>
@@ -425,11 +398,11 @@
     </div>
   </div>
 
-  <!-- ── SECTION 11: RECORDS ── -->
+  <!-- 11. RECORDS -->
   <div class="t-section">
     <div class="t-section-head">
       <h2 class="t-section-title">All-time records</h2>
-      <span class="t-section-sub">Since January 2022 · from <span id="rec-source-label">combined WU + Open-Meteo data</span></span>
+      <span class="t-section-sub">Since January 2022 · combined WU + Open-Meteo data</span>
     </div>
     <div class="t-grid2">
       <div class="t-card warm">
@@ -463,31 +436,28 @@
     </div>
   </div>
 
-  <!-- ── SECTION 12: AI INSIGHT ── -->
+  <!-- 12. AI INSIGHT -->
   <div class="t-section">
     <div class="t-section-head">
       <h2 class="t-section-title">What this month means</h2>
-      <span class="t-section-sub">AI-generated · Gemini 1.5 Flash · updated daily</span>
+      <span class="t-section-sub">AI-generated · gemini-2.5-flash-lite · updated daily</span>
     </div>
     <div class="t-card" id="ai-insight-card">
       <div class="ep-skeleton" style="height:80px;border-radius:var(--radius-md);"></div>
     </div>
   </div>
 
-  <!-- Source note -->
   <div class="src-note">
-    <strong>Data sources:</strong> Weather Union ZWL008983 (hyperlocal station 2.5km away, Oct 2025 onwards) · Open-Meteo ECMWF archive (Jan 2022–Sep 2025). WU observed readings may differ from model data by 2–6°C — this is a real difference, not an error. The WU readings are more accurate for Baner's microclimate.
+    <strong>Data sources:</strong> Weather Union ZWL008983 (hyperlocal AWS 2.5km away, Oct 2025 onwards) · Open-Meteo ECMWF archive (Jan 2022–Sep 2025). WU observed readings may differ from model data by 2–6°C — this is a real microclimate difference, not an error.
   </div>
 
-  <!-- Share bar -->
   <div class="share-bar">
     <span style="font-size:0.78rem;color:var(--text-muted);align-self:center;">Share this page:</span>
     <button class="share-btn share-wa" onclick="shareTemp('whatsapp')">&#128172; WhatsApp</button>
     <button class="share-btn share-tw" onclick="shareTemp('twitter')">&#120143; Twitter/X</button>
     <button class="share-btn share-cp" onclick="shareTemp('copy')">&#128203; Copy link</button>
   </div>
-
-</div><!-- /t-page -->
+</div>
 
 <div class="share-toast" id="share-toast">Link copied!</div>
 <div id="ep-footer"></div>
@@ -497,9 +467,8 @@
 var SB  = 'https://krmczyqwblsoekceanlj.supabase.co';
 var KEY = 'sb_publishable_DrHFT5J0vmrkYraUXIlpQQ_gsk1rdq6';
 var H   = { 'apikey': KEY, 'Authorization': 'Bearer ' + KEY };
-var AI_WORKER = 'https://earthpulse-ai.fangchu.workers.dev';
+var AI  = 'https://earthpulse-ai.fangchu.workers.dev';
 
-/* ── IST helpers ── */
 function istNow() {
   var now = new Date();
   return new Date(now.getTime() + now.getTimezoneOffset()*60000 + 5.5*3600000);
@@ -508,20 +477,14 @@ function istHour(ts) {
   var d = new Date(ts);
   return Math.floor((d.getTime() + d.getTimezoneOffset()*60000 + 5.5*3600000)/3600000) % 24;
 }
+function p2(n) { return n < 10 ? '0'+n : ''+n; }
 function fmtDate(ts) {
   return new Date(ts).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric',timeZone:'Asia/Kolkata'});
 }
-function fmtShort(ts) {
-  return new Date(ts).toLocaleDateString('en-IN',{day:'numeric',month:'short',timeZone:'Asia/Kolkata'});
-}
 function ge(id) { return document.getElementById(id); }
-
-async function sbGet(path) {
-  var r = await fetch(SB + path, {headers: H});
-  return r.json();
+function sbGet(path) {
+  return fetch(SB + path, {headers: H}).then(function(r){ return r.json(); });
 }
-
-/* WMO icon helper */
 function wmoIcon(c) {
   if (c===0) return '&#9728;&#65039;';
   if (c<=2)  return '&#127780;&#65039;';
@@ -547,42 +510,32 @@ async function loadLive() {
       ge('live-date').textContent  = dt.toLocaleDateString('en-IN',{weekday:'short',day:'numeric',month:'short',timeZone:'Asia/Kolkata'});
       if (d.weather_source === 'weather_union') {
         var srcEl = ge('live-src');
-        if (srcEl) { srcEl.style.display = 'inline-block'; }
+        if (srcEl) srcEl.style.display = 'inline-block';
       }
     }
-    // Today min/max
     var ist = istNow();
-    var yrIST  = ist.getFullYear();
-    var moIST  = String(ist.getMonth()+1).padStart(2,'0');
-    var dyIST  = String(ist.getDate()).padStart(2,'0');
-    var todayStart = yrIST+'-'+moIST+'-'+dyIST+'T00:00:00%2B05%3A30';
+    var todayStart = ist.getFullYear()+'-'+p2(ist.getMonth()+1)+'-'+p2(ist.getDate())+'T00:00:00%2B05%3A30';
     var todayRows = await sbGet('/rest/v1/combined_readings?select=temperature&recorded_at=gte.'+todayStart+'&limit=200');
     if (Array.isArray(todayRows) && todayRows.length) {
-      var temps = todayRows.map(function(r){return r.temperature;}).filter(function(v){return v!=null;});
+      var temps = todayRows.map(function(r){ return r.temperature; }).filter(function(v){ return v != null; });
       if (temps.length) {
         ge('live-min').textContent = Math.min.apply(null,temps).toFixed(1);
         ge('live-max').textContent = Math.max.apply(null,temps).toFixed(1);
       }
     }
-  } catch(e) { console.warn('Live error:', e); }
-
-  // Forecast
+  } catch(e) { console.warn('Live:', e); }
   try {
-    var fRes = await fetch('https://api.open-meteo.com/v1/forecast?latitude=18.5526&longitude=73.7819' +
-      '&daily=temperature_2m_max,temperature_2m_min,weathercode,precipitation_sum,precipitation_probability_max' +
-      '&timezone=Asia%2FKolkata&forecast_days=6');
+    var fRes = await fetch('https://api.open-meteo.com/v1/forecast?latitude=18.5526&longitude=73.7819&daily=temperature_2m_max,temperature_2m_min,weathercode,precipitation_sum,precipitation_probability_max&timezone=Asia%2FKolkata&forecast_days=6');
     var fd = await fRes.json();
     if (fd.daily && fd.daily.time) {
-      var now = new Date();
       var dayNames = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
       var html = fd.daily.time.slice(0,6).map(function(dt,i) {
-        var max   = Math.round(fd.daily.temperature_2m_max[i]);
-        var min   = Math.round(fd.daily.temperature_2m_min[i]);
-        var code  = fd.daily.weathercode[i];
-        var rain  = fd.daily.precipitation_sum[i] || 0;
-        var rProb = fd.daily.precipitation_probability_max ? (fd.daily.precipitation_probability_max[i]||0) : 0;
-        var d     = new Date(dt+'T00:00:00');
-        var label = i===0 ? 'Today' : i===1 ? 'Tmrw' : dayNames[d.getDay()];
+        var max=Math.round(fd.daily.temperature_2m_max[i]);
+        var min=Math.round(fd.daily.temperature_2m_min[i]);
+        var code=fd.daily.weathercode[i];
+        var rain=fd.daily.precipitation_sum[i]||0;
+        var d=new Date(dt+'T00:00:00');
+        var label=i===0?'Today':i===1?'Tmrw':dayNames[d.getDay()];
         return '<div class="fc-pill'+(i===0?' today':'')+'">' +
           '<div class="fc-pill-day">'+label+'</div>' +
           '<div class="fc-pill-icon">'+wmoIcon(code)+'</div>' +
@@ -598,22 +551,19 @@ async function loadLive() {
 
 /* ── 2. THIS DAY ACROSS YEARS ── */
 async function loadThisDay() {
-  var ist   = istNow();
-  var mo    = String(ist.getMonth()+1).padStart(2,'0');
-  var dy    = String(ist.getDate()).padStart(2,'0');
-  var now   = ist;
-
-  ge('today-date-label').textContent = now.toLocaleDateString('en-IN',{day:'numeric',month:'long'});
-
+  var ist = istNow();
+  var mo  = p2(ist.getMonth()+1);
+  var dy  = p2(ist.getDate());
+  ge('today-date-label').textContent = ist.toLocaleDateString('en-IN',{day:'numeric',month:'long'});
   var years = [2022,2023,2024,2025,2026];
   var yearTemps = {};
   var promises = years.map(function(yr) {
     var from = yr+'-'+mo+'-'+dy+'T00:00:00%2B05%3A30';
     var to   = yr+'-'+mo+'-'+dy+'T23:59:59%2B05%3A30';
-    return sbGet('/rest/v1/combined_readings?select=temperature,recorded_at,weather_source&recorded_at=gte.'+from+'&recorded_at=lte.'+to+'&limit=50')
+    return sbGet('/rest/v1/combined_readings?select=temperature,weather_source&recorded_at=gte.'+from+'&recorded_at=lte.'+to+'&limit=50')
       .then(function(rows) {
         if (Array.isArray(rows) && rows.length) {
-          var temps = rows.map(function(r){return r.temperature;}).filter(function(v){return v!=null;});
+          var temps = rows.map(function(r){ return r.temperature; }).filter(function(v){ return v != null; });
           if (temps.length) {
             yearTemps[yr] = {
               avg: temps.reduce(function(a,b){return a+b;},0)/temps.length,
@@ -625,12 +575,11 @@ async function loadThisDay() {
       });
   });
   await Promise.all(promises);
-
-  var validYears = years.filter(function(yr){return yearTemps[yr];});
-  var allAvgs    = validYears.map(function(yr){return yearTemps[yr].avg;});
-  var fourYrAvg  = allAvgs.length > 1 ? allAvgs.slice(0,-1).reduce(function(a,b){return a+b;},0)/(allAvgs.length-1) : null;
+  var validYears = years.filter(function(yr){ return yearTemps[yr]; });
+  var allAvgs    = validYears.map(function(yr){ return yearTemps[yr].avg; });
+  var prevAvgs   = allAvgs.slice(0, -1);
+  var fourYrAvg  = prevAvgs.length ? prevAvgs.reduce(function(a,b){return a+b;},0)/prevAvgs.length : null;
   var thisYrTemp = yearTemps[ist.getFullYear()];
-
   if (thisYrTemp) {
     ge('today-temp').textContent = thisYrTemp.avg.toFixed(1);
     if (fourYrAvg) {
@@ -638,12 +587,10 @@ async function loadThisDay() {
       var sign  = delta > 0 ? '+' : '';
       var cls   = delta > 0.5 ? 'delta-up' : delta < -0.5 ? 'delta-down' : 'delta-neu';
       ge('today-delta-label').innerHTML =
-        '<span class="'+cls+'">'+sign+delta.toFixed(1)+'°C vs '+allAvgs.slice(0,-1).length+'-year avg ('+fourYrAvg.toFixed(1)+'°C)</span>';
+        '<span class="'+cls+'">'+sign+delta.toFixed(1)+'°C vs '+prevAvgs.length+'-year avg ('+fourYrAvg.toFixed(1)+'°C)</span>';
     }
   }
-
-  // Year rows
-  var maxTemp = Math.max.apply(null, validYears.map(function(yr){return yearTemps[yr].max;}));
+  var maxTemp = validYears.length ? Math.max.apply(null, validYears.map(function(yr){ return yearTemps[yr].max; })) : 1;
   var rowsHtml = validYears.map(function(yr) {
     var d = yearTemps[yr];
     var barW = Math.round(d.avg/maxTemp*100);
@@ -655,36 +602,36 @@ async function loadThisDay() {
       '</div>';
   }).join('');
   ge('this-day-years').innerHTML = rowsHtml || '<span style="font-size:0.82rem;color:var(--text-muted);">No historical data for this date</span>';
-
-  // Insight
   if (thisYrTemp && fourYrAvg) {
     var delta2 = thisYrTemp.avg - fourYrAvg;
-    var insightText = delta2 > 1
-      ? 'Today is <strong>'+Math.abs(delta2).toFixed(1)+'°C warmer</strong> than the '+allAvgs.slice(0,-1).length+'-year average for this date ('+fourYrAvg.toFixed(1)+'°C). Baner\'s April temperatures have been trending upward.'
+    ge('this-day-insight-text').innerHTML = delta2 > 1
+      ? 'Today is <strong>'+Math.abs(delta2).toFixed(1)+'°C warmer</strong> than the '+prevAvgs.length+'-year average for this date ('+fourYrAvg.toFixed(1)+'°C).'
       : delta2 < -1
       ? 'Today is <strong>'+Math.abs(delta2).toFixed(1)+'°C cooler</strong> than the historical average for this date ('+fourYrAvg.toFixed(1)+'°C).'
       : 'Today\'s temperature ('+thisYrTemp.avg.toFixed(1)+'°C) is <strong>close to the historical average</strong> for this date ('+fourYrAvg.toFixed(1)+'°C).';
-    ge('this-day-insight-text').innerHTML = insightText;
     ge('this-day-insight').style.display = 'flex';
   }
 }
 
 /* ── 3. THIS MONTH ACROSS YEARS ── */
 async function loadMonthTrend() {
-  var ist  = istNow();
-  var mo   = String(ist.getMonth()+1).padStart(2,'0');
+  var ist    = istNow();
+  var mo     = p2(ist.getMonth()+1);
   var moName = ist.toLocaleDateString('en-IN',{month:'long'});
   ge('month-label').textContent = moName + ' across years';
-
   var years = [2022,2023,2024,2025,2026];
   var yearData = {};
+  /* FIX: use proper month end via next-month-start, not hardcoded day 31 */
   var promises = years.map(function(yr) {
-    var from = yr+'-'+mo+'-01T00:00:00%2B05%3A30';
-    var to   = yr+'-'+mo+'-31T23:59:59%2B05%3A30';
-    return sbGet('/rest/v1/combined_readings?select=temperature,weather_source&recorded_at=gte.'+from+'&recorded_at=lte.'+to+'&limit=1000')
+    var nextMo  = ist.getMonth() + 2; /* 1-based next month */
+    var nextYr  = nextMo > 12 ? yr + 1 : yr;
+    var nextMoN = nextMo > 12 ? 1 : nextMo;
+    var from    = yr + '-' + mo + '-01T00:00:00%2B05%3A30';
+    var to      = nextYr + '-' + p2(nextMoN) + '-01T00:00:00%2B05%3A30';
+    return sbGet('/rest/v1/combined_readings?select=temperature,weather_source&recorded_at=gte.'+from+'&recorded_at=lt.'+to+'&limit=1000')
       .then(function(rows) {
         if (Array.isArray(rows) && rows.length) {
-          var temps = rows.map(function(r){return r.temperature;}).filter(function(v){return v!=null;});
+          var temps = rows.map(function(r){ return r.temperature; }).filter(function(v){ return v != null; });
           if (temps.length) {
             yearData[yr] = {
               avg: temps.reduce(function(a,b){return a+b;},0)/temps.length,
@@ -697,12 +644,9 @@ async function loadMonthTrend() {
       });
   });
   await Promise.all(promises);
-
-  var validYrs = years.filter(function(yr){return yearData[yr];});
-  var avgs = validYrs.map(function(yr){return yearData[yr].avg;});
-  var maxAvg = Math.max.apply(null,avgs);
-
-  // Year rows
+  var validYrs = years.filter(function(yr){ return yearData[yr]; });
+  var avgs = validYrs.map(function(yr){ return yearData[yr].avg; });
+  var maxAvg = Math.max.apply(null, avgs);
   var rowsHtml = validYrs.map(function(yr) {
     var d = yearData[yr];
     var barW = Math.round(d.avg/maxAvg*100);
@@ -714,24 +658,16 @@ async function loadMonthTrend() {
       '</div>';
   }).join('');
   ge('month-years').innerHTML = rowsHtml;
-
-  // Trend arrow
   if (avgs.length >= 2) {
     var slope = avgs[avgs.length-1] - avgs[0];
     var trendClass = slope > 0.3 ? 'trend-up' : slope < -0.3 ? 'trend-down' : 'trend-flat';
     var trendArrow = slope > 0.3 ? '&#8599; +' : slope < -0.3 ? '&#8600; ' : '&#8594; ';
-    ge('month-trend-row').innerHTML =
-      '<span class="trend-arrow '+trendClass+'">'+trendArrow+Math.abs(slope).toFixed(1)+'°C since 2022</span>';
-  }
-
-  // Month trend chart
-  if (validYrs.length > 1) {
+    ge('month-trend-row').innerHTML = '<span class="trend-arrow '+trendClass+'">'+trendArrow+Math.abs(slope).toFixed(1)+'°C since 2022</span>';
     new Chart(ge('monthTrendChart'), {
       type: 'line',
       data: {
         labels: validYrs.map(String),
         datasets: [{
-          label: moName+' avg °C',
           data: avgs,
           borderColor: '#214332',
           backgroundColor: 'rgba(33,67,50,0.08)',
@@ -747,47 +683,41 @@ async function loadMonthTrend() {
         y:{grid:{color:'rgba(0,0,0,0.05)'},ticks:{font:{size:10},color:'#6b6b6b',callback:function(v){return v+'°C';}}}
       }}
     });
-  }
-
-  // Month insight
-  if (avgs.length >= 2) {
-    var slope2 = avgs[avgs.length-1] - avgs[0];
-    var insText = slope2 > 0.5
-      ? moName+' has warmed by <strong>+'+slope2.toFixed(1)+'°C</strong> since 2022 in Baner. This consistent warming trend is visible in the data year after year.'
-      : slope2 < -0.5
-      ? moName+' has cooled by <strong>'+slope2.toFixed(1)+'°C</strong> since 2022.'
-      : moName+' temperatures have been <strong>relatively stable</strong> in Baner since 2022 (\u00b1'+Math.abs(slope2).toFixed(1)+'°C range).';
+    var insText = slope > 0.5
+      ? moName+' has warmed by <strong>+'+slope.toFixed(1)+'°C</strong> since 2022 in Baner. This consistent warming trend is visible in the data year after year.'
+      : slope < -0.5
+      ? moName+' has cooled by <strong>'+slope.toFixed(1)+'°C</strong> since 2022.'
+      : moName+' temperatures have been <strong>relatively stable</strong> in Baner since 2022 (\u00b1'+Math.abs(slope).toFixed(1)+'°C range).';
     ge('month-insight-text').innerHTML = insText;
     ge('month-insight').style.display = 'flex';
   }
 }
 
-/* ── 4 + 5 + 6: DISTRIBUTION, HEAT STRESS, COMFORT ── */
+/* ── 4+5+6: DISTRIBUTION, HEAT STRESS, COMFORT ── */
 async function loadDistribution() {
   var ist = istNow();
   var yearStart = ist.getFullYear()+'-01-01T00:00:00%2B05%3A30';
   ge('dist-year').textContent = ist.getFullYear();
-
   try {
-    // Paginate year data
     var all = [], offset = 0;
     while (true) {
-      var rows = await sbGet('/rest/v1/combined_readings?select=temperature,precipitation&recorded_at=gte.'+yearStart+'&limit=1000&offset='+offset);
+      var rows = await sbGet('/rest/v1/combined_readings?select=recorded_at,temperature,precipitation&recorded_at=gte.'+yearStart+'&limit=1000&offset='+offset);
       if (!Array.isArray(rows)||!rows.length) break;
       all = all.concat(rows);
-      if (rows.length<1000) break;
-      offset+=1000;
+      if (rows.length < 1000) break;
+      offset += 1000;
     }
     if (!all.length) return;
-
     var bands = {'<20':0,'20-25':0,'25-30':0,'30-35':0,'35-40':0,'40+':0};
-    var heat35=0, heat40=0, comfortHrs=0;
-    var totalHrs = all.length;
+    var heat35=0, heat40=0, comfortHrs=0, totalHrs=all.length;
     var rainyTemps=[], dryTemps=[];
-
+    /* Build per-day map for heat streak — track daily max (not avg) */
+    var dayMaxMap = {};
+    var moMaxMap  = {};
     all.forEach(function(r) {
       var t = r.temperature;
-      if (t==null) return;
+      if (t == null) return;
+      /* Bands */
       if (t<20)       bands['<20']++;
       else if (t<25)  bands['20-25']++;
       else if (t<30)  bands['25-30']++;
@@ -797,179 +727,138 @@ async function loadDistribution() {
       if (t>=35) heat35++;
       if (t>=40) heat40++;
       if (t>=18&&t<=28) comfortHrs++;
-      if ((r.precipitation||0)>0) rainyTemps.push(t);
-      else dryTemps.push(t);
+      if ((r.precipitation||0)>0) rainyTemps.push(t); else dryTemps.push(t);
+      /* Day max — use local date string YYYY-MM-DD */
+      var dk = new Date(r.recorded_at).toLocaleDateString('en-CA',{timeZone:'Asia/Kolkata'});
+      if (!dayMaxMap[dk] || t > dayMaxMap[dk]) dayMaxMap[dk] = t;
+      /* Monthly avg for hottest month */
+      var moKey = new Date(r.recorded_at).toLocaleDateString('en-IN',{month:'short',year:'numeric',timeZone:'Asia/Kolkata'});
+      if (!moMaxMap[moKey]) moMaxMap[moKey] = {sum:0, n:0};
+      moMaxMap[moKey].sum += t; moMaxMap[moKey].n++;
     });
-
-    // Band bars
+    /* Band bars */
     var BAND_COLORS = {'<20':'#60a5fa','20-25':'#34d399','25-30':'#fbbf24','30-35':'#fb923c','35-40':'#ef4444','40+':'#7c3aed'};
     var barsHtml = '';
     Object.keys(bands).forEach(function(band) {
       var pct = Math.round(bands[band]/totalHrs*100);
-      barsHtml +=
-        '<div class="band-row">'+
-          '<span class="band-label">'+band+'°C</span>'+
-          '<div class="band-bar-wrap"><div class="band-bar" style="width:'+pct+'%;background:'+BAND_COLORS[band]+'"></div></div>'+
-          '<span class="band-pct">'+pct+'%</span>'+
-        '</div>';
+      barsHtml += '<div class="band-row"><span class="band-label">'+band+'°C</span><div class="band-bar-wrap"><div class="band-bar" style="width:'+pct+'%;background:'+BAND_COLORS[band]+'"></div></div><span class="band-pct">'+pct+'%</span></div>';
     });
     ge('band-bars').innerHTML = barsHtml;
-
-    // Distribution chart
     new Chart(ge('distChart'), {
       type: 'bar',
       data: {
-        labels: Object.keys(bands).map(function(b){return b+'°C';}),
-        datasets: [{
-          data: Object.values(bands),
-          backgroundColor: Object.keys(bands).map(function(b){return BAND_COLORS[b]+'cc';}),
-          borderRadius: 4
-        }]
+        labels: Object.keys(bands).map(function(b){ return b+'°C'; }),
+        datasets: [{ data: Object.values(bands), backgroundColor: Object.keys(bands).map(function(b){ return BAND_COLORS[b]+'cc'; }), borderRadius: 4 }]
       },
       options:{responsive:true,plugins:{legend:{display:false}},scales:{
         x:{grid:{display:false},ticks:{font:{size:10},color:'#6b6b6b'}},
         y:{grid:{color:'rgba(0,0,0,0.05)'},ticks:{font:{size:10},color:'#6b6b6b'}}
       }}
     });
-
-    // Heat stress
+    /* Heat stress stats */
     ge('heat-35').textContent = heat35.toLocaleString('en-IN');
     ge('heat-40').textContent = heat40.toLocaleString('en-IN');
-
-    // Heat streak (consecutive days with avg > 35)
-    var dayMap = {};
-    all.forEach(function(r) {
-      if (r.temperature==null) return;
-      var dk = new Date(r.recorded_at).toLocaleDateString('en-CA',{timeZone:'Asia/Kolkata'});
-      if (!dayMap[dk]) dayMap[dk] = {sum:0,n:0};
-      dayMap[dk].sum += r.temperature; dayMap[dk].n++;
-    });
-    var days = Object.keys(dayMap).sort();
-    var streak=0, maxStreak=0;
+    /* Heat streak: consecutive days where the MAX temperature reached ≥35°C
+       (not average — if the thermometer hit 35°C on a day, it counts) */
+    var days = Object.keys(dayMaxMap).sort();
+    var streak=0, maxStreak=0, streakStart='', maxStreakStart='';
     days.forEach(function(dk) {
-      var avg = dayMap[dk].sum/dayMap[dk].n;
-      if (avg>=35) { streak++; if(streak>maxStreak)maxStreak=streak; }
-      else streak=0;
+      if (dayMaxMap[dk] >= 35) {
+        if (streak === 0) streakStart = dk;
+        streak++;
+        if (streak > maxStreak) { maxStreak = streak; maxStreakStart = streakStart; }
+      } else {
+        streak = 0;
+      }
     });
     ge('heat-streak').textContent = maxStreak;
-
-    // Hottest month
-    var moMap = {};
-    all.forEach(function(r) {
-      if (r.temperature==null) return;
-      var mo = new Date(r.recorded_at).toLocaleDateString('en-IN',{month:'short',year:'numeric',timeZone:'Asia/Kolkata'});
-      if (!moMap[mo]) moMap[mo]={sum:0,n:0};
-      moMap[mo].sum+=r.temperature; moMap[mo].n++;
+    /* Hottest month — using avg (correct: "which month has the highest avg temp") */
+    var hotMo = '', hotAvg = 0;
+    Object.keys(moMaxMap).forEach(function(mo) {
+      var avg = moMaxMap[mo].sum / moMaxMap[mo].n;
+      if (avg > hotAvg) { hotAvg = avg; hotMo = mo; }
     });
-    var hotMo='', hotAvg=0;
-    Object.keys(moMap).forEach(function(mo){
-      var avg=moMap[mo].sum/moMap[mo].n;
-      if(avg>hotAvg){hotAvg=avg;hotMo=mo;}
-    });
-    ge('heat-month').textContent = hotMo;
-    ge('heat-month-avg').textContent = hotAvg.toFixed(1)+'°C avg';
-
+    ge('heat-month').textContent     = hotMo || '\u2014';
+    ge('heat-month-avg').textContent = hotMo ? hotAvg.toFixed(1)+'°C avg this year' : '';
     if (heat35 > 0) {
+      var streakDesc = maxStreak > 0
+        ? ' The longest stretch of consecutive days reaching 35°C was <strong>'+maxStreak+' days</strong>'+(maxStreakStart ? ' (starting '+new Date(maxStreakStart+'T12:00:00Z').toLocaleDateString('en-IN',{day:'numeric',month:'short'})+')' : '')+'.'
+        : ' No multi-day heat streaks yet this year.';
       ge('heat-insight-text').innerHTML =
-        'Baner has experienced <strong>'+heat35+' hours above 35°C</strong> and <strong>'+heat40+' hours above 40°C</strong> so far this year. The longest consecutive heat streak was <strong>'+maxStreak+' days</strong>. Heat stress is a real health concern — limit outdoor exertion between 11am and 4pm on hot days.';
+        'Baner has experienced <strong>'+heat35.toLocaleString('en-IN')+' hours above 35°C</strong> and <strong>'+heat40.toLocaleString('en-IN')+' hours above 40°C</strong> so far this year.'+streakDesc+' Limit outdoor exertion between 11am and 4pm on hot days.';
       ge('heat-insight').style.display = 'flex';
     }
-
-    // Comfort index
+    /* Comfort index */
     var comfortPct = Math.round(comfortHrs/totalHrs*100);
     ge('comfort-pct').textContent = comfortPct+'%';
     var arc = ge('comfort-arc');
     if (arc) arc.setAttribute('stroke-dasharray', comfortPct+' '+(100-comfortPct));
     ge('comfort-detail').innerHTML =
-      '<strong>'+comfortHrs.toLocaleString('en-IN')+'</strong> comfortable hours (18–28°C) out of '+totalHrs.toLocaleString('en-IN')+' recorded.<br>'+
-      'Comfortable conditions '+comfortPct+'% of the time so far this year.';
+      '<strong>'+comfortHrs.toLocaleString('en-IN')+'</strong> comfortable hours (18–28°C) out of '+totalHrs.toLocaleString('en-IN')+' recorded.<br>Comfortable conditions '+comfortPct+'% of the time so far this year.';
     ge('comfort-breakdown').innerHTML =
       '<div class="band-row"><span class="band-label">Comfortable</span><div class="band-bar-wrap"><div class="band-bar" style="width:'+comfortPct+'%;background:#22c55e"></div></div><span class="band-pct">'+comfortPct+'%</span></div>'+
-      '<div class="band-row"><span class="band-label">Hot (>28°C)</span><div class="band-bar-wrap"><div class="band-bar" style="width:'+Math.round(bands['30-35']/totalHrs*100+bands['35-40']/totalHrs*100+bands['40+']/totalHrs*100+bands['25-30']/totalHrs*100)+'%;background:#f97316"></div></div><span class="band-pct">'+Math.round((bands['30-35']+bands['35-40']+bands['40+']+bands['25-30'])/totalHrs*100)+'%</span></div>'+
+      '<div class="band-row"><span class="band-label">Hot (>28°C)</span><div class="band-bar-wrap"><div class="band-bar" style="width:'+Math.round((bands['30-35']+bands['35-40']+bands['40+']+bands['25-30'])/totalHrs*100)+'%;background:#f97316"></div></div><span class="band-pct">'+Math.round((bands['30-35']+bands['35-40']+bands['40+']+bands['25-30'])/totalHrs*100)+'%</span></div>'+
       '<div class="band-row"><span class="band-label">Cool (<18°C)</span><div class="band-bar-wrap"><div class="band-bar" style="width:'+Math.round(bands['<20']/totalHrs*100)+'%;background:#60a5fa"></div></div><span class="band-pct">'+Math.round(bands['<20']/totalHrs*100)+'%</span></div>';
-
-    // Rain vs dry
+    /* Rain vs dry */
     if (rainyTemps.length && dryTemps.length) {
       var rainAvg = rainyTemps.reduce(function(a,b){return a+b;},0)/rainyTemps.length;
       var dryAvg  = dryTemps.reduce(function(a,b){return a+b;},0)/dryTemps.length;
       ge('rain-avg').textContent = rainAvg.toFixed(1);
       ge('dry-avg').textContent  = dryAvg.toFixed(1);
-      var diff = dryAvg - rainAvg;
-      ge('rain-insight').innerHTML =
-        'Baner is on average <strong>'+diff.toFixed(1)+'°C cooler on rainy days</strong> ('+rainAvg.toFixed(1)+'°C) compared to dry days ('+dryAvg.toFixed(1)+'°C). Rain brings significant relief from the heat.';
+      ge('rain-insight').innerHTML = 'Baner is on average <strong>'+(dryAvg-rainAvg).toFixed(1)+'°C cooler on rainy days</strong> ('+rainAvg.toFixed(1)+'°C) compared to dry days ('+dryAvg.toFixed(1)+'°C). Rain brings significant relief from the heat.';
       new Chart(ge('rainTempChart'),{
         type:'bar',
-        data:{
-          labels:['Rainy days','Dry days'],
-          datasets:[{data:[rainAvg,dryAvg],backgroundColor:['rgba(29,78,216,0.55)','rgba(234,179,8,0.55)'],borderRadius:6}]
-        },
+        data:{ labels:['Rainy days','Dry days'], datasets:[{data:[rainAvg,dryAvg],backgroundColor:['rgba(29,78,216,0.55)','rgba(234,179,8,0.55)'],borderRadius:6}] },
         options:{responsive:true,plugins:{legend:{display:false}},scales:{
           x:{grid:{display:false},ticks:{font:{size:11},color:'#6b6b6b'}},
           y:{grid:{color:'rgba(0,0,0,0.05)'},ticks:{font:{size:10},color:'#6b6b6b',callback:function(v){return v+'°C';}}}
         }}
       });
     }
-  } catch(e) { console.warn('Distribution error:', e); }
+  } catch(e) { console.warn('Distribution:', e); }
 }
 
 /* ── 7. DAY vs NIGHT ── */
 async function loadDayNight() {
-  var ist = istNow();
-  var mo  = String(ist.getMonth()+1).padStart(2,'0');
-  var yr  = ist.getFullYear();
-  var from = yr+'-'+mo+'-01T00:00:00%2B05%3A30';
-
+  var ist  = istNow();
+  var mo   = p2(ist.getMonth()+1);
+  var from = ist.getFullYear()+'-'+mo+'-01T00:00:00%2B05%3A30';
   try {
     var rows = await sbGet('/rest/v1/combined_readings?select=recorded_at,temperature&recorded_at=gte.'+from+'&limit=1000');
     if (!Array.isArray(rows)||!rows.length) return;
-
-    var dayTemps=[], nightTemps=[];
-    var hourSums=new Array(24).fill(0), hourCounts=new Array(24).fill(0);
-    // Day buckets by date for night cooling
-    var eveningByDay={}, morningByDay={};
-
+    var dayT=[], nightT=[];
+    var hS=new Array(24).fill(0), hC=new Array(24).fill(0);
+    var eveByDay={}, mornByDay={};
     rows.forEach(function(r) {
       if (r.temperature==null) return;
-      var h = istHour(r.recorded_at);
-      hourSums[h]+=r.temperature; hourCounts[h]++;
-      if (h>=6&&h<18) dayTemps.push(r.temperature);
-      else nightTemps.push(r.temperature);
+      var h  = istHour(r.recorded_at);
       var dk = new Date(r.recorded_at).toLocaleDateString('en-CA',{timeZone:'Asia/Kolkata'});
-      if (h===18||h===19) { if(!eveningByDay[dk])eveningByDay[dk]=[]; eveningByDay[dk].push(r.temperature); }
-      if (h===4||h===5)  { if(!morningByDay[dk])morningByDay[dk]=[]; morningByDay[dk].push(r.temperature); }
+      hS[h]+=r.temperature; hC[h]++;
+      if (h>=6&&h<18) dayT.push(r.temperature); else nightT.push(r.temperature);
+      if (h===18||h===19) { if(!eveByDay[dk]) eveByDay[dk]=[]; eveByDay[dk].push(r.temperature); }
+      if (h===4 ||h===5)  { if(!mornByDay[dk])mornByDay[dk]=[]; mornByDay[dk].push(r.temperature); }
     });
-
-    var dayAvg   = dayTemps.length   ? dayTemps.reduce(function(a,b){return a+b;},0)/dayTemps.length     : null;
-    var nightAvg = nightTemps.length ? nightTemps.reduce(function(a,b){return a+b;},0)/nightTemps.length : null;
-    if (dayAvg)   ge('day-avg').textContent   = dayAvg.toFixed(1);
-    if (nightAvg) ge('night-avg').textContent = nightAvg.toFixed(1);
-
-    // Night cooling rate
-    var coolingRates=[];
-    Object.keys(eveningByDay).forEach(function(dk) {
-      if (morningByDay[dk]) {
-        var eve = eveningByDay[dk].reduce(function(a,b){return a+b;},0)/eveningByDay[dk].length;
-        var morn= morningByDay[dk].reduce(function(a,b){return a+b;},0)/morningByDay[dk].length;
-        coolingRates.push(eve-morn);
+    var dA = dayT.length   ? dayT.reduce(function(a,b){return a+b;},0)/dayT.length     : null;
+    var nA = nightT.length ? nightT.reduce(function(a,b){return a+b;},0)/nightT.length : null;
+    if (dA) ge('day-avg').textContent   = dA.toFixed(1);
+    if (nA) ge('night-avg').textContent = nA.toFixed(1);
+    var rates=[];
+    Object.keys(eveByDay).forEach(function(dk) {
+      if (mornByDay[dk]) {
+        var e=eveByDay[dk].reduce(function(a,b){return a+b;},0)/eveByDay[dk].length;
+        var m=mornByDay[dk].reduce(function(a,b){return a+b;},0)/mornByDay[dk].length;
+        rates.push(e-m);
       }
     });
-    if (coolingRates.length) {
-      var avgCooling = coolingRates.reduce(function(a,b){return a+b;},0)/coolingRates.length;
-      ge('cooling-rate').textContent = avgCooling.toFixed(1);
-    }
-
-    // Day/night chart
-    var hourAvgs = hourSums.map(function(s,i){return hourCounts[i]?s/hourCounts[i]:null;});
-    var dayAvgs  = hourAvgs.slice(6,18);
-    var nightAvgsArr = hourAvgs.slice(18).concat(hourAvgs.slice(0,6));
+    if (rates.length) ge('cooling-rate').textContent = (rates.reduce(function(a,b){return a+b;},0)/rates.length).toFixed(1);
+    var hAvgs = hS.map(function(s,i){ return hC[i]?s/hC[i]:null; });
     new Chart(ge('dayNightChart'),{
       type:'bar',
       data:{
-        labels:['6am','7am','8am','9am','10am','11am','12pm','1pm','2pm','3pm','4pm','5pm',
-                '6pm','7pm','8pm','9pm','10pm','11pm','12am','1am','2am','3am','4am','5am'],
+        labels:['6am','7am','8am','9am','10am','11am','12pm','1pm','2pm','3pm','4pm','5pm','6pm','7pm','8pm','9pm','10pm','11pm','12am','1am','2am','3am','4am','5am'],
         datasets:[
-          {label:'Daytime',   data:dayAvgs.concat(new Array(12).fill(null)),  backgroundColor:'rgba(234,179,8,0.55)',  borderRadius:3},
-          {label:'Nighttime', data:new Array(12).fill(null).concat(nightAvgsArr), backgroundColor:'rgba(33,67,50,0.5)', borderRadius:3}
+          {label:'Daytime',   data:hAvgs.slice(6,18).concat(new Array(12).fill(null)), backgroundColor:'rgba(234,179,8,0.55)',  borderRadius:3},
+          {label:'Nighttime', data:new Array(12).fill(null).concat(hAvgs.slice(18).concat(hAvgs.slice(0,6))), backgroundColor:'rgba(33,67,50,0.5)', borderRadius:3}
         ]
       },
       options:{responsive:true,plugins:{legend:{position:'top',labels:{font:{size:10},boxWidth:10}}},scales:{
@@ -977,7 +866,7 @@ async function loadDayNight() {
         y:{grid:{color:'rgba(0,0,0,0.05)'},ticks:{font:{size:10},color:'#6b6b6b',callback:function(v){return v?v.toFixed(0)+'°':''}}}
       }}
     });
-  } catch(e) { console.warn('Day/night error:', e); }
+  } catch(e) { console.warn('DayNight:', e); }
 }
 
 /* ── 8. DAILY CURVE ── */
@@ -992,41 +881,33 @@ async function loadHourCurve() {
       var h=istHour(r.recorded_at);
       sums[h]+=r.temperature; counts[h]++;
     });
-    var avgs = sums.map(function(s,i){return counts[i]?+(s/counts[i]).toFixed(1):null;});
-    var peakH = avgs.indexOf(Math.max.apply(null,avgs.filter(function(v){return v!=null;})));
-    var coolH = avgs.indexOf(Math.min.apply(null,avgs.filter(function(v){return v!=null;})));
-    var labels = [];
-    for (var i=0;i<24;i++) labels.push(String(i).padStart(2,'0')+':00');
-
+    var avgs = sums.map(function(s,i){ return counts[i] ? +(s/counts[i]).toFixed(1) : null; });
+    var validAvgs = avgs.filter(function(v){ return v != null; });
+    var peakH = avgs.indexOf(Math.max.apply(null,validAvgs));
+    var coolH = avgs.indexOf(Math.min.apply(null,validAvgs));
+    var labels=[]; for(var i=0;i<24;i++) labels.push(String(i).padStart(2,'0')+':00');
     new Chart(ge('hourCurveChart'),{
       type:'line',
-      data:{
-        labels:labels,
-        datasets:[{
-          data:avgs,
-          borderColor:'#BF9B7B',
-          backgroundColor:'rgba(191,155,123,0.1)',
-          tension:0.4,pointRadius:0,borderWidth:2,fill:true
-        }]
-      },
+      data:{ labels:labels, datasets:[{ data:avgs, borderColor:'#BF9B7B', backgroundColor:'rgba(191,155,123,0.1)', tension:0.4, pointRadius:0, borderWidth:2, fill:true, spanGaps:true }] },
       options:{responsive:true,plugins:{legend:{display:false}},scales:{
         x:{grid:{display:false},ticks:{font:{size:9},color:'#6b6b6b',maxTicksLimit:8}},
         y:{grid:{color:'rgba(0,0,0,0.05)'},ticks:{font:{size:10},color:'#6b6b6b',callback:function(v){return v+'°C';}}}
       }}
     });
-
     ge('curve-callouts').innerHTML =
-      '<div><span style="font-size:0.68rem;color:var(--text-muted);font-weight:700;text-transform:uppercase;">&#128293; Peak</span><br><span style="font-family:var(--serif);font-size:1rem;color:#dc2626;">'+String(peakH).padStart(2,'0')+':00</span><span style="font-size:0.78rem;color:var(--text-muted);"> · '+avgs[peakH]+'°C avg</span></div>'+
-      '<div><span style="font-size:0.68rem;color:var(--text-muted);font-weight:700;text-transform:uppercase;">&#10052;&#65039; Coolest</span><br><span style="font-family:var(--serif);font-size:1rem;color:#60a5fa;">'+String(coolH).padStart(2,'0')+':00</span><span style="font-size:0.78rem;color:var(--text-muted);"> · '+avgs[coolH]+'°C avg</span></div>';
-  } catch(e) { console.warn('Hour curve error:', e); }
+      '<div><span style="font-size:0.68rem;color:var(--text-muted);font-weight:700;text-transform:uppercase;">&#128293; Peak</span><br>'+
+      '<span style="font-family:var(--serif);font-size:1rem;color:#dc2626;">'+String(peakH).padStart(2,'0')+':00</span>'+
+      '<span style="font-size:0.78rem;color:var(--text-muted);"> · '+avgs[peakH]+'°C avg</span></div>'+
+      '<div><span style="font-size:0.68rem;color:var(--text-muted);font-weight:700;text-transform:uppercase;">&#10052;&#65039; Coolest</span><br>'+
+      '<span style="font-family:var(--serif);font-size:1rem;color:#60a5fa;">'+String(coolH).padStart(2,'0')+':00</span>'+
+      '<span style="font-size:0.78rem;color:var(--text-muted);"> · '+avgs[coolH]+'°C avg</span></div>';
+  } catch(e) { console.warn('HourCurve:', e); }
 }
 
 /* ── 9. VARIABILITY ── */
 async function loadVariability() {
   var ist  = istNow();
-  var mo   = String(ist.getMonth()+1).padStart(2,'0');
-  var from = ist.getFullYear()+'-'+mo+'-01T00:00:00%2B05%3A30';
-
+  var from = ist.getFullYear()+'-'+p2(ist.getMonth()+1)+'-01T00:00:00%2B05%3A30';
   try {
     var rows = await sbGet('/rest/v1/combined_readings?select=recorded_at,temperature&recorded_at=gte.'+from+'&limit=1000');
     if (!Array.isArray(rows)||!rows.length) return;
@@ -1038,46 +919,49 @@ async function loadVariability() {
       if(r.temperature<byDay[dk].min) byDay[dk].min=r.temperature;
       if(r.temperature>byDay[dk].max) byDay[dk].max=r.temperature;
     });
-    var days = Object.keys(byDay).sort();
-    var ranges = days.map(function(dk){return byDay[dk].max-byDay[dk].min;});
+    var days   = Object.keys(byDay).sort();
+    var ranges = days.map(function(dk){ return byDay[dk].max - byDay[dk].min; });
     var avgRange = ranges.reduce(function(a,b){return a+b;},0)/ranges.length;
     var maxRange = Math.max.apply(null,ranges);
     ge('var-avg').textContent = avgRange.toFixed(1);
     ge('var-max').textContent = maxRange.toFixed(1);
     ge('var-insight').innerHTML = avgRange > 10
-      ? 'A high average daily range of '+avgRange.toFixed(1)+'°C suggests <strong>variable, unstable weather</strong> — typical of the pre-monsoon season with warm afternoons and cooler nights.'
+      ? 'A high average daily range of '+avgRange.toFixed(1)+'°C suggests <strong>variable, unstable weather</strong> — typical of the pre-monsoon season.'
       : 'A moderate daily range of '+avgRange.toFixed(1)+'°C is typical for this time of year in Baner.';
-
     new Chart(ge('rangeChart'),{
       type:'bar',
-      data:{labels:days.map(function(dk){return new Date(dk).toLocaleDateString('en-IN',{day:'numeric',month:'short'});}),
-            datasets:[{data:ranges,backgroundColor:'rgba(191,155,123,0.6)',borderRadius:3}]},
+      data:{
+        labels: days.map(function(dk){ return new Date(dk+'T12:00:00Z').toLocaleDateString('en-IN',{day:'numeric',month:'short'}); }),
+        datasets:[{data:ranges, backgroundColor:'rgba(191,155,123,0.6)', borderRadius:3}]
+      },
       options:{responsive:true,plugins:{legend:{display:false}},scales:{
         x:{grid:{display:false},ticks:{font:{size:9},color:'#6b6b6b',maxTicksLimit:10}},
         y:{grid:{color:'rgba(0,0,0,0.05)'},ticks:{font:{size:10},color:'#6b6b6b',callback:function(v){return v+'°C';}}}
       }}
     });
-  } catch(e) { console.warn('Variability error:', e); }
+  } catch(e) { console.warn('Variability:', e); }
 }
 
 /* ── 11. RECORDS ── */
 async function loadRecords() {
+  var ist = istNow();
+  var yrStart = ist.getFullYear()+'-01-01T00:00:00%2B05%3A30';
   try {
     var results = await Promise.all([
       sbGet('/rest/v1/combined_readings?select=temperature,recorded_at&order=temperature.desc&limit=1'),
       sbGet('/rest/v1/combined_readings?select=temperature,recorded_at&order=temperature.asc&limit=1'),
-      sbGet('/rest/v1/combined_readings?select=temperature,recorded_at&order=temperature.desc&limit=1&recorded_at=gte.'+ist().getFullYear()+'-01-01T00:00:00%2B05%3A30'),
-      sbGet('/rest/v1/combined_readings?select=temperature,recorded_at&order=temperature.asc&limit=1&recorded_at=gte.'+ist().getFullYear()+'-01-01T00:00:00%2B05%3A30'),
-      sbGet('/rest/v1/combined_readings?select=temperature,recorded_at&temperature=gte.35&order=recorded_at.asc&limit=1&recorded_at=gte.'+ist().getFullYear()+'-01-01T00:00:00%2B05%3A30'),
-      sbGet('/rest/v1/combined_readings?select=temperature,recorded_at&temperature=gte.40&order=recorded_at.asc&limit=1&recorded_at=gte.'+ist().getFullYear()+'-01-01T00:00:00%2B05%3A30'),
+      sbGet('/rest/v1/combined_readings?select=temperature,recorded_at&order=temperature.desc&limit=1&recorded_at=gte.'+yrStart),
+      sbGet('/rest/v1/combined_readings?select=temperature,recorded_at&order=temperature.asc&limit=1&recorded_at=gte.'+yrStart),
+      sbGet('/rest/v1/combined_readings?select=temperature,recorded_at&temperature=gte.35&order=recorded_at.asc&limit=1&recorded_at=gte.'+yrStart),
+      sbGet('/rest/v1/combined_readings?select=temperature,recorded_at&temperature=gte.40&order=recorded_at.asc&limit=1&recorded_at=gte.'+yrStart),
     ]);
-    function setRec(valId, dateId, row) {
+    function setRec(vId, dId, row) {
       if (row && row[0]) {
-        ge(valId).textContent = row[0].temperature.toFixed(1)+'°C';
-        ge(dateId).textContent = fmtDate(row[0].recorded_at);
+        ge(vId).textContent = row[0].temperature.toFixed(1)+'°C';
+        ge(dId).textContent = fmtDate(row[0].recorded_at);
       } else {
-        ge(valId).textContent = '\u2014';
-        ge(dateId).textContent = '\u2014';
+        ge(vId).textContent = '\u2014';
+        if(dId) ge(dId).textContent = '\u2014';
       }
     }
     setRec('rec-hot','rec-hot-date',results[0]);
@@ -1088,26 +972,26 @@ async function loadRecords() {
     setRec('rec-first40','rec-first40-date',results[5]);
     if (!results[4]||!results[4][0]) ge('rec-first35').textContent = 'Not yet';
     if (!results[5]||!results[5][0]) ge('rec-first40').textContent = 'Not yet';
-  } catch(e) { console.warn('Records error:', e); }
+  } catch(e) { console.warn('Records:', e); }
 }
-function ist() { return istNow(); }
 
-/* ── 12. AI INSIGHT ── */
+/* ── 12. AI INSIGHT — gemini-2.5-flash-lite ── */
 async function loadAIInsight() {
-  var ist2 = istNow();
-  var mo = ist2.toLocaleDateString('en-IN',{month:'long',year:'numeric'});
+  var ist  = istNow();
+  var mo   = ist.toLocaleDateString('en-IN',{month:'long',year:'numeric'});
   var prompt = 'You are a hyperlocal climate analyst for Baner, Pune, India. Write 2-3 concise sentences summarising what the temperature data means for residents this month ('+mo+'). Focus on practical implications: is it hotter than usual, what does it mean for outdoor activity, any notable patterns. Keep it conversational and useful. Do not mention data sources.';
   try {
-    var r = await fetch(AI_WORKER+'/gemini',{
+    var r = await fetch(AI+'/gemini',{
       method:'POST',
       headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({prompt:prompt})
+      body:JSON.stringify({prompt:prompt, model:'gemini-2.5-flash-lite'})
     });
     var d = await r.json();
     var text = d.text || d.content || '';
+    if (!text) throw new Error('empty');
     ge('ai-insight-card').innerHTML =
       '<div style="font-size:0.9rem;color:var(--text-muted);line-height:1.85;">'+text+'</div>'+
-      '<div style="font-size:0.68rem;color:var(--text-muted);margin-top:0.75rem;opacity:0.6;">Generated by Gemini 1.5 Flash · '+mo+'</div>';
+      '<div style="font-size:0.68rem;color:var(--text-muted);margin-top:0.75rem;opacity:0.6;">Generated by gemini-2.5-flash-lite \u00b7 '+mo+'</div>';
   } catch(e) {
     ge('ai-insight-card').innerHTML = '<p style="font-size:0.85rem;color:var(--text-muted);">AI insight unavailable right now.</p>';
   }
@@ -1121,14 +1005,13 @@ function shareTemp(platform) {
   else if (platform==='twitter') window.open('https://twitter.com/intent/tweet?text='+encodeURIComponent(text),'_blank');
   else {
     navigator.clipboard.writeText(url).then(function(){
-      var t = ge('share-toast'); t.className='share-toast show';
+      var t=ge('share-toast'); t.className='share-toast show';
       setTimeout(function(){t.className='share-toast';},2200);
     }).catch(function(){});
   }
 }
 
-/* ── INIT ── */
-(function init(){
+(function(){
   loadLive();
   loadThisDay();
   loadMonthTrend();
