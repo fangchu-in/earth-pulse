@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Earth Pulse Blog — Weekly & Monthly Environmental Reports | Baner, Pune</title>
+  <meta name="description" content="Auto-generated weekly and monthly environmental reports from Baner, Pune. Air quality, temperature, rainfall, and bird biodiversity data since January 2022. Citizen science from the Western Ghats edge.">
+  <link rel="canonical" href="https://www.earth-pulse.org/blog.html">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Earth Pulse Blog — Baner's Environmental Chronicle">
+  <meta property="og:description" content="Weekly and monthly reports on air, weather and birds in Baner, Pune. Data-driven, auto-generated, since 2022.">
+  <meta property="og:image" content="https://www.earth-pulse.org/earth-pulse-logo.png">
+  <meta name="robots" content="index, follow">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Blog",
+    "name": "Earth Pulse Blog",
+    "description": "Weekly and monthly environmental reports from Baner, Pune, India. Citizen science monitoring of air quality, weather, and bird biodiversity on the edge of the Western Ghats.",
+    "url": "https://www.earth-pulse.org/blog.html",
+    "publisher": {"@type": "Organization", "name": "Earth Pulse", "url": "https://www.earth-pulse.org"},
+    "inLanguage": "en-IN",
+    "about": [
+      {"@type": "Thing", "name": "Air Quality Index", "description": "Hourly AQI monitoring in Baner, Pune"},
+      {"@type": "Thing", "name": "Bird Biodiversity", "description": "Acoustic bird detection via BirdNET AI on Baner Hill"},
+      {"@type": "Thing", "name": "Weather Monitoring", "description": "Hyperlocal weather data from Weather Union station"}
+    ]
+  }
+  </script>
+  <link rel="icon" type="image/png" href="earth-pulse-logo.png">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .blog-hero { max-width:960px; margin:0 auto; padding:3rem 2rem 1.5rem; }
+    .blog-hero-eyebrow { font-size:0.7rem; font-weight:700; text-transform:uppercase; letter-spacing:0.12em; color:var(--ep-tan); margin-bottom:0.75rem; }
+    .blog-hero h1 { font-family:var(--serif); font-size:clamp(2rem,5vw,3rem); color:var(--ep-green); margin-bottom:0.6rem; line-height:1.15; }
+    .blog-hero p  { font-size:0.97rem; color:var(--text-muted); max-width:560px; line-height:1.7; }
+
+    /* ── Filter tabs ── */
+    .blog-tabs { max-width:960px; margin:0 auto; padding:0 2rem 1.5rem; display:flex; gap:0.5rem; flex-wrap:wrap; }
+    .blog-tab  { padding:0.4rem 1rem; border-radius:2rem; font-size:0.82rem; font-weight:600; cursor:pointer; border:1.5px solid var(--border); background:white; color:var(--text-muted); transition:all 0.15s; font-family:var(--sans); }
+    .blog-tab.active, .blog-tab:hover { background:var(--ep-green); color:var(--ep-cream); border-color:var(--ep-green); }
+
+    /* ── Year group ── */
+    .blog-year-group { max-width:960px; margin:0 auto; padding:0 2rem 3rem; }
+    .blog-year-label { font-family:var(--serif); font-size:1.6rem; color:var(--ep-green); margin-bottom:1.25rem; padding-bottom:0.5rem; border-bottom:2px solid var(--ep-tan); display:flex; align-items:center; justify-content:space-between; }
+    .blog-year-count { font-family:var(--mono); font-size:0.78rem; color:var(--text-muted); font-weight:400; }
+
+    /* ── Month block ── */
+    .blog-month-block { margin-bottom:2.5rem; }
+    .blog-month-header { display:flex; align-items:center; gap:1rem; margin-bottom:1rem; }
+    .blog-month-label  { font-family:var(--serif); font-size:1.1rem; color:var(--ep-green); }
+    .blog-month-divider { flex:1; height:1px; background:var(--border); }
+
+    /* ── Monthly summary card ── */
+    .blog-monthly-card {
+      background:var(--ep-green); border-radius:1rem; padding:1.5rem 1.75rem;
+      text-decoration:none; color:inherit; display:block; margin-bottom:1rem;
+      transition:opacity 0.15s;
+    }
+    .blog-monthly-card:hover { opacity:0.92; }
+    .blog-monthly-card-top { display:flex; align-items:flex-start; justify-content:space-between; gap:1rem; flex-wrap:wrap; margin-bottom:0.75rem; }
+    .blog-monthly-card-title { font-family:var(--serif); font-size:1.15rem; color:var(--ep-cream); line-height:1.3; }
+    .blog-monthly-card-pulse { font-family:var(--mono); font-size:0.78rem; font-weight:700; background:var(--ep-tan); color:var(--ep-green); border-radius:20px; padding:0.2rem 0.7rem; flex-shrink:0; }
+    .blog-monthly-card-hook  { font-size:0.85rem; color:rgba(242,240,230,0.72); line-height:1.6; margin-bottom:1rem; }
+    .blog-monthly-card-stats { display:flex; gap:1.25rem; flex-wrap:wrap; }
+    .blog-mstat { font-family:var(--mono); font-size:0.72rem; color:rgba(242,240,230,0.6); }
+    .blog-mstat strong { color:var(--ep-tan); }
+
+    /* ── Weekly card ── */
+    .blog-weekly-card {
+      display:flex; gap:0; border:1px solid var(--border); border-radius:0.85rem;
+      text-decoration:none; color:inherit; overflow:hidden; margin-bottom:0.6rem;
+      transition:box-shadow 0.15s, transform 0.1s; background:var(--bg-card);
+    }
+    .blog-weekly-card:hover { box-shadow:0 4px 16px rgba(33,67,50,0.1); transform:translateY(-1px); }
+    .blog-weekly-card-photo { width:100px; flex-shrink:0; object-fit:cover; display:block; }
+    @media(max-width:500px){ .blog-weekly-card-photo { display:none; } }
+    .blog-weekly-card-body  { padding:0.9rem 1.1rem; flex:1; min-width:0; }
+    .blog-weekly-card-dates { font-family:var(--mono); font-size:0.67rem; color:var(--ep-tan); font-weight:700; text-transform:uppercase; letter-spacing:0.07em; margin-bottom:0.3rem; }
+    .blog-weekly-card-title { font-family:var(--serif); font-size:0.95rem; color:var(--ep-green); margin-bottom:0.3rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .blog-weekly-card-hook  { font-size:0.78rem; color:var(--text-secondary); line-height:1.5; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+    .blog-weekly-card-stats { display:flex; gap:0.6rem; flex-wrap:wrap; margin-top:0.5rem; }
+    .blog-wstat { font-family:var(--mono); font-size:0.67rem; color:var(--text-muted); }
+    .blog-wstat strong { color:var(--ep-green); }
+    .blog-weekly-card-pulse { display:flex; align-items:center; padding:0 0.75rem; flex-shrink:0; border-left:1px solid var(--border); }
+    .blog-pulse-num  { font-family:var(--serif); font-size:1.5rem; line-height:1; }
+    .blog-pulse-num.good { color:#16a34a; }
+    .blog-pulse-num.ok   { color:#ca8a04; }
+    .blog-pulse-num.poor { color:#dc2626; }
+    .blog-pulse-lbl  { font-size:0.58rem; text-transform:uppercase; letter-spacing:0.06em; color:var(--text-muted); margin-top:0.15rem; text-align:center; }
+
+    .blog-empty { text-align:center; padding:4rem 2rem; color:var(--text-muted); }
+    .blog-loading { max-width:960px; margin:2rem auto; padding:0 2rem; display:flex; flex-direction:column; gap:1rem; }
+  </style>
+</head>
+<body>
+<div id="ep-nav"></div>
+
+<div class="blog-hero">
+  <div class="blog-hero-eyebrow">Since January 2022 · Auto-generated from live sensor data</div>
+  <h1>Earth Pulse Blog</h1>
+  <p>Weekly and monthly reports on Baner's air quality, weather, and bird biodiversity — computed automatically from thousands of hourly readings. Every number is real. Every week, a new chapter.</p>
+</div>
+
+<div class="blog-tabs">
+  <button class="blog-tab active" onclick="filterPosts('all', this)">All posts</button>
+  <button class="blog-tab" onclick="filterPosts('monthly', this)">📅 Monthly only</button>
+  <button class="blog-tab" onclick="filterPosts('weekly', this)">📆 Weekly only</button>
+</div>
+
+<div id="blog-content">
+  <div class="blog-loading">
+    <div class="ep-skeleton" style="height:120px;border-radius:1rem;"></div>
+    <div class="ep-skeleton" style="height:72px;border-radius:0.85rem;"></div>
+    <div class="ep-skeleton" style="height:72px;border-radius:0.85rem;"></div>
+    <div class="ep-skeleton" style="height:72px;border-radius:0.85rem;"></div>
+    <div class="ep-skeleton" style="height:120px;border-radius:1rem;margin-top:1rem;"></div>
+  </div>
+</div>
+
+<div id="ep-footer"></div>
+<script src="nav.js"></script>
+<script>
+var SUPABASE_URL = 'https://krmczyqwblsoekceanlj.supabase.co';
+var SUPABASE_KEY = 'sb_publishable_DrHFT5J0vmrkYraUXIlpQQ_gsk1rdq6';
+var HDR = { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY };
+var MONTH_NAMES = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+
+var allWeekly  = [];
+var allMonthly = [];
+var currentFilter = 'all';
+
+function pulseClass(s) { return s >= 65 ? 'good' : s >= 40 ? 'ok' : 'poor'; }
+function fmtShortDate(d) { return new Date(d).toLocaleDateString('en-IN',{day:'numeric',month:'short'}); }
+
+function filterPosts(type, btn) {
+  currentFilter = type;
+  document.querySelectorAll('.blog-tab').forEach(function(b){ b.classList.remove('active'); });
+  btn.classList.add('active');
+  renderBlog();
+}
+
+function renderBlog() {
+  // Group weekly posts by year+month
+  var byYearMonth = {};
+  allWeekly.forEach(function(w) {
+    var d = new Date(w.week_start);
+    var y = d.getFullYear();
+    var m = d.getMonth(); // 0-indexed
+    var key = y + '-' + m;
+    if (!byYearMonth[key]) byYearMonth[key] = { year:y, month:m, weeks:[] };
+    byYearMonth[key].weeks.push(w);
+  });
+
+  // Group monthly posts by year
+  var monthlyByYear = {};
+  allMonthly.forEach(function(mp) {
+    var y = mp.year;
+    if (!monthlyByYear[y]) monthlyByYear[y] = {};
+    monthlyByYear[y][mp.month] = mp;
+  });
+
+  // Get all years descending
+  var years = [];
+  Object.keys(byYearMonth).forEach(function(k){ var y = byYearMonth[k].year; if (years.indexOf(y)<0) years.push(y); });
+  Object.keys(monthlyByYear).forEach(function(y){ y=parseInt(y); if (years.indexOf(y)<0) years.push(y); });
+  years.sort(function(a,b){return b-a;});
+
+  if (!years.length) {
+    document.getElementById('blog-content').innerHTML = '<div class="blog-empty"><p style="font-size:2rem">🌿</p><p>No posts yet. First report coming soon.</p></div>';
+    return;
+  }
+
+  var html = '';
+  years.forEach(function(year) {
+    // Count posts for this year
+    var weeklyCount = allWeekly.filter(function(w){ return new Date(w.week_start).getFullYear()===year; }).length;
+    var monthlyCount = allMonthly.filter(function(mp){ return mp.year===year; }).length;
+
+    html += '<div class="blog-year-group">';
+    html += '<div class="blog-year-label">' + year + '<span class="blog-year-count">' + weeklyCount + ' weekly · ' + monthlyCount + ' monthly</span></div>';
+
+    // Get all months that have data this year, descending
+    var months = [];
+    Object.keys(byYearMonth).forEach(function(k){
+      if (byYearMonth[k].year === year) months.push(byYearMonth[k].month);
+    });
+    if (monthlyByYear[year]) {
+      Object.keys(monthlyByYear[year]).forEach(function(m){
+        m = parseInt(m)-1; // convert to 0-indexed
+        if (months.indexOf(m)<0) months.push(m);
+      });
+    }
+    months.sort(function(a,b){return b-a;});
+
+    months.forEach(function(m) {
+      var monthKey = year + '-' + m;
+      var monthlyPost = monthlyByYear[year] ? monthlyByYear[year][m+1] : null; // +1 for 1-indexed
+      var weeklyPosts = byYearMonth[monthKey] ? byYearMonth[monthKey].weeks : [];
+      weeklyPosts.sort(function(a,b){ return new Date(b.week_start)-new Date(a.week_start); });
+
+      html += '<div class="blog-month-block" data-month="' + m + '">';
+      html += '<div class="blog-month-header"><span class="blog-month-label">' + MONTH_NAMES[m] + '</span><div class="blog-month-divider"></div></div>';
+
+      // Monthly card
+      if (monthlyPost && currentFilter !== 'weekly') {
+        var mpUrl = '/blog/' + year + '/' + MONTH_NAMES[m].toLowerCase() + '.html';
+        html += '<a class="blog-monthly-card" href="' + mpUrl + '">' +
+          '<div class="blog-monthly-card-top">' +
+            '<div class="blog-monthly-card-title">📅 ' + MONTH_NAMES[m] + ' ' + year + ' — Monthly Report</div>' +
+            (monthlyPost.pulse_score != null ? '<span class="blog-monthly-card-pulse">⚡ ' + monthlyPost.pulse_score + '</span>' : '') +
+          '</div>' +
+          '<div class="blog-monthly-card-hook">' + (monthlyPost.narrative_hook ? monthlyPost.narrative_hook.slice(0,180)+'…' : '') + '</div>' +
+          '<div class="blog-monthly-card-stats">' +
+            '<span class="blog-mstat">AQI <strong>' + (monthlyPost.aqi_low||'—') + '–' + (monthlyPost.aqi_high||'—') + '</strong></span>' +
+            '<span class="blog-mstat">🌡️ <strong>' + (monthlyPost.temp_low||'—') + '–' + (monthlyPost.temp_high||'—') + '°C</strong></span>' +
+            (monthlyPost.rain_total > 0 ? '<span class="blog-mstat">🌧️ <strong>' + monthlyPost.rain_total + 'mm</strong></span>' : '') +
+            '<span class="blog-mstat">🐦 <strong>' + (monthlyPost.bird_species_count||0) + ' species · ' + (monthlyPost.bird_detections_total||0) + ' detections</strong></span>' +
+          '</div>' +
+        '</a>';
+      }
+
+      // Weekly cards
+      if (currentFilter !== 'monthly') {
+        weeklyPosts.forEach(function(w) {
+          var wUrl = '/blog/' + year + '/week-' + w.slug + '.html';
+          var pc = pulseClass(w.pulse_score);
+          html += '<a class="blog-weekly-card" href="' + wUrl + '">' +
+            (w.hill_photo_url ? '<img class="blog-weekly-card-photo" src="' + w.hill_photo_url + '" alt="Baner Hill ' + w.slug + '" loading="lazy">' : '') +
+            '<div class="blog-weekly-card-body">' +
+              '<div class="blog-weekly-card-dates">' + fmtShortDate(w.week_start) + ' – ' + fmtShortDate(w.week_end) + '</div>' +
+              '<div class="blog-weekly-card-title">Baner\'s Air, Birds & Weather</div>' +
+              '<div class="blog-weekly-card-hook">' + (w.narrative_hook ? w.narrative_hook.slice(0,120)+'…' : '') + '</div>' +
+              '<div class="blog-weekly-card-stats">' +
+                '<span class="blog-wstat">AQI <strong>' + (w.aqi_low||'—') + '–' + (w.aqi_high||'—') + '</strong></span>' +
+                '<span class="blog-wstat">🌡️ <strong>' + (w.temp_low||'—') + '–' + (w.temp_high||'—') + '°C</strong></span>' +
+                (w.rain_total > 0 ? '<span class="blog-wstat">🌧️ <strong>' + w.rain_total + 'mm</strong></span>' : '') +
+                '<span class="blog-wstat">🐦 <strong>' + (w.bird_species_count||0) + ' sp.</strong></span>' +
+              '</div>' +
+            '</div>' +
+            '<div class="blog-weekly-card-pulse">' +
+              '<div>' +
+                '<div class="blog-pulse-num ' + pc + '">' + (w.pulse_score||'—') + '</div>' +
+                '<div class="blog-pulse-lbl">Pulse</div>' +
+              '</div>' +
+            '</div>' +
+          '</a>';
+        });
+      }
+
+      html += '</div>'; // month block
+    });
+
+    html += '</div>'; // year group
+  });
+
+  document.getElementById('blog-content').innerHTML = html;
+}
+
+async function loadBlog() {
+  var [weeklyRes, monthlyRes] = await Promise.all([
+    fetch(SUPABASE_URL + '/rest/v1/weekly_posts?select=slug,week_start,week_end,title,narrative_hook,aqi_low,aqi_high,temp_low,temp_high,rain_total,bird_species_count,bird_detections_total,pulse_score&order=week_start.desc&limit=500', { headers: HDR }),
+    fetch(SUPABASE_URL + '/rest/v1/monthly_posts?select=slug,year,month,title,narrative_hook,aqi_low,aqi_high,temp_low,temp_high,rain_total,bird_species_count,bird_detections_total,pulse_score,first_day_photo_url&order=year.desc,month.desc&limit=60', { headers: HDR }),
+  ]);
+
+  allWeekly  = await weeklyRes.json().catch(function(){ return []; });
+  allMonthly = await monthlyRes.json().catch(function(){ return []; });
+  if (!Array.isArray(allWeekly))  allWeekly = [];
+  if (!Array.isArray(allMonthly)) allMonthly = [];
+
+  renderBlog();
+}
+
+loadBlog();
+</script>
+</body>
+</html>
