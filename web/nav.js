@@ -18,7 +18,7 @@
         { href:'aqi.html',         label:'Air Quality',    icon:'&#127807;'         },
     ]},
     { href:'hill.html',       label:'Baner Hill' },
-    { href:'weekly.html',     label:'Weekly' },
+    { href:'blog.html',     label:'Blog' },
     { href:'about.html',      label:'About' },
   ];
 
@@ -31,7 +31,7 @@
     { href:'rain.html',        label:'Monsoon & Rain' },
     { href:'aqi.html',         label:'Air Quality' },
     { href:'hill.html',        label:'Baner Hill' },
-    { href:'weekly.html',      label:'Weekly Blog' },
+    { href:'blog.html',      label:'Blog' },
     { href:'register.html',    label:'Register / Sign in' },
     { href:'contribute.html',  label:'Contribute' },
     { href:'about.html',       label:'About' },
