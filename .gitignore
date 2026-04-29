@@ -8,3 +8,4 @@ worker.js
 on_pi/
 satellite_images/
 *.py
+. trash/

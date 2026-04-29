@@ -7,35 +7,36 @@
 (function() {
   var SITE    = 'Earth Pulse';
   var TAGLINE = 'Observing the Earth, over time.';
+  var BASE    = 'https://www.earth-pulse.org';
   var SB_KEY_NAME = 'sb-krmczyqwblsoekceanlj-auth-token';
 
   var LINKS = [
-    { href:'index.html',      label:'Home' },
-    { href:'birds.html',      label:'Birds' },
-    { href:'climate.html',    label:'Climate', dropdown:[
-        { href:'temperature.html', label:'Temperature',    icon:'&#127777;&#65039;' },
-        { href:'rain.html',        label:'Monsoon & Rain', icon:'&#127783;&#65039;' },
-        { href:'aqi.html',         label:'Air Quality',    icon:'&#127807;'         },
+    { href:BASE+'/index.html',      label:'Home' },
+    { href:BASE+'/birds.html',      label:'Birds' },
+    { href:BASE+'/climate.html',    label:'Climate', dropdown:[
+        { href:BASE+'/temperature.html', label:'Temperature',    icon:'&#127777;&#65039;' },
+        { href:BASE+'/rain.html',        label:'Monsoon & Rain', icon:'&#127783;&#65039;' },
+        { href:BASE+'/aqi.html',         label:'Air Quality',    icon:'&#127807;'         },
     ]},
-    { href:'hill.html',       label:'Baner Hill' },
-    { href:'blog.html',       label:'Blog' },
-    { href:'about.html',      label:'About' },
+    { href:BASE+'/hill.html',       label:'Baner Hill' },
+    { href:BASE+'/blog.html',       label:'Blog' },
+    { href:BASE+'/about.html',      label:'About' },
   ];
 
   var FOOTER_LINKS = [
-    { href:'index.html',       label:'Home' },
-    { href:'birds.html',       label:'Birds' },
-    { href:'species.html',     label:'Species' },
-    { href:'climate.html',     label:'Climate' },
-    { href:'temperature.html', label:'Temperature' },
-    { href:'rain.html',        label:'Monsoon & Rain' },
-    { href:'aqi.html',         label:'Air Quality' },
-    { href:'hill.html',        label:'Baner Hill' },
-    { href:'blog.html',        label:'Blog' },
-    { href:'register.html',    label:'Register / Sign in' },
-    { href:'contribute.html',  label:'Contribute' },
-    { href:'about.html',       label:'About' },
-    { href:'contact.html',     label:'Contact' },
+    { href:BASE+'/index.html',       label:'Home' },
+    { href:BASE+'/birds.html',       label:'Birds' },
+    { href:BASE+'/species.html',     label:'Species' },
+    { href:BASE+'/climate.html',     label:'Climate' },
+    { href:BASE+'/temperature.html', label:'Temperature' },
+    { href:BASE+'/rain.html',        label:'Monsoon & Rain' },
+    { href:BASE+'/aqi.html',         label:'Air Quality' },
+    { href:BASE+'/hill.html',        label:'Baner Hill' },
+    { href:BASE+'/blog.html',        label:'Blog' },
+    { href:BASE+'/register.html',    label:'Register / Sign in' },
+    { href:BASE+'/contribute.html',  label:'Contribute' },
+    { href:BASE+'/about.html',       label:'About' },
+    { href:BASE+'/contact.html',     label:'Contact' },
   ];
 
   function page() { return window.location.pathname.split('/').pop() || 'index.html'; }
@@ -101,9 +102,9 @@
     /* Desktop CTA */
     var cta;
     if (session.ok) {
-      cta = '<a href="' + (isAdmin ? 'admin.html' : 'data.html') + '" class="ep-nav-cta" style="background:rgba(33,67,50,0.12);color:var(--ep-green);border:1.5px solid var(--ep-green);">' + (isAdmin ? '&#9881; Admin' : '&#128100; My account') + '</a>';
+      cta = '<a href="' + BASE + (isAdmin ? '/admin.html' : '/data.html') + '" class="ep-nav-cta" style="background:rgba(33,67,50,0.12);color:var(--ep-green);border:1.5px solid var(--ep-green);">' + (isAdmin ? '&#9881; Admin' : '&#128100; My account') + '</a>';
     } else {
-      cta = '<a href="register.html" class="ep-nav-cta">Register</a>';
+      cta = '<a href="' + BASE + '/register.html" class="ep-nav-cta">Register</a>';
     }
 
     /* Mobile drawer links — Climate gets an accordion */
@@ -130,20 +131,20 @@
     var drawerAuth;
     if (session.ok) {
       drawerAuth =
-        '<a href="' + (isAdmin ? 'admin.html' : 'data.html') + '" class="ep-mob-link ep-mob-auth">' + (isAdmin ? '&#9881; Admin panel' : '&#128100; My account') + '</a>' +
+        '<a href="' + BASE + (isAdmin ? '/admin.html' : '/data.html') + '" class="ep-mob-link ep-mob-auth">' + (isAdmin ? '&#9881; Admin panel' : '&#128100; My account') + '</a>' +
         '<a href="#" class="ep-mob-link ep-mob-signout" id="ep-mob-signout-btn">Sign out</a>';
     } else {
-      drawerAuth = '<a href="register.html" class="ep-mob-link ep-mob-auth">&#128274; Register / Sign in</a>';
+      drawerAuth = '<a href="' + BASE + '/register.html" class="ep-mob-link ep-mob-auth">&#128274; Register / Sign in</a>';
     }
 
     el.outerHTML =
       '<nav class="ep-nav" role="navigation" aria-label="Main navigation">' +
-        '<a href="index.html" class="ep-nav-brand" aria-label="' + SITE + ' Home">' +
-          '<img src="earth-pulse-logo.png" alt="' + SITE + '" class="ep-nav-logo-full" style="height:28px;width:auto;display:block;" onerror="this.style.display=\'none\'">' +
+        '<a href="' + BASE + '/index.html" class="ep-nav-brand" aria-label="' + SITE + ' Home">' +
+          '<img src="' + BASE + '/earth-pulse-logo.png" alt="' + SITE + '" class="ep-nav-logo-full" style="height:28px;width:auto;display:block;" onerror="this.style.display=\'none\'">' +
         '</a>' +
         '<ul class="ep-nav-links">' + links + '</ul>' +
         '<div class="ep-nav-right">' +
-          '<a href="search.html" aria-label="Search" class="ep-nav-search-btn">' +
+          '<a href="' + BASE + '/search.html" aria-label="Search" class="ep-nav-search-btn">' +
             '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>' +
           '</a>' +
           cta +
@@ -277,7 +278,7 @@
           var ks = Object.keys(localStorage);
           ks.forEach(function(k){ if (k.indexOf('sb-') === 0 || k.indexOf('supabase') !== -1) localStorage.removeItem(k); });
         } catch(ex) {}
-        window.location.href = 'index.html';
+        window.location.href = BASE + '/index.html';
       });
     }
 
@@ -295,7 +296,7 @@
     }).join('');
     el.outerHTML =
       '<footer class="ep-footer">' +
-        '<img src="earth-pulse-logo-white.png" alt="' + SITE + '" style="height:38px;width:auto;margin-bottom:0.75rem;opacity:0.88;" onerror="this.style.display=\'none\'">' +
+        '<img src="' + BASE + '/earth-pulse-logo-white.png" alt="' + SITE + '" style="height:38px;width:auto;margin-bottom:0.75rem;opacity:0.88;" onerror="this.style.display=\'none\'">' +
         '<div class="ep-footer-tagline">' + TAGLINE + '</div>' +
         '<div class="ep-footer-links">' + flinks + '</div>' +
         '<div class="ep-footer-credits">Recording since January 2022 \u00b7 Data: Open-Meteo (CAMS) \u00b7 Google Air Quality \u00b7 BirdNET (Cornell Lab) \u00b7 Weather Union \u00b7 Built with curiosity \u00b7 Built with \u2764\ufe0f &amp; <a href="https://claude.ai" target="_blank" rel="noopener">Claude</a></div>' +
