@@ -1,0 +1,1752 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Data Explorer — Earth Pulse</title>
+  <meta name="robots" content="noindex, nofollow">
+  <meta property="og:image" content="https://earth-pulse.org/earth-pulse-logo-og.png">
+  <meta name="twitter:image" content="https://earth-pulse.org/earth-pulse-logo-og.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="stylesheet" href="styles.css">
+  <!-- Supabase MUST be in head so auth check works immediately -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script>
+    var _SB_URL = 'https://krmczyqwblsoekceanlj.supabase.co';
+    var _SB_KEY = 'sb_publishable_DrHFT5J0vmrkYraUXIlpQQ_gsk1rdq6';
+    var _sb     = null;
+    var _user   = null;
+    var _initDone = false;
+
+    try { _sb = window.supabase.createClient(_SB_URL, _SB_KEY); } catch(e) {}
+
+    if (_sb) {
+      _sb.auth.getSession().then(function(d) {
+        if (!d.data || !d.data.session) {
+          window.location.href = 'register.html';
+        } else {
+          _user = d.data.session.user;
+          // initPage called from DOMContentLoaded below
+        }
+      }).catch(function() { window.location.href = 'register.html'; });
+    } else {
+      window.addEventListener('DOMContentLoaded', function() {
+        window.location.href = 'register.html';
+      });
+    }
+  </script>
+  <style>
+    body { margin: 0; }
+    .app {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      min-height: calc(100vh - 62px);
+    }
+    @media(max-width: 900px) { .app { grid-template-columns: 1fr; } }
+
+    /* ── SIDEBAR ── */
+    .sidebar {
+      background: #fff;
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      padding: 1.25rem 1rem;
+    }
+    .user-pill {
+      background: rgba(33,67,50,0.07);
+      border-radius: var(--radius-md);
+      padding: 0.85rem 1rem;
+      margin-bottom: 1rem;
+    }
+    .user-pill-name  { font-weight: 700; font-size: 0.9rem; color: var(--ep-green); }
+    .user-pill-email { font-size: 0.72rem; color: var(--text-muted); font-family: var(--mono); word-break: break-all; }
+    .user-pill-badge { display: inline-block; margin-top: 4px; font-size: 0.63rem; background: rgba(34,197,94,0.15); color: #166534; padding: 1px 8px; border-radius: 20px; font-weight: 600; }
+    .sb-section { font-size: 0.63rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); margin: 0.85rem 0 0.3rem 0.4rem; }
+    .sb-link {
+      display: flex; align-items: center; gap: 0.6rem;
+      padding: 0.48rem 0.75rem; border-radius: var(--radius-sm);
+      font-size: 0.84rem; color: var(--text-secondary);
+      text-decoration: none; cursor: pointer; border: none;
+      background: none; font-family: var(--sans); width: 100%;
+      text-align: left; transition: all 0.12s;
+    }
+    .sb-link:hover { background: rgba(33,67,50,0.07); color: var(--ep-green); }
+    .sb-link.active { background: rgba(33,67,50,0.11); color: var(--ep-green); font-weight: 600; }
+    .sb-link.danger { color: #dc2626; }
+    .sb-link.danger:hover { background: rgba(220,38,38,0.07); }
+    .sb-spacer { flex: 1; }
+
+    /* ── MAIN ── */
+    .main { padding: 2rem; overflow-y: auto; background: var(--ep-cream); }
+    .panel { display: none; }
+    .panel.on { display: block; }
+    .panel-title { font-family: var(--serif); font-size: 1.6rem; color: var(--ep-green); margin-bottom: 0.3rem; }
+    .panel-sub { font-size: 0.88rem; color: var(--text-muted); margin-bottom: 1.5rem; line-height: 1.6; }
+
+    /* ── AI SEARCH ── */
+    .ai-box {
+      background: #fff;
+      border: 2px solid var(--ep-green);
+      border-radius: var(--radius-xl);
+      padding: 1rem 1rem 1rem 1.4rem;
+      display: flex; gap: 0.75rem; align-items: flex-end;
+      margin-bottom: 1.25rem;
+      box-shadow: 0 4px 20px rgba(33,67,50,0.09);
+    }
+    .ai-box textarea {
+      flex: 1; border: none; outline: none;
+      font-family: var(--sans); font-size: 0.95rem;
+      resize: none; background: transparent;
+      color: var(--text-primary); line-height: 1.5;
+      min-height: 44px; max-height: 150px;
+    }
+    .ai-box textarea::placeholder { color: var(--text-muted); }
+    .ai-btn {
+      background: var(--ep-green); color: var(--ep-cream);
+      border: none; border-radius: 2rem; padding: 0.6rem 1.4rem;
+      font-family: var(--sans); font-size: 0.88rem; font-weight: 500;
+      cursor: pointer; white-space: nowrap; flex-shrink: 0;
+      transition: background 0.2s;
+    }
+    .ai-btn:hover:not(:disabled) { background: #1a3628; }
+    .ai-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    .chips { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 1.25rem; }
+    .chip {
+      padding: 0.28rem 0.85rem; border-radius: 2rem;
+      background: #fff; border: 1px solid var(--border);
+      font-size: 0.77rem; cursor: pointer; color: var(--ep-green);
+      transition: all 0.12s;
+    }
+    .chip:hover { background: var(--ep-green); color: var(--ep-cream); border-color: var(--ep-green); }
+
+    /* ── RESPONSE CARD ── */
+    .res-card {
+      background: #fff; border: 1px solid var(--border);
+      border-radius: var(--radius-lg); padding: 1.5rem;
+      margin-bottom: 1.25rem;
+    }
+    .res-q { font-family: var(--serif); font-size: 1rem; color: var(--ep-green); margin-bottom: 0.75rem; }
+    .res-body { font-size: 0.9rem; color: var(--text-secondary); line-height: 1.9; }
+    .res-body strong { color: var(--ep-green); }
+    .res-body p { margin: 0.5rem 0; }
+    .res-body ul { margin: 0.5rem 0 0.5rem 1.2rem; }
+
+    /* ── DATA TABLE ── */
+    .tbl-wrap { overflow-x: auto; margin-top: 1rem; border-radius: var(--radius-md); border: 1px solid var(--border); }
+    .tbl { width: 100%; border-collapse: collapse; font-size: 0.83rem; }
+    .tbl th {
+      text-align: left; font-size: 0.67rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.07em;
+      color: var(--text-muted); padding: 0.55rem 1rem;
+      border-bottom: 2px solid var(--border); background: var(--ep-cream);
+    }
+    .tbl td { padding: 0.55rem 1rem; border-bottom: 1px solid var(--border); color: var(--text-secondary); }
+    .tbl tr:last-child td { border-bottom: none; }
+    .tbl tr:hover td { background: rgba(33,67,50,0.02); }
+
+    .actions { display: flex; gap: 0.5rem; margin-top: 1rem; flex-wrap: wrap; }
+    .act-btn {
+      padding: 0.42rem 1rem; border-radius: var(--radius-sm);
+      border: 1.5px solid var(--border-strong); background: transparent;
+      font-family: var(--sans); font-size: 0.8rem; color: var(--ep-green);
+      cursor: pointer; transition: all 0.12s;
+    }
+    .act-btn:hover { background: var(--ep-green); color: #fff; border-color: var(--ep-green); }
+    .act-btn.primary { background: var(--ep-green); color: #fff; border-color: var(--ep-green); }
+    .act-btn.secondary { background: transparent; color: var(--ep-tan); border-color: var(--ep-tan); }
+    .act-btn.secondary:hover { background: var(--ep-tan); color: #fff; }
+
+    /* ── HISTORY ── */
+    .hist-item {
+      background: #fff; border: 1px solid var(--border);
+      border-radius: var(--radius-md); padding: 0.85rem 1.1rem;
+      margin-bottom: 0.5rem; display: flex; align-items: center;
+      gap: 0.75rem; cursor: pointer; transition: box-shadow 0.15s;
+    }
+    .hist-item:hover { box-shadow: 0 2px 12px rgba(33,67,50,0.08); }
+    .hist-q { flex: 1; font-size: 0.87rem; color: var(--text-secondary); }
+    .hist-t { font-family: var(--mono); font-size: 0.7rem; color: var(--text-muted); white-space: nowrap; }
+    .hist-del {
+      background: none; border: none; cursor: pointer;
+      color: #dc2626; font-size: 0.75rem; opacity: 0.4;
+      padding: 2px 6px; border-radius: 4px; transition: opacity 0.15s;
+    }
+    .hist-del:hover { opacity: 1; background: rgba(220,38,38,0.07); }
+
+    /* ── DOWNLOAD ── */
+    .dl-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+    .dl-card { background: #fff; border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.25rem; }
+    .dl-title { font-weight: 600; color: var(--ep-green); margin-bottom: 0.3rem; }
+    .dl-desc { font-size: 0.82rem; color: var(--text-muted); margin-bottom: 1rem; line-height: 1.6; }
+    .dl-meta { font-size: 0.72rem; color: var(--text-muted); font-family: var(--mono); margin-bottom: 0.75rem; }
+
+    /* ── ALERTS ── */
+    .alert-group { background: #fff; border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.25rem; margin-bottom: 1rem; }
+    .alert-group-title { font-weight: 600; color: var(--ep-green); margin-bottom: 0.75rem; }
+    .alert-row { display: flex; align-items: center; gap: 0.65rem; font-size: 0.87rem; color: var(--text-secondary); margin-bottom: 0.5rem; cursor: pointer; }
+    .alert-row input { accent-color: var(--ep-green); width: 16px; height: 16px; cursor: pointer; flex-shrink: 0; }
+
+    .spin { display: inline-block; width: 16px; height: 16px; border: 2px solid rgba(33,67,50,0.2); border-top-color: var(--ep-green); border-radius: 50%; animation: spin 0.7s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── LIVE STATS ── */
+    .stats-mosaic { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
+    .sm-card { background: #fff; border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.25rem; }
+    .sm-icon { font-size: 1.5rem; margin-bottom: 0.3rem; }
+    .sm-val { font-family: var(--serif); font-size: 2rem; color: var(--ep-green); line-height: 1; margin-bottom: 0.2rem; }
+    .sm-label { font-size: 0.67rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text-muted); }
+    .sm-sub { font-size: 0.75rem; color: var(--ep-tan); font-family: var(--mono); margin-top: 3px; }
+
+    .heatmap-grid { display: grid; grid-template-columns: repeat(24, 1fr); gap: 2px; margin: 0.75rem 0 0.3rem; }
+    .hm-cell { aspect-ratio: 1; border-radius: 2px; background: var(--ep-cream); }
+    .hm-labels { display: flex; justify-content: space-between; margin-top: 2px; }
+    .hm-labels span { font-size: 0.55rem; color: var(--text-muted); font-family: var(--mono); }
+
+    /* ── MONTH BARS FIX ── */
+    .month-bar-wrap {
+      display: flex;
+      gap: 4px;
+      align-items: flex-end;
+      height: 80px;
+      width: 100%;
+    }
+    .month-bar-col {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      height: 100%;
+      gap: 3px;
+    }
+    .month-bar-inner {
+      width: 100%;
+      background: var(--ep-green);
+      border-radius: 3px 3px 0 0;
+      min-height: 2px;
+    }
+    .month-bar-label { font-size: 0.55rem; color: var(--text-muted); font-family: var(--mono); }
+
+    /* ── DIGEST ── */
+    .digest-hero {
+      background: var(--ep-green); border-radius: var(--radius-xl);
+      padding: 2rem; margin-bottom: 1.25rem; color: var(--ep-cream);
+    }
+    .digest-greeting { font-size: 0.8rem; color: rgba(242,240,230,0.6); margin-bottom: 0.3rem; text-transform: uppercase; letter-spacing: 0.08em; }
+    .digest-title { font-family: var(--serif); font-size: 1.6rem; line-height: 1.2; margin-bottom: 0.75rem; }
+    .digest-meta { font-size: 0.82rem; color: rgba(242,240,230,0.65); }
+    .digest-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
+    @media(max-width: 600px) { .digest-row { grid-template-columns: 1fr; } }
+    .digest-card { background: #fff; border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.25rem; }
+    .digest-card-title { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ep-tan); margin-bottom: 0.5rem; }
+    .digest-card h3 { font-family: var(--serif); font-size: 1.1rem; color: var(--ep-green); margin-bottom: 0.3rem; }
+    .digest-card p { font-size: 0.84rem; color: var(--text-muted); line-height: 1.6; margin: 0; }
+    .digest-bird-list { list-style: none; padding: 0; margin: 0; }
+    .digest-bird-list li { display: flex; align-items: center; gap: 0.6rem; padding: 0.35rem 0; border-bottom: 1px solid var(--border); font-size: 0.84rem; }
+    .digest-bird-list li:last-child { border-bottom: none; }
+    .digest-bird-list .dbl-n { font-weight: 600; color: var(--ep-green); flex: 1; }
+    .digest-bird-list .dbl-c { font-family: var(--mono); font-size: 0.72rem; color: var(--text-muted); }
+
+    /* ── WATCHLIST ── */
+    .watchlist-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
+    .watchlist-card {
+      background: #fff; border: 1px solid var(--border);
+      border-radius: var(--radius-lg); padding: 1.1rem;
+      position: relative;
+    }
+    .wc-name { font-weight: 600; color: var(--ep-green); font-size: 0.92rem; margin-bottom: 2px; }
+    .wc-sci { font-style: italic; font-size: 0.75rem; color: var(--text-muted); margin-bottom: 8px; }
+    .wc-last { font-size: 0.78rem; color: var(--ep-tan); }
+    .wc-count { font-family: var(--mono); font-size: 0.72rem; color: var(--text-muted); }
+    .wc-remove {
+      position: absolute; top: 10px; right: 10px;
+      background: none; border: none; cursor: pointer;
+      color: #dc2626; font-size: 0.75rem; opacity: 0.35;
+      transition: opacity 0.15s; padding: 2px 5px; border-radius: 4px;
+    }
+    .wc-remove:hover { opacity: 1; background: rgba(220,38,38,0.07); }
+    .watchlist-add {
+      display: flex; gap: 0.5rem; margin-bottom: 1.25rem; flex-wrap: wrap;
+    }
+    .watchlist-add input {
+      flex: 1; min-width: 180px;
+      padding: 0.5rem 0.9rem; border: 1px solid var(--border-strong);
+      border-radius: var(--radius-sm); font-family: var(--sans);
+      font-size: 0.85rem; outline: none; color: var(--ep-green);
+    }
+    .watchlist-add input:focus { border-color: var(--ep-green); }
+
+    /* ── COMPARE PANEL ── */
+    .compare-controls {
+      background: #fff; border: 1px solid var(--border);
+      border-radius: var(--radius-lg); padding: 1.25rem;
+      margin-bottom: 1.25rem; display: flex; gap: 1rem; flex-wrap: wrap; align-items: flex-end;
+    }
+    .compare-controls select, .compare-controls input[type=number] {
+      padding: 0.5rem 0.85rem; border: 1px solid var(--border-strong);
+      border-radius: var(--radius-sm); font-family: var(--sans);
+      font-size: 0.85rem; color: var(--ep-green); background: #fff; outline: none;
+    }
+    .compare-controls label { font-size: 0.75rem; color: var(--text-muted); display: block; margin-bottom: 3px; }
+    .compare-chart-wrap {
+      background: #fff; border: 1px solid var(--border);
+      border-radius: var(--radius-lg); padding: 1.25rem;
+    }
+
+    /* ── NOTES PANEL ── */
+    .note-item {
+      background: #fff; border: 1px solid var(--border);
+      border-radius: var(--radius-md); padding: 1rem 1.1rem;
+      margin-bottom: 0.6rem;
+    }
+    .note-item-top { display: flex; align-items: flex-start; gap: 0.75rem; }
+    .note-body { flex: 1; font-size: 0.88rem; color: var(--text-secondary); line-height: 1.6; }
+    .note-meta { font-size: 0.7rem; color: var(--text-muted); font-family: var(--mono); margin-top: 4px; }
+    .note-del { background: none; border: none; cursor: pointer; color: #dc2626; opacity: 0.35; font-size: 0.8rem; transition: opacity 0.15s; }
+    .note-del:hover { opacity: 1; }
+    .note-add-box { background: #fff; border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1rem; margin-bottom: 1.25rem; }
+    .note-add-box textarea {
+      width: 100%; border: 1px solid var(--border); border-radius: var(--radius-sm);
+      font-family: var(--sans); font-size: 0.88rem; padding: 0.6rem 0.85rem;
+      resize: vertical; min-height: 72px; outline: none; color: var(--ep-charcoal);
+      box-sizing: border-box;
+    }
+    .note-add-box textarea:focus { border-color: var(--ep-green); }
+    .note-add-controls { display: flex; gap: 0.6rem; margin-top: 0.6rem; flex-wrap: wrap; align-items: center; }
+    .note-add-controls input {
+      padding: 0.45rem 0.8rem; border: 1px solid var(--border);
+      border-radius: var(--radius-sm); font-family: var(--sans);
+      font-size: 0.83rem; color: var(--ep-green); outline: none;
+    }
+    .note-add-controls input:focus { border-color: var(--ep-green); }
+
+    /* ── NOTIFICATIONS ── */
+    .notif {
+      position: fixed; bottom: 24px; right: 24px;
+      background: var(--ep-green); color: var(--ep-cream);
+      padding: 0.75rem 1.25rem; border-radius: var(--radius-md);
+      font-size: 0.85rem; box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+      z-index: 9999; opacity: 0; transform: translateY(8px);
+      transition: opacity 0.25s, transform 0.25s;
+      pointer-events: none;
+    }
+    .notif.show { opacity: 1; transform: translateY(0); }
+    .notif.error { background: #dc2626; }
+  </style>
+</head>
+<body>
+<div id="ep-nav"></div>
+<!-- Notification toast -->
+<div class="notif" id="notif"></div>
+
+<div class="app">
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="user-pill">
+      <div class="user-pill-name" id="u-name">Loading…</div>
+      <div class="user-pill-email" id="u-email"></div>
+      <div id="u-badge"></div>
+    </div>
+
+    <div class="sb-section">Explore</div>
+    <button class="sb-link active" id="nav-explorer" onclick="switchPanel('explorer', this)">🔍 Data Explorer</button>
+    <button class="sb-link" id="nav-stats"    onclick="switchPanel('stats', this)">📊 Live stats</button>
+    <button class="sb-link" id="nav-digest"   onclick="switchPanel('digest', this)">🌿 My digest</button>
+    <button class="sb-link" id="nav-compare"  onclick="switchPanel('compare', this)">📈 Compare years</button>
+    <button class="sb-link" id="nav-history"  onclick="switchPanel('history', this)">🕐 Search history</button>
+
+    <div class="sb-section">Personal</div>
+    <button class="sb-link" id="nav-watchlist" onclick="switchPanel('watchlist', this)">⭐ My watchlist</button>
+    <button class="sb-link" id="nav-notes"     onclick="switchPanel('notes', this)">📝 Field notes</button>
+    <button class="sb-link" id="nav-alerts"    onclick="switchPanel('alerts', this)">🔔 My Alerts</button>
+
+    <div class="sb-section">Data</div>
+    <button class="sb-link" id="nav-download" onclick="switchPanel('download', this)">📥 Download Data</button>
+
+    <div class="sb-section">Account</div>
+    <a class="sb-link" href="profile.html">👤 My Profile</a>
+    <a class="sb-link" href="index.html">🏡 Back to site</a>
+
+    <div class="sb-spacer"></div>
+    <button class="sb-link danger" onclick="doSignOut()">→ Sign out</button>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main">
+
+    <!-- ══ EXPLORER ══ -->
+    <div class="panel on" id="panel-explorer">
+      <div class="panel-title">Data Explorer</div>
+      <div class="panel-sub">Ask questions about Baner's environment in plain English. Earth Pulse analyses real observations across weather, air quality, and biodiversity to reveal patterns, relationships, and changes over time.</div>
+
+      <div class="ai-box">
+        <textarea id="ai-q" rows="2"
+          placeholder="e.g. Which birds are heard most during monsoon? What is the average AQI on Diwali? How many species at dawn vs night?"
+          onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();runQuery();}"></textarea>
+        <button class="ai-btn" id="ai-go" onclick="runQuery()">Ask →</button>
+      </div>
+
+      <div class="chips">
+        <span class="chip" onclick="ask('Which bird species are heard most often in Baner?')">🐦 Most detected birds</span>
+        <span class="chip" onclick="ask('Compare average AQI on Diwali week vs the week before')">🪔 Diwali pollution</span>
+        <span class="chip" onclick="ask('Which months have the most bird species detected?')">📅 Monthly bird activity</span>
+        <span class="chip" onclick="ask('Is there a correlation between AQI and number of birds detected?')">📊 AQI vs birds</span>
+        <span class="chip" onclick="ask('What are the hottest days ever recorded in Baner?')">🌡️ Hottest days</span>
+        <span class="chip" onclick="ask('Which birds appear only in certain months — likely migratory?')">✈️ Migratory patterns</span>
+        <span class="chip" onclick="ask('How much rain has fallen each year since 2022?')">🌧️ Annual rainfall</span>
+        <span class="chip" onclick="ask('When is the dawn chorus most active — what time and which months?')">🌅 Dawn chorus</span>
+        <span class="chip" onclick="ask('What are the cleanest and worst air quality days this year?')">🍃 AQI extremes</span>
+        <span class="chip" onclick="ask('On days above 35°C are fewer birds heard?')">🔥 Heat vs birds</span>
+      </div>
+
+      <div id="ai-result"></div>
+    </div>
+
+    <!-- ══ LIVE STATS ══ -->
+    <div class="panel" id="panel-stats">
+      <div class="panel-title">Live stats</div>
+      <div class="panel-sub">A real-time snapshot of the entire Earth Pulse dataset — updated on load.</div>
+      <div class="stats-mosaic" id="stats-mosaic">
+        <div class="ep-skeleton" style="height:100px;border-radius:var(--radius-lg);"></div>
+        <div class="ep-skeleton" style="height:100px;border-radius:var(--radius-lg);"></div>
+        <div class="ep-skeleton" style="height:100px;border-radius:var(--radius-lg);"></div>
+        <div class="ep-skeleton" style="height:100px;border-radius:var(--radius-lg);"></div>
+        <div class="ep-skeleton" style="height:100px;border-radius:var(--radius-lg);"></div>
+        <div class="ep-skeleton" style="height:100px;border-radius:var(--radius-lg);"></div>
+      </div>
+      <div class="res-card">
+        <div style="font-weight:600;color:var(--ep-green);margin-bottom:0.75rem;">🕐 Bird detection activity by hour (all time, IST)</div>
+        <div style="font-size:0.78rem;color:var(--text-muted);margin-bottom:0.5rem;">Darker = more detections. Reveals the dawn chorus, midday lull, and dusk activity.</div>
+        <div class="heatmap-grid" id="hour-heatmap"></div>
+        <div class="hm-labels">
+          <span>12am</span><span>3am</span><span>6am</span><span>9am</span>
+          <span>12pm</span><span>3pm</span><span>6pm</span><span>9pm</span><span>12am</span>
+        </div>
+      </div>
+      <div class="res-card">
+        <div style="font-weight:600;color:var(--ep-green);margin-bottom:0.75rem;">📅 Species detected by month (all time)</div>
+        <div style="font-size:0.78rem;color:var(--text-muted);margin-bottom:0.75rem;">Unique species count per month — reveals seasonal richness.</div>
+        <div class="month-bar-wrap" id="month-bars"></div>
+      </div>
+    </div>
+
+    <!-- ══ MY DIGEST ══ -->
+    <div class="panel" id="panel-digest">
+      <div class="panel-title">My digest</div>
+      <div class="panel-sub">A personalised summary of what's happening in Baner right now — your Earth Pulse briefing.</div>
+      <div id="digest-content"><div style="color:var(--text-muted);">Loading your digest…</div></div>
+    </div>
+
+    <!-- ══ COMPARE YEARS ══ -->
+    <div class="panel" id="panel-compare">
+      <div class="panel-title">Compare years</div>
+      <div class="panel-sub">Pick any two years and a metric to compare side-by-side. Registered users only.</div>
+      <div class="compare-controls">
+        <div>
+          <label>Year A</label>
+          <select id="cmp-yr-a">
+            <option value="2022">2022</option>
+            <option value="2023">2023</option>
+            <option value="2024">2024</option>
+            <option value="2025" selected>2025</option>
+          </select>
+        </div>
+        <div>
+          <label>Year B</label>
+          <select id="cmp-yr-b">
+            <option value="2022">2022</option>
+            <option value="2023">2023</option>
+            <option value="2024">2024</option>
+            <option value="2025">2025</option>
+            <option value="2026" selected>2026</option>
+          </select>
+        </div>
+        <div>
+          <label>Metric</label>
+          <select id="cmp-metric">
+            <option value="temperature">Temperature (°C)</option>
+            <option value="aqi">EU AQI</option>
+            <option value="precipitation">Rainfall (mm)</option>
+            <option value="humidity">Humidity (%)</option>
+          </select>
+        </div>
+        <button class="act-btn primary" onclick="runCompare()">Compare →</button>
+      </div>
+      <div class="compare-chart-wrap" id="compare-chart-wrap">
+        <div style="color:var(--text-muted);font-size:0.88rem;">Select years and a metric above, then click Compare.</div>
+      </div>
+    </div>
+
+    <!-- ══ HISTORY ══ -->
+    <div class="panel" id="panel-history">
+      <div class="panel-title">Search History</div>
+      <div class="panel-sub">Your last 20 data explorer queries. Click any to run again. <button class="act-btn" style="font-size:0.75rem;padding:0.25rem 0.75rem;" onclick="clearHistory()">Clear all</button></div>
+      <div id="hist-list"><div style="color:var(--text-muted);font-size:0.88rem;">Loading…</div></div>
+    </div>
+
+    <!-- ══ WATCHLIST ══ -->
+    <div class="panel" id="panel-watchlist">
+      <div class="panel-title">My species watchlist</div>
+      <div class="panel-sub">Track species you care about. Get instant stats on your saved birds and receive alerts when they are detected.</div>
+      <div class="watchlist-add">
+        <input type="text" id="wl-input" placeholder="Enter species name, e.g. Asian Koel" onkeydown="if(event.key==='Enter')addToWatchlist()">
+        <button class="act-btn primary" onclick="addToWatchlist()">+ Add species</button>
+      </div>
+      <div class="watchlist-grid" id="watchlist-grid">
+        <div style="color:var(--text-muted);font-size:0.88rem);">Loading watchlist…</div>
+      </div>
+    </div>
+
+    <!-- ══ FIELD NOTES ══ -->
+    <div class="panel" id="panel-notes">
+      <div class="panel-title">Field notes</div>
+      <div class="panel-sub">Your personal observation log. Note unusual sightings, weather events, or anything you want to remember about Baner. Stored privately to your account.</div>
+      <div class="note-add-box">
+        <textarea id="note-text" placeholder="Write an observation… e.g. 'Spotted a pair of shikras at 7am over the hill. AQI was excellent. Calling repeatedly.'"></textarea>
+        <div class="note-add-controls">
+          <input type="text" id="note-tag" placeholder="Tag (optional): birds, weather, unusual…">
+          <input type="date" id="note-date">
+          <button class="act-btn primary" onclick="addNote()">Save note</button>
+        </div>
+      </div>
+      <div id="notes-list"><div style="color:var(--text-muted);font-size:0.88rem;">Loading notes…</div></div>
+    </div>
+
+    <!-- ══ ALERTS ══ -->
+    <div class="panel" id="panel-alerts">
+      <div class="panel-title">My Alerts</div>
+      <div class="panel-sub">Get an email within an hour of any of these events happening in Baner. Alerts are sent to your registered email address.</div>
+      <div style="max-width:580px;">
+        <div class="alert-group">
+          <div class="alert-group-title">🍃 Air quality</div>
+          <label class="alert-row"><input type="checkbox" id="a-good-aqi"> AQI drops to Good (≤40 EU) — best time to be outdoors</label>
+          <label class="alert-row"><input type="checkbox" id="a-bad-aqi"> AQI exceeds Poor (≥80 EU) — health warning</label>
+          <label class="alert-row"><input type="checkbox" id="a-hazardous"> AQI exceeds 100 — hazardous, stay indoors</label>
+        </div>
+        <div class="alert-group">
+          <div class="alert-group-title">🌧️ Weather</div>
+          <label class="alert-row"><input type="checkbox" id="a-first-rain"> First monsoon rain of the year</label>
+          <label class="alert-row"><input type="checkbox" id="a-heavy-rain"> Heavy rain — ≥20mm in a day</label>
+          <label class="alert-row"><input type="checkbox" id="a-heat"> Heat wave — temperature above 38°C</label>
+        </div>
+        <div class="alert-group">
+          <div class="alert-group-title">🐦 Birds</div>
+          <label class="alert-row"><input type="checkbox" id="a-new-sp"> New species detected for the first time this year</label>
+          <label class="alert-row"><input type="checkbox" id="a-rare"> Rare species detected (kestrel, nightjar, heron, owl)</label>
+          <div style="margin-top:0.75rem;">
+            <div style="font-size:0.8rem;color:var(--text-muted);margin-bottom:5px;">Alert when my favourite species is heard (comma-separated):</div>
+            <input type="text" id="a-fav" placeholder="e.g. Shikra, Asian Koel, Common Hawk-Cuckoo"
+              style="width:100%;padding:0.6rem 0.9rem;border:1px solid var(--border-strong);border-radius:var(--radius-sm);font-family:var(--sans);font-size:0.85rem;box-sizing:border-box;outline:none;">
+          </div>
+        </div>
+        <button class="act-btn primary" onclick="saveAlerts()" style="font-size:0.9rem;">Save alert preferences</button>
+        <div id="alerts-saved" style="font-size:0.82rem;color:var(--ep-green);margin-top:0.75rem;display:none;">✅ Saved!</div>
+      </div>
+    </div>
+
+    <!-- ══ DOWNLOAD ══ -->
+    <div class="panel" id="panel-download">
+      <div class="panel-title">Download Data</div>
+      <div class="panel-sub">Download any slice of the Earth Pulse dataset as CSV or JSON. All data is open under CC BY 4.0 — please credit earth-pulse.org.</div>
+      <div class="dl-grid">
+        <div class="dl-card">
+          <div class="dl-title">📊 All climate data</div>
+          <div class="dl-meta" id="dl-meta-climate">—</div>
+          <div class="dl-desc">Every hourly reading since Jan 2022 — AQI, temperature, humidity, wind, solar, precipitation.</div>
+          <div class="actions">
+            <button class="act-btn primary" onclick="dlData('climate', 'csv')">⬇ CSV</button>
+            <button class="act-btn secondary" onclick="dlData('climate', 'json')">⬇ JSON</button>
+          </div>
+        </div>
+        <div class="dl-card">
+          <div class="dl-title">🐦 All bird detections</div>
+          <div class="dl-meta" id="dl-meta-birds">—</div>
+          <div class="dl-desc">Every BirdNET detection with species, confidence, timestamp, node ID, and correlated AQI.</div>
+          <div class="actions">
+            <button class="act-btn primary" onclick="dlData('birds', 'csv')">⬇ CSV</button>
+            <button class="act-btn secondary" onclick="dlData('birds', 'json')">⬇ JSON</button>
+          </div>
+        </div>
+        <div class="dl-card">
+          <div class="dl-title">🌧️ Rainfall records</div>
+          <div class="dl-meta" id="dl-meta-rain">—</div>
+          <div class="dl-desc">Hourly precipitation readings, Weather Union data, and daily totals since 2022.</div>
+          <div class="actions">
+            <button class="act-btn primary" onclick="dlData('rain', 'csv')">⬇ CSV</button>
+            <button class="act-btn secondary" onclick="dlData('rain', 'json')">⬇ JSON</button>
+          </div>
+        </div>
+        <div class="dl-card">
+          <div class="dl-title">📸 Hill photo archive</div>
+          <div class="dl-meta" id="dl-meta-photos">—</div>
+          <div class="dl-desc">All timelapse frame metadata with climate annotations at time of capture and ExG vegetation index.</div>
+          <div class="actions">
+            <button class="act-btn primary" onclick="dlData('photos', 'csv')">⬇ CSV</button>
+            <button class="act-btn secondary" onclick="dlData('photos', 'json')">⬇ JSON</button>
+          </div>
+        </div>
+      </div>
+
+      <div style="background:#fff;border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem;">
+        <div style="font-weight:600;color:var(--ep-green);margin-bottom:0.75rem;">Custom date range</div>
+        <div style="display:flex;gap:0.75rem;flex-wrap:wrap;align-items:flex-end;">
+          <div>
+            <div style="font-size:0.75rem;color:var(--text-muted);margin-bottom:3px;">Dataset</div>
+            <select id="dl-type" style="padding:0.5rem 0.85rem;border:1px solid var(--border-strong);border-radius:var(--radius-sm);font-family:var(--sans);font-size:0.85rem;color:var(--ep-green);background:#fff;">
+              <option value="climate">Climate readings</option>
+              <option value="birds">Bird detections</option>
+              <option value="rain">Rainfall only</option>
+            </select>
+          </div>
+          <div>
+            <div style="font-size:0.75rem;color:var(--text-muted);margin-bottom:3px;">From</div>
+            <input type="date" id="dl-from" style="padding:0.5rem;border:1px solid var(--border-strong);border-radius:var(--radius-sm);font-size:0.85rem;color:var(--ep-green);">
+          </div>
+          <div>
+            <div style="font-size:0.75rem;color:var(--text-muted);margin-bottom:3px;">To</div>
+            <input type="date" id="dl-to" style="padding:0.5rem;border:1px solid var(--border-strong);border-radius:var(--radius-sm);font-size:0.85rem;color:var(--ep-green);">
+          </div>
+          <div style="display:flex;gap:0.5rem;">
+            <button class="act-btn primary" onclick="dlCustom('csv')">⬇ CSV</button>
+            <button class="act-btn secondary" onclick="dlCustom('json')">⬇ JSON</button>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top:1rem;padding:0.85rem 1rem;background:rgba(33,67,50,0.05);border-radius:var(--radius-md);font-size:0.8rem;color:var(--text-muted);">
+        📄 <strong style="color:var(--ep-green);">CC BY 4.0</strong> — You are free to use, share, and adapt this data for any purpose, including commercial, provided you credit <strong>earth-pulse.org</strong>.
+      </div>
+    </div>
+
+  </div><!-- /main -->
+</div><!-- /app -->
+
+<div id="ep-footer"></div>
+<script src="analytics.js"></script>
+<script src="nav.js"></script>
+
+<script>
+// ────────────────────────────────────────────────────────────────────
+// GLOBALS
+// ────────────────────────────────────────────────────────────────────
+var _SB_URL2  = 'https://krmczyqwblsoekceanlj.supabase.co';
+var _SB_KEY2  = 'sb_publishable_DrHFT5J0vmrkYraUXIlpQQ_gsk1rdq6';
+var WORKER    = 'https://earthpulse-ai.fangchu.workers.dev';
+var lastRows  = null;
+var _statsLoaded   = false;
+var _digestLoaded  = false;
+var _compareLoaded = false;
+var _compareChart  = null;
+
+// ────────────────────────────────────────────────────────────────────
+// INIT — single entry point, guarded against double-fire
+// ────────────────────────────────────────────────────────────────────
+window.addEventListener('DOMContentLoaded', function() {
+  // Wait for the auth session promise from <head> to resolve
+  var attempts = 0;
+  function tryInit() {
+    if (_user) {
+      initPage();
+      return;
+    }
+    attempts++;
+    if (attempts < 30) {
+      setTimeout(tryInit, 200); // poll every 200ms, up to 6 seconds
+    } else {
+      window.location.href = 'register.html';
+    }
+  }
+  tryInit();
+
+  // Also handle auth state changes (e.g. token refresh, signout)
+  if (_sb) {
+    _sb.auth.onAuthStateChange(function(event, session) {
+      if (event === 'SIGNED_OUT') {
+        window.location.href = 'register.html';
+      }
+    });
+  }
+
+  // Set default date for notes
+  var nd = document.getElementById('note-date');
+  if (nd) {
+    var today = new Date();
+    nd.value = today.getFullYear() + '-' +
+      String(today.getMonth() + 1).padStart(2, '0') + '-' +
+      String(today.getDate()).padStart(2, '0');
+  }
+});
+
+function initPage() {
+  if (!_user) return;
+  var meta  = _user.user_metadata || {};
+  var name  = (((meta.first_name || '') + ' ' + (meta.last_name || '')).trim()) || _user.email.split('@')[0];
+  document.getElementById('u-name').textContent  = name;
+  document.getElementById('u-email').textContent = _user.email;
+  var badge = document.getElementById('u-badge');
+  if (_user.email_confirmed_at) {
+    badge.innerHTML = '<span class="user-pill-badge">✓ Account active</span>';
+  } else {
+    badge.innerHTML = '<span class="user-pill-badge" style="background:rgba(245,158,11,0.15);color:#92400e;">📧 Verify email</span>';
+  }
+  loadHistory();
+  loadAlerts();
+  loadWatchlist();
+  loadNotes();
+  loadDownloadMeta();
+}
+
+// ────────────────────────────────────────────────────────────────────
+// SIGN OUT
+// ────────────────────────────────────────────────────────────────────
+function doSignOut() {
+  if (_sb) {
+    _sb.auth.signOut().catch(function(){});
+  }
+  try {
+    Object.keys(localStorage).forEach(function(k) {
+      if (k.indexOf('sb-') === 0 || k.indexOf('supabase') !== -1) localStorage.removeItem(k);
+    });
+  } catch(e) {}
+  window.location.href = 'index.html';
+}
+
+// ────────────────────────────────────────────────────────────────────
+// PANEL SWITCHING
+// ────────────────────────────────────────────────────────────────────
+function switchPanel(id, btn) {
+  document.querySelectorAll('.panel').forEach(function(p) { p.classList.remove('on'); });
+  document.querySelectorAll('.sb-link').forEach(function(b) { b.classList.remove('active'); });
+  var el = document.getElementById('panel-' + id);
+  if (el) el.classList.add('on');
+  if (btn) btn.classList.add('active');
+  if (id === 'stats'   && !_statsLoaded)   { _statsLoaded   = true; loadStats(); }
+  if (id === 'digest'  && !_digestLoaded)  { _digestLoaded  = true; loadDigest(); }
+}
+
+// ────────────────────────────────────────────────────────────────────
+// TOAST
+// ────────────────────────────────────────────────────────────────────
+function toast(msg, isError) {
+  var el = document.getElementById('notif');
+  el.textContent = msg;
+  el.className   = 'notif' + (isError ? ' error' : '') + ' show';
+  setTimeout(function() { el.className = 'notif' + (isError ? ' error' : ''); }, 3000);
+}
+
+// ────────────────────────────────────────────────────────────────────
+// SUPABASE FETCH HELPER
+// ────────────────────────────────────────────────────────────────────
+function sbFetch(path) {
+  return fetch(_SB_URL2 + '/rest/v1' + path, {
+    headers: {
+      'apikey': _SB_KEY2,
+      'Authorization': 'Bearer ' + _SB_KEY2
+    }
+  }).then(function(r) { return r.json(); });
+}
+
+// ────────────────────────────────────────────────────────────────────
+// AI QUERY ENGINE
+// ────────────────────────────────────────────────────────────────────
+function ask(q) {
+  document.getElementById('ai-q').value = q;
+  switchPanel('explorer', document.getElementById('nav-explorer'));
+  runQuery();
+}
+
+function classifyQuery(q) {
+  var ql = q.toLowerCase();
+  if (ql.match(/most|top|highest|lowest|count/)) return 'aggregation';
+  if (ql.match(/compare|vs|correlation|impact|relationship/)) return 'comparison';
+  if (ql.match(/trend|over time|monthly|yearly|pattern/)) return 'timeseries';
+  return 'general';
+}
+
+function summariseData(data) {
+  if (!data || !data.length) return [];
+  if (data.length <= 20) return data;
+  var step = Math.floor(data.length / 20);
+  var out = [];
+  for (var i = 0; i < data.length; i += step) {
+    out.push(data[i]);
+    if (out.length >= 20) break;
+  }
+  return out;
+}
+
+// Single Gemini call (no duplicate declaration)
+function callGemini(query, data) {
+  return fetch(WORKER + '/gemini', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ query: query, data: summariseData(data) })
+  }).then(function(r) {
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    return r.json();
+  }).then(function(json) {
+    if (json.answer) return json.answer;
+    return null;
+  }).catch(function(e) {
+    console.warn('Gemini failed, falling back to Claude:', e.message);
+    return callClaudeWorker(query, data);
+  });
+}
+
+function callClaudeWorker(query, data) {
+  var context = 'Baner, Pune environmental data: ' + JSON.stringify(summariseData(data)).slice(0, 3000);
+  return fetch(WORKER + '/query', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ query: query, context: context })
+  }).then(function(r) {
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    return r.json();
+  }).then(function(json) {
+    return json.answer || null;
+  }).catch(function(e) {
+    console.warn('Claude also failed:', e.message);
+    return null;
+  });
+}
+
+// Dynamic data query — no API cost, runs against Supabase directly
+function runDynamicQuery(q) {
+  var ql = q.toLowerCase();
+  lastRows = null;
+
+  // Birds + environmental variable correlation
+  var hasBird = ql.indexOf('bird') !== -1 || ql.indexOf('species') !== -1;
+  var variables = [];
+  if (ql.indexOf('temperature') !== -1 || ql.indexOf('heat') !== -1) variables.push('temperature');
+  if (ql.indexOf('aqi') !== -1 || ql.indexOf('air') !== -1) variables.push('aqi');
+  if (ql.indexOf('rain') !== -1) variables.push('precipitation');
+  if (ql.indexOf('humidity') !== -1) variables.push('humidity');
+
+  if (hasBird && variables.length) {
+    return Promise.all([
+      sbFetch('/bird_detections?select=detected_at&limit=2000'),
+      sbFetch('/combined_readings?select=recorded_at,temperature,aqi,precipitation,humidity&limit=5000')
+    ]).then(function(results) {
+      var birds   = results[0];
+      var climate = results[1];
+      var birdMap = {};
+      for (var i = 0; i < birds.length; i++) {
+        var d = birds[i].detected_at.slice(0, 10);
+        birdMap[d] = (birdMap[d] || 0) + 1;
+      }
+      var rows = [];
+      for (var j = 0; j < climate.length; j++) {
+        var c  = climate[j];
+        var d2 = c.recorded_at.slice(0, 10);
+        if (!birdMap[d2]) continue;
+        var row = { date: d2, bird_count: birdMap[d2] };
+        for (var k = 0; k < variables.length; k++) {
+          row[variables[k]] = c[variables[k]];
+        }
+        rows.push(row);
+      }
+      rows.sort(function(a, b) { return (a[variables[0]] || 0) - (b[variables[0]] || 0); });
+      lastRows = rows.slice(0, 100);
+      return lastRows;
+    });
+  }
+
+  // Bird count / species
+  if (hasBird) {
+    return sbFetch('/bird_detections?select=species_common,confidence,detected_at&limit=5000')
+      .then(function(birds) {
+        var map = {};
+        for (var i = 0; i < birds.length; i++) {
+          var sp = birds[i].species_common;
+          if (!map[sp]) map[sp] = { count: 0, maxConf: 0 };
+          map[sp].count++;
+          if (birds[i].confidence > map[sp].maxConf) map[sp].maxConf = birds[i].confidence;
+        }
+        var rows = [];
+        var keys = Object.keys(map);
+        for (var k = 0; k < keys.length; k++) {
+          rows.push({ species: keys[k], detections: map[keys[k]].count, best_confidence: Math.round(map[keys[k]].maxConf * 100) + '%' });
+        }
+        rows.sort(function(a, b) { return b.detections - a.detections; });
+        lastRows = rows.slice(0, 20);
+        return lastRows;
+      });
+  }
+
+  // Temperature / heat
+  if (ql.indexOf('temperature') !== -1 || ql.indexOf('hot') !== -1 || ql.indexOf('heat') !== -1) {
+    return sbFetch('/combined_readings?select=recorded_at,temperature&order=temperature.desc&limit=20')
+      .then(function(data) {
+        lastRows = data.map(function(d) { return { date: d.recorded_at.slice(0, 10), temperature_c: d.temperature }; });
+        return lastRows;
+      });
+  }
+
+  // Annual rainfall
+  if ((ql.indexOf('rain') !== -1 || ql.indexOf('rainfall') !== -1) &&
+      (ql.indexOf('year') !== -1 || ql.indexOf('annual') !== -1)) {
+    return sbFetch('/combined_readings?select=recorded_at,precipitation&precipitation=gt.0&limit=50000')
+      .then(function(data) {
+        var yearMap = {};
+        for (var i = 0; i < data.length; i++) {
+          if (!data[i].precipitation) continue;
+          var yr = data[i].recorded_at.slice(0, 4);
+          yearMap[yr] = (yearMap[yr] || 0) + data[i].precipitation;
+        }
+        var rows = [];
+        var yrs = Object.keys(yearMap);
+        for (var k = 0; k < yrs.length; k++) {
+          rows.push({ year: yrs[k], total_rain_mm: Math.round(yearMap[yrs[k]]) });
+        }
+        rows.sort(function(a, b) { return a.year > b.year ? 1 : -1; });
+        lastRows = rows;
+        return rows;
+      });
+  }
+
+  // Year-specific rain
+  var yearMatch = q.match(/20\d{2}/);
+  if (ql.indexOf('rain') !== -1 && yearMatch) {
+    var targetYear = yearMatch[0];
+    return sbFetch('/combined_readings?select=recorded_at,precipitation&precipitation=gt.0&recorded_at=gte.' + targetYear + '-01-01T00:00:00Z&recorded_at=lt.' + (parseInt(targetYear) + 1) + '-01-01T00:00:00Z&limit=10000')
+      .then(function(data) {
+        var total = 0;
+        for (var i = 0; i < data.length; i++) {
+          total += data[i].precipitation || 0;
+        }
+        lastRows = [{ year: targetYear, total_rain_mm: Math.round(total) }];
+        return lastRows;
+      });
+  }
+
+  // Rain (general)
+  if (ql.indexOf('rain') !== -1) {
+    return sbFetch('/combined_readings?select=recorded_at,precipitation&precipitation=gt.0&order=recorded_at.desc&limit=50')
+      .then(function(data) {
+        lastRows = data.map(function(d) { return { date: d.recorded_at.slice(0, 10), rain_mm: d.precipitation }; });
+        return lastRows;
+      });
+  }
+
+  return Promise.resolve(null);
+}
+
+function buildFallbackAnswer(q, data) {
+  var ql = q.toLowerCase();
+  if (!data || !data.length) {
+    return 'Earth Pulse could not find data matching this query yet. Try asking about birds, AQI, rainfall, or temperature.';
+  }
+  var keys = Object.keys(data[0]);
+
+  // Correlation fallback
+  if (keys.indexOf('bird_count') !== -1 && keys.length > 2) {
+    var variable = '';
+    for (var k = 0; k < keys.length; k++) {
+      if (keys[k] !== 'date' && keys[k] !== 'bird_count') { variable = keys[k]; break; }
+    }
+    var sampleN = Math.min(8, Math.floor(data.length / 3));
+    var sorted  = data.slice().sort(function(a, b) { return (a[variable] || 0) - (b[variable] || 0); });
+    var lowSum  = 0; var highSum = 0;
+    for (var i = 0; i < sampleN; i++) {
+      lowSum  += sorted[i].bird_count || 0;
+      highSum += sorted[sorted.length - 1 - i].bird_count || 0;
+    }
+    var lowAvg  = Math.round(lowSum  / sampleN);
+    var highAvg = Math.round(highSum / sampleN);
+    var trend   = highAvg < lowAvg ? 'decrease' : (highAvg > lowAvg ? 'increase' : 'remain stable');
+    return '**Bird activity tends to ' + trend + ' as ' + variable + ' increases in Baner.** ' +
+      'When ' + variable + ' is low, avg detections/day: ' + lowAvg + '. When high: ' + highAvg + '. ' +
+      'This pattern emerges from local hourly data — birds may shift behaviour rather than disappear entirely.';
+  }
+
+  return '**This reflects a consistent environmental pattern observed in Baner.** ' +
+    'The dataset shows ' + data.length + ' matching records. ' +
+    'Download the CSV for deeper analysis or try a more specific question.';
+}
+
+function getDataContext(data) {
+  if (!data || !data.length) return '';
+  var keys = Object.keys(data[0]);
+  if (keys.indexOf('species') !== -1 || keys.indexOf('bird_count') !== -1) {
+    return 'Bird activity data · Baner, Pune';
+  }
+  return 'Weather and air quality data · Baner, Pune · Since 2022';
+}
+
+function runQuery() {
+  var q = (document.getElementById('ai-q').value || '').trim();
+  if (!q) return;
+
+  var btn = document.getElementById('ai-go');
+  btn.disabled  = true;
+  btn.innerHTML = '<span class="spin"></span>';
+  document.getElementById('ai-result').innerHTML = '';
+
+  // Save to history
+  if (_sb && _user) {
+    _sb.from('user_searches').insert({ user_id: _user.id, query: q }).catch(function() {});
+  }
+
+  runDynamicQuery(q).then(function(data) {
+    return callGemini(q, data || []).then(function(answer) {
+      return { data: data, answer: answer };
+    });
+  }).then(function(result) {
+    var data   = result.data;
+    var answer = result.answer || buildFallbackAnswer(q, data);
+
+    var html = '<div class="res-card">' +
+      '<div class="res-q">' + escHtml(q) + '</div>' +
+      '<div class="res-body">' + md2html(answer) + '</div>' +
+      '</div>';
+
+    if (data && data.length) {
+      html += '<div class="res-card">' +
+        '<div style="font-weight:600;color:var(--ep-green);margin-bottom:0.4rem;">📋 Supporting data</div>' +
+        '<div style="font-size:0.8rem;color:var(--text-muted);margin-bottom:0.75rem;">' + getDataContext(data) + '</div>' +
+        buildTable(data.slice(0, 50)) +
+        '<div class="actions">' +
+          '<button class="act-btn primary" onclick="dlFromQuery(\'csv\')">⬇ Download CSV</button>' +
+          '<button class="act-btn secondary" onclick="dlFromQuery(\'json\')">⬇ Download JSON</button>' +
+        '</div>' +
+        '</div>';
+    }
+
+    document.getElementById('ai-result').innerHTML = html;
+  }).catch(function(e) {
+    document.getElementById('ai-result').innerHTML =
+      '<div class="res-card" style="border-color:#fca5a5;"><p style="color:#dc2626;">Error: ' + escHtml(e.message) + '</p></div>';
+  }).finally(function() {
+    btn.disabled  = false;
+    btn.innerHTML = 'Ask →';
+    loadHistory(); // refresh history after each query
+  });
+}
+
+// ────────────────────────────────────────────────────────────────────
+// COMPARE YEARS
+// ────────────────────────────────────────────────────────────────────
+function runCompare() {
+  var yrA    = document.getElementById('cmp-yr-a').value;
+  var yrB    = document.getElementById('cmp-yr-b').value;
+  var metric = document.getElementById('cmp-metric').value;
+  var wrap   = document.getElementById('compare-chart-wrap');
+
+  if (yrA === yrB) {
+    wrap.innerHTML = '<div style="color:#dc2626;font-size:0.88rem;">Please select two different years.</div>';
+    return;
+  }
+
+  wrap.innerHTML = '<div style="color:var(--text-muted);font-size:0.88rem;"><span class="spin"></span> Loading…</div>';
+
+  var months   = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  var metricLbl = { temperature: 'Avg Temperature (°C)', aqi: 'Avg EU AQI', precipitation: 'Total Rainfall (mm)', humidity: 'Avg Humidity (%)' };
+
+  function getMonthlyData(yr) {
+    var promises = [];
+    for (var m = 1; m <= 12; m++) {
+      (function(month) {
+        var nextM  = month === 12 ? 1 : month + 1;
+        var nextY  = month === 12 ? parseInt(yr) + 1 : parseInt(yr);
+        var start  = yr + '-' + String(month).padStart(2, '0') + '-01T00:00:00Z';
+        var end    = String(nextY) + '-' + String(nextM).padStart(2, '0') + '-01T00:00:00Z';
+        var path   = '/combined_readings?select=' + metric + '&recorded_at=gte.' + start + '&recorded_at=lt.' + end + '&limit=800';
+        promises.push(
+          sbFetch(path).then(function(rows) {
+            if (!rows.length) return null;
+            if (metric === 'precipitation') {
+              var sum = 0;
+              for (var i = 0; i < rows.length; i++) sum += rows[i][metric] || 0;
+              return Math.round(sum * 10) / 10;
+            }
+            var vals = rows.filter(function(r) { return r[metric] !== null; });
+            if (!vals.length) return null;
+            var avg = vals.reduce(function(s, r) { return s + r[metric]; }, 0) / vals.length;
+            return Math.round(avg * 10) / 10;
+          })
+        );
+      })(m);
+    }
+    return Promise.all(promises);
+  }
+
+  Promise.all([getMonthlyData(yrA), getMonthlyData(yrB)]).then(function(results) {
+    var dataA = results[0];
+    var dataB = results[1];
+
+    wrap.innerHTML =
+      '<div style="font-weight:600;color:var(--ep-green);margin-bottom:1rem;">' +
+        metricLbl[metric] + ' — ' + yrA + ' vs ' + yrB +
+      '</div>' +
+      '<canvas id="compare-canvas" style="max-height:320px;"></canvas>' +
+      '<div style="font-size:0.75rem;color:var(--text-muted);margin-top:8px;text-align:right;">Monthly averages · Baner, Pune</div>';
+
+    // Load Chart.js if not already present
+    function drawChart() {
+      var ctx = document.getElementById('compare-canvas').getContext('2d');
+      if (_compareChart) { try { _compareChart.destroy(); } catch(e) {} }
+      _compareChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: months,
+          datasets: [
+            {
+              label: yrA,
+              data: dataA,
+              borderColor: '#214332',
+              backgroundColor: 'rgba(33,67,50,0.08)',
+              borderWidth: 2.5,
+              tension: 0.4,
+              pointRadius: 4,
+              fill: false,
+              spanGaps: true
+            },
+            {
+              label: yrB,
+              data: dataB,
+              borderColor: '#BF9B7B',
+              backgroundColor: 'rgba(191,155,123,0.08)',
+              borderWidth: 2.5,
+              tension: 0.4,
+              pointRadius: 4,
+              fill: false,
+              spanGaps: true
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: { position: 'top' },
+            tooltip: { callbacks: { label: function(ctx) { return ctx.dataset.label + ': ' + (ctx.parsed.y !== null ? ctx.parsed.y : '—'); } } }
+          },
+          scales: {
+            y: { beginAtZero: metric === 'precipitation', grid: { color: '#f0f0f0' } },
+            x: { grid: { display: false } }
+          }
+        }
+      });
+    }
+
+    if (typeof Chart !== 'undefined') {
+      drawChart();
+    } else {
+      var s = document.createElement('script');
+      s.src = 'https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js';
+      s.onload = drawChart;
+      document.head.appendChild(s);
+    }
+  }).catch(function(e) {
+    wrap.innerHTML = '<div style="color:#dc2626;font-size:0.88rem;">Error loading comparison data: ' + escHtml(e.message) + '</div>';
+  });
+}
+
+// ────────────────────────────────────────────────────────────────────
+// LIVE STATS
+// ────────────────────────────────────────────────────────────────────
+function loadStats() {
+  var todayIST = new Date(new Date().getTime() + 5.5 * 3600000);
+  var todayStr = todayIST.getUTCFullYear() + '-' +
+    String(todayIST.getUTCMonth() + 1).padStart(2, '0') + '-' +
+    String(todayIST.getUTCDate()).padStart(2, '0') + 'T00:00:00Z';
+
+  Promise.all([
+    sbFetch('/bird_detections?select=species_scientific,confidence,detected_at&limit=5000'),
+    sbFetch('/combined_readings?select=recorded_at,aqi,temperature,precipitation&order=recorded_at.desc&limit=1'),
+    sbFetch('/bird_detections?select=species_scientific&detected_at=gte.' + todayStr + '&limit=500')
+  ]).then(function(results) {
+    var birds  = results[0];
+    var latest = results[1];
+    var today  = results[2];
+
+    var speciesSet = {};
+    var todaySet   = {};
+    var bestConf   = 0;
+    var hourCounts = new Array(24).fill(0);
+    var monSpecies = [];
+    for (var m = 0; m < 12; m++) monSpecies.push({});
+
+    for (var i = 0; i < birds.length; i++) {
+      var b = birds[i];
+      speciesSet[b.species_scientific] = true;
+      if (b.confidence > bestConf) bestConf = b.confidence;
+
+      // IST hour: UTC ms + 5.5h offset, then get hour of day
+      var utcMs = new Date(b.detected_at).getTime();
+      var istMs = utcMs + (5.5 * 3600000);
+      var istHr = Math.floor(istMs / 3600000) % 24;
+      if (istHr < 0) istHr += 24;
+      hourCounts[istHr]++;
+
+      // Month (IST)
+      var istDate = new Date(istMs);
+      var mo      = istDate.getUTCMonth();
+      monSpecies[mo][b.species_scientific] = true;
+    }
+    for (var i = 0; i < today.length; i++) {
+      todaySet[today[i].species_scientific] = true;
+    }
+
+    var speciesCount = Object.keys(speciesSet).length;
+    var todayCount   = Object.keys(todaySet).length;
+    var peakHr       = hourCounts.indexOf(Math.max.apply(null, hourCounts));
+    var monSpCounts  = monSpecies.map(function(s) { return Object.keys(s).length; });
+    var maxMonSp     = Math.max.apply(null, monSpCounts);
+    var peakMonIdx   = monSpCounts.indexOf(maxMonSp);
+    var monthNames   = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    var cl           = latest[0] || {};
+
+    document.getElementById('stats-mosaic').innerHTML = [
+      { icon: '🐦', val: speciesCount,                    label: 'Total species detected',    sub: 'all time · BirdNET AI' },
+      { icon: '🔊', val: birds.length,                    label: 'Detections in sample',     sub: 'last 5,000 records' },
+      { icon: '🌅', val: String(peakHr).padStart(2,'0') + ':00',  label: 'Peak bird hour (IST)', sub: 'when they sing loudest' },
+      { icon: '📅', val: monthNames[peakMonIdx],          label: 'Most species month',        sub: maxMonSp + ' unique species' },
+      { icon: '🎯', val: Math.round(bestConf * 100) + '%', label: 'Best confidence ever',    sub: 'clearest call recorded' },
+      { icon: '🐣', val: todayCount,                      label: 'Species today',             sub: 'since midnight IST' },
+      { icon: '🌡️', val: (cl.temperature || '—') + '°C', label: 'Current temperature',      sub: 'live from Pi sensor' },
+      { icon: '🍃', val: cl.aqi || '—',                  label: 'Current EU AQI',            sub: 'Copernicus CAMS live' }
+    ].map(function(s) {
+      return '<div class="sm-card">' +
+        '<div class="sm-icon">' + s.icon + '</div>' +
+        '<div class="sm-val">' + s.val + '</div>' +
+        '<div class="sm-label">' + s.label + '</div>' +
+        '<div class="sm-sub">' + s.sub + '</div>' +
+        '</div>';
+    }).join('');
+
+    // Hour heatmap
+    var maxH = Math.max.apply(null, hourCounts.concat([1]));
+    var hg   = document.getElementById('hour-heatmap');
+    if (hg) {
+      hg.innerHTML = '';
+      for (var h = 0; h < 24; h++) {
+        var c   = hourCounts[h];
+        var alpha = c ? (0.1 + 0.9 * c / maxH).toFixed(2) : '0';
+        var bg    = c ? 'rgba(33,67,50,' + alpha + ')' : '#e8e5dc';
+        var cell  = document.createElement('div');
+        cell.className = 'hm-cell';
+        cell.style.background = bg;
+        cell.title = String(h).padStart(2,'0') + ':00 IST — ' + c + ' detection' + (c !== 1 ? 's' : '');
+        hg.appendChild(cell);
+      }
+    }
+
+    // Month bars — fixed height rendering
+    var maxMon = Math.max.apply(null, monSpCounts.concat([1]));
+    var mb     = document.getElementById('month-bars');
+    if (mb) {
+      mb.innerHTML = '';
+      for (var mi = 0; mi < 12; mi++) {
+        var cnt  = monSpCounts[mi];
+        var pct  = Math.round((cnt / maxMon) * 100);
+        var col  = document.createElement('div');
+        col.className = 'month-bar-col';
+
+        var bar = document.createElement('div');
+        bar.className        = 'month-bar-inner';
+        bar.style.height     = (pct || 1) + '%';
+        bar.style.maxHeight  = '100%';
+        bar.title            = monthNames[mi] + ': ' + cnt + ' species';
+
+        var lbl = document.createElement('div');
+        lbl.className   = 'month-bar-label';
+        lbl.textContent = monthNames[mi].charAt(0);
+
+        col.appendChild(bar);
+        col.appendChild(lbl);
+        mb.appendChild(col);
+      }
+    }
+
+  }).catch(function(e) {
+    document.getElementById('stats-mosaic').innerHTML = '<p style="color:#dc2626;">Error: ' + escHtml(e.message) + '</p>';
+  });
+}
+
+// ────────────────────────────────────────────────────────────────────
+// MY DIGEST
+// ────────────────────────────────────────────────────────────────────
+function loadDigest() {
+  var el     = document.getElementById('digest-content');
+  var nowUtc = new Date();
+  var nowIst = new Date(nowUtc.getTime() + 5.5 * 3600000);
+  var todayStr  = nowIst.getUTCFullYear() + '-' + String(nowIst.getUTCMonth() + 1).padStart(2,'0') + '-' + String(nowIst.getUTCDate()).padStart(2,'0') + 'T00:00:00Z';
+  var monthStr  = nowIst.getUTCFullYear() + '-' + String(nowIst.getUTCMonth() + 1).padStart(2,'0') + '-01T00:00:00Z';
+  var weekStr   = new Date(nowUtc.getTime() - 7 * 86400000).toISOString();
+  var hourIST   = nowIst.getUTCHours();
+  var greet     = hourIST < 12 ? 'Good morning' : hourIST < 17 ? 'Good afternoon' : 'Good evening';
+  var isDawn    = hourIST >= 5 && hourIST <= 8;
+
+  Promise.all([
+    sbFetch('/combined_readings?select=recorded_at,aqi,google_aqi_india,temperature,humidity,precipitation,dominant_pollutant&order=recorded_at.desc&limit=2'),
+    sbFetch('/bird_detections?select=species_common,species_scientific,detected_at,is_new_species_this_year&detected_at=gte.' + todayStr + '&order=detected_at.desc&limit=200'),
+    sbFetch('/bird_detections?select=species_scientific&detected_at=gte.' + weekStr + '&limit=2000'),
+    sbFetch('/bird_detections?select=species_scientific&detected_at=gte.' + monthStr + '&limit=3000'),
+  ]).then(function(results) {
+    var climate    = results[0];
+    var todayBirds = results[1];
+    var weekBirds  = results[2];
+    var monthBirds = results[3];
+
+    var cl    = climate[0] || {};
+    var cl1   = climate[1] || {};
+    var aqi   = cl.aqi || 0;
+    var aqiCol = aqi <= 25 ? '#16a34a' : aqi <= 50 ? '#65a30d' : aqi <= 75 ? '#d97706' : aqi <= 100 ? '#dc2626' : '#7f1d1d';
+    var aqiLbl = aqi <= 25 ? 'Good' : aqi <= 50 ? 'Fair' : aqi <= 75 ? 'Moderate' : aqi <= 100 ? 'Poor' : 'Very poor';
+
+    var todaySp = {}; var weekSp = {}; var monthSp = {};
+    for (var i = 0; i < todayBirds.length; i++) todaySp[todayBirds[i].species_scientific] = true;
+    for (var i = 0; i < weekBirds.length;  i++) weekSp[weekBirds[i].species_scientific]   = true;
+    for (var i = 0; i < monthBirds.length; i++) monthSp[monthBirds[i].species_scientific] = true;
+
+    var newToday = todayBirds.filter(function(b) { return b.is_new_species_this_year; });
+
+    var spMap = {};
+    for (var i = 0; i < weekBirds.length; i++) {
+      var sp = weekBirds[i].species_scientific;
+      spMap[sp] = (spMap[sp] || 0) + 1;
+    }
+    var topWeek = [];
+    var spKeys  = Object.keys(spMap);
+    for (var k = 0; k < spKeys.length; k++) topWeek.push([spKeys[k], spMap[spKeys[k]]]);
+    topWeek.sort(function(a, b) { return b[1] - a[1]; });
+    topWeek = topWeek.slice(0, 5);
+
+    var todaySpList = Object.keys(todaySp);
+    var userName    = (_user && (_user.user_metadata || {}).first_name) || (_user ? _user.email.split('@')[0] : 'there');
+
+    el.innerHTML =
+      (isDawn ? '<div style="background:rgba(234,179,8,0.1);border:1px solid rgba(234,179,8,0.3);border-radius:var(--radius-md);padding:0.75rem 1rem;margin-bottom:1rem;font-size:0.85rem;color:#92400e;">🌅 <strong>Dawn chorus window</strong> — right now is peak bird activity. BirdNET is listening.</div>' : '') +
+      '<div class="digest-hero">' +
+        '<div class="digest-greeting">' + greet + ', ' + userName + '</div>' +
+        '<div class="digest-title">Here\'s what\'s happening<br>in Baner right now</div>' +
+        '<div class="digest-meta">' + nowIst.toLocaleDateString('en-IN', { weekday:'long', day:'numeric', month:'long', year:'numeric' }) + '</div>' +
+      '</div>' +
+
+      '<div class="digest-row">' +
+        '<div class="digest-card">' +
+          '<div class="digest-card-title">Air quality now</div>' +
+          '<h3 style="color:' + aqiCol + '">' + aqiLbl + ' · EU AQI ' + (cl.aqi || '—') + '</h3>' +
+          '<p>' + (cl.dominant_pollutant ? 'Dominant pollutant: ' + cl.dominant_pollutant + '.' : 'Real-time Copernicus CAMS data.') + ' India AQI: ' + (cl.google_aqi_india || '—') + '</p>' +
+        '</div>' +
+        '<div class="digest-card">' +
+          '<div class="digest-card-title">Weather now</div>' +
+          '<h3>' + (cl.temperature || '—') + '°C · ' + (cl.humidity || '—') + '% humidity</h3>' +
+          '<p>' + (cl.precipitation > 0 ? '🌧️ ' + cl.precipitation + 'mm rain this hour.' : 'No precipitation.') + (cl1.temperature ? ' Previous hour: ' + cl1.temperature + '°C.' : '') + '</p>' +
+        '</div>' +
+      '</div>' +
+
+      '<div class="digest-row">' +
+        '<div class="digest-card">' +
+          '<div class="digest-card-title">Birds today</div>' +
+          '<h3>' + Object.keys(todaySp).length + ' species detected</h3>' +
+          '<p>' + todayBirds.length + ' calls since midnight' + (newToday.length ? ' · <strong style="color:var(--ep-tan);">★ ' + newToday.length + ' new this year</strong>' : '') + '</p>' +
+          (todaySpList.length ? '<p style="margin-top:0.4rem;font-size:0.78rem;color:var(--text-muted);">' + todaySpList.slice(0, 5).join(', ').replace(/_/g, ' ') + (todaySpList.length > 5 ? ' +' + (todaySpList.length - 5) + ' more' : '') + '</p>' : '') +
+        '</div>' +
+        '<div class="digest-card">' +
+          '<div class="digest-card-title">This month</div>' +
+          '<h3>' + Object.keys(monthSp).length + ' species · ' + Object.keys(weekSp).length + ' this week</h3>' +
+          '<p>BirdNET has been listening continuously. <a href="birds.html" style="color:var(--ep-green);font-weight:500;">Browse all species →</a></p>' +
+        '</div>' +
+      '</div>' +
+
+      '<div class="digest-card" style="margin-bottom:1rem;">' +
+        '<div class="digest-card-title">Top 5 species this week</div>' +
+        '<ul class="digest-bird-list">' +
+          topWeek.map(function(s, i) {
+            return '<li>' +
+              '<span style="font-size:0.75rem;color:var(--text-muted);width:18px;">' + (i + 1) + '.</span>' +
+              '<span class="dbl-n"><a href="species.html?bird=' + encodeURIComponent(s[0]) + '" style="color:var(--ep-green);text-decoration:none;">' + s[0].replace(/_/g, ' ') + '</a></span>' +
+              '<span class="dbl-c">' + s[1] + ' detections</span>' +
+              '</li>';
+          }).join('') +
+        '</ul>' +
+      '</div>';
+
+  }).catch(function(e) {
+    el.innerHTML = '<div class="res-card" style="border-color:#fca5a5;"><p style="color:#dc2626;">Error: ' + escHtml(e.message) + '</p></div>';
+  });
+}
+
+// ────────────────────────────────────────────────────────────────────
+// HISTORY
+// ────────────────────────────────────────────────────────────────────
+function loadHistory() {
+  if (!_user || !_sb) return;
+  _sb.from('user_searches').select('*').eq('user_id', _user.id).order('created_at', { ascending: false }).limit(20)
+    .then(function(res) {
+      var rows = res.data || [];
+      var el   = document.getElementById('hist-list');
+      if (!rows.length) {
+        el.innerHTML = '<p style="color:var(--text-muted);font-size:0.88rem;">No search history yet. Try the Data Explorer!</p>';
+        return;
+      }
+      el.innerHTML = rows.map(function(r) {
+        return '<div class="hist-item">' +
+          '<span style="font-size:1.1rem;">🔍</span>' +
+          '<span class="hist-q" onclick="ask(\'' + escAttr(r.query) + '\')">' + escHtml(r.query) + '</span>' +
+          '<span class="hist-t">' + timeAgo(r.created_at) + '</span>' +
+          '<button class="hist-del" onclick="deleteHistoryItem(\'' + r.id + '\',this)" title="Remove">✕</button>' +
+          '</div>';
+      }).join('');
+    }).catch(function(e) {
+      document.getElementById('hist-list').innerHTML = '<p style="color:var(--text-muted);font-size:0.82rem;">History unavailable.</p>';
+    });
+}
+
+function deleteHistoryItem(id, btn) {
+  if (!_sb || !_user) return;
+  _sb.from('user_searches').delete().eq('id', id).eq('user_id', _user.id)
+    .then(function() {
+      var item = btn.closest('.hist-item');
+      if (item) item.remove();
+    }).catch(function() {});
+}
+
+function clearHistory() {
+  if (!_sb || !_user) return;
+  if (!confirm('Clear all search history?')) return;
+  _sb.from('user_searches').delete().eq('user_id', _user.id)
+    .then(function() {
+      document.getElementById('hist-list').innerHTML = '<p style="color:var(--text-muted);font-size:0.88rem;">History cleared.</p>';
+    }).catch(function(e) { toast('Error clearing history', true); });
+}
+
+// ────────────────────────────────────────────────────────────────────
+// WATCHLIST
+// ────────────────────────────────────────────────────────────────────
+function loadWatchlist() {
+  if (!_sb || !_user) return;
+  _sb.from('user_alerts').select('watchlist').eq('user_id', _user.id).limit(1)
+    .then(function(res) {
+      var prefs    = (res.data && res.data[0]) ? (res.data[0].watchlist || []) : [];
+      renderWatchlist(prefs);
+    }).catch(function() { renderWatchlist([]); });
+}
+
+function renderWatchlist(species) {
+  var grid = document.getElementById('watchlist-grid');
+  if (!species || !species.length) {
+    grid.innerHTML = '<div style="color:var(--text-muted);font-size:0.88rem;">Your watchlist is empty. Add species you want to track above.</div>';
+    return;
+  }
+  // Fetch last detection for each species
+  var promises = species.map(function(sp) {
+    return sbFetch('/bird_detections?select=detected_at,confidence&species_common=eq.' + encodeURIComponent(sp) + '&order=detected_at.desc&limit=5')
+      .then(function(rows) {
+        return { sp: sp, rows: rows };
+      }).catch(function() {
+        return { sp: sp, rows: [] };
+      });
+  });
+  Promise.all(promises).then(function(results) {
+    grid.innerHTML = results.map(function(r) {
+      var last  = r.rows.length ? r.rows[0].detected_at.slice(0, 10) : 'Never detected';
+      var count = r.rows.length;
+      return '<div class="watchlist-card">' +
+        '<div class="wc-name">🐦 ' + escHtml(r.sp) + '</div>' +
+        '<div class="wc-last">Last seen: ' + last + '</div>' +
+        '<div class="wc-count">Recent detections: ' + count + '</div>' +
+        '<button class="wc-remove" onclick="removeFromWatchlist(\'' + escAttr(r.sp) + '\')" title="Remove">✕</button>' +
+        '</div>';
+    }).join('');
+  });
+}
+
+function addToWatchlist() {
+  var inp = document.getElementById('wl-input');
+  var sp  = (inp.value || '').trim();
+  if (!sp) return;
+  if (!_sb || !_user) return;
+
+  _sb.from('user_alerts').select('watchlist').eq('user_id', _user.id).limit(1)
+    .then(function(res) {
+      var cur = (res.data && res.data[0]) ? (res.data[0].watchlist || []) : [];
+      if (cur.indexOf(sp) !== -1) { toast('Already in your watchlist'); return; }
+      cur.push(sp);
+      return _sb.from('user_alerts').upsert({ user_id: _user.id, watchlist: cur }, { onConflict: 'user_id' });
+    }).then(function() {
+      inp.value = '';
+      toast('Added to watchlist!');
+      loadWatchlist();
+    }).catch(function(e) { toast('Error: ' + e.message, true); });
+}
+
+function removeFromWatchlist(sp) {
+  if (!_sb || !_user) return;
+  _sb.from('user_alerts').select('watchlist').eq('user_id', _user.id).limit(1)
+    .then(function(res) {
+      var cur = (res.data && res.data[0]) ? (res.data[0].watchlist || []) : [];
+      cur = cur.filter(function(s) { return s !== sp; });
+      return _sb.from('user_alerts').upsert({ user_id: _user.id, watchlist: cur }, { onConflict: 'user_id' });
+    }).then(function() {
+      toast('Removed from watchlist');
+      loadWatchlist();
+    }).catch(function(e) { toast('Error', true); });
+}
+
+// ────────────────────────────────────────────────────────────────────
+// FIELD NOTES
+// ────────────────────────────────────────────────────────────────────
+function loadNotes() {
+  if (!_sb || !_user) return;
+  _sb.from('user_alerts').select('field_notes').eq('user_id', _user.id).limit(1)
+    .then(function(res) {
+      var notes = (res.data && res.data[0]) ? (res.data[0].field_notes || []) : [];
+      renderNotes(notes);
+    }).catch(function() { renderNotes([]); });
+}
+
+function renderNotes(notes) {
+  var el = document.getElementById('notes-list');
+  if (!notes || !notes.length) {
+    el.innerHTML = '<div style="color:var(--text-muted);font-size:0.88rem;">No field notes yet. Record your first observation above.</div>';
+    return;
+  }
+  // Show newest first
+  var sorted = notes.slice().sort(function(a, b) { return b.ts > a.ts ? 1 : -1; });
+  el.innerHTML = sorted.map(function(n, i) {
+    return '<div class="note-item">' +
+      '<div class="note-item-top">' +
+        '<div class="note-body">' +
+          (n.tag ? '<span style="display:inline-block;font-size:0.68rem;background:rgba(33,67,50,0.1);color:var(--ep-green);padding:1px 8px;border-radius:12px;margin-bottom:4px;">' + escHtml(n.tag) + '</span><br>' : '') +
+          escHtml(n.text) +
+          '<div class="note-meta">' + (n.date || n.ts.slice(0, 10)) + ' · saved ' + timeAgo(n.ts) + '</div>' +
+        '</div>' +
+        '<button class="note-del" onclick="deleteNote(\'' + escAttr(n.ts) + '\')" title="Delete note">🗑</button>' +
+      '</div>' +
+      '</div>';
+  }).join('');
+}
+
+function addNote() {
+  var text = (document.getElementById('note-text').value || '').trim();
+  var tag  = (document.getElementById('note-tag').value || '').trim();
+  var date = document.getElementById('note-date').value;
+  if (!text) return;
+  if (!_sb || !_user) return;
+
+  var note = { text: text, tag: tag, date: date, ts: new Date().toISOString() };
+
+  _sb.from('user_alerts').select('field_notes').eq('user_id', _user.id).limit(1)
+    .then(function(res) {
+      var cur = (res.data && res.data[0]) ? (res.data[0].field_notes || []) : [];
+      cur.push(note);
+      return _sb.from('user_alerts').upsert({ user_id: _user.id, field_notes: cur }, { onConflict: 'user_id' });
+    }).then(function() {
+      document.getElementById('note-text').value = '';
+      document.getElementById('note-tag').value  = '';
+      toast('Note saved!');
+      loadNotes();
+    }).catch(function(e) { toast('Error saving note', true); });
+}
+
+function deleteNote(ts) {
+  if (!_sb || !_user) return;
+  if (!confirm('Delete this note?')) return;
+  _sb.from('user_alerts').select('field_notes').eq('user_id', _user.id).limit(1)
+    .then(function(res) {
+      var cur = (res.data && res.data[0]) ? (res.data[0].field_notes || []) : [];
+      cur = cur.filter(function(n) { return n.ts !== ts; });
+      return _sb.from('user_alerts').upsert({ user_id: _user.id, field_notes: cur }, { onConflict: 'user_id' });
+    }).then(function() {
+      toast('Note deleted');
+      loadNotes();
+    }).catch(function() { toast('Error', true); });
+}
+
+// ────────────────────────────────────────────────────────────────────
+// ALERTS
+// ────────────────────────────────────────────────────────────────────
+function loadAlerts() {
+  if (!_user || !_sb) return;
+  _sb.from('user_alerts').select('preferences').eq('user_id', _user.id).limit(1)
+    .then(function(res) {
+      if (!res.data || !res.data[0]) return;
+      var p = res.data[0].preferences || {};
+      var keys = ['good-aqi', 'bad-aqi', 'hazardous', 'first-rain', 'heavy-rain', 'heat', 'new-sp', 'rare'];
+      for (var i = 0; i < keys.length; i++) {
+        var el = document.getElementById('a-' + keys[i]);
+        if (el && p[keys[i]]) el.checked = true;
+      }
+      if (p.fav) document.getElementById('a-fav').value = p.fav;
+    }).catch(function() {});
+}
+
+function saveAlerts() {
+  if (!_user || !_sb) return;
+  var p = {
+    'good-aqi':   document.getElementById('a-good-aqi').checked,
+    'bad-aqi':    document.getElementById('a-bad-aqi').checked,
+    'hazardous':  document.getElementById('a-hazardous').checked,
+    'first-rain': document.getElementById('a-first-rain').checked,
+    'heavy-rain': document.getElementById('a-heavy-rain').checked,
+    'heat':       document.getElementById('a-heat').checked,
+    'new-sp':     document.getElementById('a-new-sp').checked,
+    'rare':       document.getElementById('a-rare').checked,
+    'fav':        document.getElementById('a-fav').value.trim()
+  };
+  _sb.from('user_alerts').upsert({ user_id: _user.id, preferences: p, updated_at: new Date().toISOString() }, { onConflict: 'user_id' })
+    .then(function() { toast('Alert preferences saved!'); })
+    .catch(function(e) { toast('Error saving: ' + e.message, true); });
+}
+
+// ────────────────────────────────────────────────────────────────────
+// DOWNLOAD
+// ────────────────────────────────────────────────────────────────────
+function loadDownloadMeta() {
+  Promise.all([
+    sbFetch('/combined_readings?select=recorded_at&order=recorded_at.asc&limit=1'),
+    sbFetch('/bird_detections?select=detected_at&order=detected_at.asc&limit=1')
+  ]).then(function(results) {
+    var clFirst = results[0][0];
+    var bdFirst = results[1][0];
+    if (clFirst) {
+      var el = document.getElementById('dl-meta-climate');
+      if (el) el.textContent = 'Since ' + clFirst.recorded_at.slice(0, 10);
+      var r2 = document.getElementById('dl-meta-rain');
+      if (r2) r2.textContent = 'Since ' + clFirst.recorded_at.slice(0, 10);
+    }
+    if (bdFirst) {
+      var el2 = document.getElementById('dl-meta-birds');
+      if (el2) el2.textContent = 'Since ' + bdFirst.detected_at.slice(0, 10);
+    }
+  }).catch(function() {});
+}
+
+function dlData(type, fmt) {
+  var path, name;
+  if (type === 'climate') {
+    path = '/combined_readings?select=*&order=recorded_at.asc&limit=50000';
+    name = 'earthpulse-climate';
+  } else if (type === 'birds') {
+    path = '/bird_detections?select=*&order=detected_at.asc&limit=10000';
+    name = 'earthpulse-birds';
+  } else if (type === 'rain') {
+    path = '/combined_readings?select=recorded_at,precipitation,rain_intensity,rain_accumulation,weather_source&precipitation=gt.0&order=recorded_at.asc&limit=20000';
+    name = 'earthpulse-rainfall';
+  } else {
+    path = '/timelapse_frames?select=*&order=captured_at.asc&limit=5000';
+    name = 'earthpulse-photos';
+  }
+  sbFetch(path).then(function(rows) {
+    if (!Array.isArray(rows) || !rows.length) { toast('No data found', true); return; }
+    downloadRows(rows, name, fmt || 'csv');
+  }).catch(function(e) { toast('Error: ' + e.message, true); });
+}
+
+function dlCustom(fmt) {
+  var type = document.getElementById('dl-type').value;
+  var from = document.getElementById('dl-from').value;
+  var to   = document.getElementById('dl-to').value;
+  if (!from || !to) { toast('Please select a date range', true); return; }
+  if (from > to)    { toast('Start date must be before end date', true); return; }
+
+  var tsField = type === 'birds' ? 'detected_at' : 'recorded_at';
+  var fromTs  = from + 'T00:00:00Z';
+  var toTs    = to   + 'T23:59:59Z';
+  var basePath, name;
+
+  if (type === 'birds') {
+    basePath = '/bird_detections?select=*&detected_at=gte.' + fromTs + '&detected_at=lte.' + toTs + '&order=detected_at.asc&limit=10000';
+    name = 'earthpulse-birds-' + from + '-' + to;
+  } else if (type === 'rain') {
+    basePath = '/combined_readings?select=recorded_at,precipitation,weather_source&precipitation=gt.0&recorded_at=gte.' + fromTs + '&recorded_at=lte.' + toTs + '&order=recorded_at.asc&limit=20000';
+    name = 'earthpulse-rain-' + from + '-' + to;
+  } else {
+    basePath = '/combined_readings?select=*&recorded_at=gte.' + fromTs + '&recorded_at=lte.' + toTs + '&order=recorded_at.asc&limit=50000';
+    name = 'earthpulse-climate-' + from + '-' + to;
+  }
+
+  sbFetch(basePath).then(function(rows) {
+    if (!Array.isArray(rows) || !rows.length) { toast('No data in this range', true); return; }
+    downloadRows(rows, name, fmt || 'csv');
+    toast('Downloaded ' + rows.length + ' rows');
+  }).catch(function(e) { toast('Error: ' + e.message, true); });
+}
+
+function downloadRows(rows, name, fmt) {
+  var content, mime, ext;
+  if (fmt === 'json') {
+    content = JSON.stringify(rows, null, 2);
+    mime    = 'application/json';
+    ext     = '.json';
+  } else {
+    content = toCSV(rows);
+    mime    = 'text/csv';
+    ext     = '.csv';
+  }
+  var blob = new Blob([content], { type: mime });
+  var a    = document.createElement('a');
+  a.href   = URL.createObjectURL(blob);
+  a.download = name + ext;
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+function dlFromQuery(fmt) {
+  if (!lastRows) return;
+  downloadRows(lastRows, 'earthpulse-query-' + Date.now(), fmt);
+}
+
+// ────────────────────────────────────────────────────────────────────
+// UTILITIES
+// ────────────────────────────────────────────────────────────────────
+function toCSV(rows) {
+  if (!rows || !rows.length) return '';
+  var keys  = Object.keys(rows[0]);
+  var lines = [keys.join(',')];
+  for (var i = 0; i < rows.length; i++) {
+    lines.push(keys.map(function(k) {
+      var v = rows[i][k];
+      if (v === null || v === undefined) return '';
+      return '"' + String(v).replace(/"/g, '""') + '"';
+    }).join(','));
+  }
+  return lines.join('\n');
+}
+
+function buildTable(rows) {
+  if (!rows || !rows.length) return '';
+  var keys = Object.keys(rows[0]);
+  var h = '<div class="tbl-wrap"><table class="tbl"><thead><tr>' +
+    keys.map(function(k) { return '<th>' + k.replace(/_/g, ' ') + '</th>'; }).join('') +
+    '</tr></thead><tbody>';
+  for (var i = 0; i < rows.length; i++) {
+    h += '<tr>' + keys.map(function(k) { return '<td>' + (rows[i][k] != null ? rows[i][k] : '—') + '</td>'; }).join('') + '</tr>';
+  }
+  return h + '</tbody></table></div>';
+}
+
+function md2html(t) {
+  return t
+    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\n\n/g, '</p><p>')
+    .replace(/\n[-•] /g, '<br>• ')
+    .replace(/\n/g, '<br>')
+    .replace(/^/, '<p>').replace(/$/, '</p>');
+}
+
+function escHtml(t) {
+  return String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+function escAttr(t) {
+  return String(t).replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/"/g, '&quot;');
+}
+
+function timeAgo(ts) {
+  var d = (Date.now() - new Date(ts).getTime()) / 1000;
+  if (d < 60)    return 'just now';
+  if (d < 3600)  return Math.floor(d / 60) + 'm ago';
+  if (d < 86400) return Math.floor(d / 3600) + 'h ago';
+  return Math.floor(d / 86400) + 'd ago';
+}
+</script>
+</body>
+</html>
