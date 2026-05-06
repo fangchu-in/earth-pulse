@@ -1,172 +1,178 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Earth Pulse sitemap — generated 2026-05-03T03:00:12 IST -->
+<!-- Earth Pulse sitemap — generated 2026-05-06T20:11:37 IST -->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://earth-pulse.org</loc>
-    <lastmod>2026-05-02</lastmod>
+    <lastmod>2026-05-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
     <loc>https://earth-pulse.org/index.html</loc>
-    <lastmod>2026-05-02</lastmod>
+    <lastmod>2026-05-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
     <loc>https://earth-pulse.org/birds.html</loc>
-    <lastmod>2026-05-02</lastmod>
+    <lastmod>2026-05-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://earth-pulse.org/climate.html</loc>
-    <lastmod>2026-05-02</lastmod>
+    <lastmod>2026-05-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://earth-pulse.org/aqi.html</loc>
-    <lastmod>2026-05-02</lastmod>
+    <lastmod>2026-05-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://earth-pulse.org/temperature.html</loc>
-    <lastmod>2026-05-02</lastmod>
+    <lastmod>2026-05-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://earth-pulse.org/rain.html</loc>
-    <lastmod>2026-05-02</lastmod>
+    <lastmod>2026-05-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://earth-pulse.org/monsoon.html</loc>
-    <lastmod>2026-05-02</lastmod>
+    <lastmod>2026-05-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://earth-pulse.org/species.html</loc>
-    <lastmod>2026-05-02</lastmod>
+    <lastmod>2026-05-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://earth-pulse.org/hill.html</loc>
-    <lastmod>2026-05-02</lastmod>
+    <lastmod>2026-05-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://earth-pulse.org/blog.html</loc>
-    <lastmod>2026-05-02</lastmod>
+    <lastmod>2026-05-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://earth-pulse.org/compare.html</loc>
-    <lastmod>2026-05-02</lastmod>
+    <lastmod>2026-05-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://earth-pulse.org/search.html</loc>
-    <lastmod>2026-05-02</lastmod>
+    <lastmod>2026-05-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://earth-pulse.org/about.html</loc>
-    <lastmod>2026-05-02</lastmod>
+    <lastmod>2026-05-06</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://earth-pulse.org/contribute.html</loc>
-    <lastmod>2026-05-02</lastmod>
+    <lastmod>2026-05-06</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://earth-pulse.org/contact.html</loc>
-    <lastmod>2026-05-02</lastmod>
+    <lastmod>2026-05-06</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://earth-pulse.org/register.html</loc>
-    <lastmod>2026-05-02</lastmod>
+    <lastmod>2026-05-06</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
     <loc>https://earth-pulse.org/share.html</loc>
-    <lastmod>2026-05-02</lastmod>
+    <lastmod>2026-05-06</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
     <loc>https://earth-pulse.org/bird-insights/top-birds-baner-hill.html</loc>
-    <lastmod>2026-05-02</lastmod>
+    <lastmod>2026-05-06</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://earth-pulse.org/bird-insights/dawn-birds-baner-hill.html</loc>
-    <lastmod>2026-05-02</lastmod>
+    <lastmod>2026-05-06</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://earth-pulse.org/bird-insights/dusk-birds-baner-hill.html</loc>
-    <lastmod>2026-05-02</lastmod>
+    <lastmod>2026-05-06</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://earth-pulse.org/bird-insights/night-birds-baner-hill.html</loc>
-    <lastmod>2026-05-02</lastmod>
+    <lastmod>2026-05-06</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://earth-pulse.org/bird-insights/new-this-month-baner-hill.html</loc>
-    <lastmod>2026-05-02</lastmod>
+    <lastmod>2026-05-06</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://earth-pulse.org/bird-insights/birds-after-rain-baner-hill.html</loc>
-    <lastmod>2026-05-02</lastmod>
+    <lastmod>2026-05-06</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://earth-pulse.org/bird-insights/birds-clean-air-baner-hill.html</loc>
-    <lastmod>2026-05-02</lastmod>
+    <lastmod>2026-05-06</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://earth-pulse.org/bird-insights/summer-birds-baner-hill.html</loc>
-    <lastmod>2026-05-02</lastmod>
+    <lastmod>2026-05-06</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://earth-pulse.org/bird-insights/monsoon-birds-baner-hill.html</loc>
-    <lastmod>2026-05-02</lastmod>
+    <lastmod>2026-05-06</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://earth-pulse.org/bird-insights/winter-birds-baner-hill.html</loc>
-    <lastmod>2026-05-02</lastmod>
+    <lastmod>2026-05-06</lastmod>
     <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://earth-pulse.org/blog/2026/week-2026-04-27.html</loc>
+    <lastmod>2026-05-04</lastmod>
+    <changefreq>never</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
@@ -201,25 +207,25 @@
   </url>
   <url>
     <loc>https://earth-pulse.org/species.html?bird=Accipiter_badius</loc>
-    <lastmod>2026-05-01</lastmod>
+    <lastmod>2026-05-04</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://earth-pulse.org/species.html?bird=Acridotheres_tristis</loc>
-    <lastmod>2026-05-02</lastmod>
+    <lastmod>2026-05-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://earth-pulse.org/species.html?bird=Actitis_hypoleucos</loc>
-    <lastmod>2026-05-02</lastmod>
+    <lastmod>2026-05-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://earth-pulse.org/species.html?bird=Alcedo_atthis</loc>
-    <lastmod>2026-05-01</lastmod>
+    <lastmod>2026-05-04</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -231,7 +237,7 @@
   </url>
   <url>
     <loc>https://earth-pulse.org/species.html?bird=Ammomanes_phoenicura</loc>
-    <lastmod>2026-04-29</lastmod>
+    <lastmod>2026-05-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -255,7 +261,7 @@
   </url>
   <url>
     <loc>https://earth-pulse.org/species.html?bird=Anthus_trivialis</loc>
-    <lastmod>2026-05-01</lastmod>
+    <lastmod>2026-05-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -266,8 +272,14 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://earth-pulse.org/species.html?bird=Ardea_alba</loc>
+    <lastmod>2026-05-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://earth-pulse.org/species.html?bird=Ardea_cinerea</loc>
-    <lastmod>2026-05-01</lastmod>
+    <lastmod>2026-05-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -285,7 +297,7 @@
   </url>
   <url>
     <loc>https://earth-pulse.org/species.html?bird=Burhinus_indicus</loc>
-    <lastmod>2026-05-01</lastmod>
+    <lastmod>2026-05-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -333,7 +345,7 @@
   </url>
   <url>
     <loc>https://earth-pulse.org/species.html?bird=Cinnyris_asiaticus</loc>
-    <lastmod>2026-05-02</lastmod>
+    <lastmod>2026-05-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -351,55 +363,55 @@
   </url>
   <url>
     <loc>https://earth-pulse.org/species.html?bird=Copsychus_fulicatus</loc>
-    <lastmod>2026-05-02</lastmod>
+    <lastmod>2026-05-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://earth-pulse.org/species.html?bird=Copsychus_saularis</loc>
-    <lastmod>2026-05-01</lastmod>
+    <lastmod>2026-05-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://earth-pulse.org/species.html?bird=Corvus_macrorhynchos</loc>
-    <lastmod>2026-05-02</lastmod>
+    <lastmod>2026-05-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://earth-pulse.org/species.html?bird=Corvus_splendens</loc>
-    <lastmod>2026-05-02</lastmod>
+    <lastmod>2026-05-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://earth-pulse.org/species.html?bird=Cyornis_tickelliae</loc>
-    <lastmod>2026-05-02</lastmod>
+    <lastmod>2026-05-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://earth-pulse.org/species.html?bird=Dendrocitta_vagabunda</loc>
-    <lastmod>2026-05-01</lastmod>
+    <lastmod>2026-05-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://earth-pulse.org/species.html?bird=Dicrurus_leucophaeus</loc>
-    <lastmod>2026-04-15</lastmod>
+    <lastmod>2026-05-04</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://earth-pulse.org/species.html?bird=Dicrurus_macrocercus</loc>
-    <lastmod>2026-05-02</lastmod>
+    <lastmod>2026-05-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://earth-pulse.org/species.html?bird=Dicrurus_paradiseus</loc>
-    <lastmod>2026-04-30</lastmod>
+    <lastmod>2026-05-03</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -411,25 +423,25 @@
   </url>
   <url>
     <loc>https://earth-pulse.org/species.html?bird=Eudynamys_scolopaceus</loc>
-    <lastmod>2026-05-02</lastmod>
+    <lastmod>2026-05-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://earth-pulse.org/species.html?bird=Falco_peregrinus</loc>
-    <lastmod>2026-04-18</lastmod>
+    <lastmod>2026-05-03</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://earth-pulse.org/species.html?bird=Falco_tinnunculus</loc>
-    <lastmod>2026-05-02</lastmod>
+    <lastmod>2026-05-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://earth-pulse.org/species.html?bird=Fulica_atra</loc>
-    <lastmod>2026-05-02</lastmod>
+    <lastmod>2026-05-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -441,13 +453,13 @@
   </url>
   <url>
     <loc>https://earth-pulse.org/species.html?bird=Gallinula_chloropus</loc>
-    <lastmod>2026-05-02</lastmod>
+    <lastmod>2026-05-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://earth-pulse.org/species.html?bird=Halcyon_smyrnensis</loc>
-    <lastmod>2026-05-01</lastmod>
+    <lastmod>2026-05-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -459,13 +471,13 @@
   </url>
   <url>
     <loc>https://earth-pulse.org/species.html?bird=Himantopus_himantopus</loc>
-    <lastmod>2026-04-29</lastmod>
+    <lastmod>2026-05-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://earth-pulse.org/species.html?bird=Hirundo_rustica</loc>
-    <lastmod>2026-04-16</lastmod>
+    <lastmod>2026-05-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -494,6 +506,18 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://earth-pulse.org/species.html?bird=Lonchura_striata</loc>
+    <lastmod>2026-05-06</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://earth-pulse.org/species.html?bird=Merops_orientalis</loc>
+    <lastmod>2026-05-06</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://earth-pulse.org/species.html?bird=Milvus_migrans</loc>
     <lastmod>2026-04-29</lastmod>
     <changefreq>weekly</changefreq>
@@ -507,7 +531,7 @@
   </url>
   <url>
     <loc>https://earth-pulse.org/species.html?bird=Motacilla_alba</loc>
-    <lastmod>2026-05-02</lastmod>
+    <lastmod>2026-05-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -536,62 +560,74 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://earth-pulse.org/species.html?bird=Nisaetus_cirrhatus</loc>
+    <lastmod>2026-05-06</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://earth-pulse.org/species.html?bird=Numenius_arquata</loc>
-    <lastmod>2026-05-02</lastmod>
+    <lastmod>2026-05-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://earth-pulse.org/species.html?bird=Nycticorax_nycticorax</loc>
-    <lastmod>2026-05-02</lastmod>
+    <lastmod>2026-05-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://earth-pulse.org/species.html?bird=Ocyceros_birostris</loc>
-    <lastmod>2026-04-28</lastmod>
+    <lastmod>2026-05-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://earth-pulse.org/species.html?bird=Oriolus_kundoo</loc>
-    <lastmod>2026-05-02</lastmod>
+    <lastmod>2026-05-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://earth-pulse.org/species.html?bird=Orthotomus_sutorius</loc>
-    <lastmod>2026-05-02</lastmod>
+    <lastmod>2026-05-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://earth-pulse.org/species.html?bird=Ortygornis_pondicerianus</loc>
-    <lastmod>2026-05-02</lastmod>
+    <lastmod>2026-05-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://earth-pulse.org/species.html?bird=Pandion_haliaetus</loc>
-    <lastmod>2026-05-01</lastmod>
+    <lastmod>2026-05-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://earth-pulse.org/species.html?bird=Parus_cinereus</loc>
-    <lastmod>2026-05-02</lastmod>
+    <lastmod>2026-05-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://earth-pulse.org/species.html?bird=Passer_domesticus</loc>
-    <lastmod>2026-04-30</lastmod>
+    <lastmod>2026-05-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://earth-pulse.org/species.html?bird=Pavo_cristatus</loc>
-    <lastmod>2026-05-01</lastmod>
+    <lastmod>2026-05-06</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://earth-pulse.org/species.html?bird=Pellorneum_ruficeps</loc>
+    <lastmod>2026-05-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -627,13 +663,13 @@
   </url>
   <url>
     <loc>https://earth-pulse.org/species.html?bird=Prinia_inornata</loc>
-    <lastmod>2026-05-01</lastmod>
+    <lastmod>2026-05-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://earth-pulse.org/species.html?bird=Prinia_socialis</loc>
-    <lastmod>2026-05-02</lastmod>
+    <lastmod>2026-05-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -645,7 +681,7 @@
   </url>
   <url>
     <loc>https://earth-pulse.org/species.html?bird=Pseudibis_papillosa</loc>
-    <lastmod>2026-04-29</lastmod>
+    <lastmod>2026-05-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -657,43 +693,43 @@
   </url>
   <url>
     <loc>https://earth-pulse.org/species.html?bird=Psittacula_eupatria</loc>
-    <lastmod>2026-04-20</lastmod>
+    <lastmod>2026-05-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://earth-pulse.org/species.html?bird=Psittacula_krameri</loc>
-    <lastmod>2026-05-01</lastmod>
+    <lastmod>2026-05-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://earth-pulse.org/species.html?bird=Pycnonotus_cafer</loc>
-    <lastmod>2026-05-02</lastmod>
+    <lastmod>2026-05-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://earth-pulse.org/species.html?bird=Pycnonotus_jocosus</loc>
-    <lastmod>2026-05-02</lastmod>
+    <lastmod>2026-05-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://earth-pulse.org/species.html?bird=Rhipidura_albogularis</loc>
-    <lastmod>2026-04-29</lastmod>
+    <lastmod>2026-05-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://earth-pulse.org/species.html?bird=Saxicola_caprata</loc>
-    <lastmod>2026-05-01</lastmod>
+    <lastmod>2026-05-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://earth-pulse.org/species.html?bird=Spilornis_cheela</loc>
-    <lastmod>2026-05-02</lastmod>
+    <lastmod>2026-05-04</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -705,7 +741,7 @@
   </url>
   <url>
     <loc>https://earth-pulse.org/species.html?bird=Sturnia_pagodarum</loc>
-    <lastmod>2026-04-30</lastmod>
+    <lastmod>2026-05-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -723,31 +759,31 @@
   </url>
   <url>
     <loc>https://earth-pulse.org/species.html?bird=Tringa_glareola</loc>
-    <lastmod>2026-04-08</lastmod>
+    <lastmod>2026-05-04</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://earth-pulse.org/species.html?bird=Tringa_nebularia</loc>
-    <lastmod>2026-04-30</lastmod>
+    <lastmod>2026-05-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://earth-pulse.org/species.html?bird=Tringa_ochropus</loc>
-    <lastmod>2026-05-02</lastmod>
+    <lastmod>2026-05-04</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://earth-pulse.org/species.html?bird=Tringa_totanus</loc>
-    <lastmod>2026-04-30</lastmod>
+    <lastmod>2026-05-03</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://earth-pulse.org/species.html?bird=Tyto_alba</loc>
-    <lastmod>2026-05-02</lastmod>
+    <lastmod>2026-05-04</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -759,7 +795,7 @@
   </url>
   <url>
     <loc>https://earth-pulse.org/species.html?bird=Vanellus_indicus</loc>
-    <lastmod>2026-05-02</lastmod>
+    <lastmod>2026-05-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -771,7 +807,7 @@
   </url>
   <url>
     <loc>https://earth-pulse.org/species.html?bird=Zosterops_palpebrosus</loc>
-    <lastmod>2026-05-02</lastmod>
+    <lastmod>2026-05-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
