@@ -24,11 +24,16 @@
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
   <link rel="manifest" href="/site.webmanifest">
-  <!-- Structured data injected dynamically after data loads -->
   <script id="ld-species" type="application/ld+json">{}</script>
   <link rel="stylesheet" href="styles.css">
+  <!-- Chart.js -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+  <!-- Leaflet for GBIF range map -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+
   <style>
+    /* ── Species hero ── */
     .species-hero { position:relative; background:var(--ep-green); min-height:340px; display:flex; align-items:flex-end; overflow:hidden; }
     .species-hero-bg { position:absolute; inset:0; background-size:cover; background-position:center; filter:brightness(0.35); }
     .species-hero-content { position:relative; z-index:1; padding:2.5rem 2rem; max-width:1100px; width:100%; margin:0 auto; }
@@ -43,18 +48,26 @@
     .share-btn:hover { background:rgba(191,155,123,0.45); }
     .share-toast { position:fixed; bottom:2rem; left:50%; transform:translateX(-50%); background:var(--ep-green); color:var(--ep-cream); padding:0.65rem 1.5rem; border-radius:2rem; font-size:0.85rem; font-weight:500; z-index:9999; opacity:0; transition:opacity 0.3s; pointer-events:none; white-space:nowrap; }
     .share-toast.show { opacity:1; }
+
+    /* ── Layout ── */
     .species-layout { display:grid; grid-template-columns:1fr 1.8fr; gap:2rem; }
     @media(max-width:800px){ .species-layout { grid-template-columns:1fr; } }
+
+    /* ── Cards ── */
     .sidebar-card { background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-lg); padding:1.25rem; margin-bottom:1rem; }
     .sidebar-card h3 { font-family:var(--serif); font-size:1rem; color:var(--ep-green); margin-bottom:0.75rem; }
     .fact-row { display:flex; justify-content:space-between; align-items:baseline; padding:0.4rem 0; border-bottom:1px solid var(--border); font-size:0.82rem; gap:0.5rem; }
     .fact-row:last-child { border-bottom:none; }
     .fact-label { color:var(--text-muted); white-space:nowrap; }
     .fact-val { font-weight:600; color:var(--ep-green); font-family:var(--mono); font-size:0.8rem; text-align:right; }
+
+    /* ── Wiki ── */
     .wiki-img-wrap { background:var(--ep-cream-dark); border-radius:var(--radius-md); margin-bottom:0.85rem; display:flex; align-items:center; justify-content:center; overflow:hidden; min-height:100px; }
     .wiki-img-wrap img { width:100%; max-height:360px; object-fit:contain; display:block; }
     .wiki-extract { font-size:0.87rem; color:var(--text-muted); line-height:1.8; }
     .wiki-link { display:inline-flex; align-items:center; gap:5px; color:var(--ep-green); font-size:0.8rem; margin-top:0.75rem; text-decoration:none; }
+
+    /* ── Eco tags ── */
     .eco-tags { display:flex; gap:0.4rem; flex-wrap:wrap; margin-bottom:0.85rem; }
     .eco-tag { font-size:0.7rem; font-weight:600; padding:3px 10px; border-radius:20px; background:rgba(33,67,50,0.08); color:var(--ep-green); border:1px solid rgba(33,67,50,0.15); text-decoration:none; display:inline-block; transition:background 0.15s; }
     .eco-tag:hover { background:rgba(33,67,50,0.16); }
@@ -62,17 +75,25 @@
     .eco-tag.water     { background:rgba(6,182,212,0.08);   color:#0891b2; border-color:rgba(6,182,212,0.2); }
     .eco-tag.nocturnal { background:rgba(124,58,237,0.08);  color:#7c3aed; border-color:rgba(124,58,237,0.2); }
     .eco-tag.raptor    { background:rgba(234,88,12,0.08);   color:#c2410c; border-color:rgba(234,88,12,0.2); }
+
+    /* ── Fun fact ── */
     .funfact-card { background:linear-gradient(135deg,rgba(33,67,50,0.05),rgba(191,155,123,0.08)); border:1px solid rgba(191,155,123,0.25); border-radius:var(--radius-lg); padding:1.1rem 1.25rem; margin-bottom:1rem; }
     .funfact-icon  { font-size:1.5rem; margin-bottom:0.4rem; }
     .funfact-title { font-size:0.68rem; font-weight:700; text-transform:uppercase; letter-spacing:0.1em; color:var(--ep-tan); margin-bottom:0.35rem; }
     .funfact-text  { font-size:0.84rem; color:var(--text-muted); line-height:1.75; }
+
+    /* ── Chart blocks ── */
     .chart-block { background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-lg); padding:1.25rem; margin-bottom:1rem; }
     .chart-title { font-family:var(--serif); font-size:1rem; color:var(--ep-green); margin-bottom:0.2rem; }
     .chart-sub { font-size:0.78rem; color:var(--text-muted); margin-bottom:1rem; }
+
+    /* ── Hour heatmap ── */
     .hour-grid { display:grid; grid-template-columns:repeat(24,1fr); gap:2px; margin-bottom:4px; }
     .hour-cell { aspect-ratio:1; border-radius:2px; }
     .hour-label-row { display:flex; justify-content:space-between; margin-top:2px; }
     .hour-label-row span { font-family:var(--mono); font-size:0.55rem; color:var(--text-muted); }
+
+    /* ── Timeline ── */
     .timeline { display:flex; flex-direction:column; max-height:320px; overflow-y:auto; }
     .tl-row { display:flex; align-items:center; gap:0.75rem; padding:0.45rem 0; border-bottom:1px solid var(--border); font-size:0.79rem; }
     .tl-row:last-child { border-bottom:none; }
@@ -81,16 +102,20 @@
     .tl-aqi  { font-size:0.7rem; color:var(--text-muted); }
     .tl-new  { font-size:0.6rem; background:#fef08a; color:#713f12; font-weight:700; padding:1px 6px; border-radius:10px; white-space:nowrap; }
     .tl-node { font-size:0.6rem; background:rgba(33,67,50,0.1); color:var(--ep-green); font-weight:600; padding:1px 6px; border-radius:10px; white-space:nowrap; }
-    /* Node split bar */
+
+    /* ── Node split ── */
     .node-bar { display:flex; height:10px; border-radius:5px; overflow:hidden; margin:0.5rem 0 0.25rem; }
     .node-bar-seg { transition:width 0.5s; }
     .node-legend { display:flex; gap:1rem; font-size:0.72rem; color:var(--text-muted); }
     .node-dot { width:8px; height:8px; border-radius:50%; display:inline-block; margin-right:4px; }
-    /* Wow stat cards */
+
+    /* ── Wow stat cards ── */
     .wow-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(140px,1fr)); gap:0.75rem; margin-bottom:1rem; }
     .wow-card { background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-md); padding:0.85rem 1rem; text-align:center; }
     .wow-val { font-family:var(--serif); font-size:1.6rem; color:var(--ep-green); line-height:1; }
     .wow-label { font-size:0.65rem; font-weight:600; letter-spacing:0.07em; text-transform:uppercase; color:var(--text-muted); margin-top:0.25rem; }
+
+    /* ── Related grid ── */
     .related-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(140px,1fr)); gap:0.75rem; }
     .related-card { background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-md); padding:0.75rem; text-align:center; text-decoration:none; transition:box-shadow 0.15s,transform 0.15s; display:block; }
     .related-card:hover { box-shadow:0 4px 16px rgba(33,67,50,0.1); transform:translateY(-2px); }
@@ -98,22 +123,130 @@
     .related-thumb img { width:56px; height:56px; border-radius:50%; object-fit:cover; display:block; }
     .related-card-name { font-size:0.75rem; font-weight:600; color:var(--ep-green); }
     .related-card-sci  { font-size:0.63rem; font-style:italic; color:var(--text-muted); margin-top:1px; }
+
+    /* ── Species index ── */
     .species-index-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:1rem; }
     .si-card { background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-lg); overflow:hidden; text-decoration:none; display:block; transition:box-shadow 0.2s,transform 0.2s; color:inherit; }
     .si-card:hover { box-shadow:0 6px 24px rgba(33,67,50,0.12); transform:translateY(-2px); }
     .si-photo { width:100%; height:130px; object-fit:cover; display:block; background:var(--ep-cream-dark); }
     .si-emoji { width:100%; height:130px; display:flex; align-items:center; justify-content:center; font-size:3rem; background:linear-gradient(135deg,rgba(33,67,50,0.07),rgba(191,155,123,0.1)); }
     .si-body { padding:0.85rem 1rem; }
+
+    /* ── Not found ── */
     .not-found { text-align:center; padding:5rem 2rem; }
     .not-found h2 { font-family:var(--serif); font-size:1.8rem; color:var(--ep-green); margin-bottom:0.5rem; }
     .not-found p { color:var(--text-muted); line-height:1.7; }
+
+    /* ── Pagination ── */
     .pag-btn { padding:0.4rem 0.9rem; border-radius:var(--radius-sm); border:1px solid var(--border-strong); background:transparent; font-family:var(--sans); font-size:0.82rem; color:var(--ep-green); cursor:pointer; transition:all 0.15s; }
     .pag-btn:hover { background:var(--ep-green); color:var(--ep-cream); border-color:var(--ep-green); }
     .pag-btn[disabled] { opacity:0.35; pointer-events:none; }
     .pag-info { font-family:var(--mono); font-size:0.78rem; color:var(--text-muted); }
-    /* SEO context */
+
+    /* ── SEO context ── */
     .seo-context { max-width:1100px; margin:0 auto; padding:0 2rem 2rem; font-size:0.78rem; color:var(--text-muted); line-height:1.7; border-top:1px solid var(--border); padding-top:1.5rem; }
     .seo-context h2 { font-size:0.85rem; font-weight:600; color:var(--ep-green); margin-bottom:0.5rem; }
+
+    /* ════════════════════════════════════════════
+       NEW: GBIF Range Map
+    ════════════════════════════════════════════ */
+    .range-map-wrap {
+      border-radius:var(--radius-md);
+      overflow:hidden;
+      height:280px;
+      border:1px solid var(--border);
+      position:relative;
+      background:#e8f0e9;
+    }
+    @media(max-width:600px){ .range-map-wrap { height:220px; } }
+    #range-map { width:100%; height:100%; }
+    .range-map-attribution {
+      font-size:0.65rem;
+      color:var(--text-muted);
+      margin-top:0.4rem;
+      line-height:1.5;
+    }
+    .range-map-loading {
+      position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+      background:rgba(242,240,230,0.85); z-index:10; font-size:0.8rem; color:var(--ep-green);
+      font-weight:500; gap:0.4rem;
+    }
+    .map-spinner {
+      width:16px; height:16px; border:2px solid rgba(33,67,50,0.2);
+      border-top-color:var(--ep-green); border-radius:50%;
+      animation:spin 0.7s linear infinite;
+    }
+    @keyframes spin { to { transform:rotate(360deg); } }
+    .range-map-error {
+      display:flex; align-items:center; justify-content:center;
+      height:100%; font-size:0.8rem; color:var(--text-muted);
+      flex-direction:column; gap:0.5rem; padding:1rem; text-align:center;
+    }
+
+    /* ════════════════════════════════════════════
+       NEW: FAQ Accordion
+    ════════════════════════════════════════════ */
+    .faq-list { list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:0.4rem; }
+    .faq-item { border:1px solid var(--border); border-radius:var(--radius-md); overflow:hidden; }
+    .faq-q {
+      width:100%; background:none; border:none; padding:0.85rem 1rem;
+      display:flex; justify-content:space-between; align-items:center;
+      font-family:var(--sans); font-size:0.85rem; font-weight:600;
+      color:var(--ep-green); cursor:pointer; text-align:left; gap:0.5rem;
+      transition:background 0.15s;
+    }
+    .faq-q:hover { background:rgba(33,67,50,0.04); }
+    .faq-q[aria-expanded="true"] { background:rgba(33,67,50,0.05); }
+    .faq-chevron {
+      flex-shrink:0; width:16px; height:16px; transition:transform 0.2s;
+      color:var(--ep-tan);
+    }
+    .faq-q[aria-expanded="true"] .faq-chevron { transform:rotate(180deg); }
+    .faq-a {
+      font-size:0.83rem; color:var(--text-muted); line-height:1.8;
+      padding:0 1rem 0.9rem; display:none;
+    }
+    .faq-a.open { display:block; }
+    .faq-a a { color:var(--ep-green); }
+
+    /* ════════════════════════════════════════════
+       NEW: Habitat Support / How to Help
+    ════════════════════════════════════════════ */
+    .support-intro {
+      font-size:0.84rem; color:var(--text-muted); line-height:1.8;
+      margin-bottom:1rem;
+    }
+    .support-trees { display:flex; flex-direction:column; gap:0.6rem; margin-bottom:1rem; }
+    .tree-card {
+      display:flex; align-items:flex-start; gap:0.75rem;
+      background:linear-gradient(135deg,rgba(33,67,50,0.04),rgba(191,155,123,0.05));
+      border:1px solid rgba(33,67,50,0.1); border-radius:var(--radius-md);
+      padding:0.75rem 0.85rem;
+    }
+    .tree-icon { font-size:1.4rem; flex-shrink:0; line-height:1; margin-top:2px; }
+    .tree-info { flex:1; min-width:0; }
+    .tree-name { font-size:0.84rem; font-weight:700; color:var(--ep-green); margin-bottom:0.1rem; }
+    .tree-sci  { font-style:italic; font-size:0.72rem; color:var(--text-muted); margin-bottom:0.25rem; }
+    .tree-why  { font-size:0.78rem; color:var(--text-muted); line-height:1.6; margin-bottom:0.3rem; }
+    .tree-link {
+      display:inline-flex; align-items:center; gap:3px;
+      font-size:0.7rem; font-weight:600; color:var(--ep-green);
+      text-decoration:none; border:1px solid rgba(33,67,50,0.2);
+      padding:2px 8px; border-radius:10px; transition:background 0.15s;
+    }
+    .tree-link:hover { background:rgba(33,67,50,0.08); }
+    .support-actions { display:flex; flex-direction:column; gap:0.5rem; }
+    .support-action-item {
+      display:flex; align-items:flex-start; gap:0.6rem;
+      font-size:0.82rem; color:var(--text-muted); line-height:1.6;
+    }
+    .action-icon { flex-shrink:0; font-size:1rem; }
+    .support-source {
+      font-size:0.7rem; color:var(--text-muted);
+      border-top:1px solid var(--border); padding-top:0.6rem; margin-top:0.75rem;
+      line-height:1.6;
+    }
+    .support-source a { color:var(--ep-green); }
   </style>
 </head>
 <body>
@@ -134,6 +267,15 @@
 <script src="analytics.js"></script>
 <script src="nav.js"></script>
 <script>
+/* ─────────────────────────────────────────────────────────────────────────────
+   Earth Pulse — species.html
+   Session 1 enhancements:
+     1. GBIF Leaflet range map  (fetchGbifKey → initRangeMap)
+     2. FAQ accordion           (getFamilyFAQ)
+     3. Habitat support section (getHabitatSupport)
+   All existing features preserved unchanged.
+───────────────────────────────────────────────────────────────────────────── */
+
 var SB  = 'https://krmczyqwblsoekceanlj.supabase.co';
 var KEY = 'sb_publishable_DrHFT5J0vmrkYraUXIlpQQ_gsk1rdq6';
 var H   = { 'apikey': KEY, 'Authorization': 'Bearer ' + KEY };
@@ -152,7 +294,6 @@ function fmtIST(ts, opts) {
 }
 function ge(id) { return document.getElementById(id); }
 
-/* Paginated fetch — handles any number of rows, includes Range header per coding rules */
 async function fetchAll(path, batchSize) {
   var all = [], offset = 0, batch = batchSize || 1000;
   while (true) {
@@ -193,18 +334,19 @@ function showToast(msg) {
 
 function shareSpecies(name, sci, count, conf) {
   var url = window.location.href;
-  var text = '\ud83d\udc26 ' + name + ' (' + sci + ') heard ' + count + ' times in Baner, Pune. Best confidence: ' + Math.round(conf*100) + '%. Tracked by Earth Pulse acoustic monitoring. ' + url;
+  var text = '🐦 ' + name + ' (' + sci + ') heard ' + count + ' times in Baner, Pune. Best confidence: ' + Math.round(conf*100) + '%. Tracked by Earth Pulse acoustic monitoring. ' + url;
   if (navigator.share) {
-    navigator.share({title: name + ' \u2014 Earth Pulse', url: url, text: text}).catch(function(){});
+    navigator.share({title: name + ' — Earth Pulse', url: url, text: text}).catch(function(){});
   } else if (navigator.clipboard) {
     navigator.clipboard.writeText(text).then(function(){showToast('Share text copied!');}).catch(function(){navigator.clipboard.writeText(url).then(function(){showToast('Link copied!');});});
   } else { showToast('Copy: ' + url); }
 }
 
 function showError(heading, detail) {
-  ge('main-content').innerHTML = '<div class="not-found"><div style="font-size:3rem;margin-bottom:1rem;">&#128269;</div><h2>' + heading + '</h2><p>' + detail + '</p><a href="birds.html" class="ep-btn-primary" style="display:inline-block;margin-top:1.5rem;">&#8592; Birds of Baner</a></div>';
+  ge('main-content').innerHTML = '<div class="not-found"><div style="font-size:3rem;margin-bottom:1rem;">🔍</div><h2>' + heading + '</h2><p>' + detail + '</p><a href="birds.html" class="ep-btn-primary" style="display:inline-block;margin-top:1.5rem;">← Birds of Baner</a></div>';
 }
 
+/* ── Eco tags ─────────────────────────────────────────────────────────────── */
 var MIGRATORY_WORDS = ['warbler','martin','swift','pipit','bee-eater','flycatcher','redstart','wagtail','chat','stint','swallow'];
 var WATER_WORDS     = ['heron','kingfisher','cormorant','duck','teal','sandpiper','plover','crane','stork','egret','moorhen'];
 var RAPTOR_WORDS    = ['kite','hawk','eagle','falcon','osprey','kestrel','harrier','buzzard','shikra'];
@@ -221,50 +363,446 @@ function getEcoTags(name, sci) {
   return tags;
 }
 
+/* ── Fun facts ────────────────────────────────────────────────────────────── */
 function getFunFact(name, sci, peakH, total, avgConf) {
   var l = (name + ' ' + sci).toLowerCase();
   var facts = [
-    {kw:'koel',      icon:'&#127925;', title:'Did you know?',           text:'The Asian Koel is a brood parasite \u2014 it lays its eggs in the nests of crows and other birds, leaving them to raise its chicks. The host rarely notices the imposter.'},
-    {kw:'hornbill',  icon:'&#127775;', title:'Fascinating behaviour',   text:'The Indian Grey Hornbill seals its nest in a tree cavity with mud and dung, leaving only a small slit. The female incubates eggs in near-complete isolation while the male passes food through the gap.'},
-    {kw:'sunbird',   icon:'&#127802;', title:'Ecosystem role',          text:'Sunbirds are critical pollinators for many flowering plants in the Western Ghats \u2014 transferring pollen while feeding on nectar, making them functionally similar to bees in this ecosystem.'},
-    {kw:'drongo',    icon:'&#129413;', title:'Remarkable intelligence', text:'The Black Drongo is a master mimic and bold defender. It will mob birds far larger than itself, and other species have learned to trust its alarm calls \u2014 fleeing even when the Drongo gives a false warning.'},
-    {kw:'bulbul',    icon:'&#127856;', title:'Seed disperser',          text:'Red-vented Bulbuls are important seed dispersers in urban forests. They eat berries and deposit seeds across wide areas, actively shaping the vegetation of Baner Hill.'},
-    {kw:'kingfisher',icon:'&#128142;', title:'Precision hunter',        text:'The Common Kingfisher dives at up to 40 km/h, compensating for light refraction in water to pinpoint fish exactly. A healthy kingfisher population is a strong indicator of clean, live water.'},
-    {kw:'swift',     icon:'&#128168;', title:'Airborne life',           text:'Swifts can sleep, mate, and eat \u2014 all while flying. They only land to nest. Some species spend over 10 months completely airborne without touching the ground.'},
-    {kw:'myna',      icon:'&#128038;', title:'Urban adapter',           text:'The Common Myna communicates with at least 17 distinct calls and can mimic human speech, traffic sounds, and other bird species. It is one of the world\'s most successful urban birds.'},
-    {kw:'warbler',   icon:'&#127925;', title:'Long-distance traveller', text:'Warblers detected in Baner are often winter visitors that have flown thousands of kilometres from Central Asia or the Himalayas. Their presence here marks the end of an extraordinary migration.'},
-    {kw:'bee-eater', icon:'&#129436;', title:'Acrobatic hunter',        text:'Green Bee-eaters can catch bees, wasps, and hornets mid-flight, then beat them against a branch to remove the sting before swallowing. They are among the most agile aerial hunters in the bird world.'},
-    {kw:'pigeon',    icon:'&#128346;', title:'Urban keystone',          text:'Pigeons and doves play an underrated ecological role \u2014 they are seed dispersers for dozens of plant species and an important prey item for urban raptors including kites and peregrines.'},
-    {kw:'heron',     icon:'&#129458;', title:'Patient predator',        text:'Herons can stand motionless for 30 minutes waiting for fish or frogs. Their presence near Baner Lake is a direct indicator of water quality \u2014 they only forage where fish populations are healthy.'},
-    {kw:'robin',     icon:'&#127926;', title:'Territorial singer',      text:'The Indian Robin uses song to defend territory year-round. Males perform elaborate tail-cocking displays. Its consistent presence in Baner makes it one of the most reliably detected species in the dataset.'},
-    {kw:'prinia',    icon:'&#128038;', title:'Grassland specialist',    text:'The Ashy Prinia favours scrubby grassland edges \u2014 exactly the habitat on Baner Hill\'s lower slopes. Its high detection rate here reflects the health of that transitional shrubland ecosystem.'}
+    {kw:'koel',      icon:'🎵', title:'Did you know?',           text:'The Asian Koel is a brood parasite — it lays its eggs in the nests of crows and other birds, leaving them to raise its chicks. The host rarely notices the imposter.'},
+    {kw:'hornbill',  icon:'🌟', title:'Fascinating behaviour',   text:'The Indian Grey Hornbill seals its nest in a tree cavity with mud and dung, leaving only a small slit. The female incubates eggs in near-complete isolation while the male passes food through the gap.'},
+    {kw:'sunbird',   icon:'🌸', title:'Ecosystem role',          text:'Sunbirds are critical pollinators for many flowering plants in the Western Ghats — transferring pollen while feeding on nectar, making them functionally similar to bees in this ecosystem.'},
+    {kw:'drongo',    icon:'🦅', title:'Remarkable intelligence', text:'The Black Drongo is a master mimic and bold defender. It will mob birds far larger than itself, and other species have learned to trust its alarm calls — fleeing even when the Drongo gives a false warning.'},
+    {kw:'bulbul',    icon:'🍓', title:'Seed disperser',          text:'Red-vented Bulbuls are important seed dispersers in urban forests. They eat berries and deposit seeds across wide areas, actively shaping the vegetation of Baner Hill.'},
+    {kw:'kingfisher',icon:'💎', title:'Precision hunter',        text:'The Common Kingfisher dives at up to 40 km/h, compensating for light refraction in water to pinpoint fish exactly. A healthy kingfisher population is a strong indicator of clean, live water.'},
+    {kw:'swift',     icon:'💨', title:'Airborne life',           text:'Swifts can sleep, mate, and eat — all while flying. They only land to nest. Some species spend over 10 months completely airborne without touching the ground.'},
+    {kw:'myna',      icon:'🗣️', title:'Urban adapter',           text:'The Common Myna communicates with at least 17 distinct calls and can mimic human speech, traffic sounds, and other bird species. It is one of the world\'s most successful urban birds.'},
+    {kw:'warbler',   icon:'🎵', title:'Long-distance traveller', text:'Warblers detected in Baner are often winter visitors that have flown thousands of kilometres from Central Asia or the Himalayas. Their presence here marks the end of an extraordinary migration.'},
+    {kw:'bee-eater', icon:'🐝', title:'Acrobatic hunter',        text:'Green Bee-eaters can catch bees, wasps, and hornets mid-flight, then beat them against a branch to remove the sting before swallowing. They are among the most agile aerial hunters in the bird world.'},
+    {kw:'pigeon',    icon:'🕊️', title:'Urban keystone',          text:'Pigeons and doves play an underrated ecological role — they are seed dispersers for dozens of plant species and an important prey item for urban raptors including kites and peregrines.'},
+    {kw:'heron',     icon:'🦢', title:'Patient predator',        text:'Herons can stand motionless for 30 minutes waiting for fish or frogs. Their presence near Baner Lake is a direct indicator of water quality — they only forage where fish populations are healthy.'},
+    {kw:'robin',     icon:'🎶', title:'Territorial singer',      text:'The Indian Robin uses song to defend territory year-round. Males perform elaborate tail-cocking displays. Its consistent presence in Baner makes it one of the most reliably detected species in the dataset.'},
+    {kw:'prinia',    icon:'🌿', title:'Grassland specialist',    text:'The Ashy Prinia favours scrubby grassland edges — exactly the habitat on Baner Hill\'s lower slopes. Its high detection rate here reflects the health of that transitional shrubland ecosystem.'}
   ];
   for (var i = 0; i < facts.length; i++) { if (l.indexOf(facts[i].kw) !== -1) return facts[i]; }
-  if (peakH >= 5 && peakH <= 8) return {icon:'&#127749;', title:'Dawn chorus singer', text:name + ' is most active during the dawn chorus \u2014 the 5\u20138am window when birds compete vocally for territory and mates. Earth Pulse picks up ' + name + ' most reliably at this hour in Baner.'};
-  if (total > 50)               return {icon:'&#128200;', title:'Frequently detected', text:'With ' + total + ' detections, ' + name + ' is one of the more commonly heard species in Baner. BirdNET identifies its calls at ' + Math.round(avgConf*100) + '% average confidence.'};
-  return {icon:'&#127807;', title:'Part of the Baner ecosystem', text:'Baner Hill sits on the edge of the Western Ghats \u2014 a UNESCO World Heritage Site and biodiversity hotspot. Every species detected here, including ' + name + ', contributes to understanding urban biodiversity on this ecological boundary.'};
+  if (peakH >= 5 && peakH <= 8) return {icon:'🌅', title:'Dawn chorus singer', text:name + ' is most active during the dawn chorus — the 5–8am window when birds compete vocally for territory and mates. Earth Pulse picks up ' + name + ' most reliably at this hour in Baner.'};
+  if (total > 50)               return {icon:'📈', title:'Frequently detected', text:'With ' + total + ' detections, ' + name + ' is one of the more commonly heard species in Baner. BirdNET identifies its calls at ' + Math.round(avgConf*100) + '% average confidence.'};
+  return {icon:'🌿', title:'Part of the Baner ecosystem', text:'Baner Hill sits on the edge of the Western Ghats — a UNESCO World Heritage Site and biodiversity hotspot. Every species detected here, including ' + name + ', contributes to understanding urban biodiversity on this ecological boundary.'};
 }
 
 function getSeasonLabel(m) {
-  if (m >= 2 && m <= 4) return 'Summer (Mar\u2013May)';
-  if (m >= 5 && m <= 8) return 'Monsoon (Jun\u2013Sep)';
-  return 'Winter (Oct\u2013Feb)';
+  if (m >= 2 && m <= 4) return 'Summer (Mar–May)';
+  if (m >= 5 && m <= 8) return 'Monsoon (Jun–Sep)';
+  return 'Winter (Oct–Feb)';
 }
 
+/* ════════════════════════════════════════════════════════════════════════════
+   NEW: GBIF taxon key lookup + range map
+════════════════════════════════════════════════════════════════════════════ */
+async function fetchGbifKey(sci) {
+  try {
+    var r = await fetch('https://api.gbif.org/v1/species/match?name=' + encodeURIComponent(sci) + '&class=Aves&rank=SPECIES');
+    if (!r.ok) return null;
+    var d = await r.json();
+    return d.usageKey || null;
+  } catch(e) { return null; }
+}
+
+function initRangeMap(containerId, taxonKey, name, sci) {
+  var wrap = ge(containerId);
+  if (!wrap) return;
+
+  var loadingEl = wrap.querySelector('.range-map-loading');
+  var mapEl     = wrap.querySelector('#range-map');
+
+  if (!taxonKey) {
+    if (loadingEl) loadingEl.remove();
+    if (mapEl) mapEl.innerHTML = '<div class="range-map-error"><span style="font-size:1.5rem">🌍</span><span>Global range map unavailable for this species.</span></div>';
+    return;
+  }
+
+  // Initialise Leaflet — world view
+  var map = L.map('range-map', {
+    center: [20, 78],   // centre on India
+    zoom: 2,
+    zoomControl: true,
+    attributionControl: false,
+    scrollWheelZoom: false   // avoid accidental scroll-hijack on mobile
+  });
+
+  // Base tiles: CartoDB Positron — clean, light, matches EP palette
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png', {
+    subdomains: 'abcd',
+    maxZoom: 8
+  }).addTo(map);
+
+  // GBIF occurrence density tiles
+  var gbifUrl = 'https://api.gbif.org/v2/map/occurrence/density/{z}/{x}/{y}@1x.png'
+    + '?style=scaled.circles&taxonKey=' + taxonKey;
+
+  L.tileLayer(gbifUrl, {
+    opacity: 0.85,
+    maxZoom: 8
+  }).on('tileload', function() {
+    if (loadingEl) { loadingEl.remove(); loadingEl = null; }
+  }).on('tileerror', function() {
+    if (loadingEl) { loadingEl.remove(); loadingEl = null; }
+  }).addTo(map);
+
+  // Baner marker
+  var banerIcon = L.divIcon({
+    className: '',
+    html: '<div style="width:12px;height:12px;background:#214332;border:2.5px solid #f2f0e6;border-radius:50%;box-shadow:0 0 0 3px rgba(33,67,50,0.3);"></div>',
+    iconSize: [12,12],
+    iconAnchor: [6,6]
+  });
+  L.marker([18.5526, 73.7819], {icon: banerIcon})
+    .bindPopup('<strong style="color:#214332">' + name + '</strong><br><em style="color:#888;font-size:0.75rem">' + sci + '</em><br><span style="font-size:0.75rem;color:#555">Detected at Earth Pulse,<br>Baner, Pune</span>', {
+      maxWidth: 160,
+      className: 'ep-map-popup'
+    })
+    .addTo(map);
+
+  // Remove loading overlay after a timeout fallback
+  setTimeout(function() {
+    if (loadingEl && loadingEl.parentNode) { loadingEl.remove(); loadingEl = null; }
+  }, 4000);
+}
+
+/* ════════════════════════════════════════════════════════════════════════════
+   NEW: FAQ — hand-curated by bird family
+   Keys are keyword fragments matched against (common_name + scientific_name).toLowerCase()
+════════════════════════════════════════════════════════════════════════════ */
+var FAMILY_FAQ = [
+  {
+    kw: ['bulbul'],
+    faqs: [
+      {q:'What does a bulbul eat?', a:'Bulbuls are omnivorous and highly adaptable. They eat ripe fruits (figs, berries, papaya), nectar, insects, and occasionally small lizards. Their fruit diet makes them key seed dispersers in urban forests like Baner Hill.'},
+      {q:'When do bulbuls breed in Pune?', a:'Breeding season runs February to May in Pune. They build neat cup-shaped nests in shrubs or small trees, typically 1–3 metres above ground. Look for pairs gathering dry grass and cobwebs.'},
+      {q:'Why is the bulbul so common in cities?', a:'Bulbuls thrive where native fruiting trees exist alongside gardens. They have adapted to tolerate human presence and readily use fruiting ornamentals, which is why they are among the most detected birds in Baner.'},
+      {q:'Is the bulbul a resident or migratory bird?', a:'Both Red-vented and Red-whiskered Bulbuls are resident birds — they live in Baner year-round and do not migrate. Their consistent presence makes them excellent indicator species for urban habitat health.'}
+    ]
+  },
+  {
+    kw: ['sunbird'],
+    faqs: [
+      {q:'What flowers do sunbirds prefer?', a:'Sunbirds strongly favour tubular red, orange, and purple flowers rich in nectar — including Flame of the Forest (<em>Butea monosperma</em>), Coral tree (<em>Erythrina</em>), Bombax, and garden salvia. Planting these in Baner directly supports sunbird populations.'},
+      {q:'Are sunbirds important pollinators?', a:'Yes — sunbirds are among the primary pollinators of native plants in the Western Ghats foothills. Unlike bees, they visit flowers with longer tubes. Several plant species depend almost entirely on sunbirds for pollination.'},
+      {q:'How do sunbirds nest?', a:'They build distinctive pendant (hanging) nests from dry grasses, plant fibre, and spider silk — often suspended from the tip of a branch or even a wire. Nests look like a small purse with a side entrance hole at the top.'},
+      {q:'Do sunbirds migrate?', a:'Most sunbirds in Baner are residents year-round. Purple-rumped and Purple Sunbirds stay through all seasons. Their presence through summer and monsoon is a sign of a healthy, flowering tree canopy on Baner Hill.'}
+    ]
+  },
+  {
+    kw: ['drongo'],
+    faqs: [
+      {q:'Why do other birds follow drongos?', a:'Drongos act as sentinels — their loud alarm calls warn other species of approaching predators. Flocks of mixed birds actively follow drongos through the forest, benefiting from this early-warning system. This is called "nuclear flock" behaviour.'},
+      {q:'Can drongos really mimic other species?', a:'Yes. Black Drongos can mimic up to 40 different bird species in India. They use mimicry to steal food from other birds (a behaviour called kleptoparasitism), crying false alarms to startle birds into dropping their prey.'},
+      {q:'When do drongos arrive in Baner?', a:'Greater Racket-tailed Drongos are residents year-round. Black Drongos are also largely resident. Their detection rate typically peaks in summer (April–June) when insect prey is most abundant on the dry hillside scrub.'},
+      {q:'What do drongos eat?', a:'Primarily aerial insects — dragonflies, beetles, wasps, and flying ants. They are specialist aerial hunters, launching from a prominent perch and returning after snatching prey mid-flight. A single drongo can eat hundreds of insects per day.'}
+    ]
+  },
+  {
+    kw: ['hornbill'],
+    faqs: [
+      {q:'Why does the hornbill need old trees?', a:'Indian Grey Hornbills are obligate cavity nesters — they can only breed in natural hollows in large, old trees. The female seals herself inside with mud and droppings for the entire incubation period (~25 days). Removing old trees eliminates breeding sites entirely.'},
+      {q:'What do hornbills eat in Baner?', a:'Primarily fruit — especially figs (Ficus), berries, and drupes. They also take large insects, small lizards, and occasionally small rodents. Baner Hill\'s fig trees (Ficus benghalensis, Ficus religiosa) are critical food sources.'},
+      {q:'Is the Indian Grey Hornbill declining?', a:'Yes. The Malabar Grey Hornbill population in the Western Ghats has declined significantly due to habitat loss and removal of large old trees. Its detection at Earth Pulse is ecologically significant — it suggests Baner Hill still supports suitable nesting habitat.'},
+      {q:'How do I know if a hornbill has nested nearby?', a:'Listen for the loud, cackling "kek-kek-kek" call and the distinctive whoosh of their wings. Look for large old trees with natural hollows. During nesting season (January–April), the male makes regular trips carrying fruit to the sealed nest cavity.'}
+    ]
+  },
+  {
+    kw: ['kingfisher'],
+    faqs: [
+      {q:'Do kingfishers need a water body?', a:'Common Kingfishers need clean, clear water with small fish. White-throated Kingfishers (the most frequently detected in Baner) are more adaptable — they hunt lizards, large insects, and frogs, even far from water. Baner Lake and seasonal streams are key habitat.'},
+      {q:'Why is the kingfisher an ecological indicator?', a:'Common Kingfishers are directly tied to fish populations, which depend on water quality. Their presence confirms that Baner\'s water bodies support live, healthy fish. A declining kingfisher population often signals water pollution before it becomes visible.'},
+      {q:'When is the best time to hear a kingfisher?', a:'Early morning (6–9am) and late afternoon (4–6pm). The White-throated Kingfisher has a loud, laughing "kilili-kilili" call that carries over open ground — Earth Pulse detects it most reliably in the first two hours after sunrise.'},
+      {q:'How do kingfishers nest?', a:'They excavate burrows in earthen banks — riverbanks, road cuttings, or even retaining walls. The burrow runs up to 50cm deep and ends in a nesting chamber. Protecting earthen banks around Baner Lake is essential for nesting kingfishers.'}
+    ]
+  },
+  {
+    kw: ['kite','hawk','eagle','falcon','shikra','osprey','kestrel','harrier','buzzard'],
+    faqs: [
+      {q:'Why are raptors important for Baner?', a:'Raptors sit at the top of the local food web. A healthy raptor population means healthy populations of rodents, lizards, and small birds below it. The presence of multiple raptor species in Baner confirms the hill still functions as a complete ecosystem.'},
+      {q:'What do urban raptors eat?', a:'Black Kites primarily scavenge and take urban waste, rodents, and small birds. Shikras hunt small birds and large insects. The presence of raptors in Baner is partly enabled by the dense bird community below them — which Earth Pulse monitors continuously.'},
+      {q:'Do raptors migrate?', a:'Some do. Honey Buzzards and certain kestrels are winter visitors to Baner, arriving from October and departing by March. Resident species like the Shikra and Black Kite stay year-round and breed on Baner Hill.'},
+      {q:'How can we protect raptor habitat on Baner Hill?', a:'Raptors need large trees for nesting and open ground for hunting. Planting native trees like Banyan, Indian Rosewood, and Mango — and keeping hillside ground open with low scrub rather than dense buildings — directly supports raptor habitat.'}
+    ]
+  },
+  {
+    kw: ['owl','nightjar','frogmouth'],
+    faqs: [
+      {q:'Why is detecting nocturnal birds important?', a:'Owls and nightjars are rarely seen but Earth Pulse detects them acoustically through the night. Their presence confirms that Baner Hill\'s darkness is still sufficient for nocturnal wildlife — a significant finding given increasing light pollution in the area.'},
+      {q:'What do owls eat in urban Baner?', a:'Spotted Owlets (the most common Baner owl) prey mainly on large insects, small rodents, lizards, and occasionally small birds. They are effective natural pest controllers. A single pair of Spotted Owlets can consume hundreds of rodents per year.'},
+      {q:'When are owls most active?', a:'Spotted Owlets are active at dusk and dawn, and often call loudly at night. Earth Pulse detects them most between 19:00 and 23:00 IST. Their detection rate drops sharply in June–August (monsoon), when heavy rain suppresses calling.'},
+      {q:'Do owls need old trees?', a:'Yes — cavity-nesting owls like the Spotted Owlet need natural holes in large old trees. Barn Owls use old buildings. Preserving both old trees and older structures on Baner Hill directly supports owl nesting habitat.'}
+    ]
+  },
+  {
+    kw: ['warbler','flycatcher','pipit','wagtail','chat','redstart'],
+    faqs: [
+      {q:'Are these birds residents or winter visitors?', a:'Most warblers, flycatchers, and pipits detected in Baner are winter visitors — they breed in the Himalayas or Central Asia and migrate south to the Western Ghats foothills from October to March. Their detection here marks Earth Pulse as a stopover or wintering site of conservation importance.'},
+      {q:'How far do migratory warblers travel to reach Baner?', a:'Many travel 2,000–5,000 km. Blyth\'s Reed Warblers and Common Chiffchaffs breed as far north as Russia and Kazakhstan. The journey to Baner involves crossing the Himalayas — some of the world\'s highest terrain.'},
+      {q:'What habitat do migratory warblers need on Baner Hill?', a:'Dense scrub and shrub edges with insect-rich vegetation. They feed almost entirely on small insects gleaned from leaves and bark. Native scrub species like Lantana (despite being invasive), and native Ziziphus and Carissa provide critical winter foraging habitat.'},
+      {q:'When do migratory birds arrive and leave Baner?', a:'Most arrive in October–November as monsoon ends and leave by March. Peak diversity is December–February. Earth Pulse detection data can track arrival and departure dates year-over-year — a valuable phenology dataset for climate research.'}
+    ]
+  },
+  {
+    kw: ['myna','starling'],
+    faqs: [
+      {q:'Is the Common Myna native to Pune?', a:'Yes — the Common Myna (Acridotheres tristis) is a native Indian species and an important urban bird. It is different from the European Starling. Despite its reputation as aggressive, it plays a role in insect control and seed dispersal in urban areas.'},
+      {q:'What do mynas eat?', a:'Mynas are generalist omnivores — insects, earthworms, seeds, fruit, human food scraps, and even small lizards. This flexibility makes them highly successful in cities, though it also means they compete with more specialist native species.'},
+      {q:'Why is the Common Myna declining in some areas?', a:'Ironically, despite being ubiquitous, Common Myna numbers in Pune have declined in some areas with heavy urban development. Loss of open ground (for foraging) and old trees (for nesting) affects them. They nest in tree cavities and building crevices.'},
+      {q:'What is the Hill Myna?', a:'The Hill Myna (Gracula religiosa) is a larger, forest-dependent relative prized for its ability to mimic human speech. It is found in Western Ghats forests and its detection at Earth Pulse would be ecologically notable — it indicates forest connectivity between Baner Hill and the broader Ghats.'}
+    ]
+  },
+  {
+    kw: ['barbet','woodpecker'],
+    faqs: [
+      {q:'What does the Coppersmith Barbet\'s call sound like?', a:'A relentless, metronomic "tok-tok-tok" — like a coppersmith hammering metal, which gives the bird its name. It calls from a high, exposed branch and can be heard from great distances. Earth Pulse detects it as one of the most consistent daytime signals from Baner.'},
+      {q:'Why do barbets and woodpeckers need dead trees?', a:'Both groups excavate nesting cavities in soft or dead wood. Removing dead trees and dead branches — a common practice in "clean" urban gardens — directly destroys nesting sites for these species as well as owls, hornbills, and starlings that use secondary cavities.'},
+      {q:'What do barbets eat?', a:'Barbets are primarily frugivores — they eat figs, berries, and other small fruits. Coppersmith Barbets favour Ficus fruits and can travel several hundred metres from their territory to reach fruiting trees. Planting native Ficus species directly supports barbet populations.'},
+      {q:'Are woodpeckers declining in Baner?', a:'Woodpeckers require large trees with dead wood, insect-rich bark, and sufficient territory. Urban tree management (removing deadwood, topping trees) reduces their habitat. Detecting woodpeckers at Earth Pulse indicates Baner Hill still supports minimally-managed tree cover.'}
+    ]
+  },
+  {
+    kw: ['heron','egret','stork','cormorant','crane'],
+    faqs: [
+      {q:'Why are water birds detected in Baner?', a:'Baner Lake (Pashan Lake / Vitthal Nagar wetland) sits within acoustic range of Earth Pulse sensors. Herons and egrets foraging at the lake\'s edge, or flying overhead at dawn and dusk, trigger detections. Their presence confirms the lake supports live fish and frog populations.'},
+      {q:'Do herons nest in Baner?', a:'Pond Herons and Little Egrets are non-breeding visitors to Baner\'s water bodies. They roost and forage locally but breed in tree-nesting colonies (heronries) elsewhere in Pune — typically in Banyan, Rain Tree, or Mango trees near large water bodies.'},
+      {q:'What water quality do herons indicate?', a:'High. Grey Herons and Indian Pond Herons require clear, shallow water with active fish. Their foraging presence at Baner Lake is a direct proxy for water quality and aquatic ecosystem health — making them valuable indicator species.'},
+      {q:'What threatens water birds in urban Pune?', a:'Encroachment and infill of seasonal wetlands, draining of Baner\'s seasonal streams, water pollution, and noise disturbance during breeding season. Protecting even small water bodies and their vegetated margins is essential for wading bird habitat.'}
+    ]
+  },
+  {
+    kw: ['parakeet','parrot'],
+    faqs: [
+      {q:'Are parakeets native to Pune?', a:'Yes — the Rose-ringed Parakeet (Psittacula krameri) is native to the Indian subcontinent. It is a highly adaptable resident of Baner year-round. It should not be confused with other invasive parrot species introduced in Europe.'},
+      {q:'What do parakeets eat?', a:'Seeds, grain, fruit, flowers, and nectar. They are important seed dispersers and pollinators of native trees. They can travel several kilometres daily between feeding and roosting sites. Baner Hill\'s fruiting trees are a key food resource.'},
+      {q:'Where do parakeets nest?', a:'Natural tree hollows and nest boxes. The destruction of old trees removes parakeet nesting sites. A single large Neem or Banyan tree may support multiple nesting pairs over decades.'},
+      {q:'Why are parakeets loud in the morning?', a:'Early morning is when parakeet flocks move between roost sites and feeding areas. This movement flight, often in large noisy flocks, is what Earth Pulse detects most. Their calls are among the easiest for BirdNET to identify with high confidence.'}
+    ]
+  }
+];
+
+/* Default FAQ for species that don't match a family */
+var DEFAULT_FAQ = [
+  {q:'How is this bird detected by Earth Pulse?', a:'Earth Pulse runs Cornell Lab\'s BirdNET AI v2.4 continuously on two Raspberry Pi sensors — one on an east-facing balcony and one facing Baner Hill. Audio is recorded in 15-second segments and BirdNET identifies species by their call with a confidence score. Only detections above 0.7 confidence are logged.'},
+  {q:'What does the confidence score mean?', a:'BirdNET returns a probability score (0–1) for each identification. A score of 0.9 means the AI is 90% confident the call matches this species. Earth Pulse filters out low-confidence detections to maintain data quality. The "Best confidence" shown is the highest score ever recorded for this species here.'},
+  {q:'Does this bird live in Baner year-round?', a:'Look at the "Active months" row in the summary card. If the bird is detected across most months of the year, it is likely a resident. If detections cluster in winter (October–February) or summer only, it may be migratory or a seasonal visitor.'},
+  {q:'What threatens birds on Baner Hill?', a:'The primary threats are urban encroachment removing native vegetation, noise and light pollution disrupting breeding, feral cat predation, and the loss of old trees that provide nesting cavities. Earth Pulse monitoring provides data to make these threats visible and trackable over time.'},
+  {q:'How can I help birds in Baner?', a:'Plant native fruiting trees (Ficus, Jamun, Neem, Peepal) in your garden or society. Avoid pesticides — they eliminate insects that birds feed on. Keep cats indoors, especially during April–June breeding season. Support Baner Hill conservation efforts and report illegal encroachment.'}
+];
+
+function getFamilyFAQ(name, sci) {
+  var l = (name + ' ' + sci).toLowerCase();
+  for (var i = 0; i < FAMILY_FAQ.length; i++) {
+    var kws = FAMILY_FAQ[i].kw;
+    for (var j = 0; j < kws.length; j++) {
+      if (l.indexOf(kws[j]) !== -1) return FAMILY_FAQ[i].faqs;
+    }
+  }
+  return DEFAULT_FAQ;
+}
+
+function renderFAQ(faqs) {
+  var items = faqs.map(function(f, i) {
+    var id = 'faq-a-' + i;
+    return '<li class="faq-item">'
+      + '<button class="faq-q" aria-expanded="false" aria-controls="' + id + '" onclick="toggleFAQ(this)">'
+      + f.q
+      + '<svg class="faq-chevron" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+      + '</button>'
+      + '<div class="faq-a" id="' + id + '" role="region">' + f.a + '</div>'
+      + '</li>';
+  }).join('');
+  return '<ul class="faq-list" role="list">' + items + '</ul>';
+}
+
+window.toggleFAQ = function(btn) {
+  var isOpen = btn.getAttribute('aria-expanded') === 'true';
+  var targetId = btn.getAttribute('aria-controls');
+  var panel = ge(targetId);
+  btn.setAttribute('aria-expanded', isOpen ? 'false' : 'true');
+  if (panel) panel.classList.toggle('open', !isOpen);
+};
+
+/* ════════════════════════════════════════════════════════════════════════════
+   NEW: Habitat support — trees & actions by bird family
+════════════════════════════════════════════════════════════════════════════ */
+var HABITAT_SUPPORT = [
+  {
+    kw: ['bulbul','myna','starling','barbet','parakeet','parrot','pigeon','dove'],
+    intro: 'Frugivores like this species are directly supported by native fruiting trees. Planting even one or two of these trees in a garden or society compound can provide year-round food and nesting opportunities.',
+    trees: [
+      {icon:'🌳', name:'Peepal / Sacred Fig', sci:'Ficus religiosa', why:'Produces small figs year-round that attract bulbuls, barbets, and parakeets. Also provides nesting sites in its aerial roots. Native to the Deccan region.', link:'trees.html?tree=ficus-religiosa'},
+      {icon:'🌿', name:'Cluster Fig', sci:'Ficus racemosa', why:'Cauliflorous fig — fruits grow directly on the trunk, making them accessible to a wide range of birds. One of the most productive bird-food trees for Pune\'s climate.', link:'trees.html?tree=ficus-racemosa'},
+      {icon:'🫐', name:'Jamun / Indian Blackberry', sci:'Syzygium cumini', why:'Produces abundant purple berries in summer (May–July) that are a critical food source for bulbuls, mynas, and parakeets during the hot season.', link:'trees.html?tree=syzygium-cumini'},
+      {icon:'🌱', name:'Neem', sci:'Azadirachta indica', why:'Fast-growing native with small drupes eaten by mynas, barbets, and parakeets. Also provides dense shade for roosting and nesting. Drought-tolerant — ideal for Baner\'s rocky hillside.', link:'trees.html?tree=azadirachta-indica'}
+    ],
+    actions: [
+      {icon:'🪺', text:'Leave dead branches intact where safe — barbets, owlets, and parakeets excavate nesting holes in soft deadwood. Removing all dead branches eliminates nesting sites.'},
+      {icon:'💧', text:'Place a shallow, wide water dish (birdbath) in a shaded spot. Clean and refill daily. This is especially valuable in April–June when natural water sources dry up on the hill.'},
+      {icon:'🚫', text:'Avoid pesticides in your garden. Bulbuls and barbets also feed on insects, especially when rearing chicks. Pesticides eliminate this food source and poison nestlings.'},
+      {icon:'🐱', text:'Keep domestic cats indoors from April–June (peak breeding season). Ground-nesting and low-nesting birds like bulbuls are highly vulnerable to cat predation during this period.'}
+    ],
+    source: 'Sources: <a href="https://plantamilliontrees.org.in/bird-and-butterfly-friendly-trees-india/" target="_blank" rel="noopener">Plant a Million Trees — Bird-friendly trees India</a> · <a href="https://growbilliontrees.com/pages/best-native-trees-to-grow-near-pune-metropolitan-greening" target="_blank" rel="noopener">Grow Billion Trees — Native trees of Pune</a>'
+  },
+  {
+    kw: ['sunbird'],
+    intro: 'Sunbirds are nectarivores and among the most important pollinators of native plants in the Western Ghats foothills. A garden with the right flowering plants can support a resident pair year-round.',
+    trees: [
+      {icon:'🌺', name:'Flame of the Forest', sci:'Butea monosperma', why:'Produces masses of brilliant orange-red nectar-rich flowers in February–April. One of the most important sunbird and bee-eater food trees on the Deccan plateau. Native.', link:'trees.html?tree=butea-monosperma'},
+      {icon:'🌳', name:'Indian Coral Tree', sci:'Erythrina variegata', why:'Large red flowers filled with nectar attract Purple Sunbirds and Loten\'s Sunbirds. Deciduous — flowers appear before leaves, making it highly visible to birds. Native to Peninsular India.', link:'trees.html?tree=erythrina-variegata'},
+      {icon:'🌿', name:'Silk Cotton / Semal', sci:'Bombax ceiba', why:'Massive red flowers in winter–spring produce large quantities of nectar. Visited by sunbirds, barbets, and parakeets. The cotton-like seed pods are used by sunbirds and tailorbirds to line nests.', link:'trees.html?tree=bombax-ceiba'},
+      {icon:'🌱', name:'Crossandra / Firecracker Plant', sci:'Crossandra infundibuliformis', why:'A native groundcover/small shrub with orange tubular flowers that are a favourite nectar source for Purple Sunbirds. Easy to grow in Pune\'s climate, even in pots.', link:'trees.html?tree=crossandra-infundibuliformis'}
+    ],
+    actions: [
+      {icon:'🌸', text:'Plant a nectar garden — a mix of tubular-flowered native plants at different heights (ground level, shrub, and tree) creates a complete sunbird foraging habitat in a small space.'},
+      {icon:'🕸️', text:'Leave spider webs intact near flowering plants — sunbirds collect spider silk to bind their pendant nests. A garden free of chemical sprays supports both the flowers and the nesting materials.'},
+      {icon:'💧', text:'Sunbirds rarely drink from open water but appreciate fine misting in summer. A fine-spray nozzle on a garden tap or hose, run for a few minutes at dawn, attracts them for bathing.'},
+      {icon:'✂️', text:'Avoid hard pruning of flowering shrubs during March–June, when sunbirds are actively nesting. Their pendant nests are often hidden in plain sight in garden shrubs.'}
+    ],
+    source: 'Sources: <a href="https://roundglasssustain.com/species/all-about-birds" target="_blank" rel="noopener">Roundglass Sustain — Sunbird ecology</a> · <a href="https://wgbis.ces.iisc.ac.in/biodiversity/sahyadri_enews/newsletter/issue57/article1/index.html" target="_blank" rel="noopener">IISc Western Ghats biodiversity</a>'
+  },
+  {
+    kw: ['hornbill'],
+    intro: 'Hornbills are among the most ecologically significant birds on Baner Hill — large, fruit-eating cavity nesters that require old-growth trees. Supporting them means protecting and planting the largest native trees.',
+    trees: [
+      {icon:'🌳', name:'Banyan Tree', sci:'Ficus benghalensis', why:'The single most important food tree for Indian Grey Hornbills. Produces small figs year-round. Also provides the large trunk cavities hornbills need for nesting. Takes decades to establish but provides habitat for centuries.', link:'trees.html?tree=ficus-benghalensis'},
+      {icon:'🌿', name:'Indian Gooseberry / Amla', sci:'Phyllanthus emblica', why:'A preferred fruit tree for hornbills, also supporting mynas, bulbuls, and barbets. Highly drought-tolerant and native to the Deccan plateau. Sacred in Indian culture — widely planted and protected.', link:'trees.html?tree=phyllanthus-emblica'},
+      {icon:'🌱', name:'Mango', sci:'Mangifera indica', why:'Large old mango trees provide both food (fruit, insects in bark) and potential nesting sites. A 50+ year old mango tree is an ecological anchor for an entire bird community. Do not remove old mango trees.', link:'trees.html?tree=mangifera-indica'},
+      {icon:'🌳', name:'Indian Rosewood', sci:'Dalbergia sissoo', why:'A tall native hardwood that develops natural hollow branches over decades — creating cavity nesting sites for hornbills, owlets, and barbets. Supports a rich community of bark insects that hornbills forage on.', link:'trees.html?tree=dalbergia-sissoo'}
+    ],
+    actions: [
+      {icon:'🌳', text:'Advocate for the protection of every large old tree on Baner Hill, particularly Ficus species. Hornbills cannot use young trees for nesting — it takes 50+ years for a tree to develop the cavities they need.'},
+      {icon:'🪵', text:'If a tree must be felled (genuine safety risk), leave the base trunk as a dead standing tree (snag). Hornbills and owlets will use large snags for nesting within a season.'},
+      {icon:'📢', text:'Report nest disturbance. When hornbills are actively nesting (January–April), human disturbance near the nest tree causes the male to stop feeding the sealed female — potentially causing starvation.'},
+      {icon:'🌱', text:'Plant Ficus saplings now. A Ficus benghalensis planted today will be a potential hornbill food and nesting tree in 30–40 years. Conservation is a multi-generational investment.'}
+    ],
+    source: 'Sources: <a href="https://roundglasssustain.com/conservation/malabar-grey-hornbill-population" target="_blank" rel="noopener">Roundglass Sustain — Hornbill population decline</a> · <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC5804217/" target="_blank" rel="noopener">PMC — Nesting tree characteristics in urban India</a>'
+  },
+  {
+    kw: ['kingfisher'],
+    intro: 'Kingfishers require clean water and healthy aquatic ecosystems. Protecting Baner Lake and its seasonal streams — and the earthen banks along them — is the single most important action for kingfisher conservation.',
+    trees: [
+      {icon:'🌿', name:'Indian Willow / Baans', sci:'Salix tetrasperma', why:'Overhanging willows along waterways provide perch sites for kingfishers to hunt from. Their root systems stabilise stream banks, preventing erosion of the earthen banks kingfishers need for nesting.', link:'trees.html?tree=salix-tetrasperma'},
+      {icon:'🌱', name:'Pongamia / Indian Beech', sci:'Millettia pinnata', why:'A native riparian tree excellent for stream-bank stabilisation. Its shade cools the water surface (important for fish and frog populations that kingfishers depend on) and its branches provide hunting perches.', link:'trees.html?tree=millettia-pinnata'},
+      {icon:'🌳', name:'Jamun', sci:'Syzygium cumini', why:'A traditional riparian tree of the Deccan that naturally colonises stream edges. Provides overhanging branches for kingfisher perches and its root network protects earthen banks from erosion.', link:'trees.html?tree=syzygium-cumini'},
+      {icon:'🌿', name:'Bamboo (Native)', sci:'Bambusa arundinacea', why:'Dense bamboo thickets along water edges provide safe roosting and a visual screen from human disturbance — critical for nesting kingfishers, which are highly sensitive to human activity near nest burrows.', link:'trees.html?tree=bambusa-arundinacea'}
+    ],
+    actions: [
+      {icon:'💧', text:'Protect earthen stream banks and lake edges from concrete lining. Kingfishers excavate nesting burrows in natural earthen banks — concreted or revetted banks cannot be used.'},
+      {icon:'🚯', text:'Prevent waste dumping in and around Baner Lake and the seasonal streams flowing from the hill. Water pollution reduces fish populations and eliminates kingfisher foraging habitat.'},
+      {icon:'🎣', text:'Oppose or report illegal fishing with nets in Baner Lake. Overfishing depletes the fish populations that kingfishers depend on, particularly in the dry season when water is already reduced.'},
+      {icon:'🌿', text:'Plant native riparian vegetation (Jamun, Pongamia, native grasses) along stream edges where erosion has removed tree cover. Even small-scale planting directly restores kingfisher hunting habitat.'}
+    ],
+    source: 'Sources: <a href="https://india.mongabay.com/2022/03/mahatma-hills-avian-diversity-shows-the-importance-of-conserving-the-tekdis-of-pune/" target="_blank" rel="noopener">Mongabay India — Pune hill bird conservation</a>'
+  },
+  {
+    kw: ['kite','hawk','eagle','falcon','shikra','osprey','kestrel','harrier','buzzard','raptor'],
+    intro: 'Raptors are apex predators that require intact prey populations, open hunting ground, and large trees or cliffs for nesting. Protecting Baner Hill\'s open scrubland and old trees is the foundation of raptor conservation here.',
+    trees: [
+      {icon:'🌳', name:'Banyan Tree', sci:'Ficus benghalensis', why:'The preferred nesting tree for Black Kites and Shikras in urban Pune. Its dense canopy provides cover and its height gives raptors a commanding view over hunting territory. Ancient banyans are irreplaceable raptor habitat.', link:'trees.html?tree=ficus-benghalensis'},
+      {icon:'🌿', name:'Mango (old-growth)', sci:'Mangifera indica', why:'Old mango trees with high canopies are preferred nesting sites for Shikras and Black Kites. The tree also hosts rich insect communities (bark beetles, ants) that support the prey base for smaller raptors.', link:'trees.html?tree=mangifera-indica'},
+      {icon:'🌱', name:'Indian Rosewood', sci:'Dalbergia sissoo', why:'Tall, strong-branched native that raptors use both for nesting (large stick nests) and as hunting perches over open ground. Essential for maintaining the open-canopy structure that Shikras prefer.', link:'trees.html?tree=dalbergia-sissoo'},
+      {icon:'🌳', name:'Peepal', sci:'Ficus religiosa', why:'Culturally protected, making it one of the few trees in urban Pune that grows to full size and age. Large old Peepals regularly host Shikra and kite nests in their upper canopy.', link:'trees.html?tree=ficus-religiosa'}
+    ],
+    actions: [
+      {icon:'🌿', text:'Preserve open scrubland on Baner Hill. Raptors hunt by sight over open terrain — dense unbroken canopy or buildings eliminates their hunting ground. A mosaic of open grassland and scattered trees is the ideal raptor habitat.'},
+      {icon:'⚡', text:'Oppose or report new electricity wire installations crossing the hill face without bird-diverter markers. Raptors are frequently killed by wire strikes, especially low-wires across open ground.'},
+      {icon:'🌳', text:'Protect nest trees absolutely during the breeding season (January–May). Disturbance within 200m of an active raptor nest can cause nest abandonment. Report known nest sites to Baner Hill conservation groups.'},
+      {icon:'🐀', text:'Avoid rodenticide (rat poison) use near the hill. Poisoned rodents are eaten by raptors, causing secondary poisoning that kills hawks and kites. Use humane traps instead.'}
+    ],
+    source: 'Sources: <a href="https://wgbis.ces.iisc.ac.in/biodiversity/sahyadri_enews/newsletter/issue57/article1/index.html" target="_blank" rel="noopener">IISc — Western Ghats birds and habitat</a>'
+  },
+  {
+    kw: ['warbler','flycatcher','pipit','wagtail','chat','redstart','swift','swallow','martin'],
+    intro: 'These migratory visitors travel thousands of kilometres to spend winter in Baner. Making the hill a richer stopover site — with dense insect-bearing native scrub — can support a higher diversity of winter visitors each year.',
+    trees: [
+      {icon:'🌿', name:'Indian Gooseberry / Amla', sci:'Phyllanthus emblica', why:'Dense insect-rich foliage that wintering warblers glean through for caterpillars and small arthropods. One of the most ecologically productive native trees for insectivorous birds on the Deccan plateau.', link:'trees.html?tree=phyllanthus-emblica'},
+      {icon:'🌱', name:'Neem', sci:'Azadirachta indica', why:'Despite its insecticidal properties in extract form, the intact neem tree hosts a rich community of bark insects and scale insects that wintering flycatchers depend on. Dense leafy cover also provides roosting shelter.', link:'trees.html?tree=azadirachta-indica'},
+      {icon:'🌳', name:'Ziziphus / Indian Jujube', sci:'Ziziphus mauritiana', why:'A native thorny shrub-tree of the Deccan scrubland that produces small fruits in winter (exactly when migrants arrive). Its dense thorny structure also provides safe roosting cover from predators.', link:'trees.html?tree=ziziphus-mauritiana'},
+      {icon:'🌿', name:'Carissa / Karvanda', sci:'Carissa carandas', why:'A native thorny scrub berry that fruits in winter and early summer. Used heavily by warblers, chats, and other small insectivorous birds for both berries and the insects sheltering in its dense structure.', link:'trees.html?tree=carissa-carandas'}
+    ],
+    actions: [
+      {icon:'🌿', text:'Retain native scrub on the hill slopes, especially thorny shrubs like Ziziphus, Carissa, and Lantana (despite being invasive, Lantana provides critical winter insect and berry resources for migrants). Clearing all scrub removes wintering habitat.'},
+      {icon:'💡', text:'Reduce outdoor lighting on the hill face at night during migration season (October–November, February–March). Artificial light disorients migrating birds, causing collisions with buildings and disrupting navigation.'},
+      {icon:'📊', text:'Record and report sightings to eBird (ebird.org). Every data point from Baner contributes to State of India\'s Birds assessments that influence national conservation policy for these species.'},
+      {icon:'🚧', text:'Oppose construction on the hill slopes during September–November (arrival of migrants) and February–April (departure and resident bird breeding). Construction noise and disturbance displaces both wintering and breeding birds during their most critical periods.'}
+    ],
+    source: 'Sources: <a href="https://data-blog.gbif.org/post/gbif-api-beginners-guide/" target="_blank" rel="noopener">GBIF occurrence data</a> · <a href="https://thefederal.com/features/study-in-anamalai-hills-plant-native-trees-to-attract-birds-in-tea-plantations" target="_blank" rel="noopener">NCF India — Native trees and bird conservation</a>'
+  }
+];
+
+var DEFAULT_HABITAT = {
+  intro: 'Every bird detected on Baner Hill depends on the native vegetation of the Sahyadri foothills. The most impactful thing any resident can do is plant native trees — they provide food, nesting habitat, and insect communities that support the entire bird community.',
+  trees: [
+    {icon:'🌳', name:'Banyan Tree', sci:'Ficus benghalensis', why:'The single most important bird tree in Pune. Its year-round figs feed over 50 bird species. Large old banyans also provide nesting cavities for hornbills, owlets, and parakeets. Grows well in Baner\'s rocky soil.', link:'trees.html?tree=ficus-benghalensis'},
+    {icon:'🌿', name:'Peepal / Sacred Fig', sci:'Ficus religiosa', why:'Fruits year-round, feeding bulbuls, barbets, mynas, and parakeets. Its cultural protection means it grows to full age — providing decades of ecological value. One of the best trees to plant for immediate impact.', link:'trees.html?tree=ficus-religiosa'},
+    {icon:'🫐', name:'Jamun', sci:'Syzygium cumini', why:'Critical summer food source. Produces abundant fruit exactly when natural food is scarce (May–July hot season). Drought-tolerant and fast-growing in Pune. Feeds over 20 bird species in a single fruiting season.', link:'trees.html?tree=syzygium-cumini'},
+    {icon:'🌱', name:'Indian Gooseberry / Amla', sci:'Phyllanthus emblica', why:'Winter-fruiting tree that fills the gap when summer fruits are gone. Also hosts rich insect communities in its bark, supporting insectivorous birds. Native to the Deccan and highly drought-tolerant.', link:'trees.html?tree=phyllanthus-emblica'}
+  ],
+  actions: [
+    {icon:'🌳', text:'Plant one native tree in your society compound this year. A single Ficus or Jamun tree, given 20 years, will feed more birds than any bird feeder ever could.'},
+    {icon:'💧', text:'Put out fresh water daily in a shallow dish (birdbath). In Baner\'s harsh summers, water is often more limiting than food. A clean birdbath with a rock for small birds to stand on attracts extraordinary diversity.'},
+    {icon:'🚫', text:'Stop using pesticides. Insectivorous birds like flycatchers, warblers, and barbets depend on caterpillars and bark insects. A single pesticide application can eliminate the food supply for an entire nesting pair.'},
+    {icon:'📢', text:'Join or support Baner Hill conservation groups. Report illegal dumping and tree felling on the hill. Data from Earth Pulse combined with on-ground action is the most effective conservation strategy.'}
+  ],
+  source: 'Sources: <a href="https://growbilliontrees.com/pages/best-native-trees-to-grow-near-pune-metropolitan-greening" target="_blank" rel="noopener">Grow Billion Trees — Native trees of Pune</a> · <a href="https://plantamilliontrees.org.in/bird-and-butterfly-friendly-trees-india/" target="_blank" rel="noopener">Plant a Million Trees India</a>'
+};
+
+function getHabitatSupport(name, sci) {
+  var l = (name + ' ' + sci).toLowerCase();
+  for (var i = 0; i < HABITAT_SUPPORT.length; i++) {
+    var kws = HABITAT_SUPPORT[i].kw;
+    for (var j = 0; j < kws.length; j++) {
+      if (l.indexOf(kws[j]) !== -1) return HABITAT_SUPPORT[i];
+    }
+  }
+  return DEFAULT_HABITAT;
+}
+
+function renderHabitatSupport(hs) {
+  var treesHtml = hs.trees.map(function(t) {
+    return '<div class="tree-card">'
+      + '<div class="tree-icon">' + t.icon + '</div>'
+      + '<div class="tree-info">'
+      + '<div class="tree-name">' + t.name + '</div>'
+      + '<div class="tree-sci">' + t.sci + '</div>'
+      + '<div class="tree-why">' + t.why + '</div>'
+      + '<a class="tree-link" href="' + t.link + '">How to grow ↗</a>'
+      + '</div></div>';
+  }).join('');
+
+  var actionsHtml = hs.actions.map(function(a) {
+    return '<div class="support-action-item">'
+      + '<span class="action-icon">' + a.icon + '</span>'
+      + '<span>' + a.text + '</span>'
+      + '</div>';
+  }).join('');
+
+  return '<p class="support-intro">' + hs.intro + '</p>'
+    + '<div class="support-trees">' + treesHtml + '</div>'
+    + '<h4 style="font-size:0.82rem;font-weight:700;color:var(--ep-green);margin:0.75rem 0 0.5rem;text-transform:uppercase;letter-spacing:0.07em;">What you can do</h4>'
+    + '<div class="support-actions">' + actionsHtml + '</div>'
+    + '<div class="support-source">' + hs.source + '</div>';
+}
+
+/* ════════════════════════════════════════════════════════════════════════════
+   Structured data + meta
+════════════════════════════════════════════════════════════════════════════ */
 function injectStructuredData(name, sci, total, best, firstTs, lastTs, wikiUrl, wikiExtract) {
   var ld = {
     '@context': 'https://schema.org',
     '@graph': [
       {
         '@type': 'Dataset',
-        'name': name + ' \u2014 Acoustic Detection Log, Baner, Pune',
+        'name': name + ' — Acoustic Detection Log, Baner, Pune',
         'description': 'Acoustic detection log for ' + name + ' (' + sci + ') in Baner, Pune using BirdNET AI v2.4. ' + total + ' detections recorded from two sensor nodes on the Sahyadri foothills.',
         'url': 'https://earth-pulse.org/species.html?bird=' + encodeURIComponent(sci.replace(/ /g,'_')),
         'license': 'https://creativecommons.org/licenses/by/4.0/',
         'isAccessibleForFree': true,
         'creator': {'@type':'Organization','name':'Earth Pulse Project','url':'https://earth-pulse.org'},
         'spatialCoverage': {'@type':'Place','name':'Baner, Pune, Maharashtra, India','geo':{'@type':'GeoCoordinates','latitude':18.5526156,'longitude':73.7818663}},
-        'measurementTechnique': 'BirdNET acoustic AI v2.4 \u2014 Cornell Lab of Ornithology',
+        'measurementTechnique': 'BirdNET acoustic AI v2.4 — Cornell Lab of Ornithology',
         'temporalCoverage': firstTs.split('T')[0] + '/' + lastTs.split('T')[0]
       },
       {
@@ -291,10 +829,10 @@ function injectStructuredData(name, sci, total, best, firstTs, lastTs, wikiUrl, 
 function updateMeta(name, sci, total, best, wikiExtract, wikiThumb) {
   var pageUrl = 'https://earth-pulse.org/species.html?bird=' + encodeURIComponent(sci.replace(/ /g,'_'));
   var desc = name + ' (' + sci + ') detected ' + total + ' times in Baner, Pune by BirdNET acoustic AI. ' + (wikiExtract ? wikiExtract.slice(0,140) : 'Western Ghats biodiversity monitoring from the Sahyadri foothills.');
-  document.title = name + ' \u2014 Bird detected in Baner, Pune | Earth Pulse';
+  document.title = name + ' — Bird detected in Baner, Pune | Earth Pulse';
   var setMeta = function(sel, val) { var el = document.querySelector(sel); if (el) el.setAttribute('content', val); };
   setMeta('meta[name="description"]', desc);
-  setMeta('meta[property="og:title"]', name + ' \u2014 Earth Pulse, Baner, Pune');
+  setMeta('meta[property="og:title"]', name + ' — Earth Pulse, Baner, Pune');
   setMeta('meta[property="og:description"]', desc);
   setMeta('meta[property="og:url"]', pageUrl);
   var canon = ge('page-canonical'); if (canon) canon.href = pageUrl;
@@ -309,9 +847,11 @@ var birdParam = new URLSearchParams(window.location.search).get('bird');
 if (!birdParam) { renderIndex(); }
 else { renderSpeciesPage(birdParam.replace(/_/g,' ').trim()); }
 
-/* ── INDEX PAGE ── */
+/* ════════════════════════════════════════════════════════════════════════════
+   INDEX PAGE
+════════════════════════════════════════════════════════════════════════════ */
 async function renderIndex() {
-  document.title = 'Bird Species \u2014 Earth Pulse, Baner, Pune';
+  document.title = 'Bird Species — Earth Pulse, Baner, Pune';
   try {
     var rows = await fetchAll('/rest/v1/bird_detections?select=species_common,species_scientific,confidence&order=detected_at.desc', 1000);
     if (!rows.length) { showError('Could not load species', 'No data returned'); return; }
@@ -328,20 +868,20 @@ async function renderIndex() {
       var maxPg = Math.ceil(total / IDX_PAGE_SIZE) - 1;
       var cards = slice.map(function(sp, i) {
         var idx = start + i;
-        return '<a class="si-card" href="species.html?bird=' + sp.species_scientific.replace(/ /g,'_') + '" aria-label="' + sp.species_common + ' species profile">' +
-          '<div class="si-emoji" id="si-' + idx + '">&#129436;</div>' +
-          '<div class="si-body"><div class="ep-bird-name">' + sp.species_common + '</div>' +
-          '<div class="ep-bird-sci">' + sp.species_scientific + '</div>' +
-          '<div class="ep-bird-conf">' + (sp.confidence*100).toFixed(0) + '% best confidence</div>' +
-          '</div></a>';
+        return '<a class="si-card" href="species.html?bird=' + sp.species_scientific.replace(/ /g,'_') + '" aria-label="' + sp.species_common + ' species profile">'
+          + '<div class="si-emoji" id="si-' + idx + '">🦜</div>'
+          + '<div class="si-body"><div class="ep-bird-name">' + sp.species_common + '</div>'
+          + '<div class="ep-bird-sci">' + sp.species_scientific + '</div>'
+          + '<div class="ep-bird-conf">' + (sp.confidence*100).toFixed(0) + '% best confidence</div>'
+          + '</div></a>';
       }).join('');
       var pagerHtml = '';
       if (total > IDX_PAGE_SIZE) {
-        pagerHtml = '<div style="display:flex;align-items:center;justify-content:center;gap:0.5rem;margin-top:1.5rem;flex-wrap:wrap;" role="navigation" aria-label="Species pages">' +
-          '<button class="pag-btn" onclick="goIdxPage(' + (idxPage-1) + ')" ' + (idxPage===0?'disabled':'') + ' aria-label="Previous page">&#8592; Prev</button>' +
-          '<span class="pag-info">' + (start+1) + '\u2013' + Math.min(start+IDX_PAGE_SIZE,total) + ' of ' + total + ' species</span>' +
-          '<button class="pag-btn" onclick="goIdxPage(' + (idxPage+1) + ')" ' + (idxPage>=maxPg?'disabled':'') + ' aria-label="Next page">Next &#8594;</button>' +
-          '</div>';
+        pagerHtml = '<div style="display:flex;align-items:center;justify-content:center;gap:0.5rem;margin-top:1.5rem;flex-wrap:wrap;" role="navigation" aria-label="Species pages">'
+          + '<button class="pag-btn" onclick="goIdxPage(' + (idxPage-1) + ')" ' + (idxPage===0?'disabled':'') + ' aria-label="Previous page">← Prev</button>'
+          + '<span class="pag-info">' + (start+1) + '–' + Math.min(start+IDX_PAGE_SIZE,total) + ' of ' + total + ' species</span>'
+          + '<button class="pag-btn" onclick="goIdxPage(' + (idxPage+1) + ')" ' + (idxPage>=maxPg?'disabled':'') + ' aria-label="Next page">Next →</button>'
+          + '</div>';
       }
       var grid = ge('idx-grid'); if (grid) { grid.innerHTML = cards; var pEl = ge('idx-pager'); if (pEl) pEl.innerHTML = pagerHtml; }
       slice.forEach(function(sp, i) {
@@ -360,19 +900,21 @@ async function renderIndex() {
     };
 
     ge('main-content').innerHTML =
-      '<div class="ep-hero"><div class="ep-hero-tag">Acoustic monitoring \u00b7 BirdNET AI \u00b7 Baner, Pune</div>' +
-      '<h1>Birds of Baner, Pune</h1>' +
-      '<p class="ep-hero-sub">Every species identified by sound from the Sahyadri foothills. Click any bird for the full profile.</p>' +
-      '<p class="ep-hero-meta"><strong>' + species.length + '</strong> species \u00b7 <strong>' + rows.length.toLocaleString('en-IN') + '</strong> total detections</p></div>' +
-      '<div class="ep-section"><div class="ep-section-inner">' +
-      '<div class="species-index-grid" id="idx-grid"></div>' +
-      '<div id="idx-pager"></div>' +
-      '</div></div>';
+      '<div class="ep-hero"><div class="ep-hero-tag">Acoustic monitoring · BirdNET AI · Baner, Pune</div>'
+      + '<h1>Birds of Baner, Pune</h1>'
+      + '<p class="ep-hero-sub">Every species identified by sound from the Sahyadri foothills. Click any bird for the full profile.</p>'
+      + '<p class="ep-hero-meta"><strong>' + species.length + '</strong> species · <strong>' + rows.length.toLocaleString('en-IN') + '</strong> total detections</p></div>'
+      + '<div class="ep-section"><div class="ep-section-inner">'
+      + '<div class="species-index-grid" id="idx-grid"></div>'
+      + '<div id="idx-pager"></div>'
+      + '</div></div>';
     renderIdxPage();
   } catch(e) { showError('Failed to load species index', e.message); }
 }
 
-/* ── SPECIES PAGE ── */
+/* ════════════════════════════════════════════════════════════════════════════
+   SPECIES PAGE
+════════════════════════════════════════════════════════════════════════════ */
 async function renderSpeciesPage(sci) {
   var detections, w;
   try {
@@ -396,7 +938,6 @@ async function renderSpeciesPage(sci) {
   var last  = new Date(detections[0].detected_at);
   var daysSpan = Math.max(1, Math.round((last - first) / 86400000));
 
-  /* Hour / month distributions */
   var hourC = new Array(24).fill(0), monC = new Array(12).fill(0);
   for (var j = 0; j < detections.length; j++) { hourC[istHour(detections[j].detected_at)]++; monC[istMonth(detections[j].detected_at)]++; }
   var maxH  = Math.max.apply(null, hourC.concat([1]));
@@ -404,7 +945,6 @@ async function renderSpeciesPage(sci) {
   var peakM = monC.indexOf(Math.max.apply(null, monC));
   var actMonths = MO.filter(function(_,idx){return monC[idx]>0;}).join(', ');
 
-  /* AQI stats */
   var withAqi = detections.filter(function(x){return x.aqi_at_detection != null;});
   var avgAqi = withAqi.length ? Math.round(withAqi.reduce(function(s,x){return s + x.aqi_at_detection;},0) / withAqi.length) : null;
   var minAqi = withAqi.length ? Math.min.apply(null, withAqi.map(function(x){return x.aqi_at_detection;})) : null;
@@ -412,30 +952,20 @@ async function renderSpeciesPage(sci) {
   var goodPct = withAqi.length ? Math.round(withAqi.filter(function(x){return x.aqi_at_detection<=40;}).length/withAqi.length*100) : null;
   var poorPct = withAqi.length ? Math.round(withAqi.filter(function(x){return x.aqi_at_detection>=80;}).length/withAqi.length*100) : null;
 
-  /* Temperature stats */
   var withTemp = detections.filter(function(x){return x.temperature_at_detection != null;});
   var avgTemp = withTemp.length ? (withTemp.reduce(function(s,x){return s + x.temperature_at_detection;},0) / withTemp.length).toFixed(1) : null;
   var minTemp = withTemp.length ? Math.min.apply(null,withTemp.map(function(x){return x.temperature_at_detection;})).toFixed(1) : null;
   var maxTemp = withTemp.length ? Math.max.apply(null,withTemp.map(function(x){return x.temperature_at_detection;})).toFixed(1) : null;
 
-  /* Node split — which sensor hears it more */
   var nodeCounts = {};
   detections.forEach(function(x){ var n = x.node_id || 'baner_01'; nodeCounts[n] = (nodeCounts[n]||0) + 1; });
   var southN  = nodeCounts['baner_south_01'] || 0;
   var mainN   = total - southN;
   var southPct = Math.round(southN / total * 100);
 
-  /* Dawn/dusk/night split */
   var dawnN=0, duskN=0, nightN=0, dayN=0;
-  detections.forEach(function(x){
-    var h = istHour(x.detected_at);
-    if (h>=5&&h<=8) dawnN++;
-    else if (h>=17&&h<=20) duskN++;
-    else if (h>=21||h<=4) nightN++;
-    else dayN++;
-  });
+  detections.forEach(function(x){ var h = istHour(x.detected_at); if (h>=5&&h<=8) dawnN++; else if (h>=17&&h<=20) duskN++; else if (h>=21||h<=4) nightN++; else dayN++; });
 
-  /* Consecutive silent days — longest gap */
   var sorted = detections.slice().sort(function(a,b){return new Date(a.detected_at)-new Date(b.detected_at);});
   var maxGap = 0;
   for (var k = 1; k < sorted.length; k++) {
@@ -443,206 +973,239 @@ async function renderSpeciesPage(sci) {
     if (gap > maxGap) maxGap = gap;
   }
 
-  /* "First this year" fix */
   var hasAnyNewFlag = detections.some(function(x){return x.is_new_species_this_year;});
   var earliestTs = detections[detections.length-1].detected_at;
 
-  /* Update meta + structured data */
   updateMeta(name, sci, total, best, w ? w.extract : null, w ? w.thumb : null);
   injectStructuredData(name, sci, total, best, detections[detections.length-1].detected_at, detections[0].detected_at, w ? w.url : null, w ? w.extract.slice(0,200) : null);
 
-  /* Eco tags */
   var ecoTags = getEcoTags(name, sci);
   var ecoHtml = '<div class="eco-tags">' + ecoTags.map(function(t){
-    return '<a class="eco-tag ' + t.cls + '" href="birds.html?filter=' + encodeURIComponent(t.label.toLowerCase()) + '" title="See all ' + t.label + ' birds">' + t.label + ' \u2197</a>';
+    return '<a class="eco-tag ' + t.cls + '" href="birds.html?filter=' + encodeURIComponent(t.label.toLowerCase()) + '" title="See all ' + t.label + ' birds">' + t.label + ' ↗</a>';
   }).join('') + '</div>';
 
-  /* Fun fact */
   var fact = getFunFact(name, sci, peakH, total, avgConf);
   var factHtml = '<div class="funfact-card"><div class="funfact-icon">' + fact.icon + '</div><div class="funfact-title">' + fact.title + '</div><div class="funfact-text">' + fact.text + '</div></div>';
 
-  /* Wiki block */
   var wikiHtml = '<div class="sidebar-card"><h3>About this species</h3>' + ecoHtml;
   if (w) {
     if (w.thumb) wikiHtml += '<div class="wiki-img-wrap"><img src="' + w.thumb + '" alt="' + name + ' (' + sci + ')" loading="lazy"></div>';
-    wikiHtml += '<p class="wiki-extract">' + w.extract + '</p><a class="wiki-link" href="' + w.url + '" target="_blank" rel="noopener">Read more on Wikipedia &#8594;</a>';
+    wikiHtml += '<p class="wiki-extract">' + w.extract + '</p><a class="wiki-link" href="' + w.url + '" target="_blank" rel="noopener">Read more on Wikipedia →</a>';
   } else {
     wikiHtml += '<p style="font-size:0.84rem;color:var(--text-muted);">Wikipedia article not found for this species.</p>';
   }
   wikiHtml += '</div>';
 
-  /* AQI block */
   var aqiHtml = '';
   if (withAqi.length) {
-    aqiHtml =
-      '<div class="fact-row"><span class="fact-label">Avg AQI when heard</span><span class="fact-val">' + avgAqi + '</span></div>' +
-      '<div class="fact-row"><span class="fact-label">Clean air detections (AQI\u226440)</span><span class="fact-val">' + goodPct + '%</span></div>' +
-      '<div class="fact-row"><span class="fact-label">Poor air detections (AQI\u226580)</span><span class="fact-val">' + poorPct + '%</span></div>' +
-      '<div class="fact-row"><span class="fact-label">AQI range</span><span class="fact-val">' + minAqi + ' \u2013 ' + maxAqi + '</span></div>' +
-      '<p style="font-size:0.74rem;color:var(--text-muted);margin-top:0.6rem;">EU AQI at the exact moment each call was detected. Reveals whether ' + name + ' vocalises more on clean or polluted days.</p>';
+    aqiHtml = '<div class="fact-row"><span class="fact-label">Avg AQI when heard</span><span class="fact-val">' + avgAqi + '</span></div>'
+      + '<div class="fact-row"><span class="fact-label">Clean air detections (AQI≤40)</span><span class="fact-val">' + goodPct + '%</span></div>'
+      + '<div class="fact-row"><span class="fact-label">Poor air detections (AQI≥80)</span><span class="fact-val">' + poorPct + '%</span></div>'
+      + '<div class="fact-row"><span class="fact-label">AQI range</span><span class="fact-val">' + minAqi + ' – ' + maxAqi + '</span></div>'
+      + '<p style="font-size:0.74rem;color:var(--text-muted);margin-top:0.6rem;">EU AQI at the exact moment each call was detected.</p>';
   } else {
     aqiHtml = '<p style="font-size:0.8rem;color:var(--text-muted);">No AQI data yet for this species.</p>';
   }
 
-  /* Temperature block */
   var tempHtml = '';
   if (withTemp.length) {
-    tempHtml =
-      '<div class="sidebar-card"><h3>Temperature when heard</h3>' +
-      '<div class="fact-row"><span class="fact-label">Average temperature</span><span class="fact-val">' + avgTemp + '\u00b0C</span></div>' +
-      '<div class="fact-row"><span class="fact-label">Coolest detection</span><span class="fact-val">' + minTemp + '\u00b0C</span></div>' +
-      '<div class="fact-row"><span class="fact-label">Warmest detection</span><span class="fact-val">' + maxTemp + '\u00b0C</span></div>' +
-      '<p style="font-size:0.74rem;color:var(--text-muted);margin-top:0.6rem;">Temperature range shows the thermal tolerance of ' + name + ' in Baner. Useful for tracking climate-driven behavioural shifts.</p>' +
-      '</div>';
+    tempHtml = '<div class="sidebar-card"><h3>Temperature when heard</h3>'
+      + '<div class="fact-row"><span class="fact-label">Average temperature</span><span class="fact-val">' + avgTemp + '°C</span></div>'
+      + '<div class="fact-row"><span class="fact-label">Coolest detection</span><span class="fact-val">' + minTemp + '°C</span></div>'
+      + '<div class="fact-row"><span class="fact-label">Warmest detection</span><span class="fact-val">' + maxTemp + '°C</span></div>'
+      + '<p style="font-size:0.74rem;color:var(--text-muted);margin-top:0.6rem;">Thermal range of ' + name + ' in Baner — useful for tracking climate-driven shifts.</p>'
+      + '</div>';
   }
 
-  /* Node split block */
   var nodeHtml = '';
   if (southN > 0) {
-    nodeHtml =
-      '<div class="sidebar-card"><h3>Which sensor hears it?</h3>' +
-      '<div class="node-bar">' +
-        '<div class="node-bar-seg" style="width:' + (100-southPct) + '%;background:var(--ep-green);"></div>' +
-        '<div class="node-bar-seg" style="width:' + southPct + '%;background:var(--ep-tan);"></div>' +
-      '</div>' +
-      '<div class="node-legend">' +
-        '<span><span class="node-dot" style="background:var(--ep-green);"></span>East balcony: ' + mainN + ' (' + (100-southPct) + '%)</span>' +
-        '<span><span class="node-dot" style="background:var(--ep-tan);"></span>South (Baner Hill): ' + southN + ' (' + southPct + '%)</span>' +
-      '</div>' +
-      '<p style="font-size:0.74rem;color:var(--text-muted);margin-top:0.6rem;">' +
-        (southPct > 60 ? name + ' is heard more from the south-facing sensor — suggesting it lives or forages closer to Baner Hill.' :
-         southPct < 20 ? name + ' is detected almost exclusively from the east balcony — likely an urban-adapted species comfortable in the residential zone.' :
-         'Both sensors detect ' + name + ' — it ranges across the full Baner habitat from urban to hillside.') +
-      '</p></div>';
+    nodeHtml = '<div class="sidebar-card"><h3>Which sensor hears it?</h3>'
+      + '<div class="node-bar">'
+        + '<div class="node-bar-seg" style="width:' + (100-southPct) + '%;background:var(--ep-green);"></div>'
+        + '<div class="node-bar-seg" style="width:' + southPct + '%;background:var(--ep-tan);"></div>'
+      + '</div>'
+      + '<div class="node-legend">'
+        + '<span><span class="node-dot" style="background:var(--ep-green);"></span>East balcony: ' + mainN + ' (' + (100-southPct) + '%)</span>'
+        + '<span><span class="node-dot" style="background:var(--ep-tan);"></span>South (Baner Hill): ' + southN + ' (' + southPct + '%)</span>'
+      + '</div>'
+      + '<p style="font-size:0.74rem;color:var(--text-muted);margin-top:0.6rem;">'
+        + (southPct > 60 ? name + ' is heard more from the south sensor — suggesting it forages closer to Baner Hill.' :
+           southPct < 20 ? name + ' is detected almost exclusively from the east balcony — likely urban-adapted.' :
+           'Both sensors detect ' + name + ' — it ranges across the full Baner habitat.')
+      + '</p></div>';
   }
 
-  /* Wow stat cards */
-  var wowHtml = '<div class="wow-grid">' +
-    '<div class="wow-card"><div class="wow-val">' + total.toLocaleString('en-IN') + '</div><div class="wow-label">Total detections</div></div>' +
-    '<div class="wow-card"><div class="wow-val">' + daysSpan + '</div><div class="wow-label">Days in dataset</div></div>' +
-    '<div class="wow-card"><div class="wow-val">' + Math.round(dawnN/total*100) + '%</div><div class="wow-label">Dawn chorus %</div></div>' +
-    '<div class="wow-card"><div class="wow-val">' + (best*100).toFixed(0) + '%</div><div class="wow-label">Best confidence</div></div>' +
-    (maxGap > 0 ? '<div class="wow-card"><div class="wow-val">' + maxGap + 'd</div><div class="wow-label">Longest silent gap</div></div>' : '') +
-    (nightN > 0 ? '<div class="wow-card"><div class="wow-val">' + nightN + '</div><div class="wow-label">Night detections</div></div>' : '') +
-  '</div>';
+  var wowHtml = '<div class="wow-grid">'
+    + '<div class="wow-card"><div class="wow-val">' + total.toLocaleString('en-IN') + '</div><div class="wow-label">Total detections</div></div>'
+    + '<div class="wow-card"><div class="wow-val">' + daysSpan + '</div><div class="wow-label">Days in dataset</div></div>'
+    + '<div class="wow-card"><div class="wow-val">' + Math.round(dawnN/total*100) + '%</div><div class="wow-label">Dawn chorus %</div></div>'
+    + '<div class="wow-card"><div class="wow-val">' + (best*100).toFixed(0) + '%</div><div class="wow-label">Best confidence</div></div>'
+    + (maxGap > 0 ? '<div class="wow-card"><div class="wow-val">' + maxGap + 'd</div><div class="wow-label">Longest silent gap</div></div>' : '')
+    + (nightN > 0 ? '<div class="wow-card"><div class="wow-val">' + nightN + '</div><div class="wow-label">Night detections</div></div>' : '')
+    + '</div>';
 
-  /* Timeline */
   var tlRows = detections.slice(0,100).map(function(x) {
     var dt  = fmtIST(x.detected_at,{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit',hour12:true});
     var col = x.confidence >= 0.8 ? 'var(--ep-green)' : 'var(--ep-tan)';
     var showStar = hasAnyNewFlag && (x.detected_at === earliestTs);
-    var nodeTag = x.node_id === 'baner_south_01' ? '<span class="tl-node">&#127755; South</span>' : '';
-    return '<div class="tl-row">' +
-      '<span class="tl-time">' + dt + '</span>' +
-      '<span class="tl-conf" style="color:' + col + '">' + (x.confidence*100).toFixed(0) + '%</span>' +
-      (x.aqi_at_detection!=null ? '<span class="tl-aqi">AQI ' + x.aqi_at_detection + '</span>' : '') +
-      nodeTag +
-      (showStar ? '<span class="tl-new">&#9733; First this year</span>' : '') +
-      '</div>';
+    var nodeTag = x.node_id === 'baner_south_01' ? '<span class="tl-node">🌿 South</span>' : '';
+    return '<div class="tl-row">'
+      + '<span class="tl-time">' + dt + '</span>'
+      + '<span class="tl-conf" style="color:' + col + '">' + (x.confidence*100).toFixed(0) + '%</span>'
+      + (x.aqi_at_detection!=null ? '<span class="tl-aqi">AQI ' + x.aqi_at_detection + '</span>' : '')
+      + nodeTag
+      + (showStar ? '<span class="tl-new">★ First this year</span>' : '')
+      + '</div>';
   }).join('');
 
+  /* ── FAQ & habitat support data ── */
+  var faqData = getFamilyFAQ(name, sci);
+  var habitatData = getHabitatSupport(name, sci);
+
   var heroBg  = w && w.thumb ? ' style="background-image:url(\'' + w.thumb + '\')"' : '';
-  var newBadge = hasAnyNewFlag ? '<span class="species-badge" style="background:rgba(254,240,138,0.3);color:#fef08a;">&#9733; New this year</span>' : '';
+  var newBadge = hasAnyNewFlag ? '<span class="species-badge" style="background:rgba(254,240,138,0.3);color:#fef08a;">★ New this year</span>' : '';
 
+  /* ── BUILD PAGE HTML ── */
   ge('main-content').innerHTML =
-    '<div class="species-hero" role="banner">' +
-      '<div class="species-hero-bg"' + heroBg + '></div>' +
-      '<div class="species-hero-content">' +
-        '<a href="birds.html" style="color:rgba(242,240,230,0.65);font-size:0.8rem;text-decoration:none;display:inline-flex;align-items:center;gap:5px;margin-bottom:0.75rem;" aria-label="Back to Birds of Baner">&#8592; Birds of Baner</a>' +
-        '<div class="species-tag">Earth Pulse \u00b7 Baner, Pune \u00b7 BirdNET Acoustic Detection</div>' +
-        '<h1 class="species-name">' + name + '</h1>' +
-        '<div class="species-sci"><em>' + sci + '</em></div>' +
-        '<div class="species-badges">' +
-          '<span class="species-badge badge-detected">' + total.toLocaleString('en-IN') + ' detections</span>' +
-          '<span class="species-badge badge-conf">Best: ' + (best*100).toFixed(0) + '% confidence</span>' +
-          newBadge +
-          '<button class="share-btn" id="share-btn-main" aria-label="Share this species">&#8599; Share</button>' +
-        '</div>' +
-      '</div>' +
-    '</div>' +
 
-    '<div class="ep-section"><div class="ep-section-inner">' +
-      wowHtml +
-      '<div class="species-layout">' +
+    /* HERO */
+    '<div class="species-hero" role="banner">'
+      + '<div class="species-hero-bg"' + heroBg + '></div>'
+      + '<div class="species-hero-content">'
+        + '<a href="birds.html" style="color:rgba(242,240,230,0.65);font-size:0.8rem;text-decoration:none;display:inline-flex;align-items:center;gap:5px;margin-bottom:0.75rem;" aria-label="Back to Birds of Baner">← Birds of Baner</a>'
+        + '<div class="species-tag">Earth Pulse · Baner, Pune · BirdNET Acoustic Detection</div>'
+        + '<h1 class="species-name">' + name + '</h1>'
+        + '<div class="species-sci"><em>' + sci + '</em></div>'
+        + '<div class="species-badges">'
+          + '<span class="species-badge badge-detected">' + total.toLocaleString('en-IN') + ' detections</span>'
+          + '<span class="species-badge badge-conf">Best: ' + (best*100).toFixed(0) + '% confidence</span>'
+          + newBadge
+          + '<button class="share-btn" id="share-btn-main" aria-label="Share this species">↗ Share</button>'
+        + '</div>'
+      + '</div>'
+    + '</div>'
 
-        '<div>' +
-          '<div class="sidebar-card"><h3>At a glance</h3>' +
-            '<div class="fact-row"><span class="fact-label">Total detections</span><span class="fact-val">' + total.toLocaleString('en-IN') + '</span></div>' +
-            '<div class="fact-row"><span class="fact-label">Best confidence</span><span class="fact-val">' + (best*100).toFixed(0) + '%</span></div>' +
-            '<div class="fact-row"><span class="fact-label">Avg confidence</span><span class="fact-val">' + (avgConf*100).toFixed(0) + '%</span></div>' +
-            '<div class="fact-row"><span class="fact-label">Days in dataset</span><span class="fact-val">' + daysSpan + '</span></div>' +
-            '<div class="fact-row"><span class="fact-label">First heard</span><span class="fact-val">' + fmtIST(first,{day:'numeric',month:'short',year:'numeric'}) + '</span></div>' +
-            '<div class="fact-row"><span class="fact-label">Last heard</span><span class="fact-val">' + fmtIST(last,{day:'numeric',month:'short',year:'numeric'}) + '</span></div>' +
-            '<div class="fact-row"><span class="fact-label">Peak hour</span><span class="fact-val">' + String(peakH).padStart(2,'0') + ':00 IST</span></div>' +
-            '<div class="fact-row"><span class="fact-label">Peak season</span><span class="fact-val">' + getSeasonLabel(peakM) + '</span></div>' +
-            '<div class="fact-row"><span class="fact-label">Active months</span><span class="fact-val" style="font-size:0.7rem;">' + (actMonths||'\u2014') + '</span></div>' +
-            '<div class="fact-row"><span class="fact-label">Dawn chorus %</span><span class="fact-val">' + Math.round(dawnN/total*100) + '%</span></div>' +
-            '<div class="fact-row"><span class="fact-label">Night detections</span><span class="fact-val">' + nightN + '</span></div>' +
-            (maxGap > 1 ? '<div class="fact-row"><span class="fact-label">Longest silent gap</span><span class="fact-val">' + maxGap + ' days</span></div>' : '') +
-          '</div>' +
-          wikiHtml +
-          nodeHtml +
-          '<div class="sidebar-card"><h3>Air quality &amp; bird activity</h3>' + aqiHtml + '</div>' +
-          tempHtml +
-        '</div>' +
+    /* MAIN CONTENT */
+    + '<div class="ep-section"><div class="ep-section-inner">'
+      + wowHtml
+      + '<div class="species-layout">'
 
-        '<div>' +
-          '<div class="chart-block">' +
-            '<div class="chart-title">Time of day activity</div>' +
-            '<div class="chart-sub">Detections by hour (IST) \u2014 reveals dawn chorus, dusk, and night patterns</div>' +
-            '<div class="hour-grid" id="hour-grid"></div>' +
-            '<div class="hour-label-row"><span>00h</span><span>03h</span><span>06h</span><span>09h</span><span>12h</span><span>15h</span><span>18h</span><span>21h</span><span>24h</span></div>' +
-          '</div>' +
-          '<div class="chart-block">' +
-            '<div class="chart-title">Monthly presence in Baner</div>' +
-            '<div class="chart-sub">Which months is ' + name + ' most active at this location?</div>' +
-            '<canvas id="monthChart" height="80"></canvas>' +
-          '</div>' +
-          '<div class="chart-block">' +
-            '<div class="chart-title">Detection confidence over time</div>' +
-            '<div class="chart-sub">Shows whether BirdNET is hearing ' + name + ' more clearly as the dataset grows. Upward trend = clearer calls being recorded.</div>' +
-            '<canvas id="confChart" height="80"></canvas>' +
-          '</div>' +
-          '<div class="chart-block">' +
-            '<div class="chart-title">Detection log</div>' +
-            '<div class="chart-sub">Most recent ' + Math.min(total,100) + ' of ' + total.toLocaleString('en-IN') + ' detections. &#127755; = south sensor (Baner Hill facing). &#9733; = first recorded this year.</div>' +
-            '<div class="timeline">' + tlRows + '</div>' +
-          '</div>' +
-          factHtml +
-        '</div>' +
+        /* LEFT SIDEBAR */
+        + '<div>'
+          /* At a glance */
+          + '<div class="sidebar-card"><h3>At a glance</h3>'
+            + '<div class="fact-row"><span class="fact-label">Total detections</span><span class="fact-val">' + total.toLocaleString('en-IN') + '</span></div>'
+            + '<div class="fact-row"><span class="fact-label">Best confidence</span><span class="fact-val">' + (best*100).toFixed(0) + '%</span></div>'
+            + '<div class="fact-row"><span class="fact-label">Avg confidence</span><span class="fact-val">' + (avgConf*100).toFixed(0) + '%</span></div>'
+            + '<div class="fact-row"><span class="fact-label">Days in dataset</span><span class="fact-val">' + daysSpan + '</span></div>'
+            + '<div class="fact-row"><span class="fact-label">First heard</span><span class="fact-val">' + fmtIST(first,{day:'numeric',month:'short',year:'numeric'}) + '</span></div>'
+            + '<div class="fact-row"><span class="fact-label">Last heard</span><span class="fact-val">' + fmtIST(last,{day:'numeric',month:'short',year:'numeric'}) + '</span></div>'
+            + '<div class="fact-row"><span class="fact-label">Peak hour</span><span class="fact-val">' + String(peakH).padStart(2,'0') + ':00 IST</span></div>'
+            + '<div class="fact-row"><span class="fact-label">Peak season</span><span class="fact-val">' + getSeasonLabel(peakM) + '</span></div>'
+            + '<div class="fact-row"><span class="fact-label">Active months</span><span class="fact-val" style="font-size:0.7rem;">' + (actMonths||'—') + '</span></div>'
+            + '<div class="fact-row"><span class="fact-label">Dawn chorus %</span><span class="fact-val">' + Math.round(dawnN/total*100) + '%</span></div>'
+            + '<div class="fact-row"><span class="fact-label">Night detections</span><span class="fact-val">' + nightN + '</span></div>'
+            + (maxGap > 1 ? '<div class="fact-row"><span class="fact-label">Longest silent gap</span><span class="fact-val">' + maxGap + ' days</span></div>' : '')
+          + '</div>'
+          /* Wikipedia */
+          + wikiHtml
+          /* Node split */
+          + nodeHtml
+          /* AQI */
+          + '<div class="sidebar-card"><h3>Air quality &amp; bird activity</h3>' + aqiHtml + '</div>'
+          /* Temperature */
+          + tempHtml
+        + '</div>'
 
-      '</div>' +
+        /* RIGHT MAIN COLUMN */
+        + '<div>'
+          /* Hour heatmap */
+          + '<div class="chart-block">'
+            + '<div class="chart-title">Time of day activity</div>'
+            + '<div class="chart-sub">Detections by hour (IST) — reveals dawn chorus, dusk, and night patterns</div>'
+            + '<div class="hour-grid" id="hour-grid"></div>'
+            + '<div class="hour-label-row"><span>00h</span><span>03h</span><span>06h</span><span>09h</span><span>12h</span><span>15h</span><span>18h</span><span>21h</span><span>24h</span></div>'
+          + '</div>'
+          /* Monthly presence */
+          + '<div class="chart-block">'
+            + '<div class="chart-title">Monthly presence in Baner</div>'
+            + '<div class="chart-sub">Which months is ' + name + ' most active at this location?</div>'
+            + '<canvas id="monthChart" height="80"></canvas>'
+          + '</div>'
+          /* Confidence over time */
+          + '<div class="chart-block">'
+            + '<div class="chart-title">Detection confidence over time</div>'
+            + '<div class="chart-sub">Upward trend = clearer calls being recorded as dataset matures.</div>'
+            + '<canvas id="confChart" height="80"></canvas>'
+          + '</div>'
+          /* ── NEW: GBIF global range map ── */
+          + '<div class="chart-block">'
+            + '<div class="chart-title">Global range map</div>'
+            + '<div class="chart-sub">All recorded occurrences worldwide from GBIF (Global Biodiversity Information Facility). Green dot = Baner, Pune — where Earth Pulse detected this species. Zoom and pan to explore.</div>'
+            + '<div class="range-map-wrap" id="range-map-wrap">'
+              + '<div class="range-map-loading"><div class="map-spinner"></div>Loading range data…</div>'
+              + '<div id="range-map"></div>'
+            + '</div>'
+            + '<p class="range-map-attribution">Occurrence data © <a href="https://www.gbif.org" target="_blank" rel="noopener">GBIF</a> contributors, CC BY 4.0. Base map © <a href="https://carto.com" target="_blank" rel="noopener">CartoDB</a>.</p>'
+          + '</div>'
+          /* Detection log */
+          + '<div class="chart-block">'
+            + '<div class="chart-title">Detection log</div>'
+            + '<div class="chart-sub">Most recent ' + Math.min(total,100) + ' of ' + total.toLocaleString('en-IN') + ' detections. 🌿 = south sensor (Baner Hill facing). ★ = first recorded this year.</div>'
+            + '<div class="timeline">' + tlRows + '</div>'
+          + '</div>'
+          /* Fun fact */
+          + factHtml
+          /* ── NEW: FAQ ── */
+          + '<div class="chart-block">'
+            + '<div class="chart-title">Frequently asked questions</div>'
+            + '<div class="chart-sub">Common questions about ' + name + ' in Baner, Pune.</div>'
+            + renderFAQ(faqData)
+          + '</div>'
+          /* ── NEW: How to support this bird ── */
+          + '<div class="chart-block">'
+            + '<div class="chart-title">How to support this bird on Baner Hill</div>'
+            + '<div class="chart-sub">Trees to plant, actions to take, and why each one matters for ' + name + '.</div>'
+            + renderHabitatSupport(habitatData)
+          + '</div>'
+        + '</div>'
 
-      '<div style="margin-top:2rem;">' +
-        '<h2 class="ep-section-title">Other species heard in Baner</h2>' +
-        '<p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:1.25rem;">Other birds detected acoustically at the same location.</p>' +
-        '<div class="related-grid" id="related-grid">' +
-          [0,1,2,3,4,5,6,7].map(function(){return '<div class="ep-skeleton" style="height:120px;border-radius:var(--radius-md);"></div>';}).join('') +
-        '</div>' +
-      '</div>' +
+      + '</div>'
 
-    '</div></div>' +
+      /* Related species */
+      + '<div style="margin-top:2rem;">'
+        + '<h2 class="ep-section-title">Other species heard in Baner</h2>'
+        + '<p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:1.25rem;">Other birds detected acoustically at the same location.</p>'
+        + '<div class="related-grid" id="related-grid">'
+          + [0,1,2,3,4,5,6,7].map(function(){return '<div class="ep-skeleton" style="height:120px;border-radius:var(--radius-md);"></div>';}).join('')
+        + '</div>'
+      + '</div>'
 
-    /* SEO context block */
-    '<section class="seo-context" aria-label="About ' + name + ' in Baner">' +
-      '<h2>' + name + ' (' + sci + ') in Baner, Pune</h2>' +
-      '<p>' + name + ' has been acoustically detected ' + total.toLocaleString('en-IN') + ' times in Baner, Pune by Earth Pulse, a citizen science environmental observatory on the edge of the Western Ghats and Sahyadri range. Detections span ' + daysSpan + ' days, with peak activity at ' + String(peakH).padStart(2,'0') + ':00 IST during the ' + getSeasonLabel(peakM) + ' season. ' + (avgTemp ? 'Average temperature at detection: ' + avgTemp + '\u00b0C. ' : '') + (avgAqi ? 'Average AQI at detection: ' + avgAqi + '. ' : '') + '</p>' +
-      '<p>Earth Pulse uses two Raspberry Pi sensor nodes \u2014 one east-facing and one south-facing toward Baner Hill \u2014 running Cornell Lab\'s BirdNET AI v2.4 to continuously record and identify birds by their calls. All data is open and updated in real time.</p>' +
-    '</section>';
+    + '</div></div>'
 
+    /* SEO context */
+    + '<section class="seo-context" aria-label="About ' + name + ' in Baner">'
+      + '<h2>' + name + ' (' + sci + ') in Baner, Pune</h2>'
+      + '<p>' + name + ' has been acoustically detected ' + total.toLocaleString('en-IN') + ' times in Baner, Pune by Earth Pulse, a citizen science environmental observatory on the edge of the Western Ghats and Sahyadri range. Detections span ' + daysSpan + ' days, with peak activity at ' + String(peakH).padStart(2,'0') + ':00 IST during the ' + getSeasonLabel(peakM) + ' season. ' + (avgTemp ? 'Average temperature at detection: ' + avgTemp + '°C. ' : '') + (avgAqi ? 'Average AQI at detection: ' + avgAqi + '. ' : '') + '</p>'
+      + '<p>Earth Pulse uses two Raspberry Pi sensor nodes — one east-facing and one south-facing toward Baner Hill — running Cornell Lab\'s BirdNET AI v2.4 to continuously record and identify birds by their calls. All data is open and updated in real time.</p>'
+      + '<p>' + name + ' belongs to the ' + (getEcoTags(name,sci)[0].label) + ' ecological group. ' + (nightN > 0 ? 'It has been detected ' + nightN + ' times between 21:00 and 05:00 IST, confirming nocturnal activity at this location. ' : '') + 'Baner Hill, situated on the northern edge of the Pune urban area, is an ecotone between the Sahyadri Western Ghats and the Deccan plateau — supporting exceptional avian diversity for an urban site.</p>'
+    + '</section>';
+
+  /* ── Share button ── */
   var shareBtn = ge('share-btn-main');
   if (shareBtn) shareBtn.onclick = function(){ shareSpecies(name, sci, total, best); };
 
-  /* Hour heatmap */
+  /* ── Hour heatmap ── */
   var hg = ge('hour-grid');
   if (hg) {
     hg.innerHTML = hourC.map(function(count,h){
       var alpha = count ? (0.12 + 0.88*count/maxH).toFixed(2) : 0;
       var bg    = count ? 'rgba(33,67,50,' + alpha + ')' : 'var(--ep-cream-dark)';
-      return '<div class="hour-cell" style="background:' + bg + '" title="' + String(h).padStart(2,'0') + ':00 \u2014 ' + count + ' detection' + (count!==1?'s':'') + '" role="img" aria-label="Hour ' + h + ': ' + count + ' detections"></div>';
+      return '<div class="hour-cell" style="background:' + bg + '" title="' + String(h).padStart(2,'0') + ':00 — ' + count + ' detection' + (count!==1?'s':'') + '" role="img" aria-label="Hour ' + h + ': ' + count + ' detections"></div>';
     }).join('');
   }
 
+  /* ── Monthly chart ── */
   var mc = ge('monthChart');
   if (mc) {
     new Chart(mc, {
@@ -655,6 +1218,7 @@ async function renderSpeciesPage(sci) {
     });
   }
 
+  /* ── Confidence chart ── */
   var cc = ge('confChart');
   if (cc && total > 0) {
     var confSorted = detections.slice().sort(function(a,b){return new Date(a.detected_at)-new Date(b.detected_at);});
@@ -669,10 +1233,19 @@ async function renderSpeciesPage(sci) {
     });
   }
 
+  /* ── GBIF range map (async — runs after page renders) ── */
+  fetchGbifKey(sci).then(function(taxonKey) {
+    initRangeMap('range-map-wrap', taxonKey, name, sci);
+  });
+
+  /* ── Related species ── */
   var currentCls = ecoTags.length ? ecoTags[0].cls : '';
   loadRelated(sci, currentCls);
 }
 
+/* ════════════════════════════════════════════════════════════════════════════
+   RELATED SPECIES
+════════════════════════════════════════════════════════════════════════════ */
 async function loadRelated(sci, currentCls) {
   try {
     var rows = await fetchAll('/rest/v1/bird_detections?select=species_common,species_scientific&species_scientific=neq.' + encodeURIComponent(sci) + '&order=detected_at.desc', 1000);
@@ -685,11 +1258,11 @@ async function loadRelated(sci, currentCls) {
     var grid = ge('related-grid');
     if (!grid) return;
     grid.innerHTML = rel.map(function(s,i){
-      return '<a class="related-card" href="species.html?bird=' + s.species_scientific.replace(/ /g,'_') + '" aria-label="' + s.species_common + ' species profile">' +
-        '<div class="related-thumb" id="rt-' + i + '">&#129436;</div>' +
-        '<div class="related-card-name">' + s.species_common + '</div>' +
-        '<div class="related-card-sci">' + s.species_scientific + '</div>' +
-        '</a>';
+      return '<a class="related-card" href="species.html?bird=' + s.species_scientific.replace(/ /g,'_') + '" aria-label="' + s.species_common + ' species profile">'
+        + '<div class="related-thumb" id="rt-' + i + '">🦜</div>'
+        + '<div class="related-card-name">' + s.species_common + '</div>'
+        + '<div class="related-card-sci">' + s.species_scientific + '</div>'
+        + '</a>';
     }).join('');
     rel.forEach(function(s,i){
       fetchWiki(s.species_scientific).then(function(w){
