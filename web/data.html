@@ -802,70 +802,59 @@ function switchPanel(id, btn) {
    Reads response: d.text || d.content
 ════════════════════════════════════════════════════════════════════ */
 function checkGeminiConnection() {
+  /* Worker /gemini expects: {query: string, data: array}
+     Worker /gemini returns: {answer: string} or {answer: null}
+     Architecture: local Supabase logic ALWAYS runs first (free, no API).
+     Gemini adds a 2-3 sentence human summary on top. If Gemini is down,
+     the local data table and fallback answer still show. */
   var bar = ge('ai-status');
   if (!bar) return;
-
   fetch(WORKER + '/gemini', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      prompt: 'Reply with exactly: "Earth Pulse Gemini OK"',
-      model: 'gemini-2.5-flash-lite'
-    })
+    body: JSON.stringify({ query: 'Connection test', data: [] })
   }).then(function(r) {
     if (!r.ok) throw new Error('HTTP ' + r.status);
     return r.json();
   }).then(function(d) {
-    var text = d.text || d.content || '';
-    if (text && text.length > 0) {
+    if (d.answer && d.answer.length > 0) {
       bar.className = 'ai-status-bar ai-status-ok';
-      bar.innerHTML = '✅ Gemini 2.5 Flash Lite connected — AI insights active';
+      bar.innerHTML = '✅ Gemini connected — data analysis + AI summaries both active';
     } else {
-      bar.className = 'ai-status-bar ai-status-err';
-      bar.innerHTML = '⚠️ Gemini responded but returned no text. Check GEMINI_API_KEY in earthpulse-ai Worker secrets.';
+      bar.className = 'ai-status-bar ai-status-loading';
+      bar.innerHTML = '⚠️ Gemini key may be missing — data analysis still works, AI summaries paused';
     }
   }).catch(function(e) {
-    bar.className = 'ai-status-bar ai-status-err';
-    bar.innerHTML = '❌ Cannot reach AI Worker (' + e.message + '). Data explorer will show data tables without AI summaries.';
+    bar.className = 'ai-status-bar ai-status-loading';
+    bar.innerHTML = '📊 Data analysis mode — Supabase queries answer directly, AI summary layer offline';
   });
 }
 
 /* ════════════════════════════════════════════════════════════════════
-   AI QUERY ENGINE
-   FIX 1: callGemini declared ONCE here — no duplicate below.
-   FIX 2: Uses correct payload {prompt, model} not {query, data}.
-   FIX 3: Reads d.text || d.content (Worker response format).
+   AI QUERY ENGINE — Two-layer architecture
+   Layer 1: runDynamicQuery() — FREE, no API, always runs.
+     Fetches real data from Supabase and builds a specific local answer
+     using actual numbers (top species, temperatures, rainfall totals).
+     This is the PRIMARY answer. Works even if Gemini is down.
+   Layer 2: callGemini() — enrichment, adds a human-readable summary.
+     If Gemini is unavailable, buildFallbackAnswer() takes over.
+     Gemini payload: {query, data} → response: {answer}
 ════════════════════════════════════════════════════════════════════ */
-function callGemini(prompt) {
+function callGemini(query, data) {
+  /* Worker /gemini reads: body.query and body.data
+     Worker /gemini returns: {answer: string} or {answer: null, debug: ...}
+     Model is set inside the Worker (gemini-2.0-flash now, not 1.5-flash which is deprecated) */
+  var sample = (data && data.length) ? data.slice(0, 15) : [];
   return fetch(WORKER + '/gemini', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      prompt: prompt,
-      model: 'gemini-2.5-flash-lite'
-    })
+    body: JSON.stringify({ query: query, data: sample })
   }).then(function(r) {
     if (!r.ok) throw new Error('HTTP ' + r.status);
     return r.json();
   }).then(function(d) {
-    var text = d.text || d.content || null;
-    return text;
+    return d.answer || null;
   });
-}
-
-function buildGeminiPrompt(q, data) {
-  var dataStr = data && data.length
-    ? JSON.stringify(data.slice(0, 20))
-    : 'No specific data retrieved for this query.';
-
-  return 'You are Earth Pulse — a citizen science environmental observatory in Baner, Pune, India on the Western Ghats edge. '
-    + 'The dataset has been recording since January 2022: hourly AQI, temperature, rainfall, bird acoustic detections via BirdNET AI, '
-    + 'and soundscape index from two Raspberry Pi nodes.\n\n'
-    + 'Question from a Baner resident: ' + q + '\n\n'
-    + 'Relevant data sample: ' + dataStr + '\n\n'
-    + 'Write a clear, warm, specific answer in 2-3 sentences. Use actual numbers from the data where available. '
-    + 'Focus on what this means for residents and the Baner ecosystem. '
-    + 'If data is insufficient, say so honestly.';
 }
 
 function ask(q) {
@@ -1071,21 +1060,23 @@ function runQuery() {
   }
 
   runDynamicQuery(q).then(function(data) {
-    /* Build a specific prompt with actual data */
-    var prompt = buildGeminiPrompt(q, data);
-    return callGemini(prompt).then(function(answer) {
-      return { data: data, answer: answer };
+    /* Layer 1: local logic answer — always runs, zero API cost */
+    var localAnswer = buildFallbackAnswer(q, data);
+    /* Layer 2: try Gemini enrichment on top — gracefully skipped if offline */
+    return callGemini(q, data).then(function(geminiAnswer) {
+      return { data: data, answer: geminiAnswer || localAnswer, source: geminiAnswer ? 'gemini' : 'local' };
     }).catch(function() {
-      return { data: data, answer: null };
+      return { data: data, answer: localAnswer, source: 'local' };
     });
   }).then(function(result) {
     var data   = result.data;
-    var answer = result.answer || buildFallbackAnswer(q, data);
+    var answer = result.answer;
+    var src    = result.source === 'gemini' ? '✨ Gemini summary · ' : '📊 Data analysis · ';
 
     var html = '<div class="res-card">'
       + '<div class="res-q">' + escHtml(q) + '</div>'
       + '<div class="res-body">' + md2html(answer) + '</div>'
-      + (data && data.length ? '<div class="res-src">Data: ' + data.length + ' records from Earth Pulse Supabase</div>' : '')
+      + (data && data.length ? '<div class="res-src">' + src + data.length + ' records from Earth Pulse Supabase</div>' : '')
       + '</div>';
 
     if (data && data.length) {
