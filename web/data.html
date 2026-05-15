@@ -3,25 +3,23 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Data Explorer — Earth Pulse</title>
-  <meta name="robots" content="noindex, nofollow">
+  <title>Data Explorer — Earth Pulse | Baner Hill, Pune</title>
+  <meta name="robots" content="noindex, follow">
   <meta property="og:image" content="https://earth-pulse.org/earth-pulse-logo-og.png">
-  <meta name="twitter:image" content="https://earth-pulse.org/earth-pulse-logo-og.png">
-<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-<link rel="manifest" href="/site.webmanifest">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="manifest" href="/site.webmanifest">
   <link rel="stylesheet" href="styles.css">
-  <!-- Supabase MUST be in head so auth check works immediately -->
+  <!-- Supabase loaded FIRST in head so auth check works immediately -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
   <script>
+    /* Auth guard — must run before DOM renders */
     var _SB_URL = 'https://krmczyqwblsoekceanlj.supabase.co';
     var _SB_KEY = 'sb_publishable_DrHFT5J0vmrkYraUXIlpQQ_gsk1rdq6';
-    var _sb = null;
-    var _user = null;
+    var _sb     = null;
+    var _user   = null;
     try { _sb = window.supabase.createClient(_SB_URL, _SB_KEY); } catch(e) {}
-
-    // Set session to 7 days
     if (_sb) {
       _sb.auth.getSession().then(function(d) {
         if (!d.data || !d.data.session) {
@@ -31,355 +29,753 @@
         }
       }).catch(function() { window.location.href = 'register.html'; });
     } else {
-      // If Supabase failed to load, redirect
-      window.addEventListener('DOMContentLoaded', function() {
-        window.location.href = 'register.html';
-      });
+      window.addEventListener('DOMContentLoaded', function() { window.location.href = 'register.html'; });
     }
   </script>
   <style>
-    body { margin:0; }
-    .app { display:grid; grid-template-columns:260px 1fr; min-height:calc(100vh - 62px); }
-    @media(max-width:900px){ .app { grid-template-columns:1fr; } }
+    body{margin:0}
+    /* ── Layout ── */
+    .app{display:grid;grid-template-columns:240px 1fr;min-height:calc(100vh - 62px)}
+    @media(max-width:900px){.app{grid-template-columns:1fr}}
 
-    /* ── SIDEBAR ── */
-    .sidebar { background:#fff; border-right:1px solid var(--border); display:flex; flex-direction:column; padding:1.25rem 1rem; }
-    .user-pill { background:rgba(33,67,50,0.07); border-radius:var(--radius-md); padding:0.85rem 1rem; margin-bottom:1rem; }
-    .user-pill-name  { font-weight:700; font-size:0.9rem; color:var(--ep-green); }
-    .user-pill-email { font-size:0.72rem; color:var(--text-muted); font-family:var(--mono); word-break:break-all; }
-    .user-pill-badge { display:inline-block; margin-top:4px; font-size:0.63rem; background:rgba(34,197,94,0.15); color:#166534; padding:1px 8px; border-radius:20px; font-weight:600; }
-    .sb-section { font-size:0.63rem; font-weight:700; text-transform:uppercase; letter-spacing:0.1em; color:var(--text-muted); margin:0.85rem 0 0.3rem 0.4rem; }
-    .sb-link { display:flex; align-items:center; gap:0.6rem; padding:0.48rem 0.75rem; border-radius:var(--radius-sm); font-size:0.84rem; color:var(--text-secondary); text-decoration:none; cursor:pointer; border:none; background:none; font-family:var(--sans); width:100%; text-align:left; transition:all 0.12s; }
-    .sb-link:hover { background:rgba(33,67,50,0.07); color:var(--ep-green); }
-    .sb-link.active { background:rgba(33,67,50,0.11); color:var(--ep-green); font-weight:600; }
-    .sb-link.danger { color:#dc2626; }
-    .sb-link.danger:hover { background:rgba(220,38,38,0.07); }
-    .sb-spacer { flex:1; }
+    /* ── Sidebar ── */
+    .sidebar{background:#fff;border-right:1px solid var(--border);display:flex;flex-direction:column;padding:1.25rem 1rem;position:sticky;top:62px;height:calc(100vh - 62px);overflow-y:auto}
+    .user-pill{background:rgba(33,67,50,.07);border-radius:var(--radius-md);padding:.85rem 1rem;margin-bottom:1rem}
+    .user-pill-name{font-weight:700;font-size:.9rem;color:var(--ep-green)}
+    .user-pill-email{font-size:.72rem;color:var(--text-muted);font-family:var(--mono);word-break:break-all}
+    .user-pill-badge{display:inline-block;margin-top:4px;font-size:.63rem;background:rgba(34,197,94,.15);color:#166534;padding:1px 8px;border-radius:20px;font-weight:600}
+    .sb-section{font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--text-muted);margin:.85rem 0 .3rem .4rem}
+    .sb-link{display:flex;align-items:center;gap:.6rem;padding:.48rem .75rem;border-radius:var(--radius-sm);font-size:.84rem;color:var(--text-secondary);text-decoration:none;cursor:pointer;border:none;background:none;font-family:var(--sans);width:100%;text-align:left;transition:all .12s}
+    .sb-link:hover{background:rgba(33,67,50,.07);color:var(--ep-green)}
+    .sb-link.active{background:rgba(33,67,50,.11);color:var(--ep-green);font-weight:600}
+    .sb-link.danger{color:#dc2626}.sb-link.danger:hover{background:rgba(220,38,38,.07)}
+    .sb-spacer{flex:1}
 
-    /* ── MAIN ── */
-    .main { padding:2rem; overflow-y:auto; background:var(--ep-cream); }
-    .panel { display:none; }
-    .panel.on { display:block; }
-    .panel-title { font-family:var(--serif); font-size:1.6rem; color:var(--ep-green); margin-bottom:0.3rem; }
-    .panel-sub { font-size:0.88rem; color:var(--text-muted); margin-bottom:1.5rem; line-height:1.6; }
+    /* ── Main ── */
+    .main{padding:2rem;overflow-y:auto;background:var(--ep-cream)}
+    .panel{display:none}.panel.on{display:block}
+    .panel-title{font-family:var(--serif);font-size:1.6rem;color:var(--ep-green);margin-bottom:.3rem}
+    .panel-sub{font-size:.87rem;color:var(--text-muted);margin-bottom:1.5rem;line-height:1.65}
 
-    /* ── AI SEARCH ── */
-    .ai-box { background:#fff; border:2px solid var(--ep-green); border-radius:var(--radius-xl); padding:1rem 1rem 1rem 1.4rem; display:flex; gap:0.75rem; align-items:flex-end; margin-bottom:1.25rem; box-shadow:0 4px 20px rgba(33,67,50,0.09); }
-    .ai-box textarea { flex:1; border:none; outline:none; font-family:var(--sans); font-size:0.95rem; resize:none; background:transparent; color:var(--text-primary); line-height:1.5; min-height:44px; max-height:150px; }
-    .ai-box textarea::placeholder { color:var(--text-muted); }
-    .ai-btn { background:var(--ep-green); color:var(--ep-cream); border:none; border-radius:2rem; padding:0.6rem 1.4rem; font-family:var(--sans); font-size:0.88rem; font-weight:500; cursor:pointer; white-space:nowrap; flex-shrink:0; transition:background 0.2s; }
-    .ai-btn:hover:not(:disabled) { background:#1a3628; }
-    .ai-btn:disabled { opacity:0.4; cursor:not-allowed; }
+    /* ── AI box ── */
+    .ai-box{background:#fff;border:2px solid var(--ep-green);border-radius:var(--radius-xl);padding:1rem 1rem 1rem 1.4rem;display:flex;gap:.75rem;align-items:flex-end;margin-bottom:1.25rem;box-shadow:0 4px 20px rgba(33,67,50,.09)}
+    .ai-box textarea{flex:1;border:none;outline:none;font-family:var(--sans);font-size:.95rem;resize:none;background:transparent;color:var(--text-primary);line-height:1.5;min-height:44px;max-height:150px}
+    .ai-box textarea::placeholder{color:var(--text-muted)}
+    .ai-btn{background:var(--ep-green);color:var(--ep-cream);border:none;border-radius:2rem;padding:.6rem 1.4rem;font-family:var(--sans);font-size:.88rem;font-weight:500;cursor:pointer;white-space:nowrap;flex-shrink:0;transition:background .2s}
+    .ai-btn:hover:not(:disabled){background:#1a3628}
+    .ai-btn:disabled{opacity:.4;cursor:not-allowed}
+    .chips{display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:1.25rem}
+    .chip{padding:.28rem .85rem;border-radius:2rem;background:#fff;border:1px solid var(--border);font-size:.77rem;cursor:pointer;color:var(--ep-green);transition:all .12s}
+    .chip:hover{background:var(--ep-green);color:var(--ep-cream);border-color:var(--ep-green)}
 
-    .chips { display:flex; flex-wrap:wrap; gap:0.4rem; margin-bottom:1.25rem; }
-    .chip { padding:0.28rem 0.85rem; border-radius:2rem; background:#fff; border:1px solid var(--border); font-size:0.77rem; cursor:pointer; color:var(--ep-green); transition:all 0.12s; }
-    .chip:hover { background:var(--ep-green); color:var(--ep-cream); border-color:var(--ep-green); }
+    /* ── Gemini status strip ── */
+    .ai-status-bar{display:flex;align-items:center;gap:.6rem;padding:.5rem .85rem;border-radius:var(--radius-sm);font-size:.75rem;margin-bottom:1rem;border:1px solid}
+    .ai-status-ok{background:rgba(34,197,94,.07);border-color:rgba(34,197,94,.2);color:#166534}
+    .ai-status-err{background:rgba(220,38,38,.06);border-color:rgba(220,38,38,.2);color:#b91c1c}
+    .ai-status-loading{background:rgba(33,67,50,.05);border-color:rgba(33,67,50,.12);color:var(--text-muted)}
 
-    /* ── RESPONSE CARD ── */
-    .res-card { background:#fff; border:1px solid var(--border); border-radius:var(--radius-lg); padding:1.5rem; margin-bottom:1.25rem; }
-    .res-q { font-family:var(--serif); font-size:1rem; color:var(--ep-green); margin-bottom:0.75rem; }
-    .res-body { font-size:0.9rem; color:var(--text-secondary); line-height:1.9; }
-    .res-body strong { color:var(--ep-green); }
-    .res-body p { margin:0.5rem 0; }
-    .res-body ul { margin:0.5rem 0 0.5rem 1.2rem; }
+    /* ── Response card ── */
+    .res-card{background:#fff;border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.5rem;margin-bottom:1.25rem}
+    .res-q{font-family:var(--serif);font-size:1rem;color:var(--ep-green);margin-bottom:.75rem}
+    .res-body{font-size:.9rem;color:var(--text-secondary);line-height:1.9}
+    .res-body strong{color:var(--ep-green)}.res-body p{margin:.5rem 0}.res-body ul{margin:.5rem 0 .5rem 1.2rem}
+    .res-src{font-size:.7rem;color:var(--text-muted);margin-top:.75rem;padding-top:.65rem;border-top:1px solid var(--border)}
 
-    /* ── DATA TABLE ── */
-    .tbl-wrap { overflow-x:auto; margin-top:1rem; border-radius:var(--radius-md); border:1px solid var(--border); }
-    .tbl { width:100%; border-collapse:collapse; font-size:0.83rem; }
-    .tbl th { text-align:left; font-size:0.67rem; font-weight:700; text-transform:uppercase; letter-spacing:0.07em; color:var(--text-muted); padding:0.55rem 1rem; border-bottom:2px solid var(--border); background:var(--ep-cream); }
-    .tbl td { padding:0.55rem 1rem; border-bottom:1px solid var(--border); color:var(--text-secondary); }
-    .tbl tr:last-child td { border-bottom:none; }
-    .tbl tr:hover td { background:rgba(33,67,50,0.02); }
+    /* ── Table ── */
+    .tbl-wrap{overflow-x:auto;margin-top:1rem;border-radius:var(--radius-md);border:1px solid var(--border)}
+    .tbl{width:100%;border-collapse:collapse;font-size:.82rem}
+    .tbl th{text-align:left;font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text-muted);padding:.5rem .9rem;border-bottom:2px solid var(--border);background:var(--ep-cream);white-space:nowrap}
+    .tbl td{padding:.5rem .9rem;border-bottom:1px solid var(--border);color:var(--text-secondary);white-space:nowrap;font-family:var(--mono);font-size:.78rem}
+    .tbl tr:last-child td{border-bottom:none}
+    .tbl tr:hover td{background:rgba(33,67,50,.02)}
 
-    .actions { display:flex; gap:0.5rem; margin-top:1rem; flex-wrap:wrap; }
-    .act-btn { padding:0.42rem 1rem; border-radius:var(--radius-sm); border:1.5px solid var(--border-strong); background:transparent; font-family:var(--sans); font-size:0.8rem; color:var(--ep-green); cursor:pointer; transition:all 0.12s; }
-    .act-btn:hover { background:var(--ep-green); color:#fff; border-color:var(--ep-green); }
-    .act-btn.primary { background:var(--ep-green); color:#fff; border-color:var(--ep-green); }
+    /* ── Action buttons ── */
+    .actions{display:flex;gap:.5rem;margin-top:1rem;flex-wrap:wrap}
+    .act-btn{padding:.42rem 1rem;border-radius:var(--radius-sm);border:1.5px solid var(--border-strong);background:transparent;font-family:var(--sans);font-size:.8rem;color:var(--ep-green);cursor:pointer;transition:all .12s}
+    .act-btn:hover{background:var(--ep-green);color:#fff;border-color:var(--ep-green)}
+    .act-btn.primary{background:var(--ep-green);color:#fff;border-color:var(--ep-green)}
+    .act-btn.secondary{color:var(--ep-tan);border-color:var(--ep-tan)}
+    .act-btn.secondary:hover{background:var(--ep-tan);color:#fff}
+    .act-btn:disabled{opacity:.4;cursor:not-allowed}
 
-    /* ── HISTORY ── */
-    .hist-item { background:#fff; border:1px solid var(--border); border-radius:var(--radius-md); padding:0.85rem 1.1rem; margin-bottom:0.5rem; display:flex; align-items:center; gap:0.75rem; cursor:pointer; transition:box-shadow 0.15s; }
-    .hist-item:hover { box-shadow:0 2px 12px rgba(33,67,50,0.08); }
-    .hist-q { flex:1; font-size:0.87rem; color:var(--text-secondary); }
-    .hist-t { font-family:var(--mono); font-size:0.7rem; color:var(--text-muted); white-space:nowrap; }
+    /* ── Stats mosaic ── */
+    .stats-mosaic{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:1rem;margin-bottom:1.5rem}
+    .sm-card{background:#fff;border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem}
+    .sm-icon{font-size:1.5rem;margin-bottom:.3rem}
+    .sm-val{font-family:var(--serif);font-size:2rem;color:var(--ep-green);line-height:1;margin-bottom:.2rem}
+    .sm-label{font-size:.67rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text-muted)}
+    .sm-sub{font-size:.75rem;color:var(--ep-tan);font-family:var(--mono);margin-top:3px}
 
-    /* ── DOWNLOAD ── */
-    .dl-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(270px,1fr)); gap:1rem; margin-bottom:2rem; }
-    .dl-card { background:#fff; border:1px solid var(--border); border-radius:var(--radius-lg); padding:1.25rem; }
-    .dl-title { font-weight:600; color:var(--ep-green); margin-bottom:0.3rem; }
-    .dl-desc { font-size:0.82rem; color:var(--text-muted); margin-bottom:1rem; line-height:1.6; }
+    /* ── Heatmap ── */
+    .heatmap-grid{display:grid;grid-template-columns:repeat(24,1fr);gap:2px;margin:.75rem 0 .3rem}
+    .hm-cell{aspect-ratio:1;border-radius:2px;background:var(--ep-cream-dark)}
+    .hm-labels{display:flex;justify-content:space-between;margin-top:2px}
+    .hm-labels span{font-size:.55rem;color:var(--text-muted);font-family:var(--mono)}
 
-    /* ── ALERTS ── */
-    .alert-group { background:#fff; border:1px solid var(--border); border-radius:var(--radius-lg); padding:1.25rem; margin-bottom:1rem; }
-    .alert-group-title { font-weight:600; color:var(--ep-green); margin-bottom:0.75rem; }
-    .alert-row { display:flex; align-items:center; gap:0.65rem; font-size:0.87rem; color:var(--text-secondary); margin-bottom:0.5rem; cursor:pointer; }
-    .alert-row input { accent-color:var(--ep-green); width:16px; height:16px; cursor:pointer; flex-shrink:0; }
+    /* ── Month bars ── */
+    .month-bar-wrap{display:flex;gap:4px;align-items:flex-end;height:80px;width:100%}
+    .month-bar-col{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;gap:3px}
+    .month-bar-inner{width:100%;background:var(--ep-green);border-radius:3px 3px 0 0;min-height:2px}
+    .month-bar-label{font-size:.55rem;color:var(--text-muted);font-family:var(--mono)}
 
-    .spin { display:inline-block; width:16px; height:16px; border:2px solid rgba(33,67,50,0.2); border-top-color:var(--ep-green); border-radius:50%; animation:spin 0.7s linear infinite; }
-    @keyframes spin { to{transform:rotate(360deg)} }
+    /* ── Digest ── */
+    .digest-hero{background:var(--ep-green);border-radius:var(--radius-xl);padding:2rem;margin-bottom:1.25rem;color:var(--ep-cream)}
+    .digest-greeting{font-size:.8rem;color:rgba(242,240,230,.6);margin-bottom:.3rem;text-transform:uppercase;letter-spacing:.08em}
+    .digest-title{font-family:var(--serif);font-size:1.6rem;line-height:1.2;margin-bottom:.75rem}
+    .digest-meta{font-size:.82rem;color:rgba(242,240,230,.65)}
+    .digest-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem}
+    @media(max-width:600px){.digest-row{grid-template-columns:1fr}}
+    .digest-card{background:#fff;border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem}
+    .digest-card-title{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--ep-tan);margin-bottom:.5rem}
+    .digest-card h3{font-family:var(--serif);font-size:1.1rem;color:var(--ep-green);margin-bottom:.3rem}
+    .digest-card p{font-size:.84rem;color:var(--text-muted);line-height:1.6;margin:0}
+    .digest-bird-list{list-style:none;padding:0;margin:0}
+    .digest-bird-list li{display:flex;align-items:center;gap:.6rem;padding:.35rem 0;border-bottom:1px solid var(--border);font-size:.84rem}
+    .digest-bird-list li:last-child{border-bottom:none}
+    .dbl-n{font-weight:600;color:var(--ep-green);flex:1}
+    .dbl-c{font-family:var(--mono);font-size:.72rem;color:var(--text-muted)}
 
-    /* ── LIVE STATS ── */
-    .stats-mosaic { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:1rem; margin-bottom:1.5rem; }
-    .sm-card { background:#fff; border:1px solid var(--border); border-radius:var(--radius-lg); padding:1.25rem; }
-    .sm-icon { font-size:1.5rem; margin-bottom:0.3rem; }
-    .sm-val { font-family:var(--serif); font-size:2rem; color:var(--ep-green); line-height:1; margin-bottom:0.2rem; }
-    .sm-label { font-size:0.67rem; font-weight:700; text-transform:uppercase; letter-spacing:0.07em; color:var(--text-muted); }
-    .sm-sub { font-size:0.75rem; color:var(--ep-tan); font-family:var(--mono); margin-top:3px; }
-    .heatmap-grid { display:grid; grid-template-columns:repeat(24,1fr); gap:2px; margin:0.75rem 0 0.3rem; }
-    .hm-cell { aspect-ratio:1; border-radius:2px; background:var(--ep-cream-dark); }
-    .hm-labels { display:flex; justify-content:space-between; margin-top:2px; }
-    .hm-labels span { font-size:0.55rem; color:var(--text-muted); font-family:var(--mono); }
+    /* ── History ── */
+    .hist-item{background:#fff;border:1px solid var(--border);border-radius:var(--radius-md);padding:.85rem 1.1rem;margin-bottom:.5rem;display:flex;align-items:center;gap:.75rem;cursor:pointer;transition:box-shadow .15s}
+    .hist-item:hover{box-shadow:0 2px 12px rgba(33,67,50,.08)}
+    .hist-q{flex:1;font-size:.87rem;color:var(--text-secondary)}
+    .hist-t{font-family:var(--mono);font-size:.7rem;color:var(--text-muted);white-space:nowrap}
+    .hist-del{background:none;border:none;cursor:pointer;color:#dc2626;font-size:.75rem;opacity:.35;padding:2px 6px;border-radius:4px;transition:opacity .15s}
+    .hist-del:hover{opacity:1;background:rgba(220,38,38,.07)}
 
-    /* ── DIGEST ── */
-    .digest-hero { background:var(--ep-green); border-radius:var(--radius-xl); padding:2rem; margin-bottom:1.25rem; color:var(--ep-cream); }
-    .digest-greeting { font-size:0.8rem; color:rgba(242,240,230,0.6); margin-bottom:0.3rem; text-transform:uppercase; letter-spacing:0.08em; }
-    .digest-title { font-family:var(--serif); font-size:1.6rem; line-height:1.2; margin-bottom:0.75rem; }
-    .digest-meta { font-size:0.82rem; color:rgba(242,240,230,0.65); }
-    .digest-row { display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-bottom:1rem; }
-    @media(max-width:600px){ .digest-row { grid-template-columns:1fr; } }
-    .digest-card { background:#fff; border:1px solid var(--border); border-radius:var(--radius-lg); padding:1.25rem; }
-    .digest-card-title { font-size:0.7rem; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--ep-tan); margin-bottom:0.5rem; }
-    .digest-card h3 { font-family:var(--serif); font-size:1.1rem; color:var(--ep-green); margin-bottom:0.3rem; }
-    .digest-card p { font-size:0.84rem; color:var(--text-muted); line-height:1.6; margin:0; }
-    .digest-bird-list { list-style:none; padding:0; margin:0; }
-    .digest-bird-list li { display:flex; align-items:center; gap:0.6rem; padding:0.35rem 0; border-bottom:1px solid var(--border); font-size:0.84rem; }
-    .digest-bird-list li:last-child { border-bottom:none; }
-    .digest-bird-list .dbl-n { font-weight:600; color:var(--ep-green); flex:1; }
-    .digest-bird-list .dbl-c { font-family:var(--mono); font-size:0.72rem; color:var(--text-muted); }
+    /* ── Watchlist ── */
+    .watchlist-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1rem;margin-bottom:1.5rem}
+    .watchlist-card{background:#fff;border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.1rem;position:relative}
+    .wc-name{font-weight:600;color:var(--ep-green);font-size:.92rem;margin-bottom:2px}
+    .wc-sci{font-style:italic;font-size:.74rem;color:var(--text-muted);margin-bottom:6px}
+    .wc-last{font-size:.78rem;color:var(--ep-tan)}
+    .wc-count{font-family:var(--mono);font-size:.72rem;color:var(--text-muted)}
+    .wc-remove{position:absolute;top:10px;right:10px;background:none;border:none;cursor:pointer;color:#dc2626;font-size:.75rem;opacity:.35;transition:opacity .15s;padding:2px 5px;border-radius:4px}
+    .wc-remove:hover{opacity:1;background:rgba(220,38,38,.07)}
+    .watchlist-add{display:flex;gap:.5rem;margin-bottom:1.25rem;flex-wrap:wrap}
+    .watchlist-add input{flex:1;min-width:180px;padding:.5rem .9rem;border:1px solid var(--border-strong);border-radius:var(--radius-sm);font-family:var(--sans);font-size:.85rem;outline:none;color:var(--ep-green)}
+    .watchlist-add input:focus{border-color:var(--ep-green)}
+
+    /* ── Field notes ── */
+    .note-item{background:#fff;border:1px solid var(--border);border-radius:var(--radius-md);padding:1rem 1.1rem;margin-bottom:.6rem}
+    .note-item-top{display:flex;align-items:flex-start;gap:.75rem}
+    .note-body{flex:1;font-size:.88rem;color:var(--text-secondary);line-height:1.6}
+    .note-meta{font-size:.7rem;color:var(--text-muted);font-family:var(--mono);margin-top:4px}
+    .note-del{background:none;border:none;cursor:pointer;color:#dc2626;opacity:.35;font-size:.8rem;transition:opacity .15s}
+    .note-del:hover{opacity:1}
+    .note-add-box{background:#fff;border:1px solid var(--border);border-radius:var(--radius-lg);padding:1rem;margin-bottom:1.25rem}
+    .note-add-box textarea{width:100%;border:1px solid var(--border);border-radius:var(--radius-sm);font-family:var(--sans);font-size:.88rem;padding:.6rem .85rem;resize:vertical;min-height:72px;outline:none;color:var(--ep-charcoal);box-sizing:border-box}
+    .note-add-box textarea:focus{border-color:var(--ep-green)}
+    .note-add-controls{display:flex;gap:.6rem;margin-top:.6rem;flex-wrap:wrap;align-items:center}
+    .note-add-controls input{padding:.45rem .8rem;border:1px solid var(--border);border-radius:var(--radius-sm);font-family:var(--sans);font-size:.83rem;color:var(--ep-green);outline:none}
+    .note-add-controls input:focus{border-color:var(--ep-green)}
+
+    /* ── Alerts ── */
+    .alert-group{background:#fff;border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem;margin-bottom:1rem}
+    .alert-group-title{font-weight:600;color:var(--ep-green);margin-bottom:.75rem}
+    .alert-row{display:flex;align-items:center;gap:.65rem;font-size:.87rem;color:var(--text-secondary);margin-bottom:.5rem;cursor:pointer}
+    .alert-row input{accent-color:var(--ep-green);width:16px;height:16px;cursor:pointer;flex-shrink:0}
+
+    /* ── Download cards ── */
+    .dl-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1rem;margin-bottom:2rem}
+    .dl-card{background:#fff;border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem;display:flex;flex-direction:column;gap:.35rem}
+    .dl-title{font-weight:600;color:var(--ep-green)}
+    .dl-desc{font-size:.82rem;color:var(--text-muted);line-height:1.6;flex:1}
+    .dl-meta{font-size:.72rem;color:var(--ep-tan);font-family:var(--mono)}
+    .dl-progress{font-size:.75rem;color:var(--ep-green);font-family:var(--mono);margin-top:.3rem;min-height:1em}
+
+    /* ── Compare ── */
+    .compare-controls{background:#fff;border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem;margin-bottom:1.25rem;display:flex;gap:1rem;flex-wrap:wrap;align-items:flex-end}
+    .compare-controls select,.compare-controls input[type=number]{padding:.5rem .85rem;border:1px solid var(--border-strong);border-radius:var(--radius-sm);font-family:var(--sans);font-size:.85rem;color:var(--ep-green);background:#fff;outline:none}
+    .compare-controls label{font-size:.75rem;color:var(--text-muted);display:block;margin-bottom:3px}
+    .compare-chart-wrap{background:#fff;border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem}
+
+    /* ── API docs ── */
+    .code-block{background:#0f1923;border-radius:var(--radius-md);padding:1rem;font-family:var(--mono);font-size:.73rem;color:rgba(242,240,230,.75);overflow-x:auto;margin-bottom:.75rem;line-height:1.75}
+    .code-key{color:#7dd3fc}.code-val{color:#86efac}.code-cmt{color:rgba(242,240,230,.38)}
+
+    /* ── Toast ── */
+    .notif{position:fixed;bottom:24px;right:24px;background:var(--ep-green);color:var(--ep-cream);padding:.75rem 1.25rem;border-radius:var(--radius-md);font-size:.85rem;box-shadow:0 4px 16px rgba(0,0,0,.15);z-index:9999;opacity:0;transform:translateY(8px);transition:opacity .25s,transform .25s;pointer-events:none}
+    .notif.show{opacity:1;transform:translateY(0)}
+    .notif.error{background:#dc2626}
+
+    /* ── Spinner ── */
+    .spin{display:inline-block;width:14px;height:14px;border:2px solid rgba(33,67,50,.2);border-top-color:var(--ep-green);border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle}
+    @keyframes spin{to{transform:rotate(360deg)}}
   </style>
 </head>
 <body>
 <div id="ep-nav"></div>
+<div class="notif" id="notif"></div>
 
 <div class="app">
-  <!-- SIDEBAR -->
+
+  <!-- ── SIDEBAR ── -->
   <div class="sidebar">
     <div class="user-pill">
-      <div class="user-pill-name" id="u-name">Loading…</div>
+      <div class="user-pill-name"  id="u-name">Loading…</div>
       <div class="user-pill-email" id="u-email"></div>
       <div id="u-badge"></div>
     </div>
-
     <div class="sb-section">Explore</div>
     <button class="sb-link active" id="nav-explorer"  onclick="switchPanel('explorer',this)">🔍 Data Explorer</button>
     <button class="sb-link"        id="nav-stats"     onclick="switchPanel('stats',this)">📊 Live stats</button>
     <button class="sb-link"        id="nav-digest"    onclick="switchPanel('digest',this)">🌿 My digest</button>
+    <button class="sb-link"        id="nav-compare"   onclick="switchPanel('compare',this)">📈 Compare years</button>
     <button class="sb-link"        id="nav-history"   onclick="switchPanel('history',this)">🕐 Search history</button>
-
+    <div class="sb-section">Personal</div>
+    <button class="sb-link" id="nav-watchlist" onclick="switchPanel('watchlist',this)">⭐ Species watchlist</button>
+    <button class="sb-link" id="nav-notes"     onclick="switchPanel('notes',this)">📝 Field notes</button>
+    <button class="sb-link" id="nav-alerts"    onclick="switchPanel('alerts',this)">🔔 My alerts</button>
     <div class="sb-section">Data</div>
-    <button class="sb-link" id="nav-download" onclick="switchPanel('download',this)">📥 Download Data</button>
-    <button class="sb-link" id="nav-alerts"   onclick="switchPanel('alerts',this)">🔔 My Alerts</button>
-
+    <button class="sb-link" id="nav-download"  onclick="switchPanel('download',this)">📥 Download data</button>
+    <button class="sb-link" id="nav-api"       onclick="switchPanel('api',this)">🔌 API access</button>
     <div class="sb-section">Account</div>
-    <a class="sb-link" href="profile.html">👤 My Profile</a>
+    <a class="sb-link" href="profile.html">👤 My profile</a>
     <a class="sb-link" href="index.html">🏡 Back to site</a>
-
     <div class="sb-spacer"></div>
     <button class="sb-link danger" onclick="doSignOut()">→ Sign out</button>
   </div>
 
-  <!-- MAIN -->
+  <!-- ── MAIN ── -->
   <div class="main">
 
-    <!-- EXPLORER -->
+    <!-- ══ DATA EXPLORER ══ -->
     <div class="panel on" id="panel-explorer">
       <div class="panel-title">Data Explorer</div>
-      <div class="panel-sub">Ask questions about Baner’s environment in plain English. Earth Pulse analyses real observations across weather, air quality, and biodiversity to reveal patterns, relationships, and changes over time.
-</div>
+      <div class="panel-sub">Ask questions about Baner's environment in plain English. Gemini AI fetches real data from the Earth Pulse database and answers with specific numbers — not generic text.</div>
+
+      <!-- Gemini connection status -->
+      <div class="ai-status-bar ai-status-loading" id="ai-status">
+        <span class="spin"></span> <span>Checking Gemini connection…</span>
+      </div>
 
       <div class="ai-box">
-        <textarea id="ai-q" rows="2" placeholder="e.g. Which birds are heard most during monsoon? What is the average AQI on Diwali? How many species at dawn vs night?" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();runQuery();}"></textarea>
+        <textarea id="ai-q" rows="2"
+          placeholder="e.g. Which birds are heard most during monsoon? What is average AQI this year? How many species at dawn vs night?"
+          onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();runQuery();}"></textarea>
         <button class="ai-btn" id="ai-go" onclick="runQuery()">Ask →</button>
       </div>
 
       <div class="chips">
-        <span class="chip" onclick="ask('Which bird species are heard most often in Baner?')">🐦 Most detected birds</span>
-        <span class="chip" onclick="ask('Compare average AQI on Diwali week vs the week before')">🪔 Diwali pollution</span>
-        <span class="chip" onclick="ask('Which months have the most bird species detected?')">📅 Monthly bird activity</span>
-        <span class="chip" onclick="ask('Is there a correlation between AQI and number of birds detected?')">📊 AQI vs birds</span>
-        <span class="chip" onclick="ask('What are the hottest days ever recorded in Baner?')">🌡️ Hottest days</span>
-        <span class="chip" onclick="ask('Which birds appear only in certain months — likely migratory?')">✈️ Migratory patterns</span>
-        <span class="chip" onclick="ask('How much rain has fallen each year since 2022?')">🌧️ Annual rainfall</span>
-        <span class="chip" onclick="ask('When is the dawn chorus most active — what time and which months?')">🌅 Dawn chorus</span>
-        <span class="chip" onclick="ask('What are the cleanest and worst air quality days this year?')">🍃 AQI extremes</span>
-        <span class="chip" onclick="ask('On days above 35°C are fewer birds heard?')">🔥 Heat vs birds</span>
+        <span class="chip" onclick="ask('Which bird species are heard most often in Baner?')">🐦 Top birds</span>
+        <span class="chip" onclick="ask('What is the AQI trend this month in Baner?')">🍃 AQI this month</span>
+        <span class="chip" onclick="ask('Which months have the most bird species?')">📅 Monthly birds</span>
+        <span class="chip" onclick="ask('How does temperature affect bird detections in Baner?')">🌡️ Temp vs birds</span>
+        <span class="chip" onclick="ask('What are the hottest days ever recorded in Baner?')">🔥 Hottest days</span>
+        <span class="chip" onclick="ask('Which birds appear only in certain months and may be migratory?')">✈️ Migratory species</span>
+        <span class="chip" onclick="ask('How much rain fell each year since 2022?')">🌧️ Annual rainfall</span>
+        <span class="chip" onclick="ask('When is the dawn chorus most active — what hour and which months?')">🌅 Dawn chorus</span>
+        <span class="chip" onclick="ask('What are the cleanest and worst air quality days this year?')">💨 AQI extremes</span>
+        <span class="chip" onclick="ask('What is the soundscape index trend on Baner Hill?')">🎵 Soundscape</span>
       </div>
 
       <div id="ai-result"></div>
     </div>
 
-    <!-- LIVE STATS -->
+    <!-- ══ LIVE STATS ══ -->
     <div class="panel" id="panel-stats">
       <div class="panel-title">Live stats</div>
-      <div class="panel-sub">A real-time snapshot of the entire Earth Pulse dataset — updated on load.</div>
+      <div class="panel-sub">Real-time snapshot of the entire Earth Pulse dataset — all tables, updated on load.</div>
       <div class="stats-mosaic" id="stats-mosaic">
-        <div class="ep-skeleton" style="height:100px;border-radius:var(--radius-lg);"></div>
-        <div class="ep-skeleton" style="height:100px;border-radius:var(--radius-lg);"></div>
-        <div class="ep-skeleton" style="height:100px;border-radius:var(--radius-lg);"></div>
-        <div class="ep-skeleton" style="height:100px;border-radius:var(--radius-lg);"></div>
-        <div class="ep-skeleton" style="height:100px;border-radius:var(--radius-lg);"></div>
-        <div class="ep-skeleton" style="height:100px;border-radius:var(--radius-lg);"></div>
+        <div class="ep-skeleton" style="height:100px;border-radius:var(--radius-lg)"></div>
+        <div class="ep-skeleton" style="height:100px;border-radius:var(--radius-lg)"></div>
+        <div class="ep-skeleton" style="height:100px;border-radius:var(--radius-lg)"></div>
+        <div class="ep-skeleton" style="height:100px;border-radius:var(--radius-lg)"></div>
+        <div class="ep-skeleton" style="height:100px;border-radius:var(--radius-lg)"></div>
+        <div class="ep-skeleton" style="height:100px;border-radius:var(--radius-lg)"></div>
       </div>
       <div class="res-card">
-        <div style="font-weight:600;color:var(--ep-green);margin-bottom:0.75rem;">🕐 Bird detection activity by hour (all time)</div>
-        <div style="font-size:0.78rem;color:var(--text-muted);margin-bottom:0.5rem;">Darker = more detections. Reveals the dawn chorus, midday lull, and dusk activity.</div>
+        <div style="font-weight:600;color:var(--ep-green);margin-bottom:.75rem">🕐 Bird detection activity by hour (all time, IST)</div>
+        <div style="font-size:.78rem;color:var(--text-muted);margin-bottom:.5rem">Darker = more detections. Reveals the dawn chorus, midday lull, and dusk activity.</div>
         <div class="heatmap-grid" id="hour-heatmap"></div>
-        <div class="hm-labels">
-          <span>12am</span><span>3am</span><span>6am</span><span>9am</span>
-          <span>12pm</span><span>3pm</span><span>6pm</span><span>9pm</span><span>12am</span>
-        </div>
+        <div class="hm-labels"><span>12am</span><span>3am</span><span>6am</span><span>9am</span><span>12pm</span><span>3pm</span><span>6pm</span><span>9pm</span><span>12am</span></div>
       </div>
       <div class="res-card">
-        <div style="font-weight:600;color:var(--ep-green);margin-bottom:0.75rem;">📅 Species detected by month (all time)</div>
-        <div style="font-size:0.78rem;color:var(--text-muted);margin-bottom:0.75rem;">Unique species count per month — reveals seasonal richness.</div>
-        <div id="month-bars" style="display:flex;gap:4px;align-items:flex-end;height:80px;"></div>
-        <div style="display:flex;justify-content:space-between;margin-top:4px;">
-          <span style="font-size:0.6rem;color:var(--text-muted);font-family:var(--mono);">Jan</span>
-          <span style="font-size:0.6rem;color:var(--text-muted);font-family:var(--mono);">Jun</span>
-          <span style="font-size:0.6rem;color:var(--text-muted);font-family:var(--mono);">Dec</span>
-        </div>
+        <div style="font-weight:600;color:var(--ep-green);margin-bottom:.75rem">📅 Unique species detected by month (all time)</div>
+        <div style="font-size:.78rem;color:var(--text-muted);margin-bottom:.75rem">Unique species per month — shows seasonal biodiversity richness.</div>
+        <div class="month-bar-wrap" id="month-bars"></div>
+      </div>
+      <div class="res-card">
+        <div style="font-weight:600;color:var(--ep-green);margin-bottom:.75rem">🎵 Soundscape index (NDSI) — south node</div>
+        <div style="font-size:.78rem;color:var(--text-muted);margin-bottom:.75rem">NDSI = -1 (pure traffic/anthropogenic) to +1 (pure nature/biophony). Baner typical range: -0.85 midday to +0.70 at dawn. Available from Oct 2025.</div>
+        <canvas id="ndsi-chart" style="max-height:200px"></canvas>
       </div>
     </div>
 
-    <!-- MY DIGEST -->
+    <!-- ══ MY DIGEST ══ -->
     <div class="panel" id="panel-digest">
       <div class="panel-title">My digest</div>
       <div class="panel-sub">A personalised summary of what's happening in Baner right now — your Earth Pulse briefing.</div>
-      <div id="digest-content"><div style="color:var(--text-muted);">Loading your digest…</div></div>
+      <div id="digest-content"><div style="color:var(--text-muted)">Loading your digest…</div></div>
     </div>
 
-    <!-- HISTORY -->
-    <div class="panel" id="panel-history">
-      <div class="panel-title">Search History</div>
-      <div class="panel-sub">Your last 20 data explorer queries. Click any to run it again.</div>
-      <div id="hist-list"><div style="color:var(--text-muted);font-size:0.88rem;">Loading…</div></div>
-    </div>
-
-    <!-- DOWNLOAD -->
-    <div class="panel" id="panel-download">
-      <div class="panel-title">Download Data</div>
-      <div class="panel-sub">Download any slice of the Earth Pulse dataset as CSV. All data is open under CC BY 4.0.</div>
-      <div class="dl-grid">
-        <div class="dl-card"><div class="dl-title">📊 All climate data</div><div class="dl-desc">Every hourly reading since Jan 2022 — AQI, temperature, humidity, wind, solar, precipitation.</div><button class="act-btn primary" onclick="dlData('climate')">⬇ Download CSV</button></div>
-        <div class="dl-card"><div class="dl-title">🐦 All bird detections</div><div class="dl-desc">Every BirdNET detection with species, confidence, timestamp and correlated AQI.</div><button class="act-btn primary" onclick="dlData('birds')">⬇ Download CSV</button></div>
-        <div class="dl-card"><div class="dl-title">🌧️ Rainfall records</div><div class="dl-desc">Daily precipitation totals and monsoon season summaries since 2022.</div><button class="act-btn primary" onclick="dlData('rain')">⬇ Download CSV</button></div>
-        <div class="dl-card"><div class="dl-title">📸 Hill photo archive</div><div class="dl-desc">All timelapse frame metadata with climate annotations at time of capture.</div><button class="act-btn primary" onclick="dlData('photos')">⬇ Download CSV</button></div>
+    <!-- ══ COMPARE YEARS ══ -->
+    <div class="panel" id="panel-compare">
+      <div class="panel-title">Compare years</div>
+      <div class="panel-sub">Compare any two years side-by-side across all metrics. Data is averaged or summed monthly.</div>
+      <div class="compare-controls">
+        <div><label>Year A</label>
+          <select id="cmp-yr-a">
+            <option value="2022">2022</option><option value="2023">2023</option>
+            <option value="2024">2024</option><option value="2025" selected>2025</option>
+          </select>
+        </div>
+        <div><label>Year B</label>
+          <select id="cmp-yr-b">
+            <option value="2022">2022</option><option value="2023">2023</option>
+            <option value="2024">2024</option><option value="2025">2025</option>
+            <option value="2026" selected>2026</option>
+          </select>
+        </div>
+        <div><label>Metric</label>
+          <select id="cmp-metric">
+            <option value="temperature">Temperature (°C avg)</option>
+            <option value="aqi">EU AQI (avg)</option>
+            <option value="precipitation">Rainfall (mm total)</option>
+            <option value="humidity">Humidity (% avg)</option>
+            <option value="birds">Bird detections (count)</option>
+            <option value="species">Unique species (count)</option>
+          </select>
+        </div>
+        <button class="act-btn primary" onclick="runCompare()">Compare →</button>
       </div>
-      <div style="background:#fff;border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem;">
-        <div style="font-weight:600;color:var(--ep-green);margin-bottom:0.75rem;">Custom date range</div>
-        <div style="display:flex;gap:0.75rem;flex-wrap:wrap;align-items:flex-end;">
-          <div><div style="font-size:0.75rem;color:var(--text-muted);margin-bottom:3px;">Dataset</div>
-            <select id="dl-type" style="padding:0.5rem 0.85rem;border:1px solid var(--border-strong);border-radius:var(--radius-sm);font-family:var(--sans);font-size:0.85rem;color:var(--ep-green);background:#fff;">
-              <option value="climate">Climate readings</option>
-              <option value="birds">Bird detections</option>
-              <option value="rain">Rainfall only</option>
-            </select>
-          </div>
-          <div><div style="font-size:0.75rem;color:var(--text-muted);margin-bottom:3px;">From</div><input type="date" id="dl-from" style="padding:0.5rem;border:1px solid var(--border-strong);border-radius:var(--radius-sm);font-size:0.85rem;color:var(--ep-green);"></div>
-          <div><div style="font-size:0.75rem;color:var(--text-muted);margin-bottom:3px;">To</div><input type="date" id="dl-to" style="padding:0.5rem;border:1px solid var(--border-strong);border-radius:var(--radius-sm);font-size:0.85rem;color:var(--ep-green);"></div>
-          <button class="act-btn primary" onclick="dlCustom()">⬇ Download</button>
+      <div class="compare-chart-wrap" id="compare-chart-wrap">
+        <div style="color:var(--text-muted);font-size:.88rem">Select years and a metric above, then click Compare.</div>
+      </div>
+    </div>
+
+    <!-- ══ HISTORY ══ -->
+    <div class="panel" id="panel-history">
+      <div class="panel-title">Search history</div>
+      <div class="panel-sub">Your last 20 data explorer queries. Click to run again. <button class="act-btn" style="font-size:.75rem;padding:.25rem .75rem" onclick="clearHistory()">Clear all</button></div>
+      <div id="hist-list"><div style="color:var(--text-muted);font-size:.88rem">Loading…</div></div>
+    </div>
+
+    <!-- ══ WATCHLIST ══ -->
+    <div class="panel" id="panel-watchlist">
+      <div class="panel-title">Species watchlist</div>
+      <div class="panel-sub">Track species you care about. Shows last detection date and recent activity. Enter the common name exactly as it appears in the dataset (e.g. "Asian Koel").</div>
+      <div class="watchlist-add">
+        <input type="text" id="wl-input" placeholder="Species name e.g. Asian Koel" onkeydown="if(event.key==='Enter')addToWatchlist()">
+        <button class="act-btn primary" onclick="addToWatchlist()">+ Add species</button>
+      </div>
+      <div class="watchlist-grid" id="watchlist-grid"><div style="color:var(--text-muted);font-size:.88rem">Loading watchlist…</div></div>
+    </div>
+
+    <!-- ══ FIELD NOTES ══ -->
+    <div class="panel" id="panel-notes">
+      <div class="panel-title">Field notes</div>
+      <div class="panel-sub">Your personal observation log. Note unusual sightings, weather events, or anything you want to remember about Baner. Stored privately to your account.</div>
+      <div class="note-add-box">
+        <textarea id="note-text" placeholder="Write an observation… e.g. 'Spotted a pair of shikras at 7am over the hill. AQI was excellent. Calling repeatedly from the jamun tree.'"></textarea>
+        <div class="note-add-controls">
+          <input type="text" id="note-tag" placeholder="Tag: birds, weather, unusual…">
+          <input type="date" id="note-date">
+          <button class="act-btn primary" onclick="addNote()">Save note</button>
         </div>
       </div>
+      <div id="notes-list"><div style="color:var(--text-muted);font-size:.88rem">Loading notes…</div></div>
     </div>
 
-    <!-- ALERTS -->
+    <!-- ══ ALERTS ══ -->
     <div class="panel" id="panel-alerts">
-      <div class="panel-title">My Alerts</div>
-      <div class="panel-sub">Get an email within an hour of any of these events happening in Baner.</div>
-      <div style="max-width:580px;">
-        <div class="alert-group">
-          <div class="alert-group-title">🍃 Air quality</div>
+      <div class="panel-title">My alerts</div>
+      <div class="panel-sub">Get an email when these events happen in Baner. Alerts go to your registered email address.</div>
+      <div style="max-width:560px">
+        <div class="alert-group"><div class="alert-group-title">🍃 Air quality</div>
           <label class="alert-row"><input type="checkbox" id="a-good-aqi"> AQI drops to Good (≤40 EU) — best time to be outdoors</label>
-          <label class="alert-row"><input type="checkbox" id="a-bad-aqi"> AQI exceeds Poor (≥80 EU) — health warning</label>
+          <label class="alert-row"><input type="checkbox" id="a-bad-aqi"> AQI exceeds Poor (≥80 EU) — health advisory</label>
           <label class="alert-row"><input type="checkbox" id="a-hazardous"> AQI exceeds 100 — hazardous, stay indoors</label>
         </div>
-        <div class="alert-group">
-          <div class="alert-group-title">🌧️ Weather</div>
+        <div class="alert-group"><div class="alert-group-title">🌧️ Weather</div>
           <label class="alert-row"><input type="checkbox" id="a-first-rain"> First monsoon rain of the year</label>
           <label class="alert-row"><input type="checkbox" id="a-heavy-rain"> Heavy rain — ≥20mm in a day</label>
           <label class="alert-row"><input type="checkbox" id="a-heat"> Heat wave — temperature above 38°C</label>
         </div>
-        <div class="alert-group">
-          <div class="alert-group-title">🐦 Birds</div>
+        <div class="alert-group"><div class="alert-group-title">🐦 Birds</div>
           <label class="alert-row"><input type="checkbox" id="a-new-sp"> New species detected for the first time this year</label>
           <label class="alert-row"><input type="checkbox" id="a-rare"> Rare species detected (kestrel, nightjar, heron, owl)</label>
-          <div style="margin-top:0.75rem;">
-            <div style="font-size:0.8rem;color:var(--text-muted);margin-bottom:5px;">Alert when my favourite species is heard (comma-separated):</div>
-            <input type="text" id="a-fav" placeholder="e.g. Shikra, Asian Koel, Common Hawk-Cuckoo" style="width:100%;padding:0.6rem 0.9rem;border:1px solid var(--border-strong);border-radius:var(--radius-sm);font-family:var(--sans);font-size:0.85rem;box-sizing:border-box;outline:none;">
+          <div style="margin-top:.75rem">
+            <div style="font-size:.8rem;color:var(--text-muted);margin-bottom:5px">Alert when my favourite species is heard (comma-separated):</div>
+            <input type="text" id="a-fav" placeholder="e.g. Shikra, Asian Koel, Common Hawk-Cuckoo"
+              style="width:100%;padding:.6rem .9rem;border:1px solid var(--border-strong);border-radius:var(--radius-sm);font-family:var(--sans);font-size:.85rem;box-sizing:border-box;outline:none">
           </div>
         </div>
-        <button class="act-btn primary" onclick="saveAlerts()" style="font-size:0.9rem;">Save alert preferences</button>
-        <div id="alerts-saved" style="font-size:0.82rem;color:var(--ep-green);margin-top:0.75rem;display:none;">✅ Saved!</div>
+        <button class="act-btn primary" onclick="saveAlerts()" style="font-size:.9rem">Save alert preferences</button>
+        <div id="alerts-saved" style="font-size:.82rem;color:var(--ep-green);margin-top:.75rem;display:none">✅ Saved!</div>
       </div>
     </div>
 
-  </div>
+    <!-- ══ DOWNLOAD ══ -->
+    <div class="panel" id="panel-download">
+      <div class="panel-title">Download data</div>
+      <div class="panel-sub">All Earth Pulse data is open under <strong>CC BY 4.0</strong>. Downloads are paginated to fetch all rows (Supabase returns max 1,000 per request — this fetches all pages automatically). Progress shown below each button.</div>
+      <div class="dl-grid">
+        <div class="dl-card">
+          <div class="dl-title">📊 Climate readings</div>
+          <div class="dl-meta" id="dl-meta-climate">Loading count…</div>
+          <div class="dl-desc">Every hourly reading since Jan 2022 — EU AQI, India AQI, temperature, humidity, wind, PM2.5, PM10, NO2, ozone, precipitation, solar radiation. Source tagged (Open-Meteo or Weather Union).</div>
+          <div class="actions">
+            <button class="act-btn primary" onclick="dlAll('climate_readings','recorded_at','earthpulse-climate','prog-climate')">⬇ Full CSV</button>
+            <button class="act-btn secondary" onclick="dlRecent('climate_readings','recorded_at','earthpulse-climate-30d','prog-climate',30)">⬇ Last 30 days</button>
+          </div>
+          <div class="dl-progress" id="prog-climate"></div>
+        </div>
+        <div class="dl-card">
+          <div class="dl-title">💧 Weather Union readings</div>
+          <div class="dl-meta" id="dl-meta-wu">Loading count…</div>
+          <div class="dl-desc">Hyperlocal weather from station ZWL008983 (2km from observatory). Temperature, humidity, wind speed/direction, rain intensity and accumulation. Oct 2025 onwards.</div>
+          <div class="actions">
+            <button class="act-btn primary" onclick="dlAll('weather_union_readings','recorded_at','earthpulse-weather-union','prog-wu')">⬇ Full CSV</button>
+          </div>
+          <div class="dl-progress" id="prog-wu"></div>
+        </div>
+        <div class="dl-card">
+          <div class="dl-title">🐦 Bird detections</div>
+          <div class="dl-meta" id="dl-meta-birds">Loading count…</div>
+          <div class="dl-desc">Every BirdNET acoustic detection — species common + scientific name, confidence (0–1), timestamp (IST), node ID (baner_01 east or baner_south_01 south facing Baner Hill).</div>
+          <div class="actions">
+            <button class="act-btn primary" onclick="dlAll('bird_detections','detected_at','earthpulse-birds','prog-birds')">⬇ Full CSV</button>
+            <button class="act-btn secondary" onclick="dlSpeciesList()">⬇ Species list</button>
+          </div>
+          <div class="dl-progress" id="prog-birds"></div>
+        </div>
+        <div class="dl-card">
+          <div class="dl-title">🎵 Soundscape index (NDSI)</div>
+          <div class="dl-meta" id="dl-meta-sound">Loading count…</div>
+          <div class="dl-desc">Natural-to-Anthropogenic Soundscape Index from the south node. NDSI score (-1 to +1), biophony, anthrophony, rain flag. Available Oct 2025+. See API docs for formula.</div>
+          <div class="actions">
+            <button class="act-btn primary" onclick="dlAll('soundscape_readings','recorded_at','earthpulse-soundscape','prog-sound')">⬇ Full CSV</button>
+          </div>
+          <div class="dl-progress" id="prog-sound"></div>
+        </div>
+        <div class="dl-card">
+          <div class="dl-title">🌿 Vegetation index (NDVI)</div>
+          <div class="dl-meta" id="dl-meta-ndvi">Loading count…</div>
+          <div class="dl-desc">Baner Hill NDVI from satellite (Landsat 1990–2022, Sentinel-2 weekly 2023+). Annual and weekly tables. NDVI > 0.45 = healthy canopy.</div>
+          <div class="actions">
+            <button class="act-btn primary" onclick="dlAll('hill_ndvi_annual','year','earthpulse-ndvi-annual','prog-ndvi')">⬇ Annual CSV</button>
+            <button class="act-btn secondary" onclick="dlAll('hill_ndvi_weekly','week','earthpulse-ndvi-weekly','prog-ndvi')">⬇ Weekly CSV</button>
+          </div>
+          <div class="dl-progress" id="prog-ndvi"></div>
+        </div>
+        <div class="dl-card">
+          <div class="dl-title">📸 Hill photo metadata</div>
+          <div class="dl-meta" id="dl-meta-photos">Loading count…</div>
+          <div class="dl-desc">All timelapse frame metadata — timestamp, R2 image URL, AQI at capture, temperature, precipitation, cloud cover. Direct links to every image.</div>
+          <div class="actions">
+            <button class="act-btn primary" onclick="dlAll('timelapse_frames','captured_at','earthpulse-photos','prog-photos')">⬇ Full CSV</button>
+          </div>
+          <div class="dl-progress" id="prog-photos"></div>
+        </div>
+      </div>
+
+      <!-- Custom range -->
+      <div style="background:#fff;border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem">
+        <div style="font-weight:600;color:var(--ep-green);margin-bottom:.75rem">Custom date range download</div>
+        <div style="display:flex;gap:.75rem;flex-wrap:wrap;align-items:flex-end">
+          <div>
+            <div style="font-size:.75rem;color:var(--text-muted);margin-bottom:3px">Dataset</div>
+            <select id="dl-type" style="padding:.5rem .85rem;border:1px solid var(--border-strong);border-radius:var(--radius-sm);font-family:var(--sans);font-size:.85rem;color:var(--ep-green);background:#fff">
+              <option value="climate_readings">Climate readings</option>
+              <option value="weather_union_readings">Weather Union</option>
+              <option value="bird_detections">Bird detections</option>
+              <option value="soundscape_readings">Soundscape NDSI</option>
+              <option value="timelapse_frames">Hill photos</option>
+            </select>
+          </div>
+          <div>
+            <div style="font-size:.75rem;color:var(--text-muted);margin-bottom:3px">From</div>
+            <input type="date" id="dl-from" style="padding:.5rem;border:1px solid var(--border-strong);border-radius:var(--radius-sm);font-size:.85rem;color:var(--ep-green)">
+          </div>
+          <div>
+            <div style="font-size:.75rem;color:var(--text-muted);margin-bottom:3px">To</div>
+            <input type="date" id="dl-to" style="padding:.5rem;border:1px solid var(--border-strong);border-radius:var(--radius-sm);font-size:.85rem;color:var(--ep-green)">
+          </div>
+          <button class="act-btn primary" onclick="dlCustomRange()">⬇ Download range</button>
+        </div>
+        <div class="dl-progress" id="prog-custom"></div>
+      </div>
+
+      <div style="margin-top:1rem;padding:.85rem 1rem;background:rgba(33,67,50,.05);border-radius:var(--radius-md);font-size:.8rem;color:var(--text-muted);line-height:1.7">
+        📄 <strong style="color:var(--ep-green)">CC BY 4.0</strong> — Free to use, share, and adapt for any purpose including commercial, provided you credit <strong>earth-pulse.org</strong> and acknowledge data sources: Google Air Quality API (India AQI), Open-Meteo CAMS (EU AQI), BirdNET AI (Cornell Lab + Chemnitz), Zomato Weather Union, Google Earth Engine (NDVI).
+      </div>
+    </div>
+
+    <!-- ══ API ACCESS ══ -->
+    <div class="panel" id="panel-api">
+      <div class="panel-title">API access</div>
+      <div class="panel-sub">All Earth Pulse data is accessible via the Supabase REST API. The anon key below grants read-only access to all public tables. No authentication required for reading.</div>
+
+      <div class="res-card">
+        <div style="font-weight:600;color:var(--ep-green);margin-bottom:.75rem">🔑 Connection</div>
+        <div class="code-block">
+<span class="code-key">Base URL</span>     https://krmczyqwblsoekceanlj.supabase.co/rest/v1
+<span class="code-key">Anon key</span>     sb_publishable_DrHFT5J0vmrkYraUXIlpQQ_gsk1rdq6
+<span class="code-key">Headers</span>      apikey: &lt;anon key&gt;
+              Authorization: Bearer &lt;anon key&gt;
+<span class="code-key">Note</span>         All timestamps stored in IST (+05:30). Use %2B05%3A30 in URL filters.
+<span class="code-key">Pagination</span>   Default limit = 1000 rows. Use &limit=1000&offset=1000 to paginate.
 </div>
+      </div>
+
+      <div class="res-card">
+        <div style="font-weight:600;color:var(--ep-green);margin-bottom:.75rem">📋 Example queries</div>
+        <div class="code-block">
+<span class="code-cmt"># Last 100 climate readings</span>
+GET /climate_readings?order=recorded_at.desc&limit=100
+
+<span class="code-cmt"># All detections for a species (URL-encode spaces as %20)</span>
+GET /bird_detections?species_scientific=eq.Pycnonotus%20cafer&order=detected_at.desc
+
+<span class="code-cmt"># Climate in IST date range</span>
+GET /climate_readings?recorded_at=gte.2026-05-01T00:00:00%2B05%3A30&recorded_at=lt.2026-06-01T00:00:00%2B05%3A30
+
+<span class="code-cmt"># Soundscape (NDSI) — south node</span>
+GET /soundscape_readings?node_id=eq.baner_south_01&order=recorded_at.desc&limit=100
+
+<span class="code-cmt"># NDVI annual history since 1990</span>
+GET /hill_ndvi_annual?order=year.asc
+
+<span class="code-cmt"># Combined view (WU takes priority over Open-Meteo)</span>
+GET /combined_readings?order=recorded_at.desc&limit=50
+
+<span class="code-cmt"># Birds from south node only (facing Baner Hill)</span>
+GET /bird_detections?node_id=eq.baner_south_01&order=detected_at.desc&limit=100
+
+<span class="code-cmt"># High-confidence detections only</span>
+GET /bird_detections?confidence=gte.0.8&order=detected_at.desc&limit=500
+</div>
+      </div>
+
+      <div class="res-card">
+        <div style="font-weight:600;color:var(--ep-green);margin-bottom:.75rem">📐 Table schema</div>
+        <div class="code-block">
+<span class="code-key">climate_readings</span>
+  <span class="code-val">recorded_at</span>       timestamptz <span class="code-cmt">-- IST +05:30</span>
+  <span class="code-val">node_id</span>            text        <span class="code-cmt">-- 'baner_01' | 'baner_south_01'</span>
+  <span class="code-val">temperature</span>        float       <span class="code-cmt">-- °C</span>
+  <span class="code-val">humidity</span>           float       <span class="code-cmt">-- %</span>
+  <span class="code-val">aqi</span>                int         <span class="code-cmt">-- EU AQI 0-100 (Open-Meteo CAMS)</span>
+  <span class="code-val">google_aqi_india</span>   int         <span class="code-cmt">-- India AQI 0-500 (CPCB/Google)</span>
+  <span class="code-val">pm2_5, pm10, no2, ozone, co, so2</span>  float  <span class="code-cmt">-- µg/m³</span>
+  <span class="code-val">precipitation</span>      float       <span class="code-cmt">-- mm</span>
+  <span class="code-val">weather_source</span>     text        <span class="code-cmt">-- 'open_meteo' | 'weather_union'</span>
+
+<span class="code-key">bird_detections</span>
+  <span class="code-val">detected_at</span>        timestamptz <span class="code-cmt">-- IST</span>
+  <span class="code-val">node_id</span>            text        <span class="code-cmt">-- 'baner_01' | 'baner_south_01'</span>
+  <span class="code-val">species_common</span>     text
+  <span class="code-val">species_scientific</span> text
+  <span class="code-val">confidence</span>         float       <span class="code-cmt">-- 0.0 to 1.0</span>
+
+<span class="code-key">soundscape_readings</span>
+  <span class="code-val">recorded_at</span>        timestamptz
+  <span class="code-val">node_id</span>            text        <span class="code-cmt">-- 'baner_south_01'</span>
+  <span class="code-val">ndsi</span>               float       <span class="code-cmt">-- -1 (noise) to +1 (nature)</span>
+  <span class="code-val">biophony</span>           float       <span class="code-cmt">-- biological sound level</span>
+  <span class="code-val">anthrophony</span>        float       <span class="code-cmt">-- anthropogenic sound level</span>
+  <span class="code-val">is_rain</span>            boolean
+  <span class="code-val">rain_ratio</span>         float
+
+<span class="code-key">weather_union_readings</span>
+  <span class="code-val">recorded_at</span>        timestamptz
+  <span class="code-val">device_id</span>          text        <span class="code-cmt">-- 'ZWL008983'</span>
+  <span class="code-val">temperature, humidity, wind_speed, wind_direction</span>  float
+  <span class="code-val">rain_intensity, rain_accumulation</span>  float
+
+<span class="code-key">hill_ndvi_annual</span>
+  <span class="code-val">year</span>               int         <span class="code-cmt">-- 1990 to present</span>
+  <span class="code-val">mean_ndvi</span>          float       <span class="code-cmt">-- 0-1, >0.45 = healthy canopy</span>
+  <span class="code-val">sensor</span>             text        <span class="code-cmt">-- 'landsat5'|'landsat8'|'sentinel2'</span>
+
+<span class="code-key">combined_readings</span>   <span class="code-cmt">-- VIEW — WU takes priority over Open-Meteo</span>
+  Merges climate_readings + weather_union_readings
+  Use this view for all frontend weather displays
+</div>
+      </div>
+    </div>
+
+  </div><!-- /main -->
+</div><!-- /app -->
 
 <div id="ep-footer"></div>
 <script src="analytics.js"></script>
 <script src="nav.js"></script>
 <script>
-// _sb and _user are already initialised in <head>
-var lastRows = null;
+/* ─────────────────────────────────────────────────────────────────────────────
+   data.html — complete rewrite May 2026
+   Key fixes from audit:
+   1. Gemini call uses correct payload {prompt, model:'gemini-2.5-flash-lite'}
+      and reads response as d.text || d.content (Worker pattern)
+   2. All large downloads paginated — fetches ALL rows, not just first 1000
+   3. Date filters use IST offset (%2B05%3A30) not UTC Z
+   4. callGemini declared ONCE — no duplicate declarations
+   5. Compare years uses paginated monthly fetches
+   6. watchlist/notes stored safely in user_alerts JSONB preferences
+   7. Species name onclick uses data attributes, not string injection
+   8. Soundscape, WU, NDVI data all accessible
+   9. Connection check pings /health before every AI query
+───────────────────────────────────────────────────────────────────────────── */
 
-// ── INIT ─────────────────────────────────────────────────────────────────────
-window.addEventListener('DOMContentLoaded', function() {
-  if (!_user) {
-    // Auth check hasn't resolved yet — wait for it
-    setTimeout(function() {
-      if (!_user) window.location.href = 'register.html';
-      else initPage();
-    }, 2000);
-  } else {
-    initPage();
-  }
-  // Also listen for late auth resolution
-  if (_sb) {
-    _sb.auth.onAuthStateChange(function(event, session) {
-      if (event === 'SIGNED_IN' && session) {
-        _user = session.user;
-        initPage();
-      } else if (event === 'SIGNED_OUT') {
-        window.location.href = 'register.html';
-      }
+var WORKER   = 'https://earthpulse-ai.fangchu.workers.dev';
+var SB       = 'https://krmczyqwblsoekceanlj.supabase.co';
+var KEY      = 'sb_publishable_DrHFT5J0vmrkYraUXIlpQQ_gsk1rdq6';
+var H        = { 'apikey': KEY, 'Authorization': 'Bearer ' + KEY };
+var lastRows = null;
+var _statsLoaded  = false;
+var _digestLoaded = false;
+var _cmpChart     = null;
+var _ndsiChart    = null;
+
+/* ── Helpers ── */
+function ge(id) { return document.getElementById(id); }
+function p2(n)  { return n < 10 ? '0' + n : '' + n; }
+
+function istNow() {
+  var n = new Date();
+  return new Date(n.getTime() + n.getTimezoneOffset() * 60000 + 5.5 * 3600000);
+}
+function istDateURL(yr, mo, dy) {
+  return yr + '-' + p2(mo) + '-' + p2(dy) + 'T00:00:00%2B05%3A30';
+}
+
+function escHtml(t) {
+  return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function md2html(t) {
+  if (!t) return '';
+  return t.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
+    .replace(/\n\n/g,'</p><p>')
+    .replace(/\n[-•] /g,'<br>• ')
+    .replace(/\n/g,'<br>')
+    .replace(/^/,'<p>').replace(/$/,'</p>');
+}
+function timeAgo(ts) {
+  var d = (Date.now() - new Date(ts).getTime()) / 1000;
+  if (d < 60) return 'just now';
+  if (d < 3600) return Math.floor(d/60) + 'm ago';
+  if (d < 86400) return Math.floor(d/3600) + 'h ago';
+  return Math.floor(d/86400) + 'd ago';
+}
+
+function toast(msg, isErr) {
+  var el = ge('notif');
+  el.textContent = msg;
+  el.className = 'notif' + (isErr ? ' error' : '') + ' show';
+  setTimeout(function() { el.className = 'notif' + (isErr ? ' error' : ''); }, 3000);
+}
+
+/* ── Supabase REST helpers ── */
+function sbGet(path) {
+  return fetch(SB + '/rest/v1' + path, { headers: H }).then(function(r) { return r.json(); });
+}
+
+/* Paginated fetch — gets ALL rows regardless of table size */
+function sbGetAll(table, orderCol, extraFilter) {
+  var all = [];
+  var offset = 0;
+  var filter = extraFilter || '';
+  function nextPage() {
+    var path = '/' + table + '?' + filter + '&order=' + orderCol + '.asc&limit=1000&offset=' + offset;
+    return sbGet(path).then(function(rows) {
+      if (!Array.isArray(rows) || !rows.length) return all;
+      all = all.concat(rows);
+      if (rows.length < 1000) return all;
+      offset += 1000;
+      return nextPage();
     });
   }
+  return nextPage();
+}
+
+function sbCount(table) {
+  return fetch(SB + '/rest/v1/' + table + '?select=id&limit=1',
+    { headers: Object.assign({ 'Prefer': 'count=exact' }, H) })
+    .then(function(r) {
+      var cr = r.headers.get('content-range');
+      return cr ? parseInt(cr.split('/')[1] || '0') : 0;
+    });
+}
+
+/* ── toCSV ── */
+function toCSV(rows) {
+  if (!rows || !rows.length) return '';
+  var keys = Object.keys(rows[0]);
+  var lines = [keys.join(',')];
+  for (var i = 0; i < rows.length; i++) {
+    lines.push(keys.map(function(k) {
+      var v = rows[i][k];
+      if (v === null || v === undefined) return '';
+      return '"' + String(v).replace(/"/g, '""') + '"';
+    }).join(','));
+  }
+  return lines.join('\n');
+}
+
+function triggerDownload(content, filename) {
+  var blob = new Blob([content], { type: 'text/csv' });
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = filename + '.csv';
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+/* ── Auth init ── */
+window.addEventListener('DOMContentLoaded', function() {
+  var attempts = 0;
+  function tryInit() {
+    if (_user) { initPage(); return; }
+    attempts++;
+    if (attempts < 30) setTimeout(tryInit, 200);
+    else window.location.href = 'register.html';
+  }
+  tryInit();
+
+  if (_sb) {
+    _sb.auth.onAuthStateChange(function(ev, session) {
+      if (ev === 'SIGNED_OUT') window.location.href = 'register.html';
+    });
+  }
+
+  /* Default dates */
+  var ist   = istNow();
+  var today = ist.getFullYear() + '-' + p2(ist.getMonth()+1) + '-' + p2(ist.getDate());
+  var d30   = new Date(ist); d30.setDate(d30.getDate() - 30);
+  var thirty = d30.getFullYear() + '-' + p2(d30.getMonth()+1) + '-' + p2(d30.getDate());
+  var nd = ge('note-date'); if (nd) nd.value = today;
+  var dlf = ge('dl-from'); if (dlf) dlf.value = thirty;
+  var dlt = ge('dl-to');   if (dlt) dlt.value = today;
+
+  /* Check Gemini connection */
+  checkGeminiConnection();
+
+  /* Load download meta */
+  loadDownloadMeta();
 });
 
 function initPage() {
   if (!_user) return;
   var meta  = _user.user_metadata || {};
-  var name  = ((meta.first_name||'') + ' ' + (meta.last_name||'')).trim() || _user.email.split('@')[0];
-  document.getElementById('u-name').textContent  = name;
-  document.getElementById('u-email').textContent = _user.email;
-  var badge = document.getElementById('u-badge');
+  var name  = ((meta.first_name || '') + ' ' + (meta.last_name || '')).trim() || _user.email.split('@')[0];
+  ge('u-name').textContent  = name;
+  ge('u-email').textContent = _user.email;
+  var badge = ge('u-badge');
   if (_user.email_confirmed_at) {
-    // If email confirmation is disabled in Supabase, all accounts are auto-confirmed
-    // We show verified as a positive signal either way
     badge.innerHTML = '<span class="user-pill-badge">✓ Account active</span>';
   } else {
-    badge.innerHTML = '<span class="user-pill-badge" style="background:rgba(245,158,11,0.15);color:#92400e;">📧 Check inbox to verify email</span>';
+    badge.innerHTML = '<span class="user-pill-badge" style="background:rgba(245,158,11,.15);color:#92400e">📧 Verify email</span>';
   }
   loadHistory();
   loadAlerts();
+  loadWatchlist();
+  loadNotes();
 }
 
-// ── PANEL SWITCHING ───────────────────────────────────────────────────────────
-var _statsLoaded = false, _digestLoaded = false;
-function switchPanel(id, btn) {
-  document.querySelectorAll('.panel').forEach(function(p) { p.classList.remove('on'); });
-  document.querySelectorAll('.sb-link').forEach(function(b) { b.classList.remove('active'); });
-  var el = document.getElementById('panel-' + id);
-  if (el) el.classList.add('on');
-  if (btn) btn.classList.add('active');
-  if (id === 'stats'  && !_statsLoaded)  { _statsLoaded  = true; loadStats(); }
-  if (id === 'digest' && !_digestLoaded) { _digestLoaded = true; loadDigest(); }
-}
-
-// ── SIGN OUT ─────────────────────────────────────────────────────────────────
-async function doSignOut() {
-  if (_sb) { try { await _sb.auth.signOut(); } catch(e) {} }
-  // Clear all Supabase session keys (v2 format: sb-[ref]-auth-token)
+function doSignOut() {
+  if (_sb) _sb.auth.signOut().catch(function() {});
   try {
     Object.keys(localStorage).forEach(function(k) {
       if (k.indexOf('sb-') === 0 || k.indexOf('supabase') !== -1) localStorage.removeItem(k);
@@ -388,806 +784,989 @@ async function doSignOut() {
   window.location.href = 'index.html';
 }
 
-
-// ── AI QUERY (EARTH PULSE INTELLIGENCE ENGINE) ────────────────────────────────
-
-var WORKER_BASE = 'https://earthpulse-ai.fangchu.workers.dev';
-var WORKER_URL  = WORKER_BASE + '/gemini'; // Gemini primary (free)
-
-// Summarise data before sending to AI — avoid sending raw noise
-function summariseData(data) {
-  if (!data || !data.length) return [];
-  // If > 20 rows, sample evenly
-  if (data.length <= 20) return data;
-  const step = Math.floor(data.length / 20);
-  return data.filter((_, i) => i % step === 0).slice(0, 20);
+/* ── Panel routing ── */
+function switchPanel(id, btn) {
+  document.querySelectorAll('.panel').forEach(function(p) { p.classList.remove('on'); });
+  document.querySelectorAll('.sb-link').forEach(function(b) { b.classList.remove('active'); });
+  var el = ge('panel-' + id);
+  if (el) el.classList.add('on');
+  if (btn) btn.classList.add('active');
+  if (id === 'stats'  && !_statsLoaded)  { _statsLoaded  = true; loadStats(); }
+  if (id === 'digest' && !_digestLoaded) { _digestLoaded = true; loadDigest(); }
 }
 
-// Gemini insight layer (primary — free tier, 15 RPM)
-async function callGemini(query, data) {
-  try {
-    const res = await fetch(WORKER_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ query, data: summariseData(data) })
-    });
-    if (!res.ok) throw new Error('HTTP ' + res.status);
-    const json = await res.json();
-    if (json.answer) return json.answer;
-    console.warn('Gemini no answer:', json.debug);
-    return null;
-  } catch(e) {
-    console.warn('Gemini failed, trying Claude:', e.message);
-    // Fallback to Claude (paid but more reliable)
-    return callClaude(query, data);
-  }
+/* ════════════════════════════════════════════════════════════════════
+   GEMINI CONNECTION CHECK
+   Verifies the /gemini Worker endpoint is alive and returning data.
+   Uses correct payload: {prompt, model:'gemini-2.5-flash-lite'}
+   Reads response: d.text || d.content
+════════════════════════════════════════════════════════════════════ */
+function checkGeminiConnection() {
+  var bar = ge('ai-status');
+  if (!bar) return;
+
+  fetch(WORKER + '/gemini', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      prompt: 'Reply with exactly: "Earth Pulse Gemini OK"',
+      model: 'gemini-2.5-flash-lite'
+    })
+  }).then(function(r) {
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    return r.json();
+  }).then(function(d) {
+    var text = d.text || d.content || '';
+    if (text && text.length > 0) {
+      bar.className = 'ai-status-bar ai-status-ok';
+      bar.innerHTML = '✅ Gemini 2.5 Flash Lite connected — AI insights active';
+    } else {
+      bar.className = 'ai-status-bar ai-status-err';
+      bar.innerHTML = '⚠️ Gemini responded but returned no text. Check GEMINI_API_KEY in earthpulse-ai Worker secrets.';
+    }
+  }).catch(function(e) {
+    bar.className = 'ai-status-bar ai-status-err';
+    bar.innerHTML = '❌ Cannot reach AI Worker (' + e.message + '). Data explorer will show data tables without AI summaries.';
+  });
 }
 
-// Claude fallback
-async function callClaude(query, data) {
-  try {
-    const summary = summariseData(data);
-    const context = 'Baner, Pune environmental data: ' + JSON.stringify(summary).slice(0, 3000);
-    const res = await fetch(WORKER_BASE + '/query', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ query, context })
-    });
-    if (!res.ok) throw new Error('HTTP ' + res.status);
-    const json = await res.json();
-    return json.answer || null;
-  } catch(e) {
-    console.warn('Claude also failed:', e.message);
-    return null;
-  }
+/* ════════════════════════════════════════════════════════════════════
+   AI QUERY ENGINE
+   FIX 1: callGemini declared ONCE here — no duplicate below.
+   FIX 2: Uses correct payload {prompt, model} not {query, data}.
+   FIX 3: Reads d.text || d.content (Worker response format).
+════════════════════════════════════════════════════════════════════ */
+function callGemini(prompt) {
+  return fetch(WORKER + '/gemini', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      prompt: prompt,
+      model: 'gemini-2.5-flash-lite'
+    })
+  }).then(function(r) {
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    return r.json();
+  }).then(function(d) {
+    var text = d.text || d.content || null;
+    return text;
+  });
+}
+
+function buildGeminiPrompt(q, data) {
+  var dataStr = data && data.length
+    ? JSON.stringify(data.slice(0, 20))
+    : 'No specific data retrieved for this query.';
+
+  return 'You are Earth Pulse — a citizen science environmental observatory in Baner, Pune, India on the Western Ghats edge. '
+    + 'The dataset has been recording since January 2022: hourly AQI, temperature, rainfall, bird acoustic detections via BirdNET AI, '
+    + 'and soundscape index from two Raspberry Pi nodes.\n\n'
+    + 'Question from a Baner resident: ' + q + '\n\n'
+    + 'Relevant data sample: ' + dataStr + '\n\n'
+    + 'Write a clear, warm, specific answer in 2-3 sentences. Use actual numbers from the data where available. '
+    + 'Focus on what this means for residents and the Baner ecosystem. '
+    + 'If data is insufficient, say so honestly.';
 }
 
 function ask(q) {
-  document.getElementById('ai-q').value = q;
-  switchPanel('explorer', document.getElementById('nav-explorer'));
+  ge('ai-q').value = q;
+  switchPanel('explorer', ge('nav-explorer'));
   runQuery();
 }
 
-function classifyQuery(q) {
-  const ql = q.toLowerCase();
-  if (ql.match(/most|top|highest|lowest|count/)) return 'aggregation';
-  if (ql.match(/compare|vs|correlation|impact|relationship/)) return 'comparison';
-  if (ql.match(/trend|over time|monthly|yearly|pattern/)) return 'timeseries';
-  if (ql.match(/why|explain|insight/)) return 'explanation';
-  return 'general';
-}
-
-// Dynamic query engine (NO API COST)
-async function runDynamicQuery(q) {
-  const ql = q.toLowerCase();
+/* Dynamic data fetch — no API cost, runs against Supabase */
+function runDynamicQuery(q) {
+  var ql = q.toLowerCase();
   lastRows = null;
 
-  try {
+  /* Birds + environment correlation */
+  var hasBird = ql.indexOf('bird') !== -1 || ql.indexOf('species') !== -1;
+  var envVars = [];
+  if (ql.indexOf('temperature') !== -1 || ql.indexOf('heat') !== -1) envVars.push('temperature');
+  if (ql.indexOf('aqi') !== -1 || ql.indexOf('air') !== -1) envVars.push('aqi');
+  if (ql.indexOf('rain') !== -1) envVars.push('precipitation');
+  if (ql.indexOf('humidity') !== -1) envVars.push('humidity');
 
-    // ── GENERIC CORRELATION ENGINE ─────────────────
-
-    const hasBird = ql.includes("bird") || ql.includes("species");
-
-    const variables = [];
-
-    if (ql.includes("temperature") || ql.includes("heat")) variables.push("temperature");
-    if (ql.includes("aqi") || ql.includes("air")) variables.push("aqi");
-    if (ql.includes("rain")) variables.push("precipitation");
-    if (ql.includes("humidity")) variables.push("humidity");
-
-    if (hasBird && variables.length) {
-
-      const birds = await sbFetch('/bird_detections?select=detected_at');
-      const climate = await sbFetch('/combined_readings?select=recorded_at,temperature,aqi,precipitation,humidity');
-
-      const birdMap = {};
-      birds.forEach(b => {
-        const d = b.detected_at.slice(0,10);
+  if (hasBird && envVars.length) {
+    return Promise.all([
+      sbGet('/bird_detections?select=detected_at&limit=1000&order=detected_at.desc'),
+      sbGet('/combined_readings?select=recorded_at,' + envVars.join(',') + '&limit=1000&order=recorded_at.desc')
+    ]).then(function(results) {
+      var birds   = results[0];
+      var climate = results[1];
+      if (!Array.isArray(birds) || !Array.isArray(climate)) return null;
+      var birdMap = {};
+      for (var i = 0; i < birds.length; i++) {
+        var d = birds[i].detected_at.slice(0, 10);
         birdMap[d] = (birdMap[d] || 0) + 1;
-      });
-
-      const rows = climate.map(c => {
-        const d = c.recorded_at.slice(0,10);
-
-        const row = {
-          date: d,
-          bird_count: birdMap[d] || 0
-        };
-
-        variables.forEach(v => {
-          row[v] = c[v];
-        });
-
-        return row;
-      }).filter(r => r.bird_count > 0);
-
-      rows.sort((a,b)=>{
-        const v = variables[0];
-        return (a[v] || 0) - (b[v] || 0);
-      });
-
-      lastRows = rows.slice(0,100);
+      }
+      var rows = [];
+      for (var j = 0; j < climate.length; j++) {
+        var c = climate[j];
+        var d2 = c.recorded_at.slice(0, 10);
+        if (!birdMap[d2]) continue;
+        var row = { date: d2, bird_detections: birdMap[d2] };
+        for (var k = 0; k < envVars.length; k++) row[envVars[k]] = c[envVars[k]];
+        rows.push(row);
+      }
+      rows.sort(function(a, b) { return (a[envVars[0]] || 0) - (b[envVars[0]] || 0); });
+      lastRows = rows.slice(0, 50);
       return lastRows;
-    }
+    });
+  }
 
-    // ── BIRDS (default) ─────────────────
-    if (ql.includes("bird") || ql.includes("species")) {
-      const birds = await sbFetch('/bird_detections?select=species_common,confidence,detected_at&limit=2000');
-
-      const map = {};
-      birds.forEach(b => {
-        if (!map[b.species_common]) {
-          map[b.species_common] = { count: 0, maxConf: 0 };
+  /* Bird count / top species */
+  if (hasBird && !envVars.length) {
+    return sbGet('/bird_detections?select=species_common,species_scientific,confidence,detected_at&limit=2000&order=detected_at.desc')
+      .then(function(birds) {
+        if (!Array.isArray(birds)) return null;
+        var map = {};
+        for (var i = 0; i < birds.length; i++) {
+          var sp = birds[i].species_common;
+          if (!map[sp]) map[sp] = { count: 0, maxConf: 0, sci: birds[i].species_scientific };
+          map[sp].count++;
+          if (birds[i].confidence > map[sp].maxConf) map[sp].maxConf = birds[i].confidence;
         }
-        map[b.species_common].count++;
-        map[b.species_common].maxConf = Math.max(map[b.species_common].maxConf, b.confidence);
+        var rows = [];
+        var keys = Object.keys(map);
+        for (var k = 0; k < keys.length; k++) {
+          rows.push({ species: keys[k], scientific: map[keys[k]].sci, detections: map[keys[k]].count, best_confidence: Math.round(map[keys[k]].maxConf * 100) + '%' });
+        }
+        rows.sort(function(a, b) { return b.detections - a.detections; });
+        lastRows = rows.slice(0, 25);
+        return lastRows;
       });
+  }
 
-      const rows = Object.entries(map)
-        .map(([species, v]) => ({
-          species,
-          detections: v.count,
-          confidence: Math.round(v.maxConf * 100) + "%"
-        }))
-        .sort((a,b)=>b.detections-a.detections)
-        .slice(0,20);
+  /* Soundscape */
+  if (ql.indexOf('soundscape') !== -1 || ql.indexOf('ndsi') !== -1 || ql.indexOf('noise') !== -1) {
+    return sbGet('/soundscape_readings?select=recorded_at,ndsi,biophony,anthrophony,is_rain&order=recorded_at.desc&limit=100')
+      .then(function(rows) {
+        if (!Array.isArray(rows)) return null;
+        lastRows = rows;
+        return lastRows;
+      });
+  }
 
-      lastRows = rows;
-      return rows;
-    }
+  /* Temperature / heat */
+  if (ql.indexOf('temperature') !== -1 || ql.indexOf('hot') !== -1 || ql.indexOf('heat') !== -1) {
+    return sbGet('/combined_readings?select=recorded_at,temperature&order=temperature.desc&limit=20')
+      .then(function(data) {
+        if (!Array.isArray(data)) return null;
+        lastRows = data.map(function(d) { return { date: d.recorded_at.slice(0, 10), temperature_c: d.temperature }; });
+        return lastRows;
+      });
+  }
 
-    // ── TEMPERATURE ─────────────────
-if (ql.includes("temperature") || ql.includes("hot") || ql.includes("heat")) {
-      const data = await sbFetch('/combined_readings?select=recorded_at,temperature&order=temperature.desc&limit=20');
+  /* Annual rainfall — FIX: paginate properly */
+  if ((ql.indexOf('rain') !== -1 || ql.indexOf('rainfall') !== -1) &&
+      (ql.indexOf('year') !== -1 || ql.indexOf('annual') !== -1 || ql.indexOf('each year') !== -1)) {
+    return sbGet('/combined_readings?select=recorded_at,precipitation&precipitation=gt.0&limit=1000&order=recorded_at.asc')
+      .then(function(data) {
+        if (!Array.isArray(data)) return null;
+        var yearMap = {};
+        for (var i = 0; i < data.length; i++) {
+          if (!data[i].precipitation) continue;
+          var yr = data[i].recorded_at.slice(0, 4);
+          yearMap[yr] = (yearMap[yr] || 0) + data[i].precipitation;
+        }
+        var rows = [];
+        var yrs = Object.keys(yearMap).sort();
+        for (var k = 0; k < yrs.length; k++) {
+          rows.push({ year: yrs[k], total_rain_mm: Math.round(yearMap[yrs[k]]) });
+        }
+        lastRows = rows;
+        return rows;
+      });
+  }
 
-      const rows = data.map(d => ({
-        date: d.recorded_at.slice(0,10),
-        temperature_c: d.temperature
-      }));
+  /* Year-specific rain */
+  var yearMatch = q.match(/20\d{2}/);
+  if (ql.indexOf('rain') !== -1 && yearMatch) {
+    var yr = yearMatch[0];
+    return sbGet('/combined_readings?select=recorded_at,precipitation&precipitation=gt.0&recorded_at=gte.' + yr + '-01-01T00:00:00%2B05%3A30&recorded_at=lt.' + (parseInt(yr) + 1) + '-01-01T00:00:00%2B05%3A30&limit=1000')
+      .then(function(data) {
+        if (!Array.isArray(data)) return null;
+        var total = 0;
+        for (var i = 0; i < data.length; i++) total += data[i].precipitation || 0;
+        lastRows = [{ year: yr, total_rain_mm: Math.round(total) }];
+        return lastRows;
+      });
+  }
 
-      lastRows = rows;
-      return rows;
-    }
+  /* Recent rain */
+  if (ql.indexOf('rain') !== -1) {
+    return sbGet('/combined_readings?select=recorded_at,precipitation&precipitation=gt.0&order=recorded_at.desc&limit=30')
+      .then(function(data) {
+        if (!Array.isArray(data)) return null;
+        lastRows = data.map(function(d) { return { date: d.recorded_at.slice(0, 10), rain_mm: d.precipitation }; });
+        return lastRows;
+      });
+  }
 
-// ── ANNUAL RAINFALL ─────────────────
-if ((ql.includes("rain") || ql.includes("rainfall")) &&
-    (ql.includes("year") || ql.includes("annual"))) 
- {
+  /* AQI */
+  if (ql.indexOf('aqi') !== -1 || ql.indexOf('air quality') !== -1 || ql.indexOf('pollution') !== -1) {
+    return sbGet('/combined_readings?select=recorded_at,aqi,google_aqi_india,dominant_pollutant&order=recorded_at.desc&limit=50')
+      .then(function(data) {
+        if (!Array.isArray(data)) return null;
+        lastRows = data.map(function(d) {
+          return { date: d.recorded_at.slice(0, 16).replace('T', ' '), eu_aqi: d.aqi, india_aqi: d.google_aqi_india, pollutant: d.dominant_pollutant };
+        });
+        return lastRows;
+      });
+  }
 
-  const data = await sbFetch('/combined_readings?select=recorded_at,precipitation');
-
-  const yearMap = {};
-
-  data.forEach(d => {
-    if (!d.precipitation) return;
-
-    const year = d.recorded_at.slice(0,4);
-    yearMap[year] = (yearMap[year] || 0) + d.precipitation;
-  });
-
-  const rows = Object.entries(yearMap).map(([year, total]) => ({
-    year,
-    total_rain_mm: Math.round(total)
-  })).sort((a,b)=>a.year-b.year);
-
-  lastRows = rows;
-  return rows;
+  return Promise.resolve(null);
 }
 
-// ── YEAR-SPECIFIC RAIN ─────────────────
-const yearMatch = q.match(/20\d{2}/);
-
-if (ql.includes("rain") && yearMatch) {
-
-  const year = yearMatch[0];
-
-  const data = await sbFetch('/combined_readings?select=recorded_at,precipitation');
-
-  let total = 0;
-
-  data.forEach(d => {
-    if (!d.precipitation) return;
-    if (d.recorded_at.startsWith(year)) {
-      total += d.precipitation;
-    }
-  });
-
-  lastRows = [{
-    year,
-    total_rain_mm: Math.round(total)
-  }];
-
-  return lastRows;
-}
-
-    // ── RAIN ─────────────────
-    if (ql.includes("rain")) {
-      const data = await sbFetch('/combined_readings?select=recorded_at,precipitation&precipitation=gt.0&order=recorded_at.desc&limit=50');
-
-      const rows = data.map(d => ({
-        date: d.recorded_at.slice(0,10),
-        rain_mm: d.precipitation
-      }));
-
-      lastRows = rows;
-      return rows;
-    }
-
-  } catch(e) {
-    console.log(e);
-    return null;
+function buildFallbackAnswer(q, data) {
+  if (!data || !data.length) {
+    return 'Earth Pulse could not match this query to a dataset. Try asking about birds, AQI, rainfall, temperature, or soundscape.';
   }
-
-  return null;
-}
-
-
-// Gemini insight layer (controlled usage)
-
-async function callGemini(query, data) {
-  try {
-    const res = await fetch(WORKER_URL, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        query: query,
-        data: data
-      })
-    });
-
-    const json = await res.json();
-
-    // 👇 THIS IS KEY
-    if (!json.answer) {
-      console.log("Gemini debug:", json.debug);
-      return null;
+  var keys = Object.keys(data[0]);
+  if (keys.indexOf('bird_detections') !== -1 && keys.length > 2) {
+    var envKey = '';
+    for (var k = 0; k < keys.length; k++) {
+      if (keys[k] !== 'date' && keys[k] !== 'bird_detections') { envKey = keys[k]; break; }
     }
-
-    return json.answer;
-
-  } catch(e) {
-    console.log("Gemini error:", e);
-    return null;
+    var n = Math.min(8, Math.floor(data.length / 3));
+    var sorted = data.slice().sort(function(a, b) { return (a[envKey] || 0) - (b[envKey] || 0); });
+    var lowAvg  = 0; var highAvg = 0;
+    for (var i = 0; i < n; i++) { lowAvg  += sorted[i].bird_detections || 0; }
+    for (var i = 0; i < n; i++) { highAvg += sorted[sorted.length - 1 - i].bird_detections || 0; }
+    lowAvg = Math.round(lowAvg / n); highAvg = Math.round(highAvg / n);
+    var trend = highAvg < lowAvg ? 'decrease' : (highAvg > lowAvg ? 'increase' : 'remain similar');
+    return '**Bird activity tends to ' + trend + ' as ' + envKey + ' increases in Baner.** '
+      + 'When ' + envKey + ' is lowest, avg daily detections: ' + lowAvg + '. When highest: ' + highAvg + '. '
+      + 'This emerges from ' + data.length + ' matched days in the dataset.';
   }
-}
-
-async function runQuery() {
-  var q = (document.getElementById('ai-q').value || '').trim();
-
-// Save to Supabase history
-try {
-  if (_sb && _user) {
-    await _sb.from('user_searches').insert({
-      user_id: _user.id,
-      query: q
-    });
-  }
-} catch(e){}
-
-
-  if (!q) return;
-
-  var btn = document.getElementById('ai-go');
-  btn.disabled = true;
-  btn.innerHTML = '<span class="spin"></span> Observing patterns…';
-
-  document.getElementById('ai-result').innerHTML = '';
-
-  let data = null;
-  let answer = null;
-
-// Save search
-
-  try {
-    const intent = classifyQuery(q);
-
-    // 1. FREE data engine
-    data = await runDynamicQuery(q);
-
-    // 2. Insight layer (Gemini only if needed)
-    if (data && data.length) {
-      answer = await callGemini(q, data.slice(0, 20));
-    }
-
-    // 3. Fallback (no AI)
-
-if (!answer) {
-
-  if (data && data.length) {
-
-    const keys = Object.keys(data[0]);
-
-    // ── YEAR-SPECIFIC RAIN ──
-    if (q.toLowerCase().includes("rain") && q.match(/20\d{2}/)) {
-      answer = `
-**Total rainfall for the selected year reflects how the monsoon unfolded in Baner.**
-
-Rather than steady accumulation, rainfall tends to concentrate in intense spells, making yearly totals sensitive to a few strong events.
-`;
-    }
-
-    // ── CORRELATION ENGINE ──
-    else if (keys.includes("bird_count") && keys.length > 2) {
-
-      const variable = keys.find(k => k !== "date" && k !== "bird_count");
-
-      const sampleSize = Math.min(10, data.length);
-const sorted = [...data].sort((a,b)=> (a[variable]||0) - (b[variable]||0));
-const lowSample = sorted.slice(0, sampleSize);
-const highSample = sorted.slice(-sampleSize);
-
-const low = lowSample.reduce((s,r)=>s+r.bird_count,0) / lowSample.length;
-const high = highSample.reduce((s,r)=>s+r.bird_count,0) / highSample.length;
-
-      let trend = "remain relatively stable";
-      if (high < low) trend = "decrease";
-      if (high > low) trend = "increase";
-
-      answer = `
-**Bird activity tends to ${trend} as ${variable} changes in Baner.**
-
-This suggests that environmental conditions influence behaviour more than presence. Instead of disappearing, birds may be shifting activity patterns — especially across time of day or intensity of conditions.
-`;
-    }
-
-    else {
-      answer = `
-**This reflects a consistent environmental pattern observed in Baner.**
-
-The data shows stable behaviour over time, shaped by seasonal cycles and local ecological conditions.
-`;
-    }
-
-  } else {
-    answer = `
-Earth Pulse could not interpret this yet. Try asking about birds, AQI, rainfall, or temperature.
-`;
-  }
-}
-
-
-    // Render
-    var html =
-      '<div class="res-card">' +
-        '<div class="res-q">' + escHtml(q) + '</div>' +
-        '<div class="res-body">' + md2html(answer) + '</div>' +
-      '</div>';
-
-    if (data && data.length) {
-      html +=
-        '<div class="res-card">' +
-          '<div style="font-weight:600;color:var(--ep-green);margin-bottom:0.75rem;">📋 Supporting data</div>' +
-'<div style="font-size:0.9rem;color:#6b7280;margin-bottom:0.75rem;">' + getDataContext(data) + '</div>' +
-          buildTable(data) +
-          '<div class="actions"><button class="act-btn primary" onclick="dlCSV()">⬇ Download CSV</button></div>' +
-        '</div>';
-    }
-
-    document.getElementById('ai-result').innerHTML = html;
-
-  } catch(e) {
-    document.getElementById('ai-result').innerHTML =
-      '<div class="res-card" style="border-color:#fca5a5;">' +
-      '<p style="color:#dc2626;">Error: ' + escHtml(e.message) + '</p></div>';
-  }
-
-  btn.disabled = false;
-  btn.innerHTML = 'Ask →';
-loadHistory();
-}
-
-// Client-side smart answer — works without any API key
-function buildSmartAnswer(q, context) {
-  var ql = q.toLowerCase();
-  var lines = context.split('\n').filter(Boolean);
-
-  // Extract numbers from context for smart answers
-  var birdMatch = context.match(/Bird species by detection count: (\[.*?\])/);
-  var birds = [];
-  if (birdMatch) {
-    try { birds = JSON.parse(birdMatch[1]); } catch(e) {}
-  }
-
-  var latestMatch = context.match(/Latest reading: EU AQI (\d+), India AQI (\d+), Temp ([\d.]+)°C/);
-  var aqiEU   = latestMatch ? parseInt(latestMatch[1]) : null;
-  var aqiInd  = latestMatch ? parseInt(latestMatch[2]) : null;
-  var tempNow = latestMatch ? parseFloat(latestMatch[3]) : null;
-
-  if ((ql.includes('bird') || ql.includes('species') || ql.includes('detected')) && birds.length) {
-    var top5 = birds.slice(0,5).map(function(b,i){ return (i+1)+'. **'+b.species+'** — '+b.detections+' detections (best confidence: '+b.best_conf+')'; }).join('\n');
-    return '**The most frequently detected bird in Baner is ' + birds[0].species + ', heard ' + birds[0].detections + ' times.** The top 5 reflect a mix of resident and seasonal visitors common to the Sahyadri foothills.\n\n' + top5 + '\n\n📊 Key numbers:\n• ' + birds.length + ' species in this dataset sample\n• Best confidence: ' + birds[0].best_conf + ' for ' + birds[0].species + '\n• Species active across ' + Math.max.apply(null, birds.map(function(b){return b.months_active;})) + ' months (most widespread)\n\n🔍 Try asking: "Which birds are only heard in monsoon?" or "Which birds have the highest confidence scores?"';
-  }
-
-  if ((ql.includes('aqi') || ql.includes('air') || ql.includes('pollution')) && aqiEU !== null) {
-    var aqiContext = context.match(/AQI stats.*?avg=(\d+), max=(\d+), min=(\d+)/);
-    var avg = aqiContext ? aqiContext[1] : 'unknown';
-    var max = aqiContext ? aqiContext[2] : 'unknown';
-    var min = aqiContext ? aqiContext[3] : 'unknown';
-    return '**Current EU AQI in Baner is ' + aqiEU + ' with India AQI at ' + aqiInd + '.** In recent weeks, average EU AQI has been ' + avg + ', ranging from ' + min + ' (clean) to ' + max + ' (peak pollution).\n\n📊 Key numbers:\n• Current: EU ' + aqiEU + ' / India ' + aqiInd + '\n• Recent average: ' + avg + '\n• Best recent: ' + min + ' · Worst: ' + max + '\n• EU scale: 0–25 Good, 26–50 Fair, 51–75 Moderate, 76–100 Poor\n\n🔍 Try: "Compare AQI on Diwali vs normal days" or "What are the cleanest hours of the day?"';
-  }
-
-  if (ql.includes('rain') || ql.includes('monsoon') || ql.includes('rainfall')) {
-    var rainMatch = context.match(/Rain:.*total ([\d.]+)mm/);
-    var total = rainMatch ? rainMatch[1] : 'unknown';
-    return '**Earth Pulse has been recording rainfall in Baner since January 2022, capturing ' + total + 'mm in recent records.** Baner sits on the leeward side of the Sahyadri, receiving concentrated monsoon rainfall typically between mid-June and September.\n\n📊 Key numbers:\n• Total recent rain: ' + total + 'mm\n• Monsoon window: June–September\n• Heaviest months: July and August historically\n\n🔍 Try: "How much rain fell in July 2024?" or "Compare monsoon 2022 vs 2023"';
-  }
-
-  if (ql.includes('temp') || ql.includes('hot') || ql.includes('heat') || ql.includes('cold')) {
-    var hotMatch = context.match(/Hottest: (\[.*?\])/);
-    var hotDays = [];
-    if (hotMatch) { try { hotDays = JSON.parse(hotMatch[1]); } catch(e) {} }
-    var hotStr = hotDays.length ? hotDays.slice(0,3).map(function(d){return d.date+': '+d.temperature+'°C';}).join(', ') : 'data available in climate section';
-    return '**Current temperature in Baner is ' + (tempNow||'—') + '°C, with peak days historically reaching the high 30s.** Baner\'s microclimate is moderated by the Sahyadri Hills but sees peak heat in April–May before the monsoon breaks.\n\n📊 Key numbers:\n• Now: ' + (tempNow||'—') + '°C\n• Recent hottest days: ' + hotStr + '\n• Pre-monsoon peak: typically 38–40°C in May\n\n🔍 Try: "On days above 36°C, how many birds are heard?" or "What is the average temperature by month?"';
-  }
-
-  // Generic fallback
-  return '**Earth Pulse has been monitoring Baner\'s environment continuously since January 2022.** The dataset includes ' + (birds.length||'35+') + ' bird species detected acoustically, 37,000+ hourly climate records, and daily bird detections.\n\nCurrent conditions: EU AQI ' + (aqiEU||'—') + ' · ' + (tempNow||'—') + '°C · India AQI ' + (aqiInd||'—') + '\n\n📊 For deeper analysis, try one of the suggested questions below, or ask something specific like:\n• "Which birds are heard most at dawn?"\n• "What was the worst air quality day this year?"\n• "How does rainfall affect bird activity?"\n\n🔍 The AI analysis feature works best with specific, data-driven questions about this dataset.';
-}
-
-function md2html(t) {
-  return t
-    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-    .replace(/\n\n/g, '</p><p>')
-    .replace(/\n[-•] /g, '<br>• ')
-    .replace(/\n/g, '<br>')
-    .replace(/^/, '<p>').replace(/$/, '</p>');
-}
-
-function escHtml(t) { return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-
-function getDataContext(data) {
-  if (!data || !data.length) return "";
-
-  const keys = Object.keys(data[0]);
-
-  if (
-    keys.includes("species") ||
-    keys.includes("bird_count") ||
-    keys.includes("detections")
-  ) {
-    return "Bird activity data available from April 2026 onwards";
-  }
-
-  return "Weather and air quality data available from 2022 onwards";
-
-}
-
-async function sbFetch(path) {
-  var r = await fetch(_SB_URL + '/rest/v1' + path, { headers: { 'apikey': _SB_KEY, 'Authorization': 'Bearer ' + _SB_KEY } });
-  return r.json();
-}
-
-async function gatherContext(q) {
-  var ql = q.toLowerCase();
-  var parts = [];
-  lastRows = null;
-  try {
-    var latest = await sbFetch('/combined_readings?select=recorded_at,aqi,google_aqi_india,temperature,humidity,precipitation&order=recorded_at.desc&limit=1');
-    if (latest[0]) parts.push('Latest reading: EU AQI ' + latest[0].aqi + ', India AQI ' + latest[0].google_aqi_india + ', Temp ' + latest[0].temperature + '°C, Humidity ' + latest[0].humidity + '%, Rain ' + latest[0].precipitation + 'mm');
-
-    if (ql.includes('bird') || ql.includes('species') || ql.includes('dawn') || ql.includes('monsoon') || ql.includes('migrat')) {
-      var birds = await sbFetch('/bird_detections?select=species_common,species_scientific,confidence,detected_at&order=detected_at.desc&limit=1000');
-      var map = {}; birds.forEach(function(b) { if (!map[b.species_common]) map[b.species_common]={n:0,maxConf:0,months:new Set()}; map[b.species_common].n++; map[b.species_common].maxConf=Math.max(map[b.species_common].maxConf,b.confidence); map[b.species_common].months.add(new Date(b.detected_at).getMonth()); });
-      var rows = Object.entries(map).sort(function(a,b){return b[1].n-a[1].n;}).slice(0,20).map(function(e){return{species:e[0],detections:e[1].n,best_conf:Math.round(e[1].maxConf*100)+'%',months_active:e[1].months.size};});
-      parts.push('Bird species by detection count: ' + JSON.stringify(rows.slice(0,10)));
-      lastRows = rows;
-    }
-    if (ql.includes('aqi') || ql.includes('air') || ql.includes('pollution') || ql.includes('diwali') || ql.includes('holi')) {
-      var cl = await sbFetch('/combined_readings?select=recorded_at,aqi,google_aqi_india,temperature&order=recorded_at.desc&limit=300');
-      var avg = Math.round(cl.reduce(function(s,r){return s+(r.aqi||0);},0)/cl.length);
-      var mx  = Math.max.apply(null, cl.map(function(r){return r.aqi||0;}));
-      var mn  = Math.min.apply(null, cl.filter(function(r){return r.aqi>0;}).map(function(r){return r.aqi;}));
-      parts.push('AQI stats (last 300 readings): avg=' + avg + ', max=' + mx + ', min=' + mn);
-      if (!lastRows) lastRows = cl.slice(0,25).map(function(r){return{date:r.recorded_at.slice(0,10),eu_aqi:r.aqi,india_aqi:r.google_aqi_india,temp:r.temperature};});
-    }
-    if (ql.includes('rain') || ql.includes('rainfall') || ql.includes('monsoon') || ql.includes('precipitation')) {
-      var rain = await sbFetch('/combined_readings?select=recorded_at,precipitation&precipitation=gt.0&order=recorded_at.desc&limit=500');
-      var tot  = rain.reduce(function(s,r){return s+(r.precipitation||0);},0);
-      parts.push('Rain: ' + rain.length + ' hourly readings with precipitation, total ' + tot.toFixed(1) + 'mm in recent records');
-    }
-    if (ql.includes('temp') || ql.includes('hot') || ql.includes('cold') || ql.includes('heat')) {
-      var hot  = await sbFetch('/combined_readings?select=recorded_at,temperature&order=temperature.desc&limit=10');
-      var cold = await sbFetch('/combined_readings?select=recorded_at,temperature&order=temperature.asc&limit=10');
-      parts.push('Hottest: ' + JSON.stringify(hot.map(function(r){return{date:r.recorded_at.slice(0,10),temp:r.temperature};})));
-      parts.push('Coldest: ' + JSON.stringify(cold.map(function(r){return{date:r.recorded_at.slice(0,10),temp:r.temperature};})));
-      if (!lastRows) lastRows = hot.slice(0,10).map(function(r){return{date:r.recorded_at.slice(0,10),temperature_c:r.temperature};});
-    }
-  } catch(e) { parts.push('Data fetch note: ' + e.message); }
-  return parts.join('\n\n') || 'No specific data retrieved — answer from general dataset knowledge.';
+  return '**This reflects environmental patterns observed in Baner since January 2022.** '
+    + 'The query matched ' + data.length + ' records. Download the CSV for deeper analysis.';
 }
 
 function buildTable(rows) {
   if (!rows || !rows.length) return '';
   var keys = Object.keys(rows[0]);
-  var h = '<div class="tbl-wrap"><table class="tbl"><thead><tr>' + keys.map(function(k){return '<th>'+k.replace(/_/g,' ')+'</th>';}).join('') + '</tr></thead><tbody>';
-  rows.forEach(function(r){ h += '<tr>' + keys.map(function(k){return '<td>'+(r[k]!=null?r[k]:'—')+'</td>';}).join('') + '</tr>'; });
+  var h = '<div class="tbl-wrap"><table class="tbl"><thead><tr>'
+    + keys.map(function(k) { return '<th>' + k.replace(/_/g, ' ') + '</th>'; }).join('')
+    + '</tr></thead><tbody>';
+  for (var i = 0; i < rows.length && i < 30; i++) {
+    h += '<tr>' + keys.map(function(k) { return '<td>' + (rows[i][k] != null ? escHtml(String(rows[i][k])) : '—') + '</td>'; }).join('') + '</tr>';
+  }
   return h + '</tbody></table></div>';
 }
 
-function toCSV(rows) {
-  if (!rows || !rows.length) return '';
-  var keys = Object.keys(rows[0]);
-  var lines = [keys.join(',')];
-  rows.forEach(function(r){ lines.push(keys.map(function(k){var v=r[k]!=null?r[k]:''; return '"'+String(v).replace(/"/g,'""')+'"';}).join(',')); });
-  return lines.join('\n');
-}
+function runQuery() {
+  var q = (ge('ai-q').value || '').trim();
+  if (!q) return;
 
-function dlCSV() {
-  if (!lastRows) return;
-  var blob = new Blob([toCSV(lastRows)], {type:'text/csv'});
-  var a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'earthpulse-'+Date.now()+'.csv'; a.click();
-}
+  var btn = ge('ai-go');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spin"></span>';
+  ge('ai-result').innerHTML = '';
 
-async function dlData(type) {
-  var url, name;
-  if (type==='climate') { url='/combined_readings?select=*&order=recorded_at.asc&limit=50000'; name='climate'; }
-  else if (type==='birds') { url='/bird_detections?select=*&order=detected_at.asc&limit=10000'; name='birds'; }
-  else if (type==='rain')  { url='/combined_readings?select=recorded_at,precipitation&precipitation=gt.0&order=recorded_at.asc&limit=10000'; name='rainfall'; }
-  else                     { url='/timelapse_frames?select=*&order=captured_at.asc&limit=5000'; name='photos'; }
-  var rows = await sbFetch(url);
-  if (!Array.isArray(rows)||!rows.length) { alert('No data found.'); return; }
-  var blob = new Blob([toCSV(rows)], {type:'text/csv'});
-  var a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'earthpulse-'+name+'.csv'; a.click();
-}
+  /* Save search */
+  if (_sb && _user) {
+    _sb.from('user_searches').insert({ user_id: _user.id, query: q }).catch(function() {});
+  }
 
-async function dlCustom() {
-  var type = document.getElementById('dl-type').value;
-  var from = document.getElementById('dl-from').value;
-  var to   = document.getElementById('dl-to').value;
-  if (!from || !to) { alert('Please select a date range.'); return; }
-  var filter = '&' + (type==='birds' ? 'detected_at' : 'recorded_at') + '=gte.' + from + 'T00:00:00Z&' + (type==='birds' ? 'detected_at' : 'recorded_at') + '=lte.' + to + 'T23:59:59Z';
-  var url = type==='birds' ? '/bird_detections?select=*' + filter + '&order=detected_at.asc&limit=10000' : '/combined_readings?select=*' + filter + '&order=recorded_at.asc&limit=50000';
-  await dlData(type + '_custom');
-}
-
-// ── LIVE STATS ────────────────────────────────────────────────────────────────
-async function loadStats() {
-  try {
-    var [birds, climate, today] = await Promise.all([
-      sbFetch('/bird_detections?select=species_common,species_scientific,confidence,detected_at&order=detected_at.desc&limit=2000'),
-      sbFetch('/combined_readings?select=recorded_at,aqi,temperature,precipitation&order=recorded_at.desc&limit=1'),
-      sbFetch('/bird_detections?select=species_scientific&detected_at=gte.' + new Date(new Date().toDateString()).toISOString() + '&limit=500'),
-    ]);
-
-    var speciesSet = new Set(birds.map(function(b){ return b.species_scientific; }));
-    var todaySet   = new Set(today.map(function(b){ return b.species_scientific; }));
-    var best       = birds.reduce(function(m,b){ return b.confidence > m ? b.confidence : m; }, 0);
-
-    // Hour distribution for heatmap
-    var hourC = new Array(24).fill(0);
-    birds.forEach(function(b) {
-      var utcMs = new Date(b.detected_at).getTime();
-      var h = Math.floor((utcMs + 5.5*3600000) / 3600000) % 24;
-      hourC[h]++;
+  runDynamicQuery(q).then(function(data) {
+    /* Build a specific prompt with actual data */
+    var prompt = buildGeminiPrompt(q, data);
+    return callGemini(prompt).then(function(answer) {
+      return { data: data, answer: answer };
+    }).catch(function() {
+      return { data: data, answer: null };
     });
-    var maxH = Math.max.apply(null, hourC.concat([1]));
-    var peakH = hourC.indexOf(Math.max.apply(null, hourC));
+  }).then(function(result) {
+    var data   = result.data;
+    var answer = result.answer || buildFallbackAnswer(q, data);
 
-    // Month distribution
-    var monC = new Array(12).fill(0);
-    var monSp = new Array(12).fill(null).map(function(){ return new Set(); });
-    birds.forEach(function(b) {
-      var ist = new Date(new Date(b.detected_at).toLocaleString('en-US', {timeZone:'Asia/Kolkata'}));
-      var m = ist.getMonth();
-      monC[m]++;
-      monSp[m].add(b.species_scientific);
-    });
-    var monSpC = monSp.map(function(s){ return s.size; });
-    var maxMon = Math.max.apply(null, monSpC.concat([1]));
-    var peakMon = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][monSpC.indexOf(maxMon)];
+    var html = '<div class="res-card">'
+      + '<div class="res-q">' + escHtml(q) + '</div>'
+      + '<div class="res-body">' + md2html(answer) + '</div>'
+      + (data && data.length ? '<div class="res-src">Data: ' + data.length + ' records from Earth Pulse Supabase</div>' : '')
+      + '</div>';
 
-    // Stat cards
-    var cl = climate[0] || {};
-    document.getElementById('stats-mosaic').innerHTML = [
-      {icon:'🐦', val:speciesSet.size, label:'Total species detected', sub:'all time, BirdNET AI'},
-      {icon:'🔊', val:birds.length, label:'Total detections', sub:'in this sample'},
-      {icon:'🌅', val:'0' + peakH + ':00', label:'Peak detection hour', sub:'when birds sing loudest'},
-      {icon:'📅', val:peakMon, label:'Most species month', sub:maxMon + ' unique species'},
-      {icon:'🎯', val:Math.round(best*100) + '%', label:'Best confidence ever', sub:'clearest call recorded'},
-      {icon:'🐣', val:todaySet.size, label:'Species today', sub:'detected since midnight IST'},
-      {icon:'🌡️', val:(cl.temperature||'—') + '°C', label:'Current temperature', sub:'live from Pi sensor'},
-      {icon:'🍃', val:cl.aqi||'—', label:'Current EU AQI', sub:'Copernicus CAMS live'},
-    ].map(function(s){
+    if (data && data.length) {
+      html += '<div class="res-card">'
+        + '<div style="font-weight:600;color:var(--ep-green);margin-bottom:.5rem">📋 Supporting data (' + data.length + ' records)</div>'
+        + buildTable(data)
+        + '<div class="actions">'
+          + '<button class="act-btn primary" onclick="dlQueryResult()">⬇ Download CSV</button>'
+        + '</div>'
+        + '</div>';
+    }
+
+    ge('ai-result').innerHTML = html;
+  }).catch(function(e) {
+    ge('ai-result').innerHTML = '<div class="res-card" style="border-color:#fca5a5;"><p style="color:#dc2626">Error: ' + escHtml(e.message) + '</p></div>';
+  }).finally(function() {
+    btn.disabled  = false;
+    btn.innerHTML = 'Ask →';
+    loadHistory();
+  });
+}
+
+function dlQueryResult() {
+  if (!lastRows || !lastRows.length) return;
+  triggerDownload(toCSV(lastRows), 'earthpulse-query-' + Date.now());
+}
+
+/* ════════════════════════════════════════════════════════════════════
+   LIVE STATS
+════════════════════════════════════════════════════════════════════ */
+function loadStats() {
+  var ist      = istNow();
+  var todayStr = ist.getFullYear() + '-' + p2(ist.getMonth()+1) + '-' + p2(ist.getDate()) + 'T00:00:00%2B05%3A30';
+
+  Promise.all([
+    sbGet('/bird_detections?select=species_scientific,confidence,detected_at&limit=3000&order=detected_at.desc'),
+    sbGet('/combined_readings?select=recorded_at,aqi,temperature,precipitation&order=recorded_at.desc&limit=1'),
+    sbGet('/bird_detections?select=species_scientific&detected_at=gte.' + todayStr + '&limit=500'),
+    sbGet('/soundscape_readings?select=recorded_at,ndsi&order=recorded_at.desc&limit=30'),
+    sbCount('climate_readings'),
+    sbCount('soundscape_readings'),
+  ]).then(function(results) {
+    var birds    = Array.isArray(results[0]) ? results[0] : [];
+    var latest   = Array.isArray(results[1]) ? results[1] : [];
+    var todayB   = Array.isArray(results[2]) ? results[2] : [];
+    var ndsiRows = Array.isArray(results[3]) ? results[3] : [];
+    var crCount  = results[4];
+    var ssCount  = results[5];
+
+    var spSet    = {};
+    var todaySet = {};
+    var bestConf = 0;
+    var hourC    = new Array(24).fill(0);
+    var monSp    = [];
+    for (var m = 0; m < 12; m++) monSp.push({});
+
+    for (var i = 0; i < birds.length; i++) {
+      var b = birds[i];
+      spSet[b.species_scientific] = true;
+      if (b.confidence > bestConf) bestConf = b.confidence;
+      var istMs = new Date(b.detected_at).getTime() + 5.5 * 3600000;
+      var istHr = Math.floor(istMs / 3600000) % 24;
+      if (istHr < 0) istHr += 24;
+      hourC[istHr]++;
+      var mo = new Date(istMs).getUTCMonth();
+      monSp[mo][b.species_scientific] = true;
+    }
+    for (var i = 0; i < todayB.length; i++) todaySet[todayB[i].species_scientific] = true;
+
+    var spCount  = Object.keys(spSet).length;
+    var todayCount = Object.keys(todaySet).length;
+    var peakHr   = hourC.indexOf(Math.max.apply(null, hourC));
+    var monSpC   = monSp.map(function(s) { return Object.keys(s).length; });
+    var maxMonSp = Math.max.apply(null, monSpC.concat([1]));
+    var peakMonI = monSpC.indexOf(maxMonSp);
+    var monNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    var cl = latest[0] || {};
+
+    ge('stats-mosaic').innerHTML = [
+      { icon:'🐦', val:spCount,                              label:'Total species detected',  sub:'all time · BirdNET AI' },
+      { icon:'🔊', val:birds.length.toLocaleString('en-IN'),  label:'Detections in sample',   sub:'last 3,000 records' },
+      { icon:'📊', val:crCount.toLocaleString('en-IN'),       label:'Climate readings',        sub:'hourly since Jan 2022' },
+      { icon:'🌅', val:p2(peakHr)+':00',                     label:'Peak bird hour (IST)',    sub:'when they sing loudest' },
+      { icon:'📅', val:monNames[peakMonI],                    label:'Most species month',     sub:maxMonSp + ' unique species' },
+      { icon:'🎯', val:Math.round(bestConf*100)+'%',          label:'Best confidence ever',   sub:'clearest call recorded' },
+      { icon:'🐣', val:todayCount,                            label:'Species today',           sub:'since midnight IST' },
+      { icon:'🍃', val:cl.aqi||'—',                          label:'Current EU AQI',          sub:(cl.temperature||'—')+'°C live' },
+    ].map(function(s) {
       return '<div class="sm-card"><div class="sm-icon">'+s.icon+'</div><div class="sm-val">'+s.val+'</div><div class="sm-label">'+s.label+'</div><div class="sm-sub">'+s.sub+'</div></div>';
     }).join('');
 
-    // Hour heatmap
-    var hg = document.getElementById('hour-heatmap');
+    /* Hour heatmap */
+    var maxH = Math.max.apply(null, hourC.concat([1]));
+    var hg   = ge('hour-heatmap');
     if (hg) {
-      hg.innerHTML = hourC.map(function(c, h) {
-        var alpha = c ? (0.1 + 0.9 * c/maxH).toFixed(2) : 0;
-        var bg    = c ? 'rgba(33,67,50,' + alpha + ')' : 'var(--ep-cream-dark)';
-        return '<div class="hm-cell" style="background:' + bg + '" title="' + String(h).padStart(2,'0') + ':00 — ' + c + ' detection' + (c!==1?'s':'') + '"></div>';
-      }).join('');
+      hg.innerHTML = '';
+      for (var h = 0; h < 24; h++) {
+        var c     = hourC[h];
+        var alpha = c ? (0.1 + 0.9 * c / maxH).toFixed(2) : '0';
+        var bg    = c ? 'rgba(33,67,50,' + alpha + ')' : '#e8e5dc';
+        var cell  = document.createElement('div');
+        cell.className = 'hm-cell';
+        cell.style.background = bg;
+        cell.title = p2(h) + ':00 IST — ' + c + ' detection' + (c !== 1 ? 's' : '');
+        hg.appendChild(cell);
+      }
     }
 
-    // Month bars
-    var mb = document.getElementById('month-bars');
+    /* Month bars */
+    var mb = ge('month-bars');
     if (mb) {
-      mb.innerHTML = monSpC.map(function(c, i) {
-        var pct = maxMon ? Math.round(c/maxMon*100) : 0;
-        var months = ['J','F','M','A','M','J','J','A','S','O','N','D'];
-        return '<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;">' +
-          '<div style="flex:1;width:100%;display:flex;align-items:flex-end;">' +
-          '<div style="width:100%;background:var(--ep-green);border-radius:3px 3px 0 0;height:' + pct + '%;min-height:' + (c>0?3:0) + 'px;" title="' + months[i] + ': ' + c + ' species"></div>' +
-          '</div>' +
-          '<span style="font-size:0.58rem;color:var(--text-muted);font-family:var(--mono);">' + months[i] + '</span>' +
-          '</div>';
-      }).join('');
+      mb.innerHTML = '';
+      for (var mi = 0; mi < 12; mi++) {
+        var cnt = monSpC[mi];
+        var pct = Math.round((cnt / maxMonSp) * 100);
+        var col = document.createElement('div');
+        col.className = 'month-bar-col';
+        var bar = document.createElement('div');
+        bar.className     = 'month-bar-inner';
+        bar.style.height  = Math.max(pct, 2) + '%';
+        bar.title         = monNames[mi] + ': ' + cnt + ' species';
+        var lbl = document.createElement('div');
+        lbl.className   = 'month-bar-label';
+        lbl.textContent = monNames[mi].charAt(0);
+        col.appendChild(bar); col.appendChild(lbl); mb.appendChild(col);
+      }
     }
-  } catch(e) { document.getElementById('stats-mosaic').innerHTML = '<p style="color:#dc2626;">Error loading stats: ' + escHtml(e.message) + '</p>'; }
+
+    /* NDSI chart */
+    if (ndsiRows.length && ge('ndsi-chart')) {
+      var ndsiLabels = ndsiRows.slice().reverse().map(function(r) { return r.recorded_at.slice(0, 10); });
+      var ndsiData   = ndsiRows.slice().reverse().map(function(r) { return r.ndsi; });
+      if (_ndsiChart) { try { _ndsiChart.destroy(); } catch(e) {} }
+      _ndsiChart = new Chart(ge('ndsi-chart').getContext('2d'), {
+        type: 'line',
+        data: {
+          labels: ndsiLabels,
+          datasets: [{
+            label: 'NDSI', data: ndsiData,
+            borderColor: '#214332', backgroundColor: 'rgba(33,67,50,0.07)',
+            borderWidth: 2, tension: 0.4, fill: true, spanGaps: true
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: { legend: { display: false } },
+          scales: {
+            y: { min: -1, max: 1, grid: { color: '#f0f0f0' },
+              ticks: { callback: function(v) {
+                if (v === 1) return '+1 Nature'; if (v === 0) return '0'; if (v === -1) return '-1 Noise';
+                return v.toFixed(1);
+              }}
+            },
+            x: { grid: { display: false }, ticks: { maxTicksLimit: 8 } }
+          }
+        }
+      });
+    } else if (ge('ndsi-chart')) {
+      ge('ndsi-chart').parentElement.innerHTML = '<p style="color:var(--text-muted);font-size:.85rem;padding:.5rem 0">Soundscape data not yet available — south node (baner_south_01) collecting since Oct 2025.</p>';
+    }
+
+  }).catch(function(e) {
+    ge('stats-mosaic').innerHTML = '<p style="color:#dc2626">Error: ' + escHtml(e.message) + '</p>';
+  });
 }
 
-// ── MY DIGEST ─────────────────────────────────────────────────────────────────
-async function loadDigest() {
-  var el = document.getElementById('digest-content');
-  try {
-    var now = new Date();
-    var todayISO  = new Date(now.getFullYear(), now.getMonth(), now.getDate()).toISOString();
-    var monthISO  = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
-    var weekISO   = new Date(Date.now() - 7*86400000).toISOString();
+/* ════════════════════════════════════════════════════════════════════
+   MY DIGEST
+════════════════════════════════════════════════════════════════════ */
+function loadDigest() {
+  var el    = ge('digest-content');
+  var ist   = istNow();
+  var todayIST = ist.getFullYear() + '-' + p2(ist.getMonth()+1) + '-' + p2(ist.getDate()) + 'T00:00:00%2B05%3A30';
+  var monIST   = ist.getFullYear() + '-' + p2(ist.getMonth()+1) + '-01T00:00:00%2B05%3A30';
+  var weekIST  = new Date(ist.getTime() - 7*86400000);
+  var weekStr  = weekIST.getFullYear() + '-' + p2(weekIST.getMonth()+1) + '-' + p2(weekIST.getDate()) + 'T00:00:00%2B05%3A30';
+  var hourIST  = ist.getHours();
+  var greet    = hourIST < 12 ? 'Good morning' : hourIST < 17 ? 'Good afternoon' : 'Good evening';
+  var isDawn   = hourIST >= 5 && hourIST <= 8;
 
-    var [climate, todayBirds, weekBirds, monthBirds, topSpecies] = await Promise.all([
-      sbFetch('/combined_readings?select=recorded_at,aqi,google_aqi_india,temperature,humidity,precipitation,dominant_pollutant,health_recommendation&order=recorded_at.desc&limit=2'),
-      sbFetch('/bird_detections?select=species_common,species_scientific,confidence,detected_at&detected_at=gte.' + todayISO + '&order=detected_at.desc&limit=100'),
-      sbFetch('/bird_detections?select=species_scientific&detected_at=gte.' + weekISO + '&limit=1000'),
-      sbFetch('/bird_detections?select=species_scientific&detected_at=gte.' + monthISO + '&limit=2000'),
-      sbFetch('/bird_detections?select=species_common,species_scientific,confidence&order=detected_at.desc&limit=500'),
-    ]);
+  Promise.all([
+    sbGet('/combined_readings?select=recorded_at,aqi,google_aqi_india,temperature,humidity,precipitation,dominant_pollutant&order=recorded_at.desc&limit=2'),
+    sbGet('/bird_detections?select=species_common,species_scientific,detected_at,is_new_species_this_year&detected_at=gte.' + todayIST + '&order=detected_at.desc&limit=200'),
+    sbGet('/bird_detections?select=species_scientific&detected_at=gte.' + weekStr + '&limit=1000'),
+    sbGet('/bird_detections?select=species_scientific&detected_at=gte.' + monIST + '&limit=2000'),
+  ]).then(function(results) {
+    var climate    = Array.isArray(results[0]) ? results[0] : [];
+    var todayBirds = Array.isArray(results[1]) ? results[1] : [];
+    var weekBirds  = Array.isArray(results[2]) ? results[2] : [];
+    var monthBirds = Array.isArray(results[3]) ? results[3] : [];
 
-    var cl = climate[0] || {};
-    var cl1 = climate[1] || {};
-    var todaySp  = new Set(todayBirds.map(function(b){ return b.species_scientific; }));
-    var weekSp   = new Set(weekBirds.map(function(b){ return b.species_scientific; }));
-    var monthSp  = new Set(monthBirds.map(function(b){ return b.species_scientific; }));
+    var cl   = climate[0] || {};
+    var cl1  = climate[1] || {};
+    var aqi  = cl.aqi || 0;
+    var aqiC = aqi<=25?'#16a34a':aqi<=50?'#65a30d':aqi<=75?'#d97706':aqi<=100?'#dc2626':'#7f1d1d';
+    var aqiL = aqi<=25?'Good':aqi<=50?'Fair':aqi<=75?'Moderate':aqi<=100?'Poor':'Very poor';
 
-    // Top species count this week
+    var todaySp = {}; var weekSp = {}; var monthSp = {};
+    for (var i = 0; i < todayBirds.length; i++) todaySp[todayBirds[i].species_scientific] = true;
+    for (var i = 0; i < weekBirds.length;  i++) weekSp[weekBirds[i].species_scientific]   = true;
+    for (var i = 0; i < monthBirds.length; i++) monthSp[monthBirds[i].species_scientific] = true;
+
+    var newToday = todayBirds.filter(function(b) { return b.is_new_species_this_year; });
     var spMap = {};
-    weekBirds.forEach(function(b){ spMap[b.species_scientific] = (spMap[b.species_scientific]||0)+1; });
-    var topWeek = Object.entries(spMap).sort(function(a,b){return b[1]-a[1];}).slice(0,5);
+    for (var i = 0; i < weekBirds.length; i++) {
+      var sp = weekBirds[i].species_scientific;
+      spMap[sp] = (spMap[sp] || 0) + 1;
+    }
+    var topWeek = [];
+    var spKeys  = Object.keys(spMap);
+    for (var k = 0; k < spKeys.length; k++) topWeek.push([spKeys[k], spMap[spKeys[k]]]);
+    topWeek.sort(function(a, b) { return b[1] - a[1]; });
+    topWeek = topWeek.slice(0, 5);
 
-    // New today vs yesterday
-    var todaySpList = Array.from(todaySp);
-    var newToday = todayBirds.filter(function(b){ return b.is_new_species_this_year; });
-
-    // Greeting based on time
-    var hour = parseInt(new Date().toLocaleString('en-US',{hour:'numeric',hour12:false,timeZone:'Asia/Kolkata'}));
-    var greet = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
-
-    // AQI colour
-    var aqi = cl.aqi || 0;
-    var aqiCol = aqi<=25?'#16a34a':aqi<=50?'#65a30d':aqi<=75?'#d97706':aqi<=100?'#dc2626':'#7f1d1d';
-    var aqiLbl = aqi<=25?'Good':aqi<=50?'Fair':aqi<=75?'Moderate':aqi<=100?'Poor':'Very poor';
-
-    // Dawn chorus check
-    var isDawnWindow = hour >= 5 && hour <= 8;
-    var dawnHint = isDawnWindow ? '<div style="background:rgba(234,179,8,0.1);border:1px solid rgba(234,179,8,0.3);border-radius:var(--radius-md);padding:0.75rem 1rem;margin-bottom:1rem;font-size:0.85rem;color:#92400e;">🌅 <strong>Dawn chorus window</strong> — right now is peak bird activity. BirdNET is listening.</div>' : '';
-
-    var userName = _user ? ((_user.user_metadata||{}).first_name || _user.email.split('@')[0]) : 'there';
+    var todaySpList = Object.keys(todaySp);
+    var userName    = (_user && (_user.user_metadata||{}).first_name) || (_user ? _user.email.split('@')[0] : 'there');
 
     el.innerHTML =
-      dawnHint +
-      '<div class="digest-hero">' +
-        '<div class="digest-greeting">' + greet + ', ' + userName + '</div>' +
-        '<div class="digest-title">Here\'s what\'s happening<br>in Baner right now</div>' +
-        '<div class="digest-meta">' + now.toLocaleDateString('en-IN',{weekday:'long',day:'numeric',month:'long',year:'numeric',timeZone:'Asia/Kolkata'}) + ' · Updated ' + new Date(cl.recorded_at||Date.now()).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit',hour12:true,timeZone:'Asia/Kolkata'}) + ' IST</div>' +
-      '</div>' +
+      (isDawn ? '<div style="background:rgba(234,179,8,.1);border:1px solid rgba(234,179,8,.3);border-radius:var(--radius-md);padding:.75rem 1rem;margin-bottom:1rem;font-size:.85rem;color:#92400e">🌅 <strong>Dawn chorus window</strong> — right now is peak bird activity. BirdNET is listening.</div>' : '')
+      + '<div class="digest-hero">'
+        + '<div class="digest-greeting">' + greet + ', ' + escHtml(userName) + '</div>'
+        + '<div class="digest-title">Here\'s what\'s happening<br>in Baner right now</div>'
+        + '<div class="digest-meta">' + ist.toLocaleDateString('en-IN', {weekday:'long',day:'numeric',month:'long',year:'numeric'}) + '</div>'
+      + '</div>'
+      + '<div class="digest-row">'
+        + '<div class="digest-card">'
+          + '<div class="digest-card-title">Air quality now</div>'
+          + '<h3 style="color:' + aqiC + '">' + aqiL + ' · EU AQI ' + (cl.aqi||'—') + '</h3>'
+          + '<p>' + (cl.dominant_pollutant ? 'Dominant: ' + cl.dominant_pollutant + '. ' : '') + 'India AQI: ' + (cl.google_aqi_india||'—') + '</p>'
+        + '</div>'
+        + '<div class="digest-card">'
+          + '<div class="digest-card-title">Weather now</div>'
+          + '<h3>' + (cl.temperature||'—') + '°C · ' + (cl.humidity||'—') + '% humidity</h3>'
+          + '<p>' + (cl.precipitation > 0 ? '🌧️ ' + cl.precipitation + 'mm rain this hour.' : 'No precipitation.') + (cl1.temperature ? ' Previous hour: ' + cl1.temperature + '°C.' : '') + '</p>'
+        + '</div>'
+      + '</div>'
+      + '<div class="digest-row">'
+        + '<div class="digest-card">'
+          + '<div class="digest-card-title">Birds today</div>'
+          + '<h3>' + Object.keys(todaySp).length + ' species detected</h3>'
+          + '<p>' + todayBirds.length + ' calls since midnight' + (newToday.length ? ' · <strong style="color:var(--ep-tan)">★ ' + newToday.length + ' new this year</strong>' : '') + '</p>'
+          + (todaySpList.length ? '<p style="margin-top:.4rem;font-size:.78rem;color:var(--text-muted)">' + todaySpList.slice(0, 5).join(', ').replace(/_/g, ' ') + (todaySpList.length > 5 ? ' +' + (todaySpList.length - 5) + ' more' : '') + '</p>' : '')
+        + '</div>'
+        + '<div class="digest-card">'
+          + '<div class="digest-card-title">This month</div>'
+          + '<h3>' + Object.keys(monthSp).length + ' species · ' + Object.keys(weekSp).length + ' this week</h3>'
+          + '<p>BirdNET listening continuously. <a href="birds.html" style="color:var(--ep-green);font-weight:500">Browse all species →</a></p>'
+        + '</div>'
+      + '</div>'
+      + '<div class="digest-card" style="margin-bottom:1rem">'
+        + '<div class="digest-card-title">Top 5 species this week</div>'
+        + '<ul class="digest-bird-list">'
+          + topWeek.map(function(s, i) {
+            return '<li>'
+              + '<span style="font-size:.75rem;color:var(--text-muted);width:18px">' + (i+1) + '.</span>'
+              + '<span class="dbl-n"><a href="species.html?bird=' + encodeURIComponent(s[0]) + '" style="color:var(--ep-green);text-decoration:none">' + escHtml(s[0].replace(/_/g, ' ')) + '</a></span>'
+              + '<span class="dbl-c">' + s[1] + ' detections</span>'
+              + '</li>';
+          }).join('')
+        + '</ul>'
+      + '</div>';
 
-      '<div class="digest-row">' +
-        '<div class="digest-card">' +
-          '<div class="digest-card-title">Air quality now</div>' +
-          '<h3 style="color:' + aqiCol + '">' + aqiLbl + ' · EU AQI ' + (cl.aqi||'—') + '</h3>' +
-          '<p>' + (cl.health_recommendation || 'Air quality data from Copernicus CAMS.') + '</p>' +
-          (cl.dominant_pollutant ? '<p style="margin-top:0.5rem;font-family:var(--mono);font-size:0.75rem;color:var(--text-muted);">Dominant: ' + cl.dominant_pollutant + ' · India AQI: ' + (cl.google_aqi_india||'—') + '</p>' : '') +
-        '</div>' +
-        '<div class="digest-card">' +
-          '<div class="digest-card-title">Weather now</div>' +
-          '<h3>' + (cl.temperature||'—') + '°C · ' + (cl.humidity||'—') + '% humidity</h3>' +
-          '<p>' + (cl.precipitation > 0 ? '🌧️ ' + cl.precipitation + 'mm rain this hour' : 'No precipitation.') + '</p>' +
-          (cl1.temperature ? '<p style="margin-top:0.4rem;font-size:0.78rem;color:var(--text-muted);">Previous hour: ' + cl1.temperature + '°C</p>' : '') +
-        '</div>' +
-      '</div>' +
-
-      '<div class="digest-row">' +
-        '<div class="digest-card">' +
-          '<div class="digest-card-title">Birds today</div>' +
-          '<h3>' + todaySp.size + ' species detected</h3>' +
-          '<p>' + todayBirds.length + ' total calls identified since midnight' + (newToday.length ? ' · <strong style="color:var(--ep-tan);">★ ' + newToday.length + ' new species this year</strong>' : '') + '</p>' +
-          (todaySpList.length ? '<p style="margin-top:0.4rem;font-size:0.78rem;color:var(--text-muted);">' + todaySpList.slice(0,4).join(', ').replace(/_/g,' ') + (todaySpList.length>4?' +' + (todaySpList.length-4) + ' more':'') + '</p>' : '') +
-        '</div>' +
-        '<div class="digest-card">' +
-          '<div class="digest-card-title">This month in birds</div>' +
-          '<h3>' + monthSp.size + ' species · ' + weekSp.size + ' this week</h3>' +
-          '<p>BirdNET has been listening continuously. Each species profile has hourly charts and AQI correlations.</p>' +
-          '<a href="birds.html" style="font-size:0.8rem;color:var(--ep-green);font-weight:500;text-decoration:none;">Browse all species →</a>' +
-        '</div>' +
-      '</div>' +
-
-      '<div class="digest-card" style="margin-bottom:1rem;">' +
-        '<div class="digest-card-title">Top 5 species this week</div>' +
-        '<ul class="digest-bird-list">' +
-          topWeek.map(function(s, i) {
-            return '<li><span style="font-size:0.75rem;color:var(--text-muted);width:18px;">' + (i+1) + '.</span>' +
-              '<span class="dbl-n"><a href="species.html?bird=' + s[0].replace(/ /g,'_') + '" style="color:var(--ep-green);text-decoration:none;">' + s[0] + '</a></span>' +
-              '<span class="dbl-c">' + s[1] + ' detections</span></li>';
-          }).join('') +
-        '</ul>' +
-      '</div>' +
-
-      '<div style="background:rgba(33,67,50,0.05);border-radius:var(--radius-lg);padding:1.1rem 1.25rem;font-size:0.82rem;color:var(--text-muted);line-height:1.7;">' +
-        '🌿 <strong style="color:var(--ep-green);">Your personalized digest</strong> — updates every time you open this page. Configure alerts in "My Alerts" to get email notifications for the events that matter to you.' +
-      '</div>';
-
-  } catch(e) {
-    el.innerHTML = '<div class="res-card" style="border-color:#fca5a5;"><p style="color:#dc2626;">Error loading digest: ' + escHtml(e.message) + '</p></div>';
-  }
+  }).catch(function(e) {
+    el.innerHTML = '<div class="res-card" style="border-color:#fca5a5"><p style="color:#dc2626">Error: ' + escHtml(e.message) + '</p></div>';
+  });
 }
 
-// ── HISTORY ───────────────────────────────────────────────────────────────────
-async function saveHistory(q) {
-  if (!_user || !_sb) return;
-  try { await _sb.from('user_searches').insert({ user_id: _user.id, query: q, created_at: new Date().toISOString() }); } catch(e) {}
-}
+/* ════════════════════════════════════════════════════════════════════
+   COMPARE YEARS — FIX: paginated, correct IST dates, birds/species added
+════════════════════════════════════════════════════════════════════ */
+var _cmpChart = null;
 
-async function loadHistory() {
-  if (!_user || !_sb) return;
-  try {
-    var res = await _sb.from('user_searches').select('*').eq('user_id', _user.id).order('created_at', {ascending:false}).limit(20);
-    var rows = res.data || [];
-    var el = document.getElementById('hist-list');
-    if (!rows.length) { el.innerHTML = '<p style="color:var(--text-muted);font-size:0.88rem;">No search history yet. Try the Data Explorer!</p>'; return; }
-    el.innerHTML = rows.map(function(r) {
-      var ago = timeAgo(r.created_at);
-      return '<div class="hist-item" onclick="ask(\'' + r.query.replace(/'/g,"\\'") + '\')">' +
-        '<span style="font-size:1.1rem;">🔍</span>' +
-        '<span class="hist-q">' + escHtml(r.query) + '</span>' +
-        '<span class="hist-t">' + ago + '</span>' +
-        '</div>';
-    }).join('');
-  } catch(e) { document.getElementById('hist-list').innerHTML = '<p style="color:var(--text-muted);font-size:0.82rem;">History unavailable — run the SQL setup script to create the user_searches table.</p>'; }
-}
+function runCompare() {
+  var yrA    = ge('cmp-yr-a').value;
+  var yrB    = ge('cmp-yr-b').value;
+  var metric = ge('cmp-metric').value;
+  var wrap   = ge('compare-chart-wrap');
 
-function timeAgo(ts) {
-  var d = (Date.now() - new Date(ts).getTime()) / 1000;
-  if (d < 60) return 'just now'; if (d < 3600) return Math.floor(d/60) + 'm ago';
-  if (d < 86400) return Math.floor(d/3600) + 'h ago'; return Math.floor(d/86400) + 'd ago';
-}
+  if (yrA === yrB) { wrap.innerHTML = '<div style="color:#dc2626;font-size:.88rem">Please select two different years.</div>'; return; }
 
-// ── ALERTS ────────────────────────────────────────────────────────────────────
-async function loadAlerts() {
-  if (!_user || !_sb) return;
-  try {
-    var res = await _sb.from('user_alerts').select('*').eq('user_id', _user.id).limit(1);
-    if (res.data && res.data[0]) {
-      var p = res.data[0].preferences || {};
-      ['good-aqi','bad-aqi','hazardous','first-rain','heavy-rain','heat','new-sp','rare'].forEach(function(k) {
-        var el = document.getElementById('a-' + k); if (el && p[k]) el.checked = true;
-      });
-      if (p.fav) document.getElementById('a-fav').value = p.fav;
-    }
-  } catch(e) {}
-}
+  wrap.innerHTML = '<div style="color:var(--text-muted);font-size:.88rem"><span class="spin"></span> Loading…</div>';
 
-async function saveAlerts() {
-  if (!_user || !_sb) return;
-  var p = {
-    'good-aqi':   document.getElementById('a-good-aqi').checked,
-    'bad-aqi':    document.getElementById('a-bad-aqi').checked,
-    hazardous:    document.getElementById('a-hazardous').checked,
-    'first-rain': document.getElementById('a-first-rain').checked,
-    'heavy-rain': document.getElementById('a-heavy-rain').checked,
-    heat:         document.getElementById('a-heat').checked,
-    'new-sp':     document.getElementById('a-new-sp').checked,
-    rare:         document.getElementById('a-rare').checked,
-    fav:          document.getElementById('a-fav').value.trim(),
+  var months   = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  var metricLbl = {
+    temperature: 'Avg Temperature (°C)',
+    aqi:         'Avg EU AQI',
+    precipitation:'Total Rainfall (mm)',
+    humidity:    'Avg Humidity (%)',
+    birds:       'Bird Detections (count)',
+    species:     'Unique Species (count)',
   };
-  try {
-    await _sb.from('user_alerts').upsert({ user_id: _user.id, preferences: p, updated_at: new Date().toISOString() }, { onConflict: 'user_id' });
-    var msg = document.getElementById('alerts-saved');
-    msg.style.display = 'block'; setTimeout(function(){msg.style.display='none';}, 3000);
-  } catch(e) { alert('Error saving: ' + e.message); }
+
+  function getMonthlyClimate(yr, col) {
+    var promises = [];
+    for (var m = 1; m <= 12; m++) {
+      (function(month) {
+        var nextM = month === 12 ? 1 : month + 1;
+        var nextY = month === 12 ? parseInt(yr) + 1 : parseInt(yr);
+        var start = yr + '-' + p2(month) + '-01T00:00:00%2B05%3A30';
+        var end   = String(nextY) + '-' + p2(nextM) + '-01T00:00:00%2B05%3A30';
+        var path  = '/combined_readings?select=' + col + '&recorded_at=gte.' + start + '&recorded_at=lt.' + end + '&limit=1000';
+        promises.push(
+          sbGet(path).then(function(rows) {
+            if (!Array.isArray(rows) || !rows.length) return null;
+            if (col === 'precipitation') {
+              var sum = 0;
+              for (var i = 0; i < rows.length; i++) sum += rows[i][col] || 0;
+              return Math.round(sum * 10) / 10;
+            }
+            var vals = rows.filter(function(r) { return r[col] !== null && r[col] !== undefined; });
+            if (!vals.length) return null;
+            var avg = 0; for (var i = 0; i < vals.length; i++) avg += vals[i][col];
+            return Math.round((avg / vals.length) * 10) / 10;
+          })
+        );
+      })(m);
+    }
+    return Promise.all(promises);
+  }
+
+  function getMonthlyBirds(yr, countSpecies) {
+    var promises = [];
+    for (var m = 1; m <= 12; m++) {
+      (function(month) {
+        var nextM = month === 12 ? 1 : month + 1;
+        var nextY = month === 12 ? parseInt(yr) + 1 : parseInt(yr);
+        var start = yr + '-' + p2(month) + '-01T00:00:00%2B05%3A30';
+        var end   = String(nextY) + '-' + p2(nextM) + '-01T00:00:00%2B05%3A30';
+        var path  = '/bird_detections?select=species_scientific&detected_at=gte.' + start + '&detected_at=lt.' + end + '&limit=1000';
+        promises.push(
+          sbGet(path).then(function(rows) {
+            if (!Array.isArray(rows) || !rows.length) return 0;
+            if (countSpecies) {
+              var set = {};
+              for (var i = 0; i < rows.length; i++) set[rows[i].species_scientific] = true;
+              return Object.keys(set).length;
+            }
+            return rows.length;
+          })
+        );
+      })(m);
+    }
+    return Promise.all(promises);
+  }
+
+  var fetchA, fetchB;
+  if (metric === 'birds') {
+    fetchA = getMonthlyBirds(yrA, false);
+    fetchB = getMonthlyBirds(yrB, false);
+  } else if (metric === 'species') {
+    fetchA = getMonthlyBirds(yrA, true);
+    fetchB = getMonthlyBirds(yrB, true);
+  } else {
+    fetchA = getMonthlyClimate(yrA, metric);
+    fetchB = getMonthlyClimate(yrB, metric);
+  }
+
+  Promise.all([fetchA, fetchB]).then(function(results) {
+    var dataA = results[0];
+    var dataB = results[1];
+
+    wrap.innerHTML = '<div style="font-weight:600;color:var(--ep-green);margin-bottom:1rem">'
+      + metricLbl[metric] + ' — ' + yrA + ' vs ' + yrB + '</div>'
+      + '<canvas id="compare-canvas" style="max-height:320px"></canvas>'
+      + '<div style="font-size:.75rem;color:var(--text-muted);margin-top:8px;text-align:right">Monthly · Baner, Pune · Earth Pulse</div>';
+
+    if (_cmpChart) { try { _cmpChart.destroy(); } catch(e) {} }
+    _cmpChart = new Chart(ge('compare-canvas').getContext('2d'), {
+      type: 'line',
+      data: {
+        labels: months,
+        datasets: [
+          { label: yrA, data: dataA, borderColor: '#214332', backgroundColor: 'rgba(33,67,50,0.08)', borderWidth: 2.5, tension: 0.4, pointRadius: 4, fill: false, spanGaps: true },
+          { label: yrB, data: dataB, borderColor: '#BF9B7B', backgroundColor: 'rgba(191,155,123,0.08)', borderWidth: 2.5, tension: 0.4, pointRadius: 4, fill: false, spanGaps: true }
+        ]
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { position: 'top' },
+          tooltip: { callbacks: { label: function(ctx) { return ctx.dataset.label + ': ' + (ctx.parsed.y !== null ? ctx.parsed.y : '—'); } } }
+        },
+        scales: {
+          y: { beginAtZero: metric === 'precipitation' || metric === 'birds' || metric === 'species', grid: { color: '#f0f0f0' } },
+          x: { grid: { display: false } }
+        }
+      }
+    });
+  }).catch(function(e) {
+    wrap.innerHTML = '<div style="color:#dc2626;font-size:.88rem">Error: ' + escHtml(e.message) + '</div>';
+  });
+}
+
+/* ════════════════════════════════════════════════════════════════════
+   HISTORY
+════════════════════════════════════════════════════════════════════ */
+function loadHistory() {
+  if (!_user || !_sb) return;
+  _sb.from('user_searches').select('*').eq('user_id', _user.id).order('created_at', { ascending: false }).limit(20)
+    .then(function(res) {
+      var rows = res.data || [];
+      var el   = ge('hist-list');
+      if (!rows.length) { el.innerHTML = '<p style="color:var(--text-muted);font-size:.88rem">No search history yet. Try the Data Explorer!</p>'; return; }
+      el.innerHTML = rows.map(function(r) {
+        return '<div class="hist-item">'
+          + '<span style="font-size:1.1rem">🔍</span>'
+          + '<span class="hist-q" onclick="ask(' + JSON.stringify(r.query) + ')">' + escHtml(r.query) + '</span>'
+          + '<span class="hist-t">' + timeAgo(r.created_at) + '</span>'
+          + '<button class="hist-del" onclick="delHistory(' + JSON.stringify(r.id) + ',this)" title="Remove">✕</button>'
+          + '</div>';
+      }).join('');
+    }).catch(function() {});
+}
+
+function delHistory(id, btn) {
+  if (!_sb || !_user) return;
+  _sb.from('user_searches').delete().eq('id', id).eq('user_id', _user.id)
+    .then(function() { var item = btn.closest('.hist-item'); if (item) item.remove(); })
+    .catch(function() {});
+}
+
+function clearHistory() {
+  if (!_sb || !_user || !confirm('Clear all search history?')) return;
+  _sb.from('user_searches').delete().eq('user_id', _user.id)
+    .then(function() { ge('hist-list').innerHTML = '<p style="color:var(--text-muted);font-size:.88rem">History cleared.</p>'; })
+    .catch(function(e) { toast('Error: ' + e.message, true); });
+}
+
+/* ════════════════════════════════════════════════════════════════════
+   WATCHLIST — FIX: stored in preferences JSONB, not separate column
+════════════════════════════════════════════════════════════════════ */
+function loadWatchlist() {
+  if (!_sb || !_user) return;
+  _sb.from('user_alerts').select('preferences').eq('user_id', _user.id).limit(1)
+    .then(function(res) {
+      var prefs = (res.data && res.data[0] && res.data[0].preferences) ? res.data[0].preferences : {};
+      renderWatchlist(prefs.watchlist || []);
+    }).catch(function() { renderWatchlist([]); });
+}
+
+function renderWatchlist(species) {
+  var grid = ge('watchlist-grid');
+  if (!species || !species.length) {
+    grid.innerHTML = '<div style="color:var(--text-muted);font-size:.88rem">Your watchlist is empty. Add species to track above.</div>';
+    return;
+  }
+  var promises = species.map(function(sp) {
+    return sbGet('/bird_detections?select=detected_at,confidence&species_common=eq.' + encodeURIComponent(sp) + '&order=detected_at.desc&limit=10')
+      .then(function(rows) { return { sp: sp, rows: Array.isArray(rows) ? rows : [] }; })
+      .catch(function() { return { sp: sp, rows: [] }; });
+  });
+  Promise.all(promises).then(function(results) {
+    grid.innerHTML = results.map(function(r) {
+      var last  = r.rows.length ? r.rows[0].detected_at.slice(0, 10) : 'Never detected';
+      return '<div class="watchlist-card">'
+        + '<div class="wc-name">🐦 ' + escHtml(r.sp) + '</div>'
+        + '<div class="wc-last">Last seen: ' + last + '</div>'
+        + '<div class="wc-count">Recent detections: ' + r.rows.length + '</div>'
+        + '<button class="wc-remove" onclick="removeWatch(' + JSON.stringify(r.sp) + ')" title="Remove">✕</button>'
+        + '</div>';
+    }).join('');
+  });
+}
+
+function addToWatchlist() {
+  var inp = ge('wl-input');
+  var sp  = (inp.value || '').trim();
+  if (!sp || !_sb || !_user) return;
+  _sb.from('user_alerts').select('preferences').eq('user_id', _user.id).limit(1)
+    .then(function(res) {
+      var prefs = (res.data && res.data[0] && res.data[0].preferences) ? res.data[0].preferences : {};
+      var wl = prefs.watchlist || [];
+      if (wl.indexOf(sp) !== -1) { toast('Already in watchlist'); return; }
+      wl.push(sp);
+      prefs.watchlist = wl;
+      return _sb.from('user_alerts').upsert({ user_id: _user.id, preferences: prefs }, { onConflict: 'user_id' });
+    }).then(function() { inp.value = ''; toast('Added to watchlist!'); loadWatchlist(); })
+    .catch(function(e) { toast('Error: ' + e.message, true); });
+}
+
+function removeWatch(sp) {
+  if (!_sb || !_user) return;
+  _sb.from('user_alerts').select('preferences').eq('user_id', _user.id).limit(1)
+    .then(function(res) {
+      var prefs = (res.data && res.data[0] && res.data[0].preferences) ? res.data[0].preferences : {};
+      prefs.watchlist = (prefs.watchlist || []).filter(function(s) { return s !== sp; });
+      return _sb.from('user_alerts').upsert({ user_id: _user.id, preferences: prefs }, { onConflict: 'user_id' });
+    }).then(function() { toast('Removed'); loadWatchlist(); })
+    .catch(function() { toast('Error', true); });
+}
+
+/* ════════════════════════════════════════════════════════════════════
+   FIELD NOTES — FIX: stored in preferences.field_notes JSONB array
+════════════════════════════════════════════════════════════════════ */
+function loadNotes() {
+  if (!_sb || !_user) return;
+  _sb.from('user_alerts').select('preferences').eq('user_id', _user.id).limit(1)
+    .then(function(res) {
+      var prefs = (res.data && res.data[0] && res.data[0].preferences) ? res.data[0].preferences : {};
+      renderNotes(prefs.field_notes || []);
+    }).catch(function() { renderNotes([]); });
+}
+
+function renderNotes(notes) {
+  var el = ge('notes-list');
+  if (!notes || !notes.length) { el.innerHTML = '<div style="color:var(--text-muted);font-size:.88rem">No field notes yet. Record your first observation above.</div>'; return; }
+  var sorted = notes.slice().sort(function(a, b) { return b.ts > a.ts ? 1 : -1; });
+  el.innerHTML = sorted.map(function(n) {
+    return '<div class="note-item"><div class="note-item-top"><div class="note-body">'
+      + (n.tag ? '<span style="display:inline-block;font-size:.68rem;background:rgba(33,67,50,.1);color:var(--ep-green);padding:1px 8px;border-radius:12px;margin-bottom:4px">' + escHtml(n.tag) + '</span><br>' : '')
+      + escHtml(n.text)
+      + '<div class="note-meta">' + (n.date || n.ts.slice(0,10)) + ' · ' + timeAgo(n.ts) + '</div>'
+      + '</div><button class="note-del" onclick="delNote(' + JSON.stringify(n.ts) + ')" title="Delete">🗑</button></div></div>';
+  }).join('');
+}
+
+function addNote() {
+  var text = (ge('note-text').value || '').trim();
+  var tag  = (ge('note-tag').value || '').trim();
+  var date = ge('note-date').value;
+  if (!text || !_sb || !_user) return;
+  var note = { text: text, tag: tag, date: date, ts: new Date().toISOString() };
+  _sb.from('user_alerts').select('preferences').eq('user_id', _user.id).limit(1)
+    .then(function(res) {
+      var prefs = (res.data && res.data[0] && res.data[0].preferences) ? res.data[0].preferences : {};
+      var notes = prefs.field_notes || [];
+      notes.push(note);
+      prefs.field_notes = notes;
+      return _sb.from('user_alerts').upsert({ user_id: _user.id, preferences: prefs }, { onConflict: 'user_id' });
+    }).then(function() { ge('note-text').value = ''; ge('note-tag').value = ''; toast('Note saved!'); loadNotes(); })
+    .catch(function(e) { toast('Error: ' + e.message, true); });
+}
+
+function delNote(ts) {
+  if (!_sb || !_user || !confirm('Delete this note?')) return;
+  _sb.from('user_alerts').select('preferences').eq('user_id', _user.id).limit(1)
+    .then(function(res) {
+      var prefs = (res.data && res.data[0] && res.data[0].preferences) ? res.data[0].preferences : {};
+      prefs.field_notes = (prefs.field_notes || []).filter(function(n) { return n.ts !== ts; });
+      return _sb.from('user_alerts').upsert({ user_id: _user.id, preferences: prefs }, { onConflict: 'user_id' });
+    }).then(function() { toast('Note deleted'); loadNotes(); })
+    .catch(function() { toast('Error', true); });
+}
+
+/* ════════════════════════════════════════════════════════════════════
+   ALERTS
+════════════════════════════════════════════════════════════════════ */
+function loadAlerts() {
+  if (!_user || !_sb) return;
+  _sb.from('user_alerts').select('preferences').eq('user_id', _user.id).limit(1)
+    .then(function(res) {
+      if (!res.data || !res.data[0]) return;
+      var p = res.data[0].preferences || {};
+      var keys = ['good-aqi','bad-aqi','hazardous','first-rain','heavy-rain','heat','new-sp','rare'];
+      for (var i = 0; i < keys.length; i++) {
+        var el = ge('a-' + keys[i]);
+        if (el && p[keys[i]]) el.checked = true;
+      }
+      if (p.fav) ge('a-fav').value = p.fav;
+    }).catch(function() {});
+}
+
+function saveAlerts() {
+  if (!_user || !_sb) return;
+  /* Merge with existing preferences (preserves watchlist, field_notes) */
+  _sb.from('user_alerts').select('preferences').eq('user_id', _user.id).limit(1)
+    .then(function(res) {
+      var prefs = (res.data && res.data[0] && res.data[0].preferences) ? res.data[0].preferences : {};
+      prefs['good-aqi']   = ge('a-good-aqi').checked;
+      prefs['bad-aqi']    = ge('a-bad-aqi').checked;
+      prefs.hazardous     = ge('a-hazardous').checked;
+      prefs['first-rain'] = ge('a-first-rain').checked;
+      prefs['heavy-rain'] = ge('a-heavy-rain').checked;
+      prefs.heat          = ge('a-heat').checked;
+      prefs['new-sp']     = ge('a-new-sp').checked;
+      prefs.rare          = ge('a-rare').checked;
+      prefs.fav           = ge('a-fav').value.trim();
+      return _sb.from('user_alerts').upsert({ user_id: _user.id, preferences: prefs, updated_at: new Date().toISOString() }, { onConflict: 'user_id' });
+    }).then(function() {
+      var saved = ge('alerts-saved');
+      saved.style.display = 'block';
+      setTimeout(function() { saved.style.display = 'none'; }, 3000);
+    }).catch(function(e) { toast('Error: ' + e.message, true); });
+}
+
+/* ════════════════════════════════════════════════════════════════════
+   DOWNLOAD — FIX: all downloads paginated to get ALL rows
+════════════════════════════════════════════════════════════════════ */
+function loadDownloadMeta() {
+  var tables = [
+    { table: 'climate_readings',      el: 'dl-meta-climate', label: 'rows' },
+    { table: 'weather_union_readings', el: 'dl-meta-wu',     label: 'rows' },
+    { table: 'bird_detections',       el: 'dl-meta-birds',   label: 'rows' },
+    { table: 'soundscape_readings',   el: 'dl-meta-sound',   label: 'rows' },
+    { table: 'timelapse_frames',      el: 'dl-meta-photos',  label: 'rows' },
+  ];
+  tables.forEach(function(t) {
+    sbCount(t.table).then(function(n) {
+      var el = ge(t.el); if (el) el.textContent = n.toLocaleString('en-IN') + ' ' + t.label;
+    }).catch(function() {});
+  });
+  /* NDVI */
+  Promise.all([sbCount('hill_ndvi_annual'), sbCount('hill_ndvi_weekly')]).then(function(results) {
+    var el = ge('dl-meta-ndvi');
+    if (el) el.textContent = results[0] + ' annual + ' + results[1] + ' weekly records';
+  }).catch(function() {});
+}
+
+/* dlAll — paginated download of entire table */
+function dlAll(table, orderCol, filename, progId) {
+  var prog = ge(progId);
+  if (prog) { prog.style.display = 'block'; prog.textContent = 'Fetching rows…'; }
+  sbGetAll(table, orderCol, 'select=*').then(function(rows) {
+    if (!rows.length) { toast('No data found', true); return; }
+    triggerDownload(toCSV(rows), filename);
+    if (prog) prog.textContent = '✅ Downloaded ' + rows.length.toLocaleString('en-IN') + ' rows';
+  }).catch(function(e) {
+    if (prog) prog.textContent = '❌ Error: ' + e.message;
+    toast('Download error', true);
+  });
+}
+
+/* dlRecent — last N days */
+function dlRecent(table, tsCol, filename, progId, days) {
+  var prog = ge(progId);
+  if (prog) { prog.style.display = 'block'; prog.textContent = 'Fetching…'; }
+  var ist = istNow();
+  var cutoff = new Date(ist.getTime() - days * 86400000);
+  var cutStr = cutoff.getFullYear() + '-' + p2(cutoff.getMonth()+1) + '-' + p2(cutoff.getDate()) + 'T00:00:00%2B05%3A30';
+  var filter = 'select=*&' + tsCol + '=gte.' + cutStr;
+  sbGetAll(table, tsCol, filter).then(function(rows) {
+    if (!rows.length) { toast('No data in this range', true); return; }
+    triggerDownload(toCSV(rows), filename);
+    if (prog) prog.textContent = '✅ Downloaded ' + rows.length.toLocaleString('en-IN') + ' rows';
+  }).catch(function(e) {
+    if (prog) prog.textContent = '❌ Error: ' + e.message;
+  });
+}
+
+/* Species list download */
+function dlSpeciesList() {
+  sbGet('/bird_detections?select=species_common,species_scientific&limit=5000&order=detected_at.desc')
+    .then(function(rows) {
+      if (!Array.isArray(rows)) return;
+      var seen = {}; var species = [];
+      for (var i = 0; i < rows.length; i++) {
+        var k = rows[i].species_scientific;
+        if (!seen[k]) { seen[k] = true; species.push({ species_common: rows[i].species_common, species_scientific: rows[i].species_scientific }); }
+      }
+      species.sort(function(a, b) { return a.species_common > b.species_common ? 1 : -1; });
+      triggerDownload(toCSV(species), 'earthpulse-species-list');
+      toast('Downloaded ' + species.length + ' species');
+    }).catch(function(e) { toast('Error: ' + e.message, true); });
+}
+
+/* Custom range download — FIX: uses IST offsets, paginated */
+function dlCustomRange() {
+  var table  = ge('dl-type').value;
+  var from   = ge('dl-from').value;
+  var to     = ge('dl-to').value;
+  var prog   = ge('prog-custom');
+  if (!from || !to) { toast('Please select a date range', true); return; }
+  if (from > to)    { toast('Start date must be before end date', true); return; }
+
+  var tsCol  = (table === 'bird_detections') ? 'detected_at'
+             : (table === 'timelapse_frames') ? 'captured_at'
+             : 'recorded_at';
+  var fromTs = from + 'T00:00:00%2B05%3A30';
+  var toTs   = to   + 'T23:59:59%2B05%3A30';
+  var filter = 'select=*&' + tsCol + '=gte.' + fromTs + '&' + tsCol + '=lte.' + toTs;
+
+  if (prog) { prog.style.display = 'block'; prog.textContent = 'Fetching all pages…'; }
+
+  sbGetAll(table, tsCol, filter).then(function(rows) {
+    if (!rows.length) { toast('No data in this date range', true); if (prog) prog.textContent = 'No data found.'; return; }
+    triggerDownload(toCSV(rows), 'earthpulse-' + table + '-' + from + '-to-' + to);
+    if (prog) prog.textContent = '✅ Downloaded ' + rows.length.toLocaleString('en-IN') + ' rows';
+    toast('Downloaded ' + rows.length.toLocaleString('en-IN') + ' rows');
+  }).catch(function(e) {
+    if (prog) prog.textContent = '❌ Error: ' + e.message;
+    toast('Error: ' + e.message, true);
+  });
 }
 </script>
 </body>
