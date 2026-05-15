@@ -1,0 +1,1254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Trees & Plants of Baner Hill, Pune — Conservation Encyclopedia | Earth Pulse</title>
+  <meta name="description" content="A living encyclopedia of trees and plants found on Baner Hill, Pune. Native species, conservation value, growing guides, bird and butterfly correlations, and climate-matched recommendations for the Western Ghats foothills.">
+  <meta name="robots" content="index, follow">
+  <meta name="author" content="Earth Pulse Project">
+  <link rel="canonical" href="https://earth-pulse.org/trees.html">
+  <meta property="og:title" content="Trees & Plants of Baner Hill — Earth Pulse Conservation Encyclopedia">
+  <meta property="og:description" content="Which trees grow on Baner Hill? Which should? A living botanical database cross-referenced with bird detections, climate data, and conservation impact.">
+  <meta property="og:image" content="https://earth-pulse.org/earth-pulse-logo-og.png">
+  <meta property="og:url" content="https://earth-pulse.org/trees.html">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="en_IN">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="geo.region" content="IN-MH">
+  <meta name="geo.placename" content="Baner, Pune, Maharashtra">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Dataset",
+    "name": "Trees and Plants of Baner Hill, Pune — Conservation Database",
+    "description": "A curated botanical database of confirmed and recommended tree and plant species for Baner Hill, Pune. Cross-referenced with bird acoustic detections, climate data, and conservation impact scores.",
+    "url": "https://earth-pulse.org/trees.html",
+    "creator": {"@type":"Organization","name":"Earth Pulse Project","url":"https://earth-pulse.org"},
+    "spatialCoverage": {"@type":"Place","name":"Baner Hill, Pune, Maharashtra, India","geo":{"@type":"GeoCoordinates","latitude":18.5526156,"longitude":73.7818663}},
+    "license": "https://creativecommons.org/licenses/by/4.0/",
+    "isAccessibleForFree": true
+  }
+  </script>
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="stylesheet" href="styles.css">
+
+  <style>
+    /* ══════════════════════════════════════════════════════════
+       TREES.HTML — Earth Pulse Design System Extension
+       Organic / natural aesthetic — earthy, warm, grounded
+    ══════════════════════════════════════════════════════════ */
+
+    /* ── Hero ── */
+    .trees-hero {
+      background: linear-gradient(160deg, #0a1f12 0%, #1a3520 45%, #142d1e 100%);
+      padding: 3.5rem 2rem 3rem; position: relative; overflow: hidden;
+    }
+    .trees-hero::before {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 80% 50%, rgba(191,155,123,0.08) 0%, transparent 60%),
+                  radial-gradient(ellipse at 20% 80%, rgba(33,67,50,0.4) 0%, transparent 50%);
+    }
+    .trees-hero-inner { max-width: 1100px; margin: 0 auto; position: relative; z-index: 1; }
+    .trees-hero-tag { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ep-tan); margin-bottom: 0.6rem; }
+    .trees-hero-title { font-family: var(--serif); font-size: clamp(2rem,5vw,3rem); color: var(--ep-cream); line-height: 1.1; margin-bottom: 0.6rem; }
+    .trees-hero-title em { font-style: normal; color: var(--ep-tan); }
+    .trees-hero-sub { font-size: 0.92rem; color: rgba(242,240,230,0.72); max-width: 680px; line-height: 1.8; margin-bottom: 1.75rem; }
+    .trees-hero-stats { display: flex; gap: 1rem; flex-wrap: wrap; }
+    .trees-stat { background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.1); border-radius: var(--radius-md); padding: 0.6rem 1.1rem; text-align: center; min-width: 100px; }
+    .trees-stat-val { font-family: var(--serif); font-size: 1.5rem; color: var(--ep-tan); line-height: 1; }
+    .trees-stat-label { font-size: 0.62rem; font-weight: 600; letter-spacing: 0.07em; text-transform: uppercase; color: rgba(242,240,230,0.5); margin-top: 0.15rem; }
+
+    /* ── Climate profile banner ── */
+    .climate-banner { background: var(--bg-card); border-bottom: 1px solid var(--border); }
+    .climate-banner-inner { max-width: 1100px; margin: 0 auto; padding: 1rem 2rem; display: flex; gap: 1.5rem; flex-wrap: wrap; align-items: center; }
+    .climate-banner-title { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--ep-tan); flex-shrink: 0; }
+    .climate-pills { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .climate-pill { display: flex; align-items: center; gap: 0.35rem; background: rgba(33,67,50,0.07); border: 1px solid rgba(33,67,50,0.12); border-radius: 2rem; padding: 0.25rem 0.75rem; font-size: 0.74rem; color: var(--ep-green); font-weight: 500; }
+    .climate-pill-icon { font-size: 0.9rem; }
+
+    /* ── Filter bar ── */
+    .trees-filter-bar { background: var(--bg-card); border-bottom: 1px solid var(--border); padding: 0.85rem 1.5rem; display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center; position: sticky; top: 62px; z-index: 89; }
+    .trees-filter-select { appearance: none; -webkit-appearance: none; background: var(--ep-cream) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 12 12'%3E%3Cpath d='M2 4l4 4 4-4' fill='none' stroke='%23214332' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat right 0.6rem center; border: 1px solid var(--border-strong); border-radius: var(--radius-sm); padding: 0.35rem 2rem 0.35rem 0.75rem; font-family: var(--sans); font-size: 0.8rem; color: var(--ep-green); cursor: pointer; }
+    .filter-sep { width: 1px; height: 22px; background: var(--border); flex-shrink: 0; }
+    .trees-pill { padding: 0.28rem 0.8rem; border-radius: 2rem; border: 1px solid var(--border-strong); background: transparent; font-family: var(--sans); font-size: 0.76rem; cursor: pointer; color: var(--text-secondary); transition: all 0.15s; white-space: nowrap; }
+    .trees-pill:hover { border-color: var(--ep-tan); color: var(--ep-green); }
+    .trees-pill.on { background: var(--ep-green); color: var(--ep-cream); border-color: var(--ep-green); }
+    .trees-filter-count { font-family: var(--mono); font-size: 0.75rem; color: var(--text-muted); margin-left: auto; white-space: nowrap; }
+
+    /* ── Page layout ── */
+    .trees-page { max-width: 1100px; margin: 0 auto; padding: 2rem; }
+    .trees-section-title { font-family: var(--serif); font-size: 1.3rem; color: var(--ep-green); margin-bottom: 0.3rem; }
+    .trees-section-sub { font-size: 0.82rem; color: var(--text-muted); margin-bottom: 1.25rem; line-height: 1.6; }
+
+    /* ── Tree cards grid ── */
+    .trees-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.25rem; }
+    @media(max-width:600px) { .trees-grid { grid-template-columns: 1fr; } }
+
+    .tree-card {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius-lg); overflow: hidden;
+      text-decoration: none; color: inherit; display: flex; flex-direction: column;
+      transition: box-shadow 0.2s, transform 0.15s;
+      cursor: pointer;
+    }
+    .tree-card:hover { box-shadow: 0 6px 28px rgba(33,67,50,0.12); transform: translateY(-3px); }
+    .tree-card-photo { width: 100%; height: 160px; object-fit: cover; display: block; background: var(--ep-cream-dark); }
+    .tree-card-photo-placeholder { width: 100%; height: 160px; background: linear-gradient(135deg, rgba(33,67,50,0.07), rgba(191,155,123,0.1)); display: flex; align-items: center; justify-content: center; font-size: 3.5rem; }
+    .tree-card-body { padding: 1rem 1.1rem; flex: 1; display: flex; flex-direction: column; }
+    .tree-card-status { display: flex; gap: 0.4rem; margin-bottom: 0.5rem; flex-wrap: wrap; }
+    .tree-status-badge { font-size: 0.62rem; font-weight: 700; padding: 2px 8px; border-radius: 10px; text-transform: uppercase; letter-spacing: 0.05em; }
+    .status-native       { background: rgba(33,67,50,0.1); color: #145a32; }
+    .status-naturalized  { background: rgba(234,179,8,0.12); color: #7d5a00; }
+    .status-exotic       { background: rgba(239,68,68,0.1); color: #991b1b; }
+    .status-invasive     { background: rgba(239,68,68,0.15); color: #7f1d1d; border: 1px solid rgba(239,68,68,0.3); }
+    .status-potential    { background: rgba(59,130,246,0.1); color: #1e40af; border: 1px dashed rgba(59,130,246,0.3); }
+    .status-confirmed    { background: rgba(16,185,129,0.1); color: #065f46; }
+    .tree-card-name { font-weight: 700; font-size: 0.95rem; color: var(--ep-green); margin-bottom: 2px; }
+    .tree-card-sci { font-style: italic; font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.35rem; }
+    .tree-card-local { font-size: 0.72rem; color: var(--ep-tan); font-weight: 600; margin-bottom: 0.5rem; }
+    .tree-card-extract { font-size: 0.75rem; color: var(--text-muted); line-height: 1.55; margin-bottom: 0.6rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+
+    /* Conservation impact bar */
+    .impact-bars { display: flex; flex-direction: column; gap: 4px; margin-bottom: 0.6rem; }
+    .impact-row { display: flex; align-items: center; gap: 0.5rem; }
+    .impact-label { font-size: 0.62rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); width: 60px; flex-shrink: 0; }
+    .impact-track { flex: 1; height: 5px; background: var(--border); border-radius: 3px; overflow: hidden; }
+    .impact-fill { height: 100%; border-radius: 3px; }
+    .impact-birds       { background: linear-gradient(90deg, #16a34a, #22c55e); }
+    .impact-insects     { background: linear-gradient(90deg, #d97706, #fbbf24); }
+    .impact-butterfly   { background: linear-gradient(90deg, #7c3aed, #a78bfa); }
+
+    /* Quick stats row */
+    .tree-quick-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; margin-bottom: 0.5rem; }
+    .tree-qs { font-size: 0.68rem; color: var(--text-muted); font-family: var(--mono); }
+    .tree-qs strong { display: block; font-size: 0.6rem; color: var(--ep-tan); font-family: var(--sans); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 1px; }
+
+    /* Bird link chips */
+    .tree-birds { display: flex; gap: 4px; flex-wrap: wrap; margin-top: auto; padding-top: 0.5rem; border-top: 1px solid var(--border); }
+    .tree-bird-chip { font-size: 0.62rem; background: rgba(33,67,50,0.08); color: var(--ep-green); border: 1px solid rgba(33,67,50,0.12); border-radius: 10px; padding: 1px 7px; text-decoration: none; transition: background 0.12s; }
+    .tree-bird-chip:hover { background: rgba(33,67,50,0.15); }
+
+    /* ── Detail modal / side panel ── */
+    .tree-modal-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.55);
+      backdrop-filter: blur(3px); z-index: 500;
+      opacity: 0; pointer-events: none; transition: opacity 0.25s;
+    }
+    .tree-modal-overlay.open { opacity: 1; pointer-events: all; }
+    .tree-modal {
+      position: fixed; top: 0; right: 0; bottom: 0; width: min(680px, 100vw);
+      background: var(--ep-cream); z-index: 501; overflow-y: auto;
+      transform: translateX(100%); transition: transform 0.3s cubic-bezier(.4,0,.2,1);
+      box-shadow: -8px 0 40px rgba(0,0,0,0.2);
+    }
+    .tree-modal.open { transform: translateX(0); }
+    .tree-modal-header { position: sticky; top: 0; background: var(--ep-cream); z-index: 10; border-bottom: 1px solid var(--border); padding: 1rem 1.5rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+    .tree-modal-close { background: none; border: 1px solid var(--border-strong); border-radius: var(--radius-sm); width: 36px; height: 36px; cursor: pointer; font-size: 1.1rem; color: var(--text-muted); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .tree-modal-close:hover { background: rgba(33,67,50,0.06); color: var(--ep-green); }
+    .tree-modal-body { padding: 0; }
+    .tree-modal-photo { width: 100%; height: 260px; object-fit: cover; display: block; }
+    .tree-modal-photo-placeholder { width: 100%; height: 200px; background: linear-gradient(135deg, rgba(33,67,50,0.07), rgba(191,155,123,0.1)); display: flex; align-items: center; justify-content: center; font-size: 5rem; }
+    .tree-modal-content { padding: 1.5rem; }
+
+    /* Modal sections */
+    .modal-section { margin-bottom: 1.75rem; }
+    .modal-section-title { font-family: var(--serif); font-size: 1rem; color: var(--ep-green); margin-bottom: 0.75rem; border-bottom: 1px solid var(--border); padding-bottom: 0.4rem; }
+    .modal-fact-row { display: flex; justify-content: space-between; align-items: baseline; padding: 0.4rem 0; border-bottom: 1px solid var(--border); font-size: 0.82rem; gap: 0.5rem; }
+    .modal-fact-row:last-child { border-bottom: none; }
+    .modal-fact-label { color: var(--text-muted); }
+    .modal-fact-val { font-weight: 600; color: var(--ep-green); font-family: var(--mono); font-size: 0.8rem; text-align: right; }
+
+    /* Growing guide steps */
+    .growing-steps { display: flex; flex-direction: column; gap: 0.75rem; }
+    .growing-step { display: flex; gap: 0.75rem; }
+    .growing-step-num { width: 26px; height: 26px; background: var(--ep-green); color: var(--ep-cream); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.72rem; font-weight: 700; flex-shrink: 0; }
+    .growing-step-body { flex: 1; }
+    .growing-step-title { font-size: 0.82rem; font-weight: 600; color: var(--ep-green); margin-bottom: 0.15rem; }
+    .growing-step-text { font-size: 0.77rem; color: var(--text-muted); line-height: 1.65; }
+
+    /* Companion grid */
+    .companion-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; }
+    .companion-card { border-radius: var(--radius-md); padding: 0.6rem 0.75rem; }
+    .companion-good { background: rgba(16,185,129,0.06); border: 1px solid rgba(16,185,129,0.2); }
+    .companion-avoid { background: rgba(239,68,68,0.05); border: 1px solid rgba(239,68,68,0.15); }
+    .companion-title { font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.4rem; }
+    .companion-good .companion-title { color: #065f46; }
+    .companion-avoid .companion-title { color: #991b1b; }
+    .companion-item { font-size: 0.74rem; color: var(--text-muted); padding: 2px 0; line-height: 1.5; }
+    .companion-item::before { content: '→ '; opacity: 0.5; }
+
+    /* Wildlife impact */
+    .wildlife-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 0.6rem; }
+    .wildlife-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 0.65rem 0.75rem; text-align: center; }
+    .wildlife-icon { font-size: 1.4rem; margin-bottom: 0.25rem; }
+    .wildlife-name { font-size: 0.68rem; font-weight: 600; color: var(--ep-green); margin-bottom: 0.15rem; }
+    .wildlife-desc { font-size: 0.62rem; color: var(--text-muted); line-height: 1.5; }
+
+    /* Bird detections linked */
+    .linked-birds { display: flex; flex-direction: column; gap: 0.4rem; }
+    .linked-bird-row { display: flex; align-items: center; gap: 0.6rem; padding: 0.45rem 0; border-bottom: 1px solid var(--border); }
+    .linked-bird-row:last-child { border-bottom: none; }
+    .linked-bird-name { font-size: 0.82rem; font-weight: 600; color: var(--ep-green); flex: 1; }
+    .linked-bird-sci { font-size: 0.7rem; font-style: italic; color: var(--text-muted); }
+    .linked-bird-link { font-size: 0.72rem; color: var(--ep-tan); text-decoration: none; font-weight: 600; white-space: nowrap; }
+    .linked-bird-link:hover { color: var(--ep-green); }
+
+    /* Seasonal calendar */
+    .seasonal-cal { display: grid; grid-template-columns: repeat(12,1fr); gap: 3px; }
+    .sc-cell { aspect-ratio:1; border-radius: 3px; display: flex; align-items: center; justify-content: center; font-size: 0.52rem; font-weight: 700; }
+    .sc-dormant  { background: var(--ep-cream-dark); color: var(--text-muted); }
+    .sc-grow     { background: rgba(33,67,50,0.15); color: var(--ep-green); }
+    .sc-flower   { background: rgba(236,72,153,0.2); color: #9d174d; }
+    .sc-fruit    { background: rgba(234,179,8,0.25); color: #78350f; }
+    .sc-labels   { display: grid; grid-template-columns: repeat(12,1fr); gap: 3px; margin-bottom: 3px; }
+    .sc-label    { font-size: 0.5rem; text-align: center; color: var(--text-muted); font-family: var(--mono); }
+    .sc-legend   { display: flex; gap: 0.75rem; margin-top: 0.4rem; font-size: 0.66rem; color: var(--text-muted); flex-wrap: wrap; }
+    .sc-swatch   { width: 10px; height: 10px; border-radius: 2px; display: inline-block; margin-right: 3px; vertical-align: middle; }
+
+    /* ── Recommendation section ── */
+    .rec-section { background: linear-gradient(135deg, rgba(33,67,50,0.04), rgba(191,155,123,0.06)); border: 1px solid rgba(33,67,50,0.1); border-radius: var(--radius-lg); padding: 1.75rem; margin-bottom: 2rem; }
+    .rec-intro { font-size: 0.84rem; color: var(--text-muted); line-height: 1.75; margin-bottom: 1.25rem; }
+    .rec-intro strong { color: var(--ep-green); }
+    .baner-climate { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 0.75rem; margin-bottom: 1.5rem; }
+    .baner-climate-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 0.85rem 1rem; }
+    .baner-climate-icon { font-size: 1.3rem; margin-bottom: 0.25rem; }
+    .baner-climate-val { font-family: var(--mono); font-size: 0.9rem; font-weight: 700; color: var(--ep-green); }
+    .baner-climate-label { font-size: 0.66rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted); margin-top: 0.1rem; }
+
+    /* ── Identify CTA ── */
+    .identify-cta {
+      background: var(--ep-green); border-radius: var(--radius-lg);
+      padding: 2rem 2rem; margin: 2rem 0;
+      display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap;
+    }
+    .identify-cta-text { flex: 1; }
+    .identify-cta-title { font-family: var(--serif); font-size: 1.3rem; color: var(--ep-cream); margin-bottom: 0.35rem; }
+    .identify-cta-sub { font-size: 0.84rem; color: rgba(242,240,230,0.75); line-height: 1.65; }
+    .identify-cta-btn { background: var(--ep-tan); color: #1a1a1a; border: none; border-radius: var(--radius-sm); padding: 0.65rem 1.4rem; font-family: var(--sans); font-size: 0.88rem; font-weight: 700; cursor: pointer; white-space: nowrap; flex-shrink: 0; transition: opacity 0.15s; text-decoration: none; display: inline-block; }
+    .identify-cta-btn:hover { opacity: 0.88; }
+
+    /* ── SEO ── */
+    .seo-context { max-width: 1100px; margin: 0 auto; padding: 0 2rem 2rem; font-size: 0.78rem; color: var(--text-muted); line-height: 1.7; border-top: 1px solid var(--border); padding-top: 1.5rem; }
+    .seo-context h2 { font-size: 0.85rem; font-weight: 600; color: var(--ep-green); margin-bottom: 0.5rem; margin-top: 1rem; }
+    .seo-context h2:first-child { margin-top: 0; }
+
+    /* ── Loader ── */
+    .trees-loading { display: flex; align-items: center; justify-content: center; padding: 4rem 2rem; gap: 0.5rem; color: var(--text-muted); font-size: 0.85rem; }
+    .trees-spinner { width: 18px; height: 18px; border: 2px solid rgba(33,67,50,0.2); border-top-color: var(--ep-green); border-radius: 50%; animation: spin 0.7s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── Empty ── */
+    .trees-empty { text-align: center; padding: 3rem 2rem; color: var(--text-muted); }
+
+    /* ── Pagination ── */
+    .trees-pagination { display: flex; gap: 0.5rem; justify-content: center; margin-top: 2rem; flex-wrap: wrap; }
+    .pag-btn { padding: 0.4rem 0.9rem; border-radius: var(--radius-sm); border: 1px solid var(--border-strong); background: transparent; font-family: var(--sans); font-size: 0.82rem; color: var(--ep-green); cursor: pointer; transition: all 0.15s; }
+    .pag-btn:hover { background: var(--ep-green); color: var(--ep-cream); border-color: var(--ep-green); }
+    .pag-btn.cur { background: var(--ep-green); color: var(--ep-cream); border-color: var(--ep-green); font-weight: 600; pointer-events: none; }
+    .pag-btn[disabled] { opacity: 0.35; pointer-events: none; }
+    .pag-info { font-family: var(--mono); font-size: 0.78rem; color: var(--text-muted); display: flex; align-items: center; }
+
+    /* ── Contribute bar ── */
+    .contribute-bar { background: rgba(33,67,50,0.04); border: 1px solid rgba(33,67,50,0.1); border-radius: var(--radius-md); padding: 0.85rem 1.25rem; display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
+    .contribute-bar-text { font-size: 0.82rem; color: var(--text-muted); flex: 1; line-height: 1.55; }
+    .contribute-bar-text strong { color: var(--ep-green); }
+    .contribute-bar-btn { background: var(--ep-green); color: var(--ep-cream); border: none; border-radius: var(--radius-sm); padding: 0.4rem 1rem; font-family: var(--sans); font-size: 0.78rem; font-weight: 600; cursor: pointer; white-space: nowrap; text-decoration: none; display: inline-block; }
+  </style>
+</head>
+<body>
+<div id="ep-nav"></div>
+
+<main>
+
+<!-- HERO -->
+<div class="trees-hero">
+  <div class="trees-hero-inner">
+    <div class="trees-hero-tag">Earth Pulse · Baner Hill, Pune · Living Botanical Database</div>
+    <h1 class="trees-hero-title">Trees & Plants of <em>Baner Hill</em></h1>
+    <p class="trees-hero-sub">A living encyclopedia of every tree and plant confirmed on Baner Hill — and every species that <em>should</em> grow here. Cross-referenced with acoustic bird detections, climate data, and conservation science. Built for anyone who wants to understand, protect, and grow this hill.</p>
+    <div class="trees-hero-stats">
+      <div class="trees-stat"><div class="trees-stat-val" id="stat-confirmed">—</div><div class="trees-stat-label">Confirmed species</div></div>
+      <div class="trees-stat"><div class="trees-stat-val" id="stat-potential">—</div><div class="trees-stat-label">Recommended</div></div>
+      <div class="trees-stat"><div class="trees-stat-val" id="stat-native">—</div><div class="trees-stat-label">Native to region</div></div>
+      <div class="trees-stat"><div class="trees-stat-val" id="stat-bird-links">—</div><div class="trees-stat-label">Bird connections</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- BANER HILL CLIMATE PROFILE -->
+<div class="climate-banner">
+  <div class="climate-banner-inner">
+    <span class="climate-banner-title">Baner Hill conditions</span>
+    <div class="climate-pills">
+      <span class="climate-pill"><span class="climate-pill-icon">🏔️</span>600–700m altitude</span>
+      <span class="climate-pill"><span class="climate-pill-icon">🌡️</span>19–38°C year-round</span>
+      <span class="climate-pill"><span class="climate-pill-icon">💧</span>700–800mm rainfall / year</span>
+      <span class="climate-pill"><span class="climate-pill-icon">🌧️</span>Monsoon Jun–Sep</span>
+      <span class="climate-pill"><span class="climate-pill-icon">🪨</span>Laterite / Deccan basalt soil</span>
+      <span class="climate-pill"><span class="climate-pill-icon">💨</span>SW monsoon winds</span>
+      <span class="climate-pill"><span class="climate-pill-icon">🌿</span>Western Ghats foothills</span>
+    </div>
+  </div>
+</div>
+
+<!-- FILTER BAR -->
+<div class="trees-filter-bar" role="search">
+  <select class="trees-filter-select" id="sel-status" onchange="applyFilters()" aria-label="Filter by status">
+    <option value="all">All species</option>
+    <option value="confirmed">Confirmed on hill</option>
+    <option value="potential">Recommended for hill</option>
+  </select>
+  <select class="trees-filter-select" id="sel-origin" onchange="applyFilters()" aria-label="Filter by origin">
+    <option value="all">All origins</option>
+    <option value="native">Native</option>
+    <option value="naturalized">Naturalized</option>
+    <option value="exotic">Exotic / Ornamental</option>
+  </select>
+  <select class="trees-filter-select" id="sel-difficulty" onchange="applyFilters()" aria-label="Filter by growing difficulty">
+    <option value="all">Any difficulty</option>
+    <option value="easy">Easy to grow</option>
+    <option value="moderate">Moderate</option>
+    <option value="expert">Expert</option>
+  </select>
+  <div class="filter-sep"></div>
+  <button class="trees-pill" id="pill-birds"     onclick="togglePill('birds',this)">🐦 For birds</button>
+  <button class="trees-pill" id="pill-butterfly" onclick="togglePill('butterfly',this)">🦋 For butterflies</button>
+  <button class="trees-pill" id="pill-bee"       onclick="togglePill('bee',this)">🐝 For bees</button>
+  <button class="trees-pill" id="pill-drought"   onclick="togglePill('drought',this)">🏜️ Drought tolerant</button>
+  <span class="trees-filter-count" id="filter-count" aria-live="polite"></span>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="trees-page">
+
+  <!-- Identify CTA -->
+  <div class="identify-cta" role="complementary">
+    <div class="identify-cta-text">
+      <div class="identify-cta-title">🌿 Found a tree you don't recognise?</div>
+      <div class="identify-cta-sub">Upload a photo and our AI identification engine (PlantNet + Plant.id) will identify it instantly — then build a full conservation profile for it. Every identification grows the Baner Hill database.</div>
+    </div>
+    <a href="identify.html" class="identify-cta-btn">Identify a plant →</a>
+  </div>
+
+  <!-- Contribute bar -->
+  <div class="contribute-bar">
+    <div class="contribute-bar-text">
+      <strong>Spotted a tree on Baner Hill?</strong> This database is built by the community. If you've confirmed a species on the hill that isn't listed here, please tell us — even a location and photo is enough to add it.
+    </div>
+    <a href="mailto:fangchu@gmail.com?subject=Baner Hill Tree Sighting" class="contribute-bar-btn">📧 Report a sighting</a>
+  </div>
+
+  <!-- RECOMMENDATION ENGINE -->
+  <div class="rec-section" id="rec-section">
+    <div class="trees-section-title" style="margin-bottom:0.3rem;">🌱 Climate-Matched Recommendations for Baner Hill</div>
+    <p class="trees-section-sub" style="margin-bottom:1rem;">Based on Baner Hill's exact climatic profile — altitude, temperature range, rainfall, soil type, and seasonal patterns measured live by Earth Pulse — these are the species best suited to grow and thrive here. Planting these creates the highest conservation impact for birds, insects, and the hill's long-term ecological health.</p>
+
+    <div class="baner-climate">
+      <div class="baner-climate-card">
+        <div class="baner-climate-icon">🌡️</div>
+        <div class="baner-climate-val" id="rec-temp">34–36°C</div>
+        <div class="baner-climate-label">Current avg temp (live)</div>
+      </div>
+      <div class="baner-climate-card">
+        <div class="baner-climate-icon">💧</div>
+        <div class="baner-climate-val" id="rec-humidity">35–50%</div>
+        <div class="baner-climate-label">Humidity range</div>
+      </div>
+      <div class="baner-climate-card">
+        <div class="baner-climate-icon">🌧️</div>
+        <div class="baner-climate-val">~780mm</div>
+        <div class="baner-climate-label">Annual rainfall</div>
+      </div>
+      <div class="baner-climate-card">
+        <div class="baner-climate-icon">🪨</div>
+        <div class="baner-climate-val">pH 6.5–7</div>
+        <div class="baner-climate-label">Basalt / Laterite soil</div>
+      </div>
+    </div>
+
+    <div class="trees-grid" id="rec-grid">
+      <div class="ep-skeleton" style="height:300px;border-radius:var(--radius-lg);"></div>
+      <div class="ep-skeleton" style="height:300px;border-radius:var(--radius-lg);"></div>
+      <div class="ep-skeleton" style="height:300px;border-radius:var(--radius-lg);"></div>
+    </div>
+  </div>
+
+  <!-- ENCYCLOPEDIA -->
+  <div style="margin-bottom:1.25rem;">
+    <div class="trees-section-title">📚 Baner Hill Species Encyclopedia</div>
+    <p class="trees-section-sub">Every confirmed and documented tree and plant of Baner Hill. Click any card for the full profile — growing guide, seasonal calendar, bird connections, companion planting, and conservation impact.</p>
+  </div>
+
+  <div class="trees-grid" id="trees-grid">
+    <div class="ep-skeleton" style="height:320px;border-radius:var(--radius-lg);"></div>
+    <div class="ep-skeleton" style="height:320px;border-radius:var(--radius-lg);"></div>
+    <div class="ep-skeleton" style="height:320px;border-radius:var(--radius-lg);"></div>
+    <div class="ep-skeleton" style="height:320px;border-radius:var(--radius-lg);"></div>
+    <div class="ep-skeleton" style="height:320px;border-radius:var(--radius-lg);"></div>
+    <div class="ep-skeleton" style="height:320px;border-radius:var(--radius-lg);"></div>
+  </div>
+  <div class="trees-pagination" id="trees-pagination" style="display:none;"></div>
+
+</div>
+
+<!-- TREE DETAIL MODAL -->
+<div class="tree-modal-overlay" id="modal-overlay" onclick="closeModal()"></div>
+<div class="tree-modal" id="tree-modal" role="dialog" aria-label="Tree species detail" aria-hidden="true">
+  <div class="tree-modal-header">
+    <div>
+      <div style="font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--ep-tan);margin-bottom:2px;">Species Profile</div>
+      <div id="modal-title" style="font-family:var(--serif);font-size:1.1rem;color:var(--ep-green);"></div>
+    </div>
+    <button class="tree-modal-close" onclick="closeModal()" aria-label="Close">✕</button>
+  </div>
+  <div class="tree-modal-body" id="tree-modal-body">
+    <!-- populated by JS -->
+  </div>
+</div>
+
+<!-- SEO CONTEXT -->
+<section class="seo-context">
+  <h2>Trees and Plants of Baner Hill, Pune</h2>
+  <p>Baner Hill is an urban forest reserve in Baner, Pune, Maharashtra, situated at the northern edge of the Western Ghats biodiversity hotspot and the Sahyadri range. The hill's vegetation grows on Deccan basalt and laterite soils at 600–700m altitude, receiving approximately 700–800mm of rainfall annually concentrated in the southwest monsoon (June–September). This creates a distinct ecological profile that supports a specific community of native trees and plants — many of them ecologically significant for birds, insects, and the broader conservation of the Western Ghats urban fringe.</p>
+  <h2>Conservation Value of Baner Hill Trees</h2>
+  <p>Native trees on Baner Hill provide layered ecological services: fruiting trees like Ficus benghalensis, Syzygium cumini, and Phyllanthus emblica support the hill's 88+ acoustically detected bird species. Flowering trees like Butea monosperma and Erythrina variegata are critical for Purple Sunbirds and other nectarivores. Cavity-bearing old trees are essential nesting habitat for hornbills, owlets, barbets, and parakeets. Earth Pulse cross-references this botanical data with live acoustic bird detections to build an evidence base for targeted conservation planting on Baner Hill.</p>
+  <h2>Recommended Trees for Baner Hill</h2>
+  <p>Based on Baner Hill's climate profile (altitude 600–700m, temperature 19–38°C, annual rainfall 700–800mm, laterite/basalt soil, pH 6.5–7), the following species are ecologically optimal and recommended for planting: Ficus benghalensis (Banyan), Ficus religiosa (Peepal), Syzygium cumini (Jamun), Azadirachta indica (Neem), Phyllanthus emblica (Amla), Butea monosperma (Flame of the Forest), Millettia pinnata (Pongamia), Ziziphus mauritiana (Ber/Jujube), Terminalia arjuna (Arjun), Calophyllum inophyllum (Indian Laurel), Dalbergia sissoo (Indian Rosewood), and Bombax ceiba (Silk Cotton). These species support the widest range of birds, insects, and butterflies native to the Sahyadri foothills.</p>
+</section>
+
+</main>
+<div id="ep-footer"></div>
+<script src="analytics.js"></script>
+<script src="nav.js"></script>
+<script>
+/* ─────────────────────────────────────────────────────────────────────────────
+   trees.html — Phase 1: Encyclopedia + Recommendation Engine
+   Data sources:
+   - Supabase: hill_trees table (confirmed + potential species)
+   - Wikipedia: thumbnails + extracts
+   - Trefle.io: botanical data (growth, soil, climate requirements)
+   - Live climate: from climate_readings (temperature, humidity)
+   Phase 2 (identify.html): PlantNet + Plant.id identification tool
+───────────────────────────────────────────────────────────────────────────── */
+
+var SB        = 'https://krmczyqwblsoekceanlj.supabase.co';
+var SB_KEY    = 'sb_publishable_DrHFT5J0vmrkYraUXIlpQQ_gsk1rdq6';
+var SB_H      = { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY };
+var TREFLE    = 'https://trefle.io/api/v1';
+var TREFLE_T  = 'TREFLE_TOKEN'; // set via Cloudflare Worker env: TREFLE_TOKEN
+// In production these come from Cloudflare Worker secrets:
+// PLANTNET_KEY, TREFLE_TOKEN are never exposed in frontend JS
+
+var PAGE_SIZE  = 12;
+var allTrees   = [];
+var filtered   = [];
+var currentPg  = 1;
+var activePills = {};
+var wikiCache  = {};
+var trefleCache = {};
+
+/* ── Curated Baner Hill dataset ──────────────────────────────────────────────
+   This is the seed dataset — species confirmed or strongly recommended for
+   Baner Hill. When hill_trees Supabase table is populated, this is merged
+   with live data. Serves as fallback if DB is empty.
+────────────────────────────────────────────────────────────────────────────── */
+var BANER_TREES = [
+  // ── CONFIRMED NATIVE ─────────────────────────────────────────────────────
+  {
+    id:'banyan', common_name:'Banyan Tree', scientific_name:'Ficus benghalensis',
+    local_name:'Vad (वड)', family:'Moraceae', origin:'native', status:'confirmed',
+    height_m_max:30, lifespan_years:300, growth_rate:'slow', difficulty:'easy',
+    drought_tolerant:true, bird_value:5, insect_value:4, butterfly_value:3,
+    flowering_months:[2,3,4], fruiting_months:[4,5,6,7],
+    soil_type:['laterite','basalt','loamy'], altitude_min_m:0, altitude_max_m:1200,
+    bird_species:['Ocyceros birostris','Psittacula krameri','Pycnonotus cafer'],
+    companion_trees:['Ficus religiosa','Syzygium cumini','Azadirachta indica'],
+    avoid_near:['Eucalyptus','Casuarina'],
+    water_needs:'low — once established, fully drought tolerant',
+    conservation_note:'Single most important bird tree on Baner Hill. Year-round figs feed 50+ species. Old banyans provide cavity nesting sites for hornbills, owlets, and parakeets.',
+    growing_steps:[
+      {title:'Source', text:'Obtain a rooted cutting or sapling from a forest dept nursery. Avoid collecting aerial roots from existing trees — this damages the parent.'},
+      {title:'Site selection', text:'Choose open ground with at least 10m clearance from buildings and underground pipes. Aerial roots can damage structures over decades.'},
+      {title:'Planting', text:'Plant at start of monsoon (June). Dig a 60cm×60cm pit. Mix laterite soil with 25% compost. Water daily for the first monsoon season.'},
+      {title:'Establishment (years 1–3)', text:'Water every 2–3 days in summer. Protect from goats with a wire mesh cage until 2m height. Minimal fertiliser needed.'},
+      {title:'Long-term care', text:'Once established (3–4 years), essentially maintenance-free. Allow aerial roots to develop — they will eventually touch ground and become secondary trunks.'}
+    ],
+    wildlife:[
+      {icon:'🐦', name:'50+ bird species', desc:'Figs eaten by hornbills, barbets, mynas, bulbuls, parakeets year-round'},
+      {icon:'🦋', name:'15+ butterfly species', desc:'Bark and leaf surfaces support butterfly larvae and adults'},
+      {icon:'🦇', name:'Fruit bats', desc:'Roosting and foraging — important nocturnal pollinator of figs'},
+      {icon:'🐝', name:'Native bees', desc:'Hollow branches provide nesting sites for cavity-nesting bees'}
+    ]
+  },
+  {
+    id:'peepal', common_name:'Peepal / Sacred Fig', scientific_name:'Ficus religiosa',
+    local_name:'Pimpal (पिंपळ)', family:'Moraceae', origin:'native', status:'confirmed',
+    height_m_max:25, lifespan_years:200, growth_rate:'medium', difficulty:'easy',
+    drought_tolerant:true, bird_value:5, insect_value:4, butterfly_value:4,
+    flowering_months:[1,2,3], fruiting_months:[4,5,6],
+    soil_type:['laterite','basalt','rocky'], altitude_min_m:0, altitude_max_m:1500,
+    bird_species:['Pycnonotus cafer','Acridotheres tristis','Dicrurus macrocercus','Psittacula krameri'],
+    companion_trees:['Ficus benghalensis','Azadirachta indica','Mangifera indica'],
+    avoid_near:['Eucalyptus'],
+    water_needs:'very low — once established, survives Baner\'s harshest summers',
+    conservation_note:'Culturally protected, meaning it reaches full ecological maturity in urban areas. One of the few trees that grows to true old age in Pune — providing irreplaceable cavity nesting habitat.',
+    growing_steps:[
+      {title:'Propagation', text:'Peepal grows readily from seed (the tiny figs contain seeds). Collect seeds from ripe purple figs in May–June. Germinate in trays with moist soil.'},
+      {title:'Sapling care', text:'Grow in part shade for 4–6 months until 30cm. Transplant to ground at start of monsoon.'},
+      {title:'Planting site', text:'Traditionally planted near temples and open spaces — this cultural protection is its greatest conservation tool. Plant in community spaces where it will be respected.'},
+      {title:'Establishment', text:'Water weekly in first summer. Peepal is highly adaptable to rocky laterite soil — less fussy about planting conditions than most trees.'},
+      {title:'Growth', text:'Faster-growing than Banyan. Expect 3–4m in first 5 years. Begins producing figs by year 7–10.'}
+    ],
+    wildlife:[
+      {icon:'🐦', name:'Bulbuls, mynas, parakeets', desc:'Heavy frugivory — figs consumed as soon as they ripen'},
+      {icon:'🦋', name:'Krishna butterfly', desc:'Larvae of the Krishna butterfly (Neptis species) feed on Peepal leaves'},
+      {icon:'🐝', name:'Native wasps & bees', desc:'Fig wasps are obligate pollinators — without them, no figs form'},
+      {icon:'🦎', name:'Skinks & geckos', desc:'Bark crevices provide habitat for lizards that in turn feed raptors'}
+    ]
+  },
+  {
+    id:'jamun', common_name:'Jamun / Indian Blackberry', scientific_name:'Syzygium cumini',
+    local_name:'Jambhul (जांभूळ)', family:'Myrtaceae', origin:'native', status:'confirmed',
+    height_m_max:20, lifespan_years:100, growth_rate:'medium', difficulty:'easy',
+    drought_tolerant:true, bird_value:5, insect_value:3, butterfly_value:2,
+    flowering_months:[2,3,4], fruiting_months:[5,6,7],
+    soil_type:['laterite','basalt','alluvial'], altitude_min_m:0, altitude_max_m:1800,
+    bird_species:['Pycnonotus cafer','Acridotheres tristis','Ocyceros birostris','Psittacula krameri'],
+    companion_trees:['Ficus benghalensis','Azadirachta indica','Phyllanthus emblica'],
+    avoid_near:['Lantana camara'],
+    water_needs:'low — drought tolerant once established. Good on rocky laterite slopes.',
+    conservation_note:'Critical summer food source — produces abundant fruit exactly when most natural food is scarce (May–July hot season). Feeds over 20 bird species in a single fruiting season.',
+    growing_steps:[
+      {title:'Seeds', text:'Seeds germinate readily. Collect ripe purple-black fruit in June–July, remove pulp, dry seeds for 3 days. Sow immediately — viability drops rapidly.'},
+      {title:'Germination', text:'50–70% germination rate in 2–3 weeks under moist conditions. Sow in nursery bags with 1:1 soil:compost mix.'},
+      {title:'Transplanting', text:'Plant out at start of monsoon when 30–45cm tall. Space 5–6m apart. Jamun forms a broad spreading canopy.'},
+      {title:'Growth', text:'Faster growing than Ficus — expect 4–5m in first 5 years. Begins fruiting by year 7–10.'},
+      {title:'Maintenance', text:'Very low maintenance. No fertiliser or pesticides needed. The tree self-manages on Baner\'s rocky soil.'}
+    ],
+    wildlife:[
+      {icon:'🐦', name:'20+ bird species', desc:'Major frugivory target — hornbills, barbets, bulbuls, mynas, parakeets all congregate at fruiting trees'},
+      {icon:'🦋', name:'Several species', desc:'Flowers attract nectar-feeding butterflies including Common Mormon and Blue Tiger'},
+      {icon:'🐝', name:'Native bees', desc:'Rich in nectar and pollen during the March–April flowering period'},
+      {icon:'🦊', name:'Jackals & civets', desc:'Fallen fruit consumed by civets and jackals on Baner Hill at night'}
+    ]
+  },
+  {
+    id:'neem', common_name:'Neem', scientific_name:'Azadirachta indica',
+    local_name:'Kadulimb (कडुलिंब)', family:'Meliaceae', origin:'native', status:'confirmed',
+    height_m_max:20, lifespan_years:150, growth_rate:'fast', difficulty:'easy',
+    drought_tolerant:true, bird_value:4, insect_value:4, butterfly_value:3,
+    flowering_months:[1,2,3], fruiting_months:[5,6,7],
+    soil_type:['laterite','basalt','sandy','rocky'], altitude_min_m:0, altitude_max_m:1500,
+    bird_species:['Acridotheres tristis','Pycnonotus cafer','Dicrurus macrocercus'],
+    companion_trees:['Azadirachta indica','Syzygium cumini','Phyllanthus emblica'],
+    avoid_near:['Exotic ornamentals'],
+    water_needs:'very low — one of the most drought-tolerant trees for Baner\'s summer conditions',
+    conservation_note:'Dense bark insect community supports winter migrants (warblers, flycatchers). Aromatic properties deter some pests while the tree itself hosts a rich arthropod community that insectivorous birds depend on.',
+    growing_steps:[
+      {title:'Seeds', text:'Collect yellow-green ripe fruits from June–August. Remove pulp, clean seeds, plant fresh — viability drops within 2 weeks.'},
+      {title:'Germination', text:'90%+ germination rate in 1–2 weeks when seeds are fresh. Sow 1–2cm deep in well-drained nursery mix.'},
+      {title:'Transplanting', text:'Can transplant at 15–30cm height at start of monsoon. Neem is one of the easiest trees to establish on rocky laterite — tolerates poor soil exceptionally well.'},
+      {title:'Growth', text:'Fast-growing — 2–3m in first year under good monsoon conditions. Begins providing dense shade by year 4–5.'},
+      {title:'Long-term', text:'Very long-lived and low-maintenance. In urban settings, minimal pruning of dead wood is all that\'s needed.'}
+    ],
+    wildlife:[
+      {icon:'🐦', name:'Insect-gleaning birds', desc:'Bark arthropods (scale insects, beetles) are a key winter food source for migrant flycatchers and warblers'},
+      {icon:'🦋', name:'Lime butterfly', desc:'Citrus swallowtail and other species use neem as a larval host plant'},
+      {icon:'🐝', name:'Honey bees', desc:'Heavy bee forage during flowering — commercial beekeepers in Maharashtra use neem as a primary nectar source'},
+      {icon:'🦜', name:'Parakeets', desc:'Neem berries are a preferred food — parakeets strip fruiting branches systematically'}
+    ]
+  },
+  {
+    id:'amla', common_name:'Indian Gooseberry / Amla', scientific_name:'Phyllanthus emblica',
+    local_name:'Awla (आवळा)', family:'Phyllanthaceae', origin:'native', status:'confirmed',
+    height_m_max:18, lifespan_years:100, growth_rate:'medium', difficulty:'easy',
+    drought_tolerant:true, bird_value:4, insect_value:3, butterfly_value:2,
+    flowering_months:[1,2,3], fruiting_months:[9,10,11,12],
+    soil_type:['laterite','basalt','loamy'], altitude_min_m:0, altitude_max_m:1500,
+    bird_species:['Ocyceros birostris','Pycnonotus cafer','Acridotheres tristis'],
+    companion_trees:['Azadirachta indica','Syzygium cumini','Terminalia arjuna'],
+    avoid_near:['Eucalyptus','Casuarina'],
+    water_needs:'low — well-adapted to Deccan plateau conditions. Survives extended dry season.',
+    conservation_note:'Winter-fruiting — fills the food gap when summer fruits are gone. Also hosts rich bark insect communities that support winter migrant flycatchers and warblers.',
+    growing_steps:[
+      {title:'Seeds or grafts', text:'Seeds have variable germination — grafted saplings are more reliable and fruit earlier. Source from nurseries specialising in fruit trees.'},
+      {title:'Planting', text:'Plant at start of monsoon in a pit 45cm×45cm. Amla prefers well-drained soil — avoid waterlogged areas. Good on rocky laterite slopes.'},
+      {title:'Growth', text:'Moderate growth — 1–1.5m/year in good conditions. Begins fruiting by year 5–7 from seed (sooner from grafted plants).'},
+      {title:'Fruit production', text:'Fruits ripen October–December — exactly when winter migrants arrive. A heavy-fruiting amla in your garden is an immediate bird magnet.'},
+      {title:'Care', text:'Minimal — annual light pruning of dead wood, and one compost application before monsoon. Essentially self-managing once established.'}
+    ],
+    wildlife:[
+      {icon:'🐦', name:'Hornbills, barbets, bulbuls', desc:'Fruit heavily consumed by frugivores in winter when other food is scarce'},
+      {icon:'🦋', name:'Several species', desc:'Flowers attract small butterflies including grass yellows and grass blues'},
+      {icon:'🐝', name:'Native bees', desc:'Small yellow flowers are rich in pollen and attract diverse native bee species'},
+      {icon:'🦎', name:'Monitor lizards', desc:'Fallen fruit attracts insects which in turn attract Monitor lizards and other reptiles'}
+    ]
+  },
+  {
+    id:'flame', common_name:'Flame of the Forest', scientific_name:'Butea monosperma',
+    local_name:'Palas (पळस)', family:'Fabaceae', origin:'native', status:'confirmed',
+    height_m_max:15, lifespan_years:80, growth_rate:'medium', difficulty:'moderate',
+    drought_tolerant:true, bird_value:5, insect_value:4, butterfly_value:5,
+    flowering_months:[1,2,3], fruiting_months:[4,5],
+    soil_type:['laterite','basalt','rocky','sandy'], altitude_min_m:0, altitude_max_m:1200,
+    bird_species:['Cinnyris asiaticus','Leptocoma zeylonica','Merops orientalis'],
+    companion_trees:['Erythrina variegata','Bombax ceiba','Terminalia arjuna'],
+    avoid_near:['Dense canopy trees that shade it'],
+    water_needs:'low — highly drought tolerant. Flowers before the rains, in the driest part of summer.',
+    conservation_note:'Most important nectar tree on the Deccan plateau. Flowers in February–March — exactly when sunbirds, bee-eaters, and butterflies need nectar most, before monsoon trees flower. Indicator of laterite hill health.',
+    growing_steps:[
+      {title:'Seeds', text:'Seeds ripen April–May. Collect flat pods before they dry completely. Remove the single large seed. Store dry for up to 6 months.'},
+      {title:'Germination', text:'Soak seeds 24 hours, then sow 2cm deep. 80–90% germination in 7–10 days in warm conditions. Ideal for monsoon planting.'},
+      {title:'Site', text:'Full sun essential — Palas will not flower well in shade. Rocky exposed slopes are ideal — exactly the conditions of Baner Hill\'s open areas.'},
+      {title:'Growth', text:'Initially slow (first 2 years). Accelerates after root establishment. Begins flowering by year 5–7.'},
+      {title:'Care', text:'Almost zero maintenance on laterite soil. No waterlogging — this is a dry-hill species. The dramatic orange flowers appear on bare branches before leaves — extraordinary wildlife spectacle.'}
+    ],
+    wildlife:[
+      {icon:'🌸', name:'Sunbirds (primary pollinator)', desc:'Purple Sunbird is the primary pollinator — the flower is adapted to its bill shape'},
+      {icon:'🦋', name:'Common Emigrant butterfly', desc:'Palas is the primary larval host plant for Common Emigrant and related species'},
+      {icon:'🐦', name:'Bee-eaters', desc:'Insects attracted to flowers are hunted by Green Bee-eaters perched nearby'},
+      {icon:'🐝', name:'Native bees', desc:'Mass flowering in February–March provides critical early-season nectar for emerging bee colonies'}
+    ]
+  },
+  {
+    id:'pongamia', common_name:'Pongamia / Indian Beech', scientific_name:'Millettia pinnata',
+    local_name:'Karanj (करंज)', family:'Fabaceae', origin:'native', status:'confirmed',
+    height_m_max:15, lifespan_years:80, growth_rate:'fast', difficulty:'easy',
+    drought_tolerant:true, bird_value:3, insect_value:4, butterfly_value:4,
+    flowering_months:[4,5,6], fruiting_months:[9,10,11],
+    soil_type:['laterite','basalt','sandy','riparian'], altitude_min_m:0, altitude_max_m:1000,
+    bird_species:['Merops orientalis','Pycnonotus cafer','Acridotheres tristis'],
+    companion_trees:['Azadirachta indica','Terminalia arjuna','Salix tetrasperma'],
+    avoid_near:['Compact urban planting'],
+    water_needs:'low to moderate — excellent for stream-bank planting and slope stabilisation',
+    conservation_note:'Important riparian species for stabilising Baner\'s seasonal stream banks. Dense foliage provides nesting cover for bulbuls and babblers. Flowers in summer support a wide range of insects when few other trees are flowering.',
+    growing_steps:[
+      {title:'Seeds', text:'Seeds ripen October–November in flat woody pods. Collect before falling, air dry for 2 weeks. Good viability for 6 months.'},
+      {title:'Propagation', text:'Soak seeds 24 hours. 70–80% germination in 10–15 days. Grows well from cuttings too.'},
+      {title:'Planting', text:'Very adaptable — plant at start of monsoon. Excellent choice for stream-bank and slope restoration on Baner Hill.'},
+      {title:'Growth', text:'Fast-growing — 2–3m/year in first few years. Dense spreading canopy forms by year 4–5.'},
+      {title:'Uses', text:'Traditional uses include oil from seeds (biofuel and medicinal). The tree is self-managing and fixes nitrogen — improving soil quality around it.'}
+    ],
+    wildlife:[
+      {icon:'🦋', name:'9+ butterfly species', desc:'Larval host for several Fabaceae-feeding butterflies including Blue Tiger'},
+      {icon:'🐝', name:'Native bees', desc:'Summer flowers are a valuable nectar source when few other trees are flowering on the hill'},
+      {icon:'🐦', name:'Nesting cover', desc:'Dense foliage used by bulbuls, babblers, and sunbirds for nesting'},
+      {icon:'🦗', name:'Insects', desc:'Bark and leaf surfaces support rich arthropod communities that insectivorous birds depend on'}
+    ]
+  },
+  {
+    id:'arjun', common_name:'Arjun Tree', scientific_name:'Terminalia arjuna',
+    local_name:'Arjun (अर्जुन)', family:'Combretaceae', origin:'native', status:'confirmed',
+    height_m_max:25, lifespan_years:200, growth_rate:'medium', difficulty:'moderate',
+    drought_tolerant:false, bird_value:3, insect_value:3, butterfly_value:3,
+    flowering_months:[3,4,5], fruiting_months:[7,8,9],
+    soil_type:['alluvial','laterite','riparian'], altitude_min_m:0, altitude_max_m:900,
+    bird_species:['Alcedo atthis','Halcyon smyrnensis','Ardea cinerea'],
+    companion_trees:['Millettia pinnata','Salix tetrasperma','Syzygium cumini'],
+    avoid_near:['Dry exposed slopes — needs reliable water access'],
+    water_needs:'moderate to high — best planted near Baner Lake and seasonal streams. Not for dry ridge planting.',
+    conservation_note:'Sacred tree of Indian rivers — a tall riparian species that provides kingfisher perches, heron roosting, and stream bank stability. Planting near Baner Lake would directly support water birds.',
+    growing_steps:[
+      {title:'Seeds', text:'Distinctive 5-winged fruit. Seeds ripen July–September. Collect fallen seeds — germination rate is moderate (40–60%).'},
+      {title:'Germination', text:'Soak for 24 hours, then sow in moist medium. Germination in 2–3 weeks.'},
+      {title:'Site requirement', text:'Critical: must be planted where water is reliably accessible. Stream edges, lake margins, and ground with a high water table are ideal.'},
+      {title:'Growth', text:'Moderate growth to a large, handsome tree. Will not establish well on dry rocky ridges.'},
+      {title:'Long-term', text:'Develops buttressed roots in maturity — an impressive ecological anchor for riparian areas near Baner Lake.'}
+    ],
+    wildlife:[
+      {icon:'🐦', name:'Kingfishers & herons', desc:'Overhanging branches used as hunting perches by kingfishers'},
+      {icon:'🦋', name:'Tawny Rajah butterfly', desc:'Larval host for the Tawny Rajah and related species'},
+      {icon:'🐝', name:'Native bees', desc:'Spring flowers are accessible to a wide range of bee species'},
+      {icon:'🐟', name:'Fish habitat', desc:'Root systems provide shelter for fish in Baner Lake — supporting the food chain that kingfishers depend on'}
+    ]
+  },
+  {
+    id:'coral', common_name:'Indian Coral Tree', scientific_name:'Erythrina variegata',
+    local_name:'Pangara (पांगारा)', family:'Fabaceae', origin:'native', status:'confirmed',
+    height_m_max:20, lifespan_years:60, growth_rate:'fast', difficulty:'easy',
+    drought_tolerant:true, bird_value:5, insect_value:3, butterfly_value:3,
+    flowering_months:[12,1,2,3], fruiting_months:[3,4,5],
+    soil_type:['laterite','basalt','well-drained'], altitude_min_m:0, altitude_max_m:1200,
+    bird_species:['Cinnyris asiaticus','Leptocoma zeylonica','Psittacula krameri','Merops orientalis'],
+    companion_trees:['Butea monosperma','Bombax ceiba','Ficus benghalensis'],
+    avoid_near:['Shaded positions'],
+    water_needs:'low — drought tolerant. Flowers on bare branches in the dry season — minimal water dependency.',
+    conservation_note:'The large red flowers appear before the leaves in December–March, making them visible to sunbirds from great distances. Loten\'s Sunbird has a bill specifically adapted to Erythrina flowers.',
+    growing_steps:[
+      {title:'Propagation', text:'Extremely easy from large stem cuttings (30–60cm). Simply push a cutting into moist soil in June. Root success rate 80%+.'},
+      {title:'No special treatment', text:'One of the easiest trees to propagate. Seeds also work (soak 24hrs, plant 2cm deep).'},
+      {title:'Growth', text:'Fast-growing — often called "the living fence post" because cuttings establish and grow so readily.'},
+      {title:'Flowering', text:'Begins flowering within 2–3 years from a large cutting. The spectacle of red flowers on bare branches is one of Baner Hill\'s finest ecological events.'},
+      {title:'Form', text:'Naturally forms a large spreading tree. Spiny trunk — no pruning needed and difficult to damage once established.'}
+    ],
+    wildlife:[
+      {icon:'🌸', name:'Sunbirds (primary pollinator)', desc:'Loten\'s Sunbird and Purple Sunbird are the primary pollinators — nectar-rich flowers'},
+      {icon:'🐦', name:'Parakeets', desc:'Parakeets harvest and eat the flower petals — secondary nectar thieves'},
+      {icon:'🦋', name:'Lime butterfly', desc:'Larval host for several Papilio swallowtail species'},
+      {icon:'🐝', name:'Native bees', desc:'Winter flowers are critical for bee colonies emerging from dry-season dormancy'}
+    ]
+  },
+  {
+    id:'silkcotton', common_name:'Silk Cotton / Semal', scientific_name:'Bombax ceiba',
+    local_name:'Saur (सावर)', family:'Malvaceae', origin:'native', status:'confirmed',
+    height_m_max:40, lifespan_years:100, growth_rate:'fast', difficulty:'easy',
+    drought_tolerant:true, bird_value:5, insect_value:4, butterfly_value:3,
+    flowering_months:[12,1,2], fruiting_months:[3,4,5],
+    soil_type:['laterite','basalt','alluvial'], altitude_min_m:0, altitude_max_m:1500,
+    bird_species:['Cinnyris asiaticus','Ocyceros birostris','Pycnonotus cafer','Merops orientalis'],
+    companion_trees:['Butea monosperma','Erythrina variegata','Ficus benghalensis'],
+    avoid_near:['Dense understorey planting that competes during establishment'],
+    water_needs:'low — fully drought tolerant once established. Fast establishing in monsoon conditions.',
+    conservation_note:'Massive nectar production in January–February when few other large trees are flowering. Cotton fibres from seed pods are collected by sunbirds and tailorbirds for nesting material.',
+    growing_steps:[
+      {title:'Seeds', text:'Pods release cotton-like seeds in March–May. Collect fresh pods before they open fully. Seeds viable for 4–6 weeks only.'},
+      {title:'Sowing', text:'Sow fresh — 90%+ germination in 5–7 days. Do not delay planting.'},
+      {title:'Growth', text:'One of the fastest-growing large trees — 3–4m in first year in good monsoon conditions. The trunk develops impressive spines (buttresses in maturity).'},
+      {title:'Establishment', text:'Very easy — plant at start of monsoon in any well-drained soil. Established trees are essentially self-managing.'},
+      {title:'Ecology', text:'By year 10, a Bombax is a complete ecosystem — cavity nesters in the trunk, sunbirds at the flowers, hornbills at the hollow branches.'}
+    ],
+    wildlife:[
+      {icon:'🌸', name:'Sunbirds, nectar feeders', desc:'Massive nectar production in January–February — highest volume of any native tree'},
+      {icon:'🐦', name:'Hornbills', desc:'Large trunk cavities (in old trees) used as hornbill nesting sites'},
+      {icon:'🦇', name:'Fruit bats', desc:'Heavy bat visitation at flowers at night — important nocturnal pollinator'},
+      {icon:'🕊️', name:'Nest material', desc:'Seed pod cotton harvested by sunbirds, tailorbirds, and barbets for nest lining'}
+    ]
+  },
+  // ── POTENTIAL / RECOMMENDED ───────────────────────────────────────────────
+  {
+    id:'ziziphus', common_name:'Indian Jujube / Ber', scientific_name:'Ziziphus mauritiana',
+    local_name:'Bor (बोर)', family:'Rhamnaceae', origin:'native', status:'potential',
+    height_m_max:10, lifespan_years:50, growth_rate:'fast', difficulty:'easy',
+    drought_tolerant:true, bird_value:3, insect_value:3, butterfly_value:2,
+    flowering_months:[6,7,8], fruiting_months:[10,11,12,1],
+    soil_type:['laterite','rocky','sandy','well-drained'], altitude_min_m:0, altitude_max_m:1200,
+    bird_species:['Pycnonotus cafer','Acridotheres tristis'],
+    companion_trees:['Carissa carandas','Azadirachta indica','Phyllanthus emblica'],
+    avoid_near:['Wet or poorly drained areas'],
+    water_needs:'very low — thrives on rocky Deccan plateau slopes with minimal water',
+    conservation_note:'Native scrubland species that provides critical winter berries for warblers, chats, and other winter migrants. Dense thorny structure also provides safe roosting shelter. Ideal for Baner Hill\'s exposed rocky slopes.',
+    growing_steps:[
+      {title:'Seeds or saplings', text:'Widely available as a fruit tree sapling. Seeds from ripe fruit can be planted directly in moist soil at start of monsoon.'},
+      {title:'Planting', text:'Extremely hardy — plant anywhere on the hill, including difficult rocky areas where other trees fail.'},
+      {title:'Growth', text:'Fast growing, begins fruiting by year 3–4. Thorny — provides immediate roosting protection for small birds.'},
+      {title:'Maintenance', text:'Virtually zero. Self-manages on poor laterite soil. Resists drought and goat grazing (thorns protect it).'},
+      {title:'Ecological role', text:'The dense structure is as valuable as the fruit — small birds use Ziziphus thickets as safe sleeping and roosting sites.'}
+    ],
+    wildlife:[
+      {icon:'🐦', name:'Winter migrants', desc:'Berries consumed by wintering warblers, chats, and robins arriving October–November'},
+      {icon:'🦋', name:'Common Cerulean', desc:'Larval host for several Lycanid butterfly species'},
+      {icon:'🐝', name:'Native bees', desc:'Monsoon flowers are valuable for native bees during an otherwise difficult season'},
+      {icon:'🐦', name:'Roosting birds', desc:'Dense thorny structure is a preferred safe roosting site for small birds'}
+    ]
+  },
+  {
+    id:'carissa', common_name:'Karvanda / Bengal Currant', scientific_name:'Carissa carandas',
+    local_name:'Karvanda (करवंद)', family:'Apocynaceae', origin:'native', status:'potential',
+    height_m_max:4, lifespan_years:40, growth_rate:'medium', difficulty:'easy',
+    drought_tolerant:true, bird_value:3, insect_value:3, butterfly_value:3,
+    flowering_months:[1,2,3,4], fruiting_months:[5,6,7],
+    soil_type:['laterite','rocky','sandy'], altitude_min_m:0, altitude_max_m:1500,
+    bird_species:['Pycnonotus cafer','Copsychus fulicatus'],
+    companion_trees:['Ziziphus mauritiana','Azadirachta indica'],
+    avoid_near:['Heavily shaded areas'],
+    water_needs:'very low — a true Deccan scrub native, highly drought tolerant',
+    conservation_note:'A signature plant of the Deccan laterite scrubland — exactly Baner Hill\'s ecological zone. Provides berries in early summer (May–July), dense thorny cover year-round, and nectar in winter. Critical habitat for Indian Robin.',
+    growing_steps:[
+      {title:'Propagation', text:'Grows from seed (from ripe black-purple berries) or semi-hardwood cuttings. Widely available in local Pune nurseries.'},
+      {title:'Planting', text:'Plant at start of monsoon in any well-drained position. Ideal for rocky exposed slopes — actually prefers poor soil.'},
+      {title:'Growth', text:'Moderate — forms a dense impenetrable shrub by year 3–4. The thorns are fierce — provides excellent bird habitat.'},
+      {title:'Flowering', text:'Fragrant white flowers January–April attract butterflies and bees. Very ornamental during flowering season.'},
+      {title:'Harvesting', text:'Berries are traditionally harvested for pickling and jams in local Maharashtrian cuisine — so planting benefits both ecology and community.'}
+    ],
+    wildlife:[
+      {icon:'🐦', name:'Indian Robin (specialist)', desc:'Karvanda thickets are a specialist habitat for Indian Robin — one of Earth Pulse\'s most detected species'},
+      {icon:'🦋', name:'Common Jezebel', desc:'Larval host for Delias butterflies including the striking Common Jezebel'},
+      {icon:'🐝', name:'Native bees', desc:'Fragrant winter flowers are heavily visited by native bee species'},
+      {icon:'🐦', name:'Dense nesting cover', desc:'Impenetrable thorny structure — ideal low-scrub nesting site for ground-level birds'}
+    ]
+  },
+  {
+    id:'rosewood', common_name:'Indian Rosewood', scientific_name:'Dalbergia sissoo',
+    local_name:'Shisham (शिसम)', family:'Fabaceae', origin:'native', status:'potential',
+    height_m_max:25, lifespan_years:150, growth_rate:'fast', difficulty:'moderate',
+    drought_tolerant:false, bird_value:3, insect_value:3, butterfly_value:2,
+    flowering_months:[3,4], fruiting_months:[10,11,12],
+    soil_type:['alluvial','loamy','well-drained'], altitude_min_m:0, altitude_max_m:900,
+    bird_species:['Ocyceros birostris','Tyto alba','Athene brama'],
+    companion_trees:['Terminalia arjuna','Millettia pinnata','Syzygium cumini'],
+    avoid_near:['Dry rocky ridges — needs better soil than typical Baner laterite'],
+    water_needs:'moderate — best planted in valley areas and garden soil, not exposed rocky ridges',
+    conservation_note:'Develops natural cavity branches over decades — creating nesting sites for hornbills, owlets, and barbets. Best planted in gardens and compound areas where soil quality is higher.',
+    growing_steps:[
+      {title:'Seeds', text:'Seeds ripen in flat papery pods October–December. Good germination from fresh seeds.'},
+      {title:'Planting', text:'Prefers deeper, better soil than typical Baner Hill laterite. Best for garden planting and society compounds rather than rocky slopes.'},
+      {title:'Growth', text:'Fast-growing timber tree — 2–3m/year in good soil. Nitrogen-fixing — improves soil around it.'},
+      {title:'Long-term', text:'Over 30–50 years, develops the natural hollows that make it valuable for cavity-nesting birds.'},
+      {title:'Community value', text:'Valued timber tree — creates strong community incentive for protection and long-term care.'}
+    ],
+    wildlife:[
+      {icon:'🦉', name:'Spotted Owlet', desc:'Natural hollow branches provide nesting cavities for Spotted Owlets in mature trees'},
+      {icon:'🐦', name:'Hornbills', desc:'Mature trees develop the large cavities that Indian Grey Hornbills require for nesting'},
+      {icon:'🦋', name:'Several species', desc:'Nitrogen-rich foliage supports diverse caterpillar species'},
+      {icon:'🐝', name:'Carpenter bees', desc:'Large carpenter bees excavate nesting burrows in dead Rosewood branches'}
+    ]
+  }
+];
+
+/* ── Helpers ── */
+function ge(id) { return document.getElementById(id); }
+var MO = ['J','F','M','A','M','J','J','A','S','O','N','D'];
+var MO_FULL = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+function originBadge(o) {
+  if (o === 'native')       return '<span class="tree-status-badge status-native">Native</span>';
+  if (o === 'naturalized')  return '<span class="tree-status-badge status-naturalized">Naturalized</span>';
+  if (o === 'exotic')       return '<span class="tree-status-badge status-exotic">Exotic</span>';
+  if (o === 'invasive')     return '<span class="tree-status-badge status-invasive">⚠ Invasive</span>';
+  return '';
+}
+function statusBadge(s) {
+  if (s === 'confirmed') return '<span class="tree-status-badge status-confirmed">✓ On Baner Hill</span>';
+  if (s === 'potential') return '<span class="tree-status-badge status-potential">★ Recommended</span>';
+  return '';
+}
+function impactBar(val, cls) {
+  var pct = Math.round((val/5)*100);
+  return '<div class="impact-track"><div class="impact-fill ' + cls + '" style="width:' + pct + '%"></div></div>';
+}
+
+/* ── Wikipedia fetch ── */
+function fetchWiki(sci) {
+  if (wikiCache[sci] !== undefined) return Promise.resolve(wikiCache[sci]);
+  return fetch('https://en.wikipedia.org/api/rest_v1/page/summary/' + encodeURIComponent(sci.replace(/ /g,'_')), {headers:{'Accept':'application/json'}})
+    .then(function(r){ return r.ok ? r.json() : null; })
+    .then(function(d){
+      if (!d) { wikiCache[sci] = null; return null; }
+      wikiCache[sci] = { thumb: d.thumbnail ? d.thumbnail.source : null, extract: d.extract || '' };
+      return wikiCache[sci];
+    }).catch(function(){ wikiCache[sci] = null; return null; });
+}
+
+/* ── Trefle fetch — get botanical data by scientific name ── */
+function fetchTrefle(sci) {
+  if (trefleCache[sci] !== undefined) return Promise.resolve(trefleCache[sci]);
+  // Trefle search by scientific name
+  return fetch(TREFLE + '/species/search?token=' + TREFLE_T + '&q=' + encodeURIComponent(sci))
+    .then(function(r){ return r.ok ? r.json() : null; })
+    .then(function(d){
+      if (!d || !d.data || !d.data.length) { trefleCache[sci] = null; return null; }
+      var sp = d.data[0]; // first result
+      trefleCache[sci] = {
+        common_name: sp.common_name,
+        family: sp.family,
+        image_url: sp.image_url,
+        slug: sp.slug,
+        trefle_id: sp.id
+      };
+      return trefleCache[sci];
+    }).catch(function(){ trefleCache[sci] = null; return null; });
+}
+
+/* ── Load live climate data from Supabase ── */
+async function loadClimateData() {
+  try {
+    var r = await fetch(SB + '/rest/v1/climate_readings?select=temperature,humidity&order=recorded_at.desc&limit=1', {headers: SB_H});
+    var d = await r.json();
+    if (d && d[0]) {
+      var t = ge('rec-temp'); var h = ge('rec-humidity');
+      if (t && d[0].temperature) t.textContent = d[0].temperature.toFixed(1) + '°C';
+      if (h && d[0].humidity)    h.textContent = d[0].humidity + '%';
+    }
+  } catch(e) {}
+}
+
+/* ── Load from Supabase hill_trees table — merge with seed data ── */
+async function loadTrees() {
+  var dbTrees = [];
+  try {
+    var r = await fetch(SB + '/rest/v1/hill_trees?select=*&order=common_name.asc', {headers: SB_H});
+    if (r.ok) {
+      var data = await r.json();
+      if (Array.isArray(data)) dbTrees = data;
+    }
+  } catch(e) { console.log('hill_trees table not yet populated — using seed data'); }
+
+  // Merge: DB takes priority, seed fills gaps
+  var dbIds = dbTrees.map(function(t){ return t.scientific_name; });
+  var seedOnly = BANER_TREES.filter(function(t){ return dbIds.indexOf(t.scientific_name) === -1; });
+  allTrees = dbTrees.concat(seedOnly);
+
+  // Sort: confirmed first, then by bird_value desc
+  allTrees.sort(function(a,b){
+    if (a.status === 'confirmed' && b.status !== 'confirmed') return -1;
+    if (b.status === 'confirmed' && a.status !== 'confirmed') return 1;
+    return (b.bird_value||0) - (a.bird_value||0);
+  });
+
+  // Update hero stats
+  var confirmed = allTrees.filter(function(t){ return t.status === 'confirmed'; }).length;
+  var potential = allTrees.filter(function(t){ return t.status === 'potential'; }).length;
+  var native    = allTrees.filter(function(t){ return t.origin === 'native'; }).length;
+  var birdLinks = allTrees.reduce(function(sum,t){ return sum + (t.bird_species ? t.bird_species.length : 0); }, 0);
+
+  var s = ge('stat-confirmed'); if (s) s.textContent = confirmed;
+  var p = ge('stat-potential'); if (p) p.textContent = potential;
+  var n = ge('stat-native');    if (n) n.textContent = native;
+  var b = ge('stat-bird-links');if (b) b.textContent = birdLinks;
+
+  applyFilters();
+  renderRecommendations();
+}
+
+/* ── Filters ── */
+function togglePill(key, btn) {
+  if (activePills[key]) { delete activePills[key]; btn.classList.remove('on'); }
+  else { activePills[key] = true; btn.classList.add('on'); }
+  applyFilters();
+}
+
+function applyFilters() {
+  var status     = ge('sel-status').value;
+  var origin     = ge('sel-origin').value;
+  var difficulty = ge('sel-difficulty').value;
+
+  filtered = allTrees.filter(function(t) {
+    if (status !== 'all' && t.status !== status) return false;
+    if (origin !== 'all' && t.origin !== origin) return false;
+    if (difficulty !== 'all' && t.difficulty !== difficulty) return false;
+    if (activePills['birds']     && (t.bird_value||0) < 3) return false;
+    if (activePills['butterfly'] && (t.butterfly_value||0) < 3) return false;
+    if (activePills['bee']       && (t.insect_value||0) < 3) return false;
+    if (activePills['drought']   && !t.drought_tolerant) return false;
+    return true;
+  });
+
+  var fc = ge('filter-count');
+  if (fc) fc.textContent = filtered.length + ' species';
+  currentPg = 1;
+  renderPage();
+}
+
+/* ── Render card grid ── */
+function renderPage() {
+  var grid = ge('trees-grid');
+  var pag  = ge('trees-pagination');
+  if (!grid) return;
+
+  if (!filtered.length) {
+    grid.innerHTML = '<div class="trees-empty"><span style="font-size:2rem">🌿</span><p style="margin-top:0.5rem;">No species match this filter.</p></div>';
+    pag.style.display = 'none';
+    return;
+  }
+
+  var totalPg = Math.ceil(filtered.length / PAGE_SIZE);
+  var start = (currentPg - 1) * PAGE_SIZE;
+  var slice = filtered.slice(start, start + PAGE_SIZE);
+
+  grid.innerHTML = slice.map(function(t, i) {
+    var idx = start + i;
+    var birdChips = (t.bird_species || []).slice(0,3).map(function(sci){
+      var name = sci.split(' ').slice(-1)[0]; // genus abbreviation
+      return '<a class="tree-bird-chip" href="species.html?bird=' + sci.replace(/ /g,'_') + '" onclick="event.stopPropagation();">' + name + '</a>';
+    }).join('');
+
+    return '<div class="tree-card" id="card-' + idx + '" onclick="openModal(\'' + t.id + '\')" role="button" tabindex="0" aria-label="' + t.common_name + ' — view full profile" onkeydown="if(event.key===\'Enter\')openModal(\'' + t.id + '\')">'
+      + '<div class="tree-card-photo-placeholder" id="photo-' + idx + '">' + (t.origin === 'native' ? '🌳' : '🌱') + '</div>'
+      + '<div class="tree-card-body">'
+        + '<div class="tree-card-status">' + statusBadge(t.status) + originBadge(t.origin) + '</div>'
+        + '<div class="tree-card-name">' + t.common_name + '</div>'
+        + '<div class="tree-card-sci"><em>' + t.scientific_name + '</em></div>'
+        + (t.local_name ? '<div class="tree-card-local">' + t.local_name + '</div>' : '')
+        + '<div class="impact-bars">'
+          + '<div class="impact-row"><span class="impact-label">Birds</span>' + impactBar(t.bird_value||0,'impact-birds') + '</div>'
+          + '<div class="impact-row"><span class="impact-label">Insects</span>' + impactBar(t.insect_value||0,'impact-insects') + '</div>'
+          + '<div class="impact-row"><span class="impact-label">Butterfly</span>' + impactBar(t.butterfly_value||0,'impact-butterfly') + '</div>'
+        + '</div>'
+        + '<div class="tree-quick-stats">'
+          + '<div class="tree-qs"><strong>Height</strong>up to ' + (t.height_m_max||'?') + 'm</div>'
+          + '<div class="tree-qs"><strong>Growth</strong>' + (t.growth_rate||'—') + '</div>'
+          + '<div class="tree-qs"><strong>Difficulty</strong>' + (t.difficulty||'—') + '</div>'
+          + '<div class="tree-qs"><strong>Water</strong>' + (t.drought_tolerant ? 'Very low' : 'Moderate') + '</div>'
+        + '</div>'
+        + (birdChips ? '<div class="tree-birds">' + birdChips + '</div>' : '')
+      + '</div>'
+    + '</div>';
+  }).join('');
+
+  // Load Wikipedia thumbnails asynchronously
+  slice.forEach(function(t, i) {
+    var idx = start + i;
+    fetchWiki(t.scientific_name).then(function(w){
+      var el = ge('photo-' + idx);
+      if (el && w && w.thumb) {
+        var img = document.createElement('img');
+        img.className = 'tree-card-photo';
+        img.src = w.thumb;
+        img.alt = t.common_name + ' (' + t.scientific_name + ')';
+        img.loading = 'lazy';
+        el.outerHTML = img.outerHTML;
+      }
+    });
+  });
+
+  // Pagination
+  if (totalPg <= 1) { pag.style.display = 'none'; return; }
+  pag.style.display = 'flex';
+  var btns = '<button class="pag-btn" onclick="goPage(' + (currentPg-1) + ')" ' + (currentPg===1?'disabled':'') + '>← Prev</button>';
+  for (var p = 1; p <= totalPg; p++) {
+    btns += '<button class="pag-btn' + (p===currentPg?' cur':'') + '" onclick="goPage(' + p + ')">' + p + '</button>';
+  }
+  btns += '<button class="pag-btn" onclick="goPage(' + (currentPg+1) + ')" ' + (currentPg===totalPg?'disabled':'') + '>Next →</button>';
+  btns += '<span class="pag-info">' + filtered.length + ' species</span>';
+  pag.innerHTML = btns;
+}
+
+function goPage(p) {
+  if (p < 1 || p > Math.ceil(filtered.length/PAGE_SIZE)) return;
+  currentPg = p; renderPage();
+  window.scrollTo({top: ge('trees-grid').offsetTop - 120, behavior:'smooth'});
+}
+
+/* ── Recommendation engine ── */
+function renderRecommendations() {
+  // Top recommended: status=potential or native+confirmed sorted by bird_value+insect_value+butterfly_value
+  var recs = allTrees
+    .filter(function(t){ return t.origin === 'native'; })
+    .sort(function(a,b){ return ((b.bird_value||0)+(b.insect_value||0)+(b.butterfly_value||0)) - ((a.bird_value||0)+(a.insect_value||0)+(a.butterfly_value||0)); })
+    .slice(0,6);
+
+  var grid = ge('rec-grid');
+  if (!grid) return;
+
+  grid.innerHTML = recs.map(function(t, i) {
+    var total = (t.bird_value||0) + (t.insect_value||0) + (t.butterfly_value||0);
+    var impact = total >= 12 ? '🌟 Very high' : total >= 9 ? '⭐ High' : '✅ Good';
+    return '<div class="tree-card" style="border-left:3px solid var(--ep-green);" onclick="openModal(\'' + t.id + '\')" role="button" tabindex="0">'
+      + '<div class="tree-card-photo-placeholder" id="rec-photo-' + i + '">🌿</div>'
+      + '<div class="tree-card-body">'
+        + '<div class="tree-card-status"><span class="tree-status-badge" style="background:rgba(33,67,50,0.1);color:#145a32;">🌡️ Baner-matched</span>' + originBadge(t.origin) + '</div>'
+        + '<div class="tree-card-name">' + t.common_name + '</div>'
+        + '<div class="tree-card-sci"><em>' + t.scientific_name + '</em></div>'
+        + (t.local_name ? '<div class="tree-card-local">' + t.local_name + '</div>' : '')
+        + '<div style="font-size:0.72rem;color:var(--ep-green);font-weight:600;margin-bottom:0.5rem;">Conservation impact: ' + impact + '</div>'
+        + '<div class="impact-bars">'
+          + '<div class="impact-row"><span class="impact-label">Birds</span>' + impactBar(t.bird_value||0,'impact-birds') + '</div>'
+          + '<div class="impact-row"><span class="impact-label">Insects</span>' + impactBar(t.insect_value||0,'impact-insects') + '</div>'
+          + '<div class="impact-row"><span class="impact-label">Butterfly</span>' + impactBar(t.butterfly_value||0,'impact-butterfly') + '</div>'
+        + '</div>'
+        + '<div style="font-size:0.72rem;color:var(--text-muted);margin-top:0.4rem;">Difficulty: <strong style="color:var(--ep-green);">' + (t.difficulty||'easy') + '</strong> · Water: <strong style="color:var(--ep-green);">' + (t.drought_tolerant?'Very low':'Moderate') + '</strong></div>'
+      + '</div>'
+    + '</div>';
+  }).join('');
+
+  // Load thumbnails for recommendations
+  recs.forEach(function(t, i) {
+    fetchWiki(t.scientific_name).then(function(w){
+      var el = ge('rec-photo-' + i);
+      if (el && w && w.thumb) {
+        var img = document.createElement('img');
+        img.className = 'tree-card-photo';
+        img.src = w.thumb;
+        img.alt = t.common_name;
+        img.loading = 'lazy';
+        el.outerHTML = img.outerHTML;
+      }
+    });
+  });
+}
+
+/* ── Modal ── */
+function openModal(treeId) {
+  var t = allTrees.filter(function(x){ return x.id === treeId; })[0];
+  if (!t) return;
+
+  var modal   = ge('tree-modal');
+  var overlay = ge('modal-overlay');
+  var title   = ge('modal-title');
+  var body    = ge('tree-modal-body');
+  if (!modal || !overlay || !body) return;
+
+  title.textContent = t.common_name;
+
+  // Seasonal calendar
+  var scCells = MO.map(function(m, idx) {
+    var monthNum = idx + 1;
+    var isFruit   = t.fruiting_months && t.fruiting_months.indexOf(monthNum) !== -1;
+    var isFlower  = t.flowering_months && t.flowering_months.indexOf(monthNum) !== -1;
+    var cls = isFruit ? 'sc-fruit' : isFlower ? 'sc-flower' : 'sc-dormant';
+    return '<div class="sc-cell ' + cls + '">' + m + '</div>';
+  }).join('');
+
+  // Bird species linked
+  var birdHtml = '';
+  if (t.bird_species && t.bird_species.length) {
+    birdHtml = '<div class="linked-birds">' + t.bird_species.map(function(sci){
+      var parts = sci.split(' ');
+      var abbr = parts[0][0] + '. ' + parts.slice(1).join(' ');
+      return '<div class="linked-bird-row">'
+        + '<div><div class="linked-bird-name">' + abbr + '</div><div class="linked-bird-sci">' + sci + '</div></div>'
+        + '<a class="linked-bird-link" href="species.html?bird=' + sci.replace(/ /g,'_') + '">View detections →</a>'
+        + '</div>';
+    }).join('') + '</div>';
+  } else {
+    birdHtml = '<p style="font-size:0.8rem;color:var(--text-muted);">No specific bird detections linked yet. This tree supports birds generally through its ecological functions.</p>';
+  }
+
+  // Growing guide
+  var growingHtml = '';
+  if (t.growing_steps && t.growing_steps.length) {
+    growingHtml = '<div class="growing-steps">' + t.growing_steps.map(function(step, i){
+      return '<div class="growing-step">'
+        + '<div class="growing-step-num">' + (i+1) + '</div>'
+        + '<div class="growing-step-body">'
+          + '<div class="growing-step-title">' + step.title + '</div>'
+          + '<div class="growing-step-text">' + step.text + '</div>'
+        + '</div>'
+      + '</div>';
+    }).join('') + '</div>';
+  }
+
+  // Companion planting
+  var companionHtml = '<div class="companion-grid">'
+    + '<div class="companion-card companion-good"><div class="companion-title">✓ Plant with</div>'
+      + (t.companion_trees||[]).map(function(c){ return '<div class="companion-item">' + c + '</div>'; }).join('') + '</div>'
+    + '<div class="companion-card companion-avoid"><div class="companion-title">✗ Avoid near</div>'
+      + (t.avoid_near||[]).map(function(c){ return '<div class="companion-item">' + c + '</div>'; }).join('') + '</div>'
+    + '</div>';
+
+  // Wildlife
+  var wildlifeHtml = '';
+  if (t.wildlife && t.wildlife.length) {
+    wildlifeHtml = '<div class="wildlife-grid">' + t.wildlife.map(function(w){
+      return '<div class="wildlife-card">'
+        + '<div class="wildlife-icon">' + w.icon + '</div>'
+        + '<div class="wildlife-name">' + w.name + '</div>'
+        + '<div class="wildlife-desc">' + w.desc + '</div>'
+      + '</div>';
+    }).join('') + '</div>';
+  }
+
+  body.innerHTML =
+    '<div class="tree-modal-photo-placeholder" id="modal-main-photo">🌿</div>'
+    + '<div class="tree-modal-content">'
+
+      + '<div class="modal-section">'
+        + '<div style="display:flex;gap:0.4rem;flex-wrap:wrap;margin-bottom:0.75rem;">' + statusBadge(t.status) + originBadge(t.origin) + '</div>'
+        + '<div style="font-style:italic;font-size:0.88rem;color:var(--text-muted);margin-bottom:0.3rem;">' + t.scientific_name + '</div>'
+        + (t.local_name ? '<div style="font-size:0.82rem;font-weight:600;color:var(--ep-tan);margin-bottom:0.75rem;">' + t.local_name + '</div>' : '')
+        + (t.conservation_note ? '<div style="font-size:0.83rem;color:var(--text-muted);line-height:1.75;background:rgba(33,67,50,0.04);border-left:3px solid var(--ep-green);padding:0.75rem 1rem;border-radius:0 var(--radius-sm) var(--radius-sm) 0;">' + t.conservation_note + '</div>' : '')
+      + '</div>'
+
+      + '<div class="modal-section"><div class="modal-section-title">At a glance</div>'
+        + '<div class="modal-fact-row"><span class="modal-fact-label">Family</span><span class="modal-fact-val">' + (t.family||'—') + '</span></div>'
+        + '<div class="modal-fact-row"><span class="modal-fact-label">Max height</span><span class="modal-fact-val">up to ' + (t.height_m_max||'?') + 'm</span></div>'
+        + '<div class="modal-fact-row"><span class="modal-fact-label">Lifespan</span><span class="modal-fact-val">' + (t.lifespan_years||'?') + ' years</span></div>'
+        + '<div class="modal-fact-row"><span class="modal-fact-label">Growth rate</span><span class="modal-fact-val">' + (t.growth_rate||'—') + '</span></div>'
+        + '<div class="modal-fact-row"><span class="modal-fact-label">Growing difficulty</span><span class="modal-fact-val">' + (t.difficulty||'—') + '</span></div>'
+        + '<div class="modal-fact-row"><span class="modal-fact-label">Water needs</span><span class="modal-fact-val" style="font-size:0.72rem;white-space:normal;text-align:right;">' + (t.water_needs||'—') + '</span></div>'
+        + '<div class="modal-fact-row"><span class="modal-fact-label">Drought tolerant</span><span class="modal-fact-val">' + (t.drought_tolerant?'Yes ✓':'No') + '</span></div>'
+        + '<div class="modal-fact-row"><span class="modal-fact-label">Soil type</span><span class="modal-fact-val">' + (t.soil_type||[]).join(', ') + '</span></div>'
+        + '<div class="modal-fact-row"><span class="modal-fact-label">Altitude range</span><span class="modal-fact-val">' + (t.altitude_min_m||0) + '–' + (t.altitude_max_m||1500) + 'm</span></div>'
+      + '</div>'
+
+      + '<div class="modal-section"><div class="modal-section-title">Conservation impact</div>'
+        + '<div class="impact-bars" style="margin-bottom:0.75rem;">'
+          + '<div class="impact-row"><span class="impact-label" style="width:80px;">Birds</span>' + impactBar(t.bird_value||0,'impact-birds') + '<span style="font-family:var(--mono);font-size:0.72rem;color:var(--ep-green);margin-left:0.4rem;">' + (t.bird_value||0) + '/5</span></div>'
+          + '<div class="impact-row"><span class="impact-label" style="width:80px;">Insects</span>' + impactBar(t.insect_value||0,'impact-insects') + '<span style="font-family:var(--mono);font-size:0.72rem;color:var(--ep-green);margin-left:0.4rem;">' + (t.insect_value||0) + '/5</span></div>'
+          + '<div class="impact-row"><span class="impact-label" style="width:80px;">Butterfly</span>' + impactBar(t.butterfly_value||0,'impact-butterfly') + '<span style="font-family:var(--mono);font-size:0.72rem;color:var(--ep-green);margin-left:0.4rem;">' + (t.butterfly_value||0) + '/5</span></div>'
+        + '</div>'
+      + '</div>'
+
+      + '<div class="modal-section"><div class="modal-section-title">🗓️ Seasonal calendar</div>'
+        + '<p style="font-size:0.74rem;color:var(--text-muted);margin-bottom:0.5rem;">When this tree flowers, fruits, and is ecologically active on Baner Hill.</p>'
+        + '<div class="sc-labels">' + MO.map(function(m){ return '<span class="sc-label">' + m + '</span>'; }).join('') + '</div>'
+        + '<div class="seasonal-cal">' + scCells + '</div>'
+        + '<div class="sc-legend"><span><span class="sc-swatch" style="background:rgba(236,72,153,0.2);"></span>Flowering</span><span><span class="sc-swatch" style="background:rgba(234,179,8,0.25);"></span>Fruiting</span><span><span class="sc-swatch" style="background:rgba(33,67,50,0.15);"></span>Active growth</span><span><span class="sc-swatch" style="background:var(--ep-cream-dark);border:1px solid var(--border);"></span>Dormant</span></div>'
+      + '</div>'
+
+      + (wildlifeHtml ? '<div class="modal-section"><div class="modal-section-title">🦋 Wildlife supported</div>' + wildlifeHtml + '</div>' : '')
+
+      + '<div class="modal-section"><div class="modal-section-title">🐦 Bird species that use this tree</div>'
+        + '<p style="font-size:0.74rem;color:var(--text-muted);margin-bottom:0.6rem;">Species detected acoustically at Earth Pulse that are known to use this tree for food or nesting. Click to see detection data.</p>'
+        + birdHtml
+      + '</div>'
+
+      + (growingHtml ? '<div class="modal-section"><div class="modal-section-title">🌱 How to grow this tree</div><p style="font-size:0.74rem;color:var(--text-muted);margin-bottom:0.75rem;">A practical guide for anyone — no gardening experience needed.</p>' + growingHtml + '</div>' : '')
+
+      + '<div class="modal-section"><div class="modal-section-title">🌿 Companion planting</div>'
+        + '<p style="font-size:0.74rem;color:var(--text-muted);margin-bottom:0.6rem;">Which trees grow well alongside this species, and which to avoid planting nearby.</p>'
+        + companionHtml
+      + '</div>'
+
+      + '<div class="modal-section" style="border-top:1px solid var(--border);padding-top:1rem;">'
+        + '<a href="species.html" style="font-size:0.78rem;color:var(--ep-green);">← See all bird species</a>'
+        + '&nbsp;&nbsp;·&nbsp;&nbsp;'
+        + '<a href="https://en.wikipedia.org/wiki/' + encodeURIComponent(t.scientific_name.replace(/ /g,'_')) + '" target="_blank" rel="noopener" style="font-size:0.78rem;color:var(--ep-green);">Wikipedia →</a>'
+        + '&nbsp;&nbsp;·&nbsp;&nbsp;'
+        + '<a href="https://www.gbif.org/species/search?q=' + encodeURIComponent(t.scientific_name) + '" target="_blank" rel="noopener" style="font-size:0.78rem;color:var(--ep-green);">GBIF occurrences →</a>'
+      + '</div>'
+
+    + '</div>';
+
+  overlay.classList.add('open');
+  modal.classList.add('open');
+  modal.setAttribute('aria-hidden','false');
+  document.body.style.overflow = 'hidden';
+
+  // Load Wikipedia photo for modal
+  fetchWiki(t.scientific_name).then(function(w){
+    var el = ge('modal-main-photo');
+    if (!el) return;
+    if (w && w.thumb) {
+      var img = document.createElement('img');
+      img.className = 'tree-modal-photo';
+      img.src = w.thumb;
+      img.alt = t.common_name;
+      el.outerHTML = img.outerHTML;
+    } else {
+      // Try Trefle image
+      fetchTrefle(t.scientific_name).then(function(tr){
+        var el2 = ge('modal-main-photo');
+        if (el2 && tr && tr.image_url) {
+          var img2 = document.createElement('img');
+          img2.className = 'tree-modal-photo';
+          img2.src = tr.image_url;
+          img2.alt = t.common_name;
+          el2.outerHTML = img2.outerHTML;
+        }
+      });
+    }
+  });
+}
+
+function closeModal() {
+  var modal   = ge('tree-modal');
+  var overlay = ge('modal-overlay');
+  if (modal)   { modal.classList.remove('open'); modal.setAttribute('aria-hidden','true'); }
+  if (overlay)  overlay.classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+/* Close on Escape */
+document.addEventListener('keydown', function(e){ if (e.key === 'Escape') closeModal(); });
+
+/* ── Boot ── */
+loadClimateData();
+loadTrees();
+</script>
+
+<noscript>
+<div style="max-width:1100px;margin:0 auto;padding:2rem;">
+<h2>Trees and Plants of Baner Hill, Pune</h2>
+<p>Earth Pulse maintains a living botanical database of every tree and plant found on Baner Hill, Pune — including native species, recommended species, growing guides, and conservation impact data cross-referenced with acoustic bird detections.</p>
+<p>Key native species include: Ficus benghalensis (Banyan), Ficus religiosa (Peepal), Syzygium cumini (Jamun), Azadirachta indica (Neem), Phyllanthus emblica (Amla), Butea monosperma (Flame of the Forest), Millettia pinnata (Pongamia), Erythrina variegata (Coral Tree), and Bombax ceiba (Silk Cotton).</p>
+<p><a href="birds.html">Bird species →</a> | <a href="hill.html">Baner Hill →</a></p>
+</div>
+</noscript>
+</body>
+</html>

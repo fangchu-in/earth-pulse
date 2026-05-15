@@ -1,8 +1,12 @@
 /* Earth Pulse — nav.js
    Auth-aware navigation with hamburger menu for mobile.
+   Birds has dropdown (desktop) / accordion (mobile) with sub-pages.
    Climate has dropdown (desktop) / accordion (mobile) with sub-pages.
    Supabase v2 key: "sb-[project-ref]-auth-token"
    where project-ref = "krmczyqwblsoekceanlj"
+
+   Updated: Added Birds dropdown (Bird of the Day, Migratory Birds),
+            Trees link, identify link — all new pages from May 2026 build.
 */
 (function() {
   var SITE    = 'Earth Pulse';
@@ -12,7 +16,16 @@
 
   var LINKS = [
     { href:BASE+'/index.html',      label:'Home' },
-    { href:BASE+'/birds.html',      label:'Birds' },
+    { href:BASE+'/birds.html',      label:'Birds', dropdown:[
+        { href:BASE+'/birds.html',            label:'All Birds of Baner',    icon:'&#128038;' },
+        { href:BASE+'/bird-of-the-day.html',  label:'Bird of the Day',       icon:'&#127749;' },
+        { href:BASE+'/migratory.html',        label:'Migratory Birds',        icon:'&#9992;&#65039;' },
+        { href:BASE+'/species.html',          label:'Species Profiles',       icon:'&#128269;' },
+    ]},
+    { href:BASE+'/trees.html',      label:'Trees', dropdown:[
+        { href:BASE+'/trees.html',     label:'Trees Encyclopedia',    icon:'&#127795;' },
+        { href:BASE+'/identify.html',  label:'Identify a Plant',       icon:'&#128247;' },
+    ]},
     { href:BASE+'/climate.html',    label:'Climate', dropdown:[
         { href:BASE+'/temperature.html', label:'Temperature',    icon:'&#127777;&#65039;' },
         { href:BASE+'/rain.html',        label:'Monsoon & Rain', icon:'&#127783;&#65039;' },
@@ -24,19 +37,23 @@
   ];
 
   var FOOTER_LINKS = [
-    { href:BASE+'/index.html',       label:'Home' },
-    { href:BASE+'/birds.html',       label:'Birds' },
-    { href:BASE+'/species.html',     label:'Species' },
-    { href:BASE+'/climate.html',     label:'Climate' },
-    { href:BASE+'/temperature.html', label:'Temperature' },
-    { href:BASE+'/rain.html',        label:'Monsoon & Rain' },
-    { href:BASE+'/aqi.html',         label:'Air Quality' },
-    { href:BASE+'/hill.html',        label:'Baner Hill' },
-    { href:BASE+'/blog.html',        label:'Blog' },
-    { href:BASE+'/register.html',    label:'Register / Sign in' },
-    { href:BASE+'/contribute.html',  label:'Contribute' },
-    { href:BASE+'/about.html',       label:'About' },
-    { href:BASE+'/contact.html',     label:'Contact' },
+    { href:BASE+'/index.html',            label:'Home' },
+    { href:BASE+'/birds.html',            label:'Birds' },
+    { href:BASE+'/species.html',          label:'Species' },
+    { href:BASE+'/bird-of-the-day.html',  label:'Bird of the Day' },
+    { href:BASE+'/migratory.html',        label:'Migratory Birds' },
+    { href:BASE+'/trees.html',            label:'Trees & Plants' },
+    { href:BASE+'/identify.html',         label:'Identify a Plant' },
+    { href:BASE+'/climate.html',          label:'Climate' },
+    { href:BASE+'/temperature.html',      label:'Temperature' },
+    { href:BASE+'/rain.html',             label:'Monsoon & Rain' },
+    { href:BASE+'/aqi.html',              label:'Air Quality' },
+    { href:BASE+'/hill.html',             label:'Baner Hill' },
+    { href:BASE+'/blog.html',             label:'Blog' },
+    { href:BASE+'/register.html',         label:'Register / Sign in' },
+    { href:BASE+'/contribute.html',       label:'Contribute' },
+    { href:BASE+'/about.html',            label:'About' },
+    { href:BASE+'/contact.html',          label:'Contact' },
   ];
 
   function page() { return window.location.pathname.split('/').pop() || 'index.html'; }
@@ -80,20 +97,20 @@
     var pg = page();
     var isAdmin = session.ok && session.email === 'fangchu@gmail.com';
 
-    /* Desktop nav links — Climate gets a hover dropdown */
+    /* Desktop nav links */
     var links = LINKS.map(function(l) {
-      var isActive    = pg === l.href.split('#')[0];
-      var isSubActive = l.dropdown && l.dropdown.some(function(s){ return pg === s.href; });
+      var isActive    = pg === l.href.split('#')[0].split('/').pop();
+      var isSubActive = l.dropdown && l.dropdown.some(function(s){ return pg === s.href.split('/').pop(); });
       if (l.dropdown) {
         var dropItems = l.dropdown.map(function(s) {
-          var sa = pg === s.href ? ' class="ep-drop-item ep-drop-active"' : ' class="ep-drop-item"';
-          return '<li><a href="' + s.href + '"' + sa + '>' + s.icon + ' ' + s.label + '</a></li>';
+          var sa = pg === s.href.split('/').pop() ? ' class="ep-drop-item ep-drop-active"' : ' class="ep-drop-item"';
+          return '<a href="' + s.href + '"' + sa + '>' + s.icon + ' ' + s.label + '</a>';
         }).join('');
         return '<li class="ep-has-drop' + (isActive || isSubActive ? ' active' : '') + '">' +
           '<a href="' + l.href + '"' + (isActive ? ' class="active"' : '') + '>' +
             l.label + ' <svg class="ep-drop-caret" width="9" height="6" viewBox="0 0 9 6" fill="none"><path d="M1 1l3.5 4L8 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>' +
           '</a>' +
-          '<ul class="ep-dropdown" role="menu"><div class="ep-drop-inner">' + dropItems.replace(/<li>/g,'').replace(/<\/li>/g,'') + '</div></ul>' +
+          '<ul class="ep-dropdown" role="menu"><div class="ep-drop-inner">' + dropItems + '</div></ul>' +
         '</li>';
       }
       return '<li><a href="' + l.href + '"' + (isActive ? ' class="active"' : '') + '>' + l.label + '</a></li>';
@@ -107,16 +124,15 @@
       cta = '<a href="' + BASE + '/register.html" class="ep-nav-cta">Register</a>';
     }
 
-    /* Mobile drawer links — Climate gets an accordion */
+    /* Mobile drawer links */
     var drawerLinks = LINKS.map(function(l) {
-      var isCurrent    = pg === l.href.split('#')[0];
-      var isSubCurrent = l.dropdown && l.dropdown.some(function(s){ return pg === s.href; });
+      var isCurrent    = pg === l.href.split('/').pop();
+      var isSubCurrent = l.dropdown && l.dropdown.some(function(s){ return pg === s.href.split('/').pop(); });
       if (l.dropdown) {
         var subLinks = l.dropdown.map(function(s) {
-          var sc = pg === s.href;
+          var sc = pg === s.href.split('/').pop();
           return '<a href="' + s.href + '" class="ep-mob-link ep-mob-sub' + (sc ? ' ep-mob-active' : '') + '">' + s.icon + ' ' + s.label + '</a>';
         }).join('');
-        /* Auto-expand if currently on climate or a sub-page */
         var openCls = (isCurrent || isSubCurrent) ? ' ep-mob-group-open' : '';
         return '<div class="ep-mob-group' + openCls + '">' +
           '<button class="ep-mob-link ep-mob-group-hd' + (isCurrent || isSubCurrent ? ' ep-mob-active' : '') + '" aria-expanded="' + (isCurrent || isSubCurrent ? 'true' : 'false') + '">' +
@@ -156,7 +172,7 @@
       '<div class="ep-mob-drawer" id="ep-mob-drawer" role="dialog" aria-label="Navigation menu" aria-hidden="true">' +
         '<div class="ep-mob-inner">' +
           drawerLinks +
-          '<a href="search.html" class="ep-mob-link">&#128269; Search</a>' +
+          '<a href="' + BASE + '/search.html" class="ep-mob-link">&#128269; Search</a>' +
           '<div class="ep-mob-sep"></div>' +
           drawerAuth +
         '</div>' +
@@ -173,10 +189,10 @@
         '.ep-drop-caret{opacity:0.55;transition:transform 0.18s;}' +
         '.ep-has-drop:hover .ep-drop-caret{transform:rotate(180deg);}' +
         '.ep-dropdown{display:none;position:absolute;top:100%;left:50%;transform:translateX(-50%);padding-top:10px;min-width:210px;z-index:200;list-style:none;}' +
-        '' +
         '.ep-drop-item{display:flex;align-items:center;gap:8px;padding:8px 13px;border-radius:7px;font-size:0.84rem;color:var(--text-secondary,#444);text-decoration:none;white-space:nowrap;transition:background 0.12s,color 0.12s;}' +
         '.ep-drop-item:hover{background:rgba(33,67,50,0.07);color:var(--ep-green,#214332);}' +
-        '.ep-drop-active{background:rgba(33,67,50,0.07);color:var(--ep-green,#214332);font-weight:600;}.ep-drop-inner{background:#fff;border:1px solid var(--border,#e5e0d8);border-radius:10px;box-shadow:0 10px 32px rgba(0,0,0,0.13);padding:5px;}' +
+        '.ep-drop-active{background:rgba(33,67,50,0.07);color:var(--ep-green,#214332);font-weight:600;}' +
+        '.ep-drop-inner{background:#fff;border:1px solid var(--border,#e5e0d8);border-radius:10px;box-shadow:0 10px 32px rgba(0,0,0,0.13);padding:5px;}' +
         '.ep-has-drop:hover .ep-dropdown{display:block;}' +
         /* Hamburger */
         '.ep-hamburger{display:none;flex-direction:column;justify-content:center;align-items:center;gap:5px;width:40px;height:40px;padding:8px;background:transparent;border:none;cursor:pointer;border-radius:var(--radius-sm,6px);flex-shrink:0;}' +
@@ -197,7 +213,7 @@
         '.ep-mob-group-hd{display:flex;align-items:center;justify-content:space-between;}' +
         '.ep-mob-arrow{margin-left:auto;opacity:0.5;flex-shrink:0;transition:transform 0.2s ease;}' +
         '.ep-mob-sub-list{overflow:hidden;max-height:0;transition:max-height 0.25s ease;}' +
-        '.ep-mob-group-open .ep-mob-sub-list{max-height:220px;}' +
+        '.ep-mob-group-open .ep-mob-sub-list{max-height:280px;}' +
         '.ep-mob-group-open .ep-mob-arrow{transform:rotate(180deg);}' +
         '.ep-mob-sub{padding-left:2.2rem;font-size:0.88rem;color:var(--text-muted,#666);}' +
         '.ep-mob-sub:hover,.ep-mob-sub.ep-mob-active{color:var(--ep-green,#214332);}' +
@@ -209,11 +225,15 @@
         '.ep-mob-overlay{display:none;position:fixed;inset:0;z-index:298;background:rgba(0,0,0,0.28);backdrop-filter:blur(2px);}' +
         '.ep-mob-overlay.open{display:block;}' +
         /* Mobile breakpoint */
-        '@media(max-width:680px){' +
+        '@media(max-width:720px){' +
           '.ep-nav-links{display:none!important;}' +
           '.ep-nav-right{display:none!important;}' +
           '.ep-hamburger{display:flex!important;}' +
           '.ep-nav-logo-full{height:24px!important;width:auto!important;max-width:none;}' +
+        '}' +
+        /* Slightly wider breakpoint than before — more nav items now */
+        '@media(min-width:721px) and (max-width:900px){' +
+          '.ep-nav-links a,.ep-nav-links button{font-size:0.82rem;}' +
         '}' +
       '</style>';
 
@@ -248,18 +268,27 @@
     if (overlay)   overlay.addEventListener('click', closeMenu);
     document.addEventListener('keydown', function(e){ if (e.key === 'Escape' && isOpen()) closeMenu(); });
 
-    /* Mobile climate accordion toggle */
+    /* Mobile accordion toggle — works for both Birds and Climate */
     if (drawer) {
       var grpHds = drawer.querySelectorAll('.ep-mob-group-hd');
       for (var gi = 0; gi < grpHds.length; gi++) {
         grpHds[gi].addEventListener('click', function() {
           var grp = this.parentElement;
           var willOpen = !grp.classList.contains('ep-mob-group-open');
-          grp.classList.toggle('ep-mob-group-open');
+          /* Close other open accordions */
+          var allGrps = drawer.querySelectorAll('.ep-mob-group');
+          for (var j = 0; j < allGrps.length; j++) {
+            if (allGrps[j] !== grp) {
+              allGrps[j].classList.remove('ep-mob-group-open');
+              var hd = allGrps[j].querySelector('.ep-mob-group-hd');
+              if (hd) hd.setAttribute('aria-expanded','false');
+            }
+          }
+          grp.classList.toggle('ep-mob-group-open', willOpen);
           this.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
         });
       }
-      /* Close drawer on any leaf link click (not the accordion header) */
+      /* Close drawer on any leaf link click */
       var anchors = drawer.querySelectorAll('a');
       for (var i = 0; i < anchors.length; i++) {
         anchors[i].addEventListener('click', function() {
@@ -284,7 +313,7 @@
 
     /* Close on resize to desktop */
     window.addEventListener('resize', function() {
-      if (window.innerWidth > 680 && isOpen()) closeMenu();
+      if (window.innerWidth > 720 && isOpen()) closeMenu();
     });
   }
 
