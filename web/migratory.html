@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Migratory Birds of Baner Hill, Pune — Arrival, Routes & Conservation | Earth Pulse</title>
+  <meta name="description" content="Which migratory birds visit Baner Hill, Pune? Where do they come from, when do they arrive, how long do they stay? Live acoustic detection data from Earth Pulse with conservation guide for making Baner Hill a migratory bird haven.">
+  <meta name="robots" content="index, follow">
+  <meta name="author" content="Earth Pulse Project">
+  <link rel="canonical" href="https://earth-pulse.org/migratory.html">
+  <meta property="og:title" content="Migratory Birds of Baner Hill, Pune | Earth Pulse">
+  <meta property="og:description" content="Long-distance travellers detected acoustically at Baner Hill. Where they come from, when they arrive, and how to make Baner a better home for them.">
+  <meta property="og:image" content="https://earth-pulse.org/earth-pulse-logo-og.png">
+  <meta property="og:url" content="https://earth-pulse.org/migratory.html">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="en_IN">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://earth-pulse.org/earth-pulse-logo-og.png">
+  <meta name="geo.region" content="IN-MH">
+  <meta name="geo.placename" content="Baner, Pune, Maharashtra">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Migratory Birds of Baner Hill, Pune — Arrival, Routes & Conservation",
+    "description": "Which migratory birds visit Baner Hill? Where do they come from, when do they arrive, and how can we make Baner a better wintering haven?",
+    "author": {"@type":"Organization","name":"Earth Pulse Project","url":"https://earth-pulse.org"},
+    "publisher": {"@type":"Organization","name":"Earth Pulse","logo":{"@type":"ImageObject","url":"https://earth-pulse.org/earth-pulse-logo-og.png"}},
+    "about": {"@type":"Place","name":"Baner Hill, Pune, Maharashtra, India"}
+  }
+  </script>
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="stylesheet" href="styles.css">
+  <!-- Leaflet for flyway map -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+
+  <style>
+    /* ── Hero strip ── */
+    .mig-hero-strip {
+      background:linear-gradient(135deg, #0c2b1e 0%, #214332 60%, #1a3a4a 100%);
+      padding:3rem 2rem 2.5rem; text-align:center;
+    }
+    .mig-hero-tag { font-size:0.72rem; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--ep-tan); margin-bottom:0.6rem; }
+    .mig-hero-title { font-family:var(--serif); font-size:clamp(2rem,5vw,3rem); color:var(--ep-cream); line-height:1.15; margin-bottom:0.75rem; }
+    .mig-hero-sub { font-size:0.95rem; color:rgba(242,240,230,0.75); max-width:680px; margin:0 auto 1.5rem; line-height:1.75; }
+    .mig-stat-row { display:flex; gap:1rem; justify-content:center; flex-wrap:wrap; }
+    .mig-stat { background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.12); border-radius:var(--radius-md); padding:0.65rem 1.2rem; text-align:center; min-width:110px; }
+    .mig-stat-val { font-family:var(--serif); font-size:1.6rem; color:var(--ep-tan); line-height:1; }
+    .mig-stat-label { font-size:0.65rem; font-weight:600; letter-spacing:0.07em; text-transform:uppercase; color:rgba(242,240,230,0.55); margin-top:0.2rem; }
+
+    /* ── Page layout ── */
+    .mig-layout { max-width:1100px; margin:0 auto; padding:2rem; display:grid; grid-template-columns:1fr 1.6fr; gap:2rem; }
+    @media(max-width:820px){ .mig-layout { grid-template-columns:1fr; } }
+
+    /* ── Shared card ── */
+    .mig-card { background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-lg); padding:1.4rem; margin-bottom:1.25rem; }
+    .mig-card h2 { font-family:var(--serif); font-size:1.05rem; color:var(--ep-green); margin-bottom:0.75rem; }
+    .mig-card h3 { font-size:0.82rem; font-weight:700; text-transform:uppercase; letter-spacing:0.07em; color:var(--ep-tan); margin-bottom:0.6rem; margin-top:1rem; }
+    .mig-card h3:first-of-type { margin-top:0; }
+
+    /* ── Flyway map ── */
+    .flyway-map-wrap {
+      border-radius:var(--radius-md); overflow:hidden;
+      height:320px; border:1px solid var(--border);
+      background:#e8f4f0; position:relative;
+    }
+    @media(max-width:600px){ .flyway-map-wrap { height:240px; } }
+    #flyway-map { width:100%; height:100%; }
+    .flyway-legend {
+      display:flex; gap:1rem; flex-wrap:wrap; margin-top:0.6rem;
+      font-size:0.72rem; color:var(--text-muted);
+    }
+    .flyway-legend-item { display:flex; align-items:center; gap:0.3rem; }
+    .flyway-dot { width:10px; height:10px; border-radius:50%; flex-shrink:0; }
+    .flyway-line-swatch { width:20px; height:3px; border-radius:2px; flex-shrink:0; }
+
+    /* ── Season calendar ── */
+    .season-cal { display:grid; grid-template-columns:repeat(12,1fr); gap:3px; margin:0.5rem 0; }
+    .cal-cell {
+      aspect-ratio:1; border-radius:3px; display:flex; align-items:center; justify-content:center;
+      font-size:0.55rem; font-weight:700; color:#fff; cursor:default;
+    }
+    .cal-cell.absent  { background:var(--ep-cream-dark); color:var(--text-muted); }
+    .cal-cell.transit { background:#f59e0b; }
+    .cal-cell.present { background:#214332; }
+    .cal-cell.peak    { background:#16a34a; }
+    .cal-labels { display:grid; grid-template-columns:repeat(12,1fr); gap:3px; margin-bottom:2px; }
+    .cal-label  { font-size:0.5rem; text-align:center; color:var(--text-muted); font-family:var(--mono); }
+    .cal-legend { display:flex; gap:0.75rem; margin-top:0.4rem; font-size:0.68rem; color:var(--text-muted); flex-wrap:wrap; }
+    .cal-swatch { width:10px; height:10px; border-radius:2px; display:inline-block; margin-right:3px; vertical-align:middle; }
+
+    /* ── Species cards ── */
+    .mig-species-grid { display:grid; grid-template-columns:1fr; gap:0.75rem; }
+    .mig-sp-card {
+      border:1px solid var(--border); border-radius:var(--radius-md);
+      overflow:hidden; text-decoration:none; color:inherit; display:block;
+      transition:box-shadow 0.15s, transform 0.12s;
+    }
+    .mig-sp-card:hover { box-shadow:0 4px 16px rgba(33,67,50,0.1); transform:translateY(-2px); }
+    .mig-sp-inner { display:flex; align-items:stretch; gap:0; }
+    .mig-sp-photo {
+      width:90px; height:90px; object-fit:cover; flex-shrink:0;
+      background:var(--ep-cream-dark); display:flex; align-items:center;
+      justify-content:center; font-size:2rem;
+    }
+    .mig-sp-photo img { width:90px; height:90px; object-fit:cover; display:block; }
+    .mig-sp-body { padding:0.65rem 0.85rem; flex:1; min-width:0; }
+    .mig-sp-name { font-weight:700; font-size:0.88rem; color:var(--ep-green); margin-bottom:1px; }
+    .mig-sp-sci  { font-style:italic; font-size:0.7rem; color:var(--text-muted); margin-bottom:0.35rem; }
+    .mig-sp-meta { font-size:0.72rem; color:var(--text-muted); line-height:1.6; }
+    .mig-sp-tag  { display:inline-block; font-size:0.62rem; font-weight:600; padding:1px 7px; border-radius:10px; margin-right:3px; margin-bottom:2px; }
+    .tag-from    { background:rgba(59,130,246,0.1); color:#1d4ed8; }
+    .tag-when    { background:rgba(33,67,50,0.08); color:var(--ep-green); }
+    .tag-km      { background:rgba(191,155,123,0.2); color:#7c4a1a; }
+    .mig-sp-detected { font-size:0.68rem; color:var(--ep-green); font-weight:600; margin-top:0.3rem; font-family:var(--mono); }
+    .mig-sp-not-yet  { font-size:0.68rem; color:var(--text-muted); margin-top:0.3rem; font-style:italic; }
+
+    /* ── Why section ── */
+    .why-grid { display:grid; grid-template-columns:1fr 1fr; gap:0.75rem; }
+    @media(max-width:480px){ .why-grid { grid-template-columns:1fr; } }
+    .why-card {
+      background:linear-gradient(135deg,rgba(33,67,50,0.04),rgba(191,155,123,0.06));
+      border:1px solid rgba(33,67,50,0.1); border-radius:var(--radius-md);
+      padding:0.85rem 1rem;
+    }
+    .why-icon  { font-size:1.4rem; margin-bottom:0.35rem; }
+    .why-title { font-size:0.82rem; font-weight:700; color:var(--ep-green); margin-bottom:0.25rem; }
+    .why-text  { font-size:0.75rem; color:var(--text-muted); line-height:1.65; }
+
+    /* ── Haven guide ── */
+    .haven-item {
+      display:flex; gap:0.75rem; padding:0.75rem 0;
+      border-bottom:1px solid var(--border); align-items:flex-start;
+    }
+    .haven-item:last-child { border-bottom:none; }
+    .haven-icon { font-size:1.3rem; flex-shrink:0; line-height:1; margin-top:2px; }
+    .haven-body { flex:1; }
+    .haven-title { font-size:0.84rem; font-weight:700; color:var(--ep-green); margin-bottom:0.2rem; }
+    .haven-text  { font-size:0.78rem; color:var(--text-muted); line-height:1.65; }
+    .haven-text a { color:var(--ep-green); }
+
+    /* ── Threat cards ── */
+    .threat-row { display:flex; gap:0.6rem; align-items:flex-start; padding:0.6rem 0; border-bottom:1px solid var(--border); }
+    .threat-row:last-child { border-bottom:none; }
+    .threat-icon { font-size:1.1rem; flex-shrink:0; }
+    .threat-body { flex:1; font-size:0.78rem; color:var(--text-muted); line-height:1.6; }
+    .threat-body strong { color:var(--ep-green); display:block; margin-bottom:0.1rem; font-size:0.8rem; }
+
+    /* ── Data table ── */
+    .data-table { width:100%; border-collapse:collapse; font-size:0.78rem; }
+    .data-table th { text-align:left; padding:0.4rem 0.6rem; font-size:0.65rem; font-weight:700; text-transform:uppercase; letter-spacing:0.07em; color:var(--ep-tan); border-bottom:2px solid rgba(191,155,123,0.2); }
+    .data-table td { padding:0.45rem 0.6rem; border-bottom:1px solid var(--border); color:var(--text-muted); vertical-align:top; }
+    .data-table td:first-child { color:var(--ep-green); font-weight:600; }
+    .data-table tr:last-child td { border-bottom:none; }
+
+    /* ── Section wide ── */
+    .mig-section { max-width:1100px; margin:0 auto; padding:0 2rem 2rem; }
+    .mig-section-title { font-family:var(--serif); font-size:1.3rem; color:var(--ep-green); margin-bottom:0.4rem; }
+    .mig-section-sub   { font-size:0.82rem; color:var(--text-muted); margin-bottom:1.25rem; line-height:1.6; }
+
+    /* ── SEO ── */
+    .seo-context { max-width:1100px; margin:0 auto; padding:0 2rem 2rem; font-size:0.78rem; color:var(--text-muted); line-height:1.7; border-top:1px solid var(--border); padding-top:1.5rem; }
+    .seo-context h2 { font-size:0.85rem; font-weight:600; color:var(--ep-green); margin-bottom:0.5rem; margin-top:1rem; }
+    .seo-context h2:first-child { margin-top:0; }
+
+    /* Active filter pill */
+    .filter-pill-active { background:var(--ep-green); color:var(--ep-cream); border-color:var(--ep-green); }
+  </style>
+</head>
+<body>
+<div id="ep-nav"></div>
+<main>
+
+<!-- HERO -->
+<div class="mig-hero-strip">
+  <div class="mig-hero-tag">Earth Pulse · Baner, Pune · Live Acoustic Data</div>
+  <h1 class="mig-hero-title">Migratory Birds<br>of Baner Hill</h1>
+  <p class="mig-hero-sub">Every winter, thousands of birds fly across continents to reach the Sahyadri foothills. Earth Pulse listens for their arrival. Here is what we know — where they come from, when they arrive, what they need, and how we can make Baner Hill a haven for them.</p>
+  <div class="mig-stat-row">
+    <div class="mig-stat"><div class="mig-stat-val" id="hero-mig-sp">—</div><div class="mig-stat-label">Migratory species detected</div></div>
+    <div class="mig-stat"><div class="mig-stat-val" id="hero-mig-det">—</div><div class="mig-stat-label">Total detections</div></div>
+    <div class="mig-stat"><div class="mig-stat-val">Oct–Mar</div><div class="mig-stat-label">Peak season</div></div>
+    <div class="mig-stat"><div class="mig-stat-val">5,000+</div><div class="mig-stat-label">km travelled (avg)</div></div>
+  </div>
+</div>
+
+<div class="mig-layout">
+
+  <!-- LEFT COLUMN -->
+  <div>
+
+    <!-- Why migration matters -->
+    <div class="mig-card">
+      <h2>Why migratory birds matter</h2>
+      <div class="why-grid">
+        <div class="why-card">
+          <div class="why-icon">🌍</div>
+          <div class="why-title">Living climate sensors</div>
+          <div class="why-text">Migrants respond to temperature and food availability across two continents. Shifts in their arrival dates at Baner are direct evidence of climate change — data that matters globally.</div>
+        </div>
+        <div class="why-card">
+          <div class="why-icon">🌱</div>
+          <div class="why-title">Seed dispersers & pollinators</div>
+          <div class="why-text">Even in winter, migrants disperse seeds and control insect populations. A single flycatcher can consume thousands of insects during its 4-month stay on Baner Hill.</div>
+        </div>
+        <div class="why-card">
+          <div class="why-icon">🔗</div>
+          <div class="why-title">Ecosystem connectors</div>
+          <div class="why-text">Migratory birds physically link Baner's ecosystem to forests in Kazakhstan, Siberia, and the Himalayas. Their health reflects the state of habitats across the entire flyway.</div>
+        </div>
+        <div class="why-card">
+          <div class="why-icon">📊</div>
+          <div class="why-title">Conservation indicators</div>
+          <div class="why-text">Declining migrant numbers at a site signal habitat degradation long before it becomes visible. Earth Pulse detection data year-over-year provides an early warning system for Baner Hill.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Season calendar guide -->
+    <div class="mig-card">
+      <h2>When migrants visit Baner</h2>
+      <p style="font-size:0.8rem;color:var(--text-muted);margin-bottom:0.85rem;line-height:1.6;">Baner Hill receives two distinct waves of migrants — post-monsoon arrivals in October and winter resident species that stay until March.</p>
+
+      <h3>Warblers (Phylloscopus / Acrocephalus)</h3>
+      <div class="cal-labels"><span>J</span><span>F</span><span>M</span><span>A</span><span>M</span><span>J</span><span>J</span><span>A</span><span>S</span><span>O</span><span>N</span><span>D</span></div>
+      <div class="season-cal">
+        <div class="cal-cell present">J</div><div class="cal-cell present">F</div><div class="cal-cell transit">M</div>
+        <div class="cal-cell absent">A</div><div class="cal-cell absent">M</div><div class="cal-cell absent">J</div>
+        <div class="cal-cell absent">J</div><div class="cal-cell absent">A</div><div class="cal-cell absent">S</div>
+        <div class="cal-cell transit">O</div><div class="cal-cell peak">N</div><div class="cal-cell peak">D</div>
+      </div>
+
+      <h3>Flycatchers (Muscicapa / Ficedula)</h3>
+      <div class="cal-labels"><span>J</span><span>F</span><span>M</span><span>A</span><span>M</span><span>J</span><span>J</span><span>A</span><span>S</span><span>O</span><span>N</span><span>D</span></div>
+      <div class="season-cal">
+        <div class="cal-cell present">J</div><div class="cal-cell present">F</div><div class="cal-cell transit">M</div>
+        <div class="cal-cell absent">A</div><div class="cal-cell absent">M</div><div class="cal-cell absent">J</div>
+        <div class="cal-cell absent">J</div><div class="cal-cell absent">A</div><div class="cal-cell transit">S</div>
+        <div class="cal-cell peak">O</div><div class="cal-cell peak">N</div><div class="cal-cell present">D</div>
+      </div>
+
+      <h3>Pipits & Wagtails (Anthus / Motacilla)</h3>
+      <div class="cal-labels"><span>J</span><span>F</span><span>M</span><span>A</span><span>M</span><span>J</span><span>J</span><span>A</span><span>S</span><span>O</span><span>N</span><span>D</span></div>
+      <div class="season-cal">
+        <div class="cal-cell peak">J</div><div class="cal-cell peak">F</div><div class="cal-cell transit">M</div>
+        <div class="cal-cell absent">A</div><div class="cal-cell absent">M</div><div class="cal-cell absent">J</div>
+        <div class="cal-cell absent">J</div><div class="cal-cell absent">A</div><div class="cal-cell absent">S</div>
+        <div class="cal-cell transit">O</div><div class="cal-cell present">N</div><div class="cal-cell present">D</div>
+      </div>
+
+      <h3>Raptors (Falco / Accipiter / Buteo)</h3>
+      <div class="cal-labels"><span>J</span><span>F</span><span>M</span><span>A</span><span>M</span><span>J</span><span>J</span><span>A</span><span>S</span><span>O</span><span>N</span><span>D</span></div>
+      <div class="season-cal">
+        <div class="cal-cell present">J</div><div class="cal-cell present">F</div><div class="cal-cell present">M</div>
+        <div class="cal-cell transit">A</div><div class="cal-cell absent">M</div><div class="cal-cell absent">J</div>
+        <div class="cal-cell absent">J</div><div class="cal-cell absent">A</div><div class="cal-cell transit">S</div>
+        <div class="cal-cell peak">O</div><div class="cal-cell peak">N</div><div class="cal-cell present">D</div>
+      </div>
+
+      <div class="cal-legend">
+        <span><span class="cal-swatch" style="background:#16a34a;"></span>Peak</span>
+        <span><span class="cal-swatch" style="background:#214332;"></span>Present</span>
+        <span><span class="cal-swatch" style="background:#f59e0b;"></span>Transit</span>
+        <span><span class="cal-swatch" style="background:var(--ep-cream-dark);border:1px solid var(--border);"></span>Absent</span>
+      </div>
+    </div>
+
+    <!-- Threat summary -->
+    <div class="mig-card">
+      <h2>Threats to migrants at Baner</h2>
+      <div class="threat-row">
+        <div class="threat-icon">💡</div>
+        <div class="threat-body"><strong>Light pollution</strong>Artificial lighting on the hill face disorients night-migrating birds, causing them to circle exhausted around lit buildings and miss their stopover. October–November is the peak risk window.</div>
+      </div>
+      <div class="threat-row">
+        <div class="threat-icon">🏗️</div>
+        <div class="threat-body"><strong>Scrub clearance</strong>Dense native scrub — Ziziphus, Carissa, Lantana — is the primary foraging habitat for winter warblers and flycatchers. Clearing it during September–November removes their food and shelter on arrival.</div>
+      </div>
+      <div class="threat-row">
+        <div class="threat-icon">🐱</div>
+        <div class="threat-body"><strong>Feral cat predation</strong>Exhausted migrants that land after a long night flight are highly vulnerable to cat predation. The post-arrival period (October–November) is when risk is highest.</div>
+      </div>
+      <div class="threat-row">
+        <div class="threat-icon">🚜</div>
+        <div class="threat-body"><strong>Habitat fragmentation</strong>Baner Hill is increasingly isolated from adjacent green areas by construction. As the corridor narrows, migrants have fewer options to land, refuel, and continue their journey.</div>
+      </div>
+      <div class="threat-row">
+        <div class="threat-icon">🌡️</div>
+        <div class="threat-body"><strong>Climate disruption</strong>Warmer October temperatures delay insect emergence — the food that migrants depend on after arrival. Recent years have seen late arrivals and erratic winter occurrence at Pune's tekdis, consistent with national trends.</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- RIGHT COLUMN -->
+  <div>
+
+    <!-- Flyway map -->
+    <div class="mig-card">
+      <h2>The Central Asian Flyway — where they come from</h2>
+      <p style="font-size:0.78rem;color:var(--text-muted);margin-bottom:0.75rem;line-height:1.6;">Baner Hill sits near the southern end of the Central Asian Flyway — one of the world's busiest bird migration corridors, stretching from Arctic Siberia to peninsular India. These birds travel 3,000–8,000 km to spend winter here.</p>
+      <div class="flyway-map-wrap">
+        <div id="flyway-map"></div>
+      </div>
+      <div class="flyway-legend">
+        <div class="flyway-legend-item"><div class="flyway-dot" style="background:#214332;"></div> Baner, Pune (Earth Pulse)</div>
+        <div class="flyway-legend-item"><div class="flyway-dot" style="background:#0ea5e9;"></div> Breeding origins</div>
+        <div class="flyway-legend-item"><div class="flyway-line-swatch" style="background:#f59e0b;"></div> Migration route</div>
+        <div class="flyway-legend-item"><div class="flyway-line-swatch" style="background:#0ea5e9;"></div> Flyway corridor</div>
+      </div>
+      <p style="font-size:0.7rem;color:var(--text-muted);margin-top:0.6rem;">Route lines are illustrative. Base map © CartoDB. Flyway data adapted from BirdLife International Central Asian Flyway documentation.</p>
+    </div>
+
+    <!-- Species detected -->
+    <div class="mig-card">
+      <h2>Migrants detected at Earth Pulse</h2>
+      <p style="font-size:0.78rem;color:var(--text-muted);margin-bottom:0.85rem;line-height:1.6;">Acoustically identified migratory species from our live detection dataset. Detection count and first/last seen dates update automatically.</p>
+      <div class="mig-species-grid" id="mig-species-grid">
+        <div class="ep-skeleton" style="height:90px;border-radius:var(--radius-md);"></div>
+        <div class="ep-skeleton" style="height:90px;border-radius:var(--radius-md);"></div>
+        <div class="ep-skeleton" style="height:90px;border-radius:var(--radius-md);"></div>
+        <div class="ep-skeleton" style="height:90px;border-radius:var(--radius-md);"></div>
+      </div>
+
+      <!-- Known migrants not yet detected -->
+      <div style="margin-top:1.25rem;">
+        <h3>Documented nearby — not yet detected at Earth Pulse</h3>
+        <p style="font-size:0.75rem;color:var(--text-muted);margin-bottom:0.75rem;line-height:1.6;">These species are regularly recorded at Pune's other tekdis (Vetal Tekdi, Mahatma Hill) and are plausible future detections at Baner Hill as our dataset grows.</p>
+        <div id="not-yet-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;">
+          <!-- Rendered by JS -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Distance table -->
+    <div class="mig-card">
+      <h2>Journey distances to Baner</h2>
+      <table class="data-table">
+        <thead><tr><th>Species</th><th>Breeding origin</th><th>Distance</th><th>Duration in Baner</th></tr></thead>
+        <tbody>
+          <tr><td>Common Chiffchaff</td><td>N. Europe / W. Siberia</td><td>~5,500 km</td><td>Nov–Mar (5 months)</td></tr>
+          <tr><td>Blyth's Reed Warbler</td><td>C. Russia / Kazakhstan</td><td>~4,500 km</td><td>Oct–Apr (6 months)</td></tr>
+          <tr><td>Asian Brown Flycatcher</td><td>Mongolia / E. Asia</td><td>~6,000 km</td><td>Oct–Mar (5 months)</td></tr>
+          <tr><td>Red-breasted Flycatcher</td><td>E. Europe / W. Siberia</td><td>~5,000 km</td><td>Oct–Mar (5 months)</td></tr>
+          <tr><td>Verditer Flycatcher</td><td>Himalayas (local)</td><td>~1,200 km</td><td>Nov–Feb (4 months)</td></tr>
+          <tr><td>Eurasian Hobby</td><td>C./N. Europe</td><td>~6,500 km</td><td>Oct–Nov (passage)</td></tr>
+          <tr><td>Common Kestrel</td><td>C. Asia / Himalayas</td><td>~2,500 km</td><td>Oct–Mar (5 months)</td></tr>
+          <tr><td>Paddyfield Pipit</td><td>Himalayas / N. India</td><td>~1,500 km</td><td>Nov–Feb (4 months)</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</div>
+
+<!-- FULL WIDTH: Making Baner a Haven -->
+<div class="mig-section">
+  <h2 class="mig-section-title">Making Baner Hill a migratory haven</h2>
+  <p class="mig-section-sub">Every action taken to restore native vegetation and reduce disturbance on Baner Hill directly benefits birds that have flown 5,000 km to reach here. This is a practical guide to what works — grounded in ecology, not sentiment.</p>
+
+  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.25rem;">
+
+    <div class="mig-card" style="margin-bottom:0;">
+      <h2>🌿 Habitat: what migrants need</h2>
+      <div class="haven-item">
+        <div class="haven-icon">🌳</div>
+        <div class="haven-body">
+          <div class="haven-title">Dense native scrub — do not clear it</div>
+          <div class="haven-text">Winter warblers (Common Chiffchaff, Blyth's Reed Warbler) forage almost entirely in dense scrub — gleaning caterpillars and small arthropods from leaves and twigs. Native Ziziphus, Carissa, and even Lantana (despite being invasive) provide this habitat. Clearing it in October–November removes their primary foraging ground on arrival after a 5,000 km journey.</div>
+        </div>
+      </div>
+      <div class="haven-item">
+        <div class="haven-icon">🌾</div>
+        <div class="haven-body">
+          <div class="haven-title">Open grassland patches for pipits &amp; wagtails</div>
+          <div class="haven-text">Wagtails and pipits feed on open ground — insects in short grass and bare soil. Maintaining some open grassland patches on the hill slopes (not converting everything to dense planting) is essential for ground-foraging migrants.</div>
+        </div>
+      </div>
+      <div class="haven-item">
+        <div class="haven-icon">🌳</div>
+        <div class="haven-body">
+          <div class="haven-title">Plant native insect-rich trees</div>
+          <div class="haven-text">Neem (<em>Azadirachta indica</em>), Indian Gooseberry (<em>Phyllanthus emblica</em>), and Jamun (<em>Syzygium cumini</em>) host rich communities of bark insects, scale insects, and caterpillars — exactly what flycatchers and warblers feed on. <a href="trees.html">See our trees guide →</a></div>
+        </div>
+      </div>
+      <div class="haven-item">
+        <div class="haven-icon">💧</div>
+        <div class="haven-body">
+          <div class="haven-title">Water — critical for exhausted migrants</div>
+          <div class="haven-text">Birds that have flown through the night need to drink immediately on landing. A birdbath with clean, fresh water in your garden or building terrace can be a lifesaver for arriving migrants in October–November. Keep it clean and filled daily throughout winter.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mig-card" style="margin-bottom:0;">
+      <h2>💡 Lighting: reduce it during migration</h2>
+      <div class="haven-item">
+        <div class="haven-icon">🌙</div>
+        <div class="haven-body">
+          <div class="haven-title">Turn off unnecessary lights 9pm–5am in Oct–Nov</div>
+          <div class="haven-text">Most small migrants — warblers, flycatchers, pipits — travel at night using star patterns and magnetic fields for navigation. Artificial light disrupts both systems, causing birds to circle exhausted around lit buildings, collide with glass, or miss their stopover entirely. The most impactful window is October 15 – November 30.</div>
+        </div>
+      </div>
+      <div class="haven-item">
+        <div class="haven-icon">🏢</div>
+        <div class="haven-body">
+          <div class="haven-title">High-rise buildings are the greatest collision risk</div>
+          <div class="haven-text">Tall glass buildings with interior lighting are the primary cause of migrant mortality in urban areas. Closing curtains or blinds on upper floors at night significantly reduces collision risk. This is already practised during migration season in cities like New York (Lights Out program) and Toronto.</div>
+        </div>
+      </div>
+      <div class="haven-item">
+        <div class="haven-icon">🔦</div>
+        <div class="haven-body">
+          <div class="haven-title">Switch to warm-tone LED lighting</div>
+          <div class="haven-text">Cool-white and blue-spectrum LEDs disorient migrants more than warm amber lighting. If lighting is required on the hill face or in gardens, switching to warm amber (2700K) LEDs reduces the impact on migrating birds while maintaining visibility.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mig-card" style="margin-bottom:0;">
+      <h2>📢 Community action</h2>
+      <div class="haven-item">
+        <div class="haven-icon">📊</div>
+        <div class="haven-body">
+          <div class="haven-title">Record what you see — submit to eBird</div>
+          <div class="haven-text">Every bird sighting submitted to <a href="https://ebird.org" target="_blank" rel="noopener">eBird.org</a> or the eBird India app contributes to State of India's Birds assessments that influence national conservation policy. Earth Pulse acoustic data feeds into this picture — your visual observations complete it.</div>
+        </div>
+      </div>
+      <div class="haven-item">
+        <div class="haven-icon">🌳</div>
+        <div class="haven-body">
+          <div class="haven-title">Plant one native tree this monsoon</div>
+          <div class="haven-text">The best time to plant for migrants is the monsoon (July–September), so trees are established before the first arrivals in October. Focus on insect-rich natives: Neem, Amla, Jamun, Peepal, Ficus. Contact <a href="https://www.pugmarks.org" target="_blank" rel="noopener">Pugmarks Society</a> or local forest department for Baner Hill native saplings.</div>
+        </div>
+      </div>
+      <div class="haven-item">
+        <div class="haven-icon">🗣️</div>
+        <div class="haven-body">
+          <div class="haven-title">Advocate for construction moratoriums in Oct–Nov</div>
+          <div class="haven-text">Construction noise and vibration on the hill slopes during peak arrival (October–November) displaces migrants before they can refuel. Raising this with the Pune Municipal Corporation — backed by Earth Pulse data on migrant arrivals — is a legitimate, evidence-based conservation ask.</div>
+        </div>
+      </div>
+      <div class="haven-item">
+        <div class="haven-icon">🐱</div>
+        <div class="haven-body">
+          <div class="haven-title">Keep cats indoors during Oct–Nov</div>
+          <div class="haven-text">Exhausted migrants are easy prey. A domestic cat allowed outside during October–November can kill dozens of birds in a single migration season — birds that have survived a 5,000 km journey. Keeping cats indoors during this window is the single easiest individual action.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- SEO context -->
+<section class="seo-context" aria-label="About migratory birds at Baner Hill">
+  <h2>Migratory Birds of Baner Hill, Pune — Ecological Context</h2>
+  <p>Baner Hill in Pune, Maharashtra sits near the southern end of the Central Asian Flyway — one of the world's major bird migration corridors connecting Arctic Siberia to peninsular India. The hill is a designated urban forest and sits at the ecotone between the Western Ghats biodiversity hotspot and the Deccan plateau, making it an ecologically significant stopover for winter migrants travelling south from Central Asia, Russia, and the Himalayas.</p>
+  <h2>Key Migratory Species at Baner Hill</h2>
+  <p>Regularly recorded migratory species at Baner Hill and adjacent Pune tekdis include: Common Chiffchaff (<em>Phylloscopus collybita</em>) arriving from Northern Europe and Western Siberia; Blyth's Reed Warbler (<em>Acrocephalus dumetorum</em>) from Central Russia and Kazakhstan; Asian Brown Flycatcher (<em>Muscicapa dauurica</em>) from Mongolia and East Asia; Red-breasted Flycatcher (<em>Ficedula parva</em>) from Eastern Europe; Verditer Flycatcher (<em>Eumyias thalassinus</em>) from the Himalayas; and various pipit and wagtail species from the Himalayan foothills. Migratory raptors including Common Kestrel, Eurasian Hobby, and Booted Eagle have been recorded at nearby Vetal Tekdi and Mahatma Hill in Pune.</p>
+  <h2>Conservation Status</h2>
+  <p>Migratory bird populations globally are under pressure. Of the species assessed for the State of India's Birds 2020 report, a significant proportion show long-term population decline. Urban green spaces like Baner Hill play an increasingly important role as stopover and wintering sites as natural habitats along flyways are degraded. Earth Pulse acoustic monitoring provides year-over-year phenology data on migrant arrival and departure dates — a valuable long-term dataset for understanding climate-driven changes in migration timing at this location.</p>
+</section>
+
+</main>
+<div id="ep-footer"></div>
+<script src="analytics.js"></script>
+<script src="nav.js"></script>
+<script>
+var SB  = 'https://krmczyqwblsoekceanlj.supabase.co';
+var KEY = 'sb_publishable_DrHFT5J0vmrkYraUXIlpQQ_gsk1rdq6';
+var H   = { 'apikey': KEY, 'Authorization': 'Bearer ' + KEY };
+
+/* ── Known migratory species data ── */
+var MIGRATORY_KW = ['warbler','martin','pipit','bee-eater','flycatcher','redstart','wagtail','chat','stint','swallow','swift'];
+
+var KNOWN_MIGRANTS = [
+  { name:'Common Chiffchaff', sci:'Phylloscopus collybita', from:'N. Europe & W. Siberia', when:'Nov–Mar', km:'~5,500', fact:'One of the most common winter visitors to Baner scrubland. Its "hweet" call is a classic sound of Baner Hill in winter.' },
+  { name:"Blyth's Reed Warbler", sci:'Acrocephalus dumetorum', from:'C. Russia / Kazakhstan', when:'Oct–Apr', km:'~4,500', fact:'Stays longer than most migrants — often present from October right through to April. Favours dense scrub and reed edges.' },
+  { name:'Asian Brown Flycatcher', sci:'Muscicapa dauurica', from:'Mongolia & E. Asia', when:'Oct–Mar', km:'~6,000', fact:'Breeds in temperate East Asia, winters in South India. Perches prominently and sallies after flying insects.' },
+  { name:'Red-breasted Flycatcher', sci:'Ficedula parva', from:'E. Europe / W. Siberia', when:'Oct–Mar', km:'~5,000', fact:'The male has a distinctive orange-red throat. Frequently flicks its tail upward — a reliable identification feature.' },
+  { name:'Verditer Flycatcher', sci:'Eumyias thalassinus', from:'Himalayas', when:'Nov–Feb', km:'~1,200', fact:'A short-distance migrant descending from the Himalayas. The male\'s turquoise plumage is unmistakable on a winter perch.' },
+  { name:'Paddyfield Pipit', sci:'Anthus rufulus', from:'Himalayas / N. India', when:'Nov–Feb', km:'~1,500', fact:'Walks on open ground and grassland patches. Look for it on Baner Hill\'s open slopes from November onwards.' },
+  { name:'White Wagtail', sci:'Motacilla alba', from:'C. Asia / Himalayas', when:'Oct–Mar', km:'~2,000', fact:'One of the first migrants to arrive each year — often present by mid-October. Prefers open areas near water.' },
+  { name:'Common Kestrel', sci:'Falco tinnunculus', from:'C. Asia / Himalayas', when:'Oct–Mar', km:'~2,500', fact:'Hovers in place while hunting — a distinctive hunting behaviour not seen in resident raptors on Baner Hill.' }
+];
+
+var NOT_YET = [
+  { name:'Eurasian Hobby', sci:'Falco subbuteo', from:'C./N. Europe', note:'Recorded at Vetal Tekdi Oct–Nov 2024' },
+  { name:'Booted Eagle', sci:'Hieraaetus pennatus', from:'C. Asia', note:'Passage migrant at Mahatma Hill' },
+  { name:'Greenish Warbler', sci:'Phylloscopus trochiloides', from:'Himalayas', note:'Possible as dataset grows' },
+  { name:'Tickell\'s Leaf Warbler', sci:'Phylloscopus affinis', from:'Himalayas', note:'Common Pune winter visitor' }
+];
+
+function isMigratory(name) {
+  var l = (name || '').toLowerCase();
+  return MIGRATORY_KW.some(function(k){ return l.indexOf(k) !== -1; });
+}
+
+/* ── Flyway map ── */
+function initFlywayMap() {
+  var map = L.map('flyway-map', {
+    center: [35, 68],
+    zoom: 3,
+    zoomControl: true,
+    attributionControl: false,
+    scrollWheelZoom: false
+  });
+
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png', {
+    subdomains: 'abcd', maxZoom: 8
+  }).addTo(map);
+
+  /* Flyway corridor line (simplified Central Asian Flyway western route) */
+  var flywayPoints = [
+    [73, 70],  // Arctic Siberia
+    [65, 68],  // W. Siberia
+    [55, 65],  // Kazakhstan
+    [45, 62],  // Turkmenistan
+    [35, 58],  // Afghanistan/Pakistan border
+    [28, 68],  // N. India (Rajasthan)
+    [20, 73],  // Central India
+    [18.55, 73.78]  // Baner, Pune
+  ];
+  L.polyline(flywayPoints, { color:'#0ea5e9', weight:2.5, opacity:0.6, dashArray:'6,4' }).addTo(map);
+
+  /* Migration routes from key origins */
+  var routes = [
+    { from:[68, 60], color:'#f59e0b', label:'Warblers (W. Siberia)' },
+    { from:[55, 75], color:'#f59e0b', label:'Flycatchers (Kazakhstan)' },
+    { from:[48, 105], color:'#f97316', label:'Asian Brown Flycatcher (Mongolia)' },
+    { from:[30, 81],  color:'#a78bfa', label:'Verditer Flycatcher (Himalayas)' }
+  ];
+
+  routes.forEach(function(r) {
+    L.polyline([r.from, [18.55, 73.78]], {
+      color: r.color, weight: 1.8, opacity: 0.75, dashArray: '4,3'
+    }).addTo(map);
+
+    var dot = L.divIcon({
+      className: '',
+      html: '<div style="width:8px;height:8px;background:' + r.color + ';border:2px solid #fff;border-radius:50%;box-shadow:0 1px 4px rgba(0,0,0,0.3);"></div>',
+      iconSize: [8,8], iconAnchor: [4,4]
+    });
+    L.marker(r.from, {icon: dot}).addTo(map);
+  });
+
+  /* Baner marker */
+  var banerIcon = L.divIcon({
+    className: '',
+    html: '<div style="width:14px;height:14px;background:#214332;border:3px solid #f2f0e6;border-radius:50%;box-shadow:0 0 0 4px rgba(33,67,50,0.25);"></div>',
+    iconSize: [14,14], iconAnchor: [7,7]
+  });
+  L.marker([18.5526, 73.7819], {icon: banerIcon})
+    .bindPopup('<strong style="color:#214332">Baner Hill, Pune</strong><br><span style="font-size:0.75rem;color:#555">Earth Pulse<br>Acoustic monitoring site</span>', {maxWidth:150})
+    .addTo(map);
+}
+
+/* ── Load detections and render species cards ── */
+async function loadMigratoryData() {
+  try {
+    var all = [], offset = 0, batch = 1000;
+    while (true) {
+      var res = await fetch(
+        SB + '/rest/v1/bird_detections?select=species_scientific,species_common,confidence,detected_at&order=detected_at.desc&limit=' + batch + '&offset=' + offset,
+        { headers: Object.assign({}, H, {'Range-Unit':'items','Range':offset+'-'+(offset+batch-1)}) }
+      );
+      var rows = await res.json();
+      if (!Array.isArray(rows) || !rows.length) break;
+      all = all.concat(rows);
+      if (rows.length < batch) break;
+      offset += batch;
+    }
+
+    /* Filter to migratory species */
+    var migDet = all.filter(function(b){ return isMigratory(b.species_common); });
+    var migSp = {};
+    migDet.forEach(function(b){
+      if (!migSp[b.species_scientific]) {
+        migSp[b.species_scientific] = { name: b.species_common, sci: b.species_scientific, count: 0, best: 0, first: b.detected_at, last: b.detected_at };
+      }
+      var s = migSp[b.species_scientific];
+      s.count++;
+      if (b.confidence > s.best) s.best = b.confidence;
+      if (b.detected_at < s.first) s.first = b.detected_at;
+      if (b.detected_at > s.last)  s.last  = b.detected_at;
+    });
+
+    var spList = Object.values(migSp).sort(function(a,b){ return b.count - a.count; });
+
+    /* Update hero stats */
+    var hsp = document.getElementById('hero-mig-sp');
+    var hdet = document.getElementById('hero-mig-det');
+    if (hsp) hsp.textContent = spList.length;
+    if (hdet) hdet.textContent = migDet.length.toLocaleString('en-IN');
+
+    /* Render species cards — merge with KNOWN_MIGRANTS for rich metadata */
+    var grid = document.getElementById('mig-species-grid');
+    if (!grid) return;
+
+    if (!spList.length) {
+      grid.innerHTML = '<p style="font-size:0.8rem;color:var(--text-muted);padding:1rem 0;">No migratory detections in current dataset. Check back in October when winter migrants arrive.</p>';
+    } else {
+      grid.innerHTML = spList.map(function(sp) {
+        /* Match to known migrant metadata */
+        var meta = KNOWN_MIGRANTS.filter(function(m){ return m.sci === sp.sci || m.name.toLowerCase() === sp.name.toLowerCase(); })[0] || {};
+        var firstDate = new Date(sp.first).toLocaleString('en-IN',{day:'numeric',month:'short',year:'numeric',timeZone:'Asia/Kolkata'});
+        var lastDate  = new Date(sp.last).toLocaleString('en-IN',{day:'numeric',month:'short',year:'numeric',timeZone:'Asia/Kolkata'});
+        return '<a class="mig-sp-card" href="species.html?bird=' + sp.sci.replace(/ /g,'_') + '">'
+          + '<div class="mig-sp-inner">'
+            + '<div class="mig-sp-photo" id="mig-photo-' + sp.sci.replace(/ /g,'-') + '">✈️</div>'
+            + '<div class="mig-sp-body">'
+              + '<div class="mig-sp-name">' + sp.name + '</div>'
+              + '<div class="mig-sp-sci">' + sp.sci + '</div>'
+              + (meta.from ? '<span class="mig-sp-tag tag-from">From: ' + meta.from + '</span>' : '')
+              + (meta.when ? '<span class="mig-sp-tag tag-when">' + meta.when + '</span>' : '')
+              + (meta.km   ? '<span class="mig-sp-tag tag-km">' + meta.km + ' km</span>' : '')
+              + '<div class="mig-sp-detected">✅ ' + sp.count + ' detection' + (sp.count!==1?'s':'') + ' · Best: ' + (sp.best*100).toFixed(0) + '% · First: ' + firstDate + ' · Last: ' + lastDate + '</div>'
+              + (meta.fact ? '<div class="mig-sp-meta" style="margin-top:0.3rem;font-style:italic;">' + meta.fact + '</div>' : '')
+            + '</div>'
+          + '</div>'
+          + '</a>';
+      }).join('');
+
+      /* Load Wikipedia thumbnails */
+      spList.forEach(function(sp) {
+        fetch('https://en.wikipedia.org/api/rest_v1/page/summary/' + encodeURIComponent(sp.sci.replace(/ /g,'_')), {headers:{'Accept':'application/json'}})
+          .then(function(r){ return r.ok ? r.json() : null; })
+          .then(function(d) {
+            var el = document.getElementById('mig-photo-' + sp.sci.replace(/ /g,'-'));
+            if (el && d && d.thumbnail) {
+              el.innerHTML = '<img src="' + d.thumbnail.source + '" alt="' + sp.name + '" style="width:90px;height:90px;object-fit:cover;display:block;">';
+            }
+          }).catch(function(){});
+      });
+    }
+
+    /* Not-yet-detected grid */
+    /* Only show species NOT already in our detected list */
+    var detectedSci = Object.keys(migSp);
+    var notYetFiltered = NOT_YET.filter(function(m){
+      return !detectedSci.some(function(s){ return s.toLowerCase().indexOf(m.sci.toLowerCase()) !== -1; });
+    });
+    var notYetGrid = document.getElementById('not-yet-grid');
+    if (notYetGrid && notYetFiltered.length) {
+      notYetGrid.innerHTML = notYetFiltered.map(function(m){
+        return '<div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-md);padding:0.6rem 0.75rem;">'
+          + '<div style="font-size:0.78rem;font-weight:600;color:var(--ep-green);">' + m.name + '</div>'
+          + '<div style="font-size:0.68rem;font-style:italic;color:var(--text-muted);margin-bottom:0.2rem;">' + m.sci + '</div>'
+          + '<div style="font-size:0.68rem;color:var(--text-muted);">' + m.note + '</div>'
+          + '</div>';
+      }).join('');
+    } else if (notYetGrid) {
+      notYetGrid.innerHTML = '<p style="font-size:0.75rem;color:var(--text-muted);grid-column:1/-1;">All known migrants have been detected at Earth Pulse — excellent coverage.</p>';
+    }
+
+  } catch(e) { console.error('loadMigratoryData:', e); }
+}
+
+/* Init */
+initFlywayMap();
+loadMigratoryData();
+</script>
+
+<noscript>
+<div style="max-width:1100px;margin:0 auto;padding:2rem;">
+<h2>Migratory Birds of Baner Hill, Pune</h2>
+<p>Earth Pulse acoustically monitors migratory birds visiting Baner Hill, Pune from October to March each year. Key species include Common Chiffchaff, Blyth's Reed Warbler, Asian Brown Flycatcher, and Red-breasted Flycatcher — travelling 3,000–6,000 km from Central Asia, Siberia, and the Himalayas.</p>
+<p>These birds travel the Central Asian Flyway — one of the world's major bird migration corridors — to winter in the Sahyadri foothills. Baner Hill provides critical stopover and wintering habitat on the edge of the Western Ghats biodiversity hotspot.</p>
+<p><a href="birds.html">View all birds →</a> | <a href="species.html">Species profiles →</a></p>
+</div>
+</noscript>
+</body>
+</html>
