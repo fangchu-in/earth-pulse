@@ -5,19 +5,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin — Earth Pulse</title>
   <meta name="robots" content="noindex, nofollow">
-  <meta property="og:image" content="https://earth-pulse.org/earth-pulse-logo-og.png">
-  <meta name="twitter:image" content="https://earth-pulse.org/earth-pulse-logo-og.png">
-<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-<link rel="manifest" href="/site.webmanifest">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="manifest" href="/site.webmanifest">
   <link rel="stylesheet" href="styles.css">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
   <script>
+    /* Auth guard — must be fangchu@gmail.com */
     var _SB_URL = 'https://krmczyqwblsoekceanlj.supabase.co';
     var _SB_KEY = 'sb_publishable_DrHFT5J0vmrkYraUXIlpQQ_gsk1rdq6';
-    var _sb = null; var _user = null;
     var ADMIN_EMAIL = 'fangchu@gmail.com';
+    var _sb = null; var _user = null;
     try { _sb = window.supabase.createClient(_SB_URL, _SB_KEY); } catch(e) {}
     if (_sb) {
       _sb.auth.getSession().then(function(d) {
@@ -27,301 +25,412 @@
       });
     }
   </script>
+
   <style>
-    body { margin:0; }
-    .admin-wrap { display:grid; grid-template-columns:220px 1fr; min-height:calc(100vh - 62px); }
-    @media(max-width:800px){ .admin-wrap { grid-template-columns:1fr; } .admin-side { display:none; } }
-    .admin-side { background:#0f1923; padding:1.5rem 1rem; display:flex; flex-direction:column; gap:2px; }
-    .admin-brand { color:rgba(242,240,230,0.5); font-size:0.65rem; font-weight:700; text-transform:uppercase; letter-spacing:0.12em; padding:0 0.5rem; margin-bottom:1rem; }
-    .al { display:flex; align-items:center; gap:0.6rem; padding:0.48rem 0.75rem; border-radius:var(--radius-sm); font-size:0.83rem; color:rgba(242,240,230,0.55); cursor:pointer; border:none; background:none; font-family:var(--sans); width:100%; text-align:left; transition:all 0.12s; }
-    .al:hover { background:rgba(255,255,255,0.07); color:rgba(242,240,230,0.9); }
-    .al.on { background:rgba(33,67,50,0.5); color:var(--ep-cream); }
-    .al.danger { color:rgba(239,68,68,0.7); margin-top:auto; }
-    .al.danger:hover { background:rgba(239,68,68,0.1); color:#f87171; }
-    .sp { flex:1; }
-    .admin-main { background:var(--ep-cream); padding:2rem; overflow-y:auto; }
-    .panel { display:none; }
-    .panel.on { display:block; }
-    .ptitle { font-family:var(--serif); font-size:1.5rem; color:var(--ep-green); margin-bottom:0.25rem; }
-    .psub { font-size:0.85rem; color:var(--text-muted); margin-bottom:1.75rem; }
-    .refresh-btn { padding:0.38rem 0.9rem; border:1px solid var(--border-strong); background:transparent; border-radius:var(--radius-sm); font-family:var(--sans); font-size:0.78rem; color:var(--ep-green); cursor:pointer; }
-    .refresh-btn:hover { background:var(--ep-green); color:#fff; }
+    /* ── Layout ── */
+    body{margin:0}
+    .admin-wrap{display:grid;grid-template-columns:220px 1fr;min-height:calc(100vh - 62px)}
+    @media(max-width:800px){.admin-wrap{grid-template-columns:1fr}.admin-side{display:none}}
+    .admin-side{background:#0f1923;padding:1.5rem 1rem;display:flex;flex-direction:column;gap:2px;position:sticky;top:62px;height:calc(100vh - 62px);overflow-y:auto}
+    .admin-brand{color:rgba(242,240,230,.45);font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.12em;padding:0 .5rem;margin-bottom:1rem}
+    .admin-sep{height:1px;background:rgba(255,255,255,.08);margin:.5rem 0}
+    .admin-cat{color:rgba(242,240,230,.3);font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;padding:.4rem .75rem .1rem;margin-top:.25rem}
+    .al{display:flex;align-items:center;gap:.6rem;padding:.48rem .75rem;border-radius:var(--radius-sm);font-size:.83rem;color:rgba(242,240,230,.55);cursor:pointer;border:none;background:none;font-family:var(--sans);width:100%;text-align:left;transition:all .12s}
+    .al:hover{background:rgba(255,255,255,.07);color:rgba(242,240,230,.9)}
+    .al.on{background:rgba(33,67,50,.5);color:var(--ep-cream)}
+    .al.danger{color:rgba(239,68,68,.7);margin-top:auto}
+    .al.danger:hover{background:rgba(239,68,68,.1);color:#f87171}
+    .sp{flex:1}
+    .admin-main{background:var(--ep-cream);padding:2rem;overflow-y:auto}
+    .panel{display:none}.panel.on{display:block}
+    .ptitle{font-family:var(--serif);font-size:1.5rem;color:var(--ep-green);margin-bottom:.25rem}
+    .psub{font-size:.85rem;color:var(--text-muted);margin-bottom:1.75rem;line-height:1.6}
+    .refresh-btn{padding:.38rem .9rem;border:1px solid var(--border-strong);background:transparent;border-radius:var(--radius-sm);font-family:var(--sans);font-size:.78rem;color:var(--ep-green);cursor:pointer}
+    .refresh-btn:hover{background:var(--ep-green);color:#fff}
 
-    .stat-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(160px,1fr)); gap:1rem; margin-bottom:1.5rem; }
-    .stat-box { background:#fff; border:1px solid var(--border); border-radius:var(--radius-lg); padding:1.1rem 1.2rem; }
-    .stat-box-icon { font-size:1.3rem; margin-bottom:3px; }
-    .stat-box-val { font-family:var(--serif); font-size:1.8rem; color:var(--ep-green); line-height:1; margin-bottom:3px; }
-    .stat-box-label { font-size:0.66rem; font-weight:600; text-transform:uppercase; letter-spacing:0.07em; color:var(--text-muted); }
-    .stat-box-sub { font-size:0.7rem; color:var(--ep-tan); font-family:var(--mono); margin-top:2px; }
+    /* ── Stat cards ── */
+    .stat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:1rem;margin-bottom:1.5rem}
+    .stat-box{background:#fff;border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.1rem 1.2rem}
+    .stat-box-icon{font-size:1.3rem;margin-bottom:3px}
+    .stat-box-val{font-family:var(--serif);font-size:1.8rem;color:var(--ep-green);line-height:1;margin-bottom:3px}
+    .stat-box-label{font-size:.66rem;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--text-muted)}
+    .stat-box-sub{font-size:.7rem;color:var(--ep-tan);font-family:var(--mono);margin-top:2px}
 
-    .status-dot { display:inline-block; width:8px; height:8px; border-radius:50%; margin-right:5px; }
-    .ok-dot  { background:#22c55e; }
-    .warn-dot{ background:#f59e0b; }
-    .err-dot { background:#ef4444; }
+    /* ── Status indicators ── */
+    .sd{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px;flex-shrink:0}
+    .ok-dot{background:#22c55e}.warn-dot{background:#f59e0b}.err-dot{background:#ef4444}.info-dot{background:#60a5fa}
 
-    .card { background:#fff; border:1px solid var(--border); border-radius:var(--radius-lg); padding:1.25rem; margin-bottom:1rem; }
-    .card-title { font-weight:600; color:var(--ep-green); margin-bottom:0.85rem; }
-    .kv { display:flex; justify-content:space-between; font-size:0.82rem; padding:0.3rem 0; border-bottom:1px solid var(--border); }
-    .kv:last-child { border-bottom:none; }
-    .kv-k { color:var(--text-muted); }
-    .kv-v { font-family:var(--mono); color:var(--text-secondary); font-size:0.78rem; text-align:right; max-width:60%; }
+    /* ── Generic card ── */
+    .card{background:#fff;border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem;margin-bottom:1rem}
+    .card-title{font-weight:600;color:var(--ep-green);margin-bottom:.85rem;font-size:.95rem}
+    .kv{display:flex;justify-content:space-between;align-items:baseline;font-size:.82rem;padding:.3rem 0;border-bottom:1px solid var(--border)}
+    .kv:last-child{border-bottom:none}
+    .kv-k{color:var(--text-muted);display:flex;align-items:center;gap:4px}
+    .kv-v{font-family:var(--mono);color:var(--text-secondary);font-size:.78rem;text-align:right;max-width:60%}
 
-    .log-line { font-family:var(--mono); font-size:0.74rem; padding:0.35rem 0; border-bottom:1px solid var(--border); display:flex; gap:0.75rem; }
-    .log-ok   { color:#16a34a; flex-shrink:0; }
-    .log-warn { color:#d97706; flex-shrink:0; }
-    .log-err  { color:#dc2626; flex-shrink:0; }
-    .log-time { color:var(--text-muted); flex-shrink:0; }
+    /* ── Tables ── */
+    .tbl{width:100%;border-collapse:collapse;font-size:.82rem}
+    .tbl th{text-align:left;font-size:.66rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text-muted);padding:.55rem 1rem;border-bottom:2px solid var(--border);background:var(--ep-cream)}
+    .tbl td{padding:.55rem 1rem;border-bottom:1px solid var(--border);color:var(--text-secondary)}
+    .tbl tr:hover td{background:rgba(33,67,50,.02)}
 
-    .tbl { width:100%; border-collapse:collapse; font-size:0.82rem; }
-    .tbl th { text-align:left; font-size:0.66rem; font-weight:700; text-transform:uppercase; letter-spacing:0.07em; color:var(--text-muted); padding:0.55rem 1rem; border-bottom:2px solid var(--border); background:var(--ep-cream); }
-    .tbl td { padding:0.55rem 1rem; border-bottom:1px solid var(--border); color:var(--text-secondary); }
+    /* ── Progress bars ── */
+    .ubar{background:var(--ep-cream-dark);border-radius:4px;height:7px;overflow:hidden;margin-top:3px}
+    .ufill{height:100%;border-radius:4px;background:var(--ep-green)}
+    .ufill.warn{background:#f59e0b}.ufill.danger{background:#ef4444}
 
-    .ubar { background:var(--ep-cream-dark); border-radius:4px; height:7px; overflow:hidden; margin-top:3px; }
-    .ufill { height:100%; border-radius:4px; background:var(--ep-green); }
-    .ufill.warn { background:#f59e0b; }
-    .ufill.danger { background:#ef4444; }
+    /* ── Logs ── */
+    .log-line{font-family:var(--mono);font-size:.74rem;padding:.35rem 0;border-bottom:1px solid var(--border);display:flex;gap:.75rem}
+    .log-ok{color:#16a34a;flex-shrink:0}.log-warn{color:#d97706;flex-shrink:0}.log-err{color:#dc2626;flex-shrink:0}
+    .log-time{color:var(--text-muted);flex-shrink:0}
 
-    .ext-btn { display:inline-flex; align-items:center; gap:6px; padding:0.5rem 1.1rem; background:var(--ep-green); color:#fff; border:none; border-radius:var(--radius-sm); font-family:var(--sans); font-size:0.82rem; font-weight:500; cursor:pointer; text-decoration:none; transition:background 0.15s; }
-    .ext-btn:hover { background:#1a3628; }
+    /* ── Buttons ── */
+    .ext-btn{display:inline-flex;align-items:center;gap:6px;padding:.5rem 1.1rem;background:var(--ep-green);color:#fff;border:none;border-radius:var(--radius-sm);font-family:var(--sans);font-size:.82rem;font-weight:500;cursor:pointer;text-decoration:none;transition:background .15s}
+    .ext-btn:hover{background:#1a3628}
+    .ext-btn.sec{background:rgba(33,67,50,.1);color:var(--ep-green);border:1.5px solid var(--ep-green)}
+    .ext-btn.sec:hover{background:rgba(33,67,50,.18)}
+    .ext-btn.danger{background:rgba(220,38,38,.85)}
+    .ext-btn.danger:hover{background:#dc2626}
 
-    /* ── EMAIL COMPOSER ── */
-    .email-template-tabs { display:flex; gap:0.4rem; flex-wrap:wrap; margin-bottom:1.25rem; }
-    .et-tab { padding:0.38rem 1rem; border:1.5px solid var(--border-strong); border-radius:2rem; font-family:var(--sans); font-size:0.8rem; cursor:pointer; color:var(--ep-green); background:transparent; transition:all 0.12s; }
-    .et-tab:hover { background:rgba(33,67,50,0.07); }
-    .et-tab.on { background:var(--ep-green); color:#fff; border-color:var(--ep-green); }
-    .composer-wrap { display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; }
-    @media(max-width:900px){ .composer-wrap { grid-template-columns:1fr; } }
-    .compose-side { display:flex; flex-direction:column; gap:0.75rem; }
-    .compose-field label { display:block; font-size:0.75rem; font-weight:600; color:var(--text-muted); margin-bottom:0.3rem; text-transform:uppercase; letter-spacing:0.06em; }
-    .compose-field input, .compose-field select { width:100%; padding:0.6rem 0.9rem; border:1.5px solid var(--border-strong); border-radius:var(--radius-sm); font-family:var(--sans); font-size:0.9rem; color:var(--text-primary); background:#fff; outline:none; box-sizing:border-box; }
-    .compose-field input:focus, .compose-field select:focus { border-color:var(--ep-green); }
-    .wysiwyg-toolbar { display:flex; gap:2px; flex-wrap:wrap; padding:0.4rem; background:var(--ep-cream-dark); border:1.5px solid var(--border-strong); border-bottom:none; border-radius:var(--radius-sm) var(--radius-sm) 0 0; }
-    .wb { padding:0.25rem 0.6rem; border:none; background:transparent; font-family:var(--sans); font-size:0.82rem; cursor:pointer; border-radius:3px; color:var(--text-secondary); }
-    .wb:hover { background:rgba(33,67,50,0.1); }
-    .wysiwyg-body { min-height:280px; border:1.5px solid var(--border-strong); border-top:none; border-radius:0 0 var(--radius-sm) var(--radius-sm); padding:1rem; font-family:var(--sans); font-size:0.9rem; line-height:1.7; outline:none; background:#fff; overflow-y:auto; }
-    .preview-frame { border:1.5px solid var(--border-strong); border-radius:var(--radius-sm); background:#fff; overflow:hidden; }
-    .preview-header { background:var(--ep-green); color:var(--ep-cream); padding:1rem 1.5rem; }
-    .preview-body { padding:1.5rem; min-height:200px; font-size:0.9rem; line-height:1.8; color:#333; }
-    .preview-footer { background:rgba(33,67,50,0.05); padding:0.75rem 1.5rem; font-size:0.72rem; color:var(--text-muted); text-align:center; border-top:1px solid var(--border); }
-    .segment-pills { display:flex; gap:0.4rem; flex-wrap:wrap; }
-    .seg-pill { padding:0.25rem 0.75rem; border-radius:2rem; border:1px solid var(--border-strong); font-size:0.78rem; cursor:pointer; color:var(--text-secondary); background:transparent; }
-    .seg-pill.on { background:var(--ep-green); color:#fff; border-color:var(--ep-green); }
-    .send-preview-bar { display:flex; gap:0.75rem; align-items:center; flex-wrap:wrap; margin-top:0.75rem; padding-top:0.75rem; border-top:1px solid var(--border); }
-    .send-note { font-size:0.78rem; color:var(--text-muted); flex:1; }
-    .auto-trigger-card { background:rgba(33,67,50,0.05); border:1px solid rgba(33,67,50,0.15); border-radius:var(--radius-lg); padding:1.1rem 1.25rem; margin-bottom:1rem; }
-    .auto-trigger-title { font-weight:600; font-size:0.9rem; color:var(--ep-green); margin-bottom:0.3rem; }
-    .auto-trigger-desc { font-size:0.82rem; color:var(--text-muted); margin-bottom:0.75rem; line-height:1.6; }
-    .toggle-wrap { display:flex; align-items:center; gap:0.75rem; }
-    .toggle { position:relative; width:40px; height:22px; flex-shrink:0; }
-    .toggle input { opacity:0; width:0; height:0; }
-    .toggle-slider { position:absolute; inset:0; background:var(--border-strong); border-radius:22px; cursor:pointer; transition:background 0.2s; }
-    .toggle-slider::before { content:''; position:absolute; width:16px; height:16px; left:3px; top:3px; background:#fff; border-radius:50%; transition:transform 0.2s; }
-    .toggle input:checked + .toggle-slider { background:var(--ep-green); }
-    .toggle input:checked + .toggle-slider::before { transform:translateX(18px); }
+    /* ── Live sensor strip ── */
+    .sensor-strip{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:.75rem;margin-bottom:1.5rem}
+    .sensor-card{background:#fff;border:1px solid var(--border);border-radius:var(--radius-md);padding:.85rem 1rem}
+    .sensor-val{font-family:var(--serif);font-size:1.5rem;color:var(--ep-green);line-height:1}
+    .sensor-unit{font-size:.75rem;color:var(--text-muted);margin-left:2px}
+    .sensor-label{font-size:.62rem;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--text-muted);margin-top:.15rem}
+    .sensor-node{font-size:.62rem;color:var(--ep-tan);font-family:var(--mono);margin-top:2px}
 
-    /* ── PHOTO GALLERY ── */
-    .photo-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:1rem; }
-    .photo-card { background:#fff; border:1px solid var(--border); border-radius:var(--radius-lg); overflow:hidden; transition:box-shadow 0.15s; }
-    .photo-card:hover { box-shadow:0 4px 16px rgba(33,67,50,0.12); }
-    .photo-card img { width:100%; aspect-ratio:16/10; object-fit:cover; display:block; background:var(--ep-cream-dark); }
-    .photo-card-body { padding:0.75rem 0.9rem; }
-    .photo-card-date { font-size:0.78rem; font-weight:600; color:var(--ep-green); margin-bottom:3px; }
-    .photo-card-meta { font-family:var(--mono); font-size:0.68rem; color:var(--text-muted); line-height:1.6; margin-bottom:0.6rem; }
-    .photo-card-actions { display:flex; gap:0.5rem; }
-    .photo-btn { flex:1; padding:0.38rem 0; border:none; border-radius:var(--radius-sm); font-family:var(--sans); font-size:0.78rem; font-weight:500; cursor:pointer; transition:background 0.15s; text-align:center; text-decoration:none; display:inline-block; line-height:1.8; }
-    .photo-btn.keep { background:rgba(33,67,50,0.08); color:var(--ep-green); }
-    .photo-btn.keep:hover { background:rgba(33,67,50,0.15); }
-    .photo-btn.del { background:rgba(220,38,38,0.08); color:#dc2626; }
-    .photo-btn.del:hover { background:rgba(220,38,38,0.15); }
-    .photo-btn.del:disabled { opacity:0.4; cursor:not-allowed; }
-    .photo-pager { display:flex; align-items:center; justify-content:center; gap:0.5rem; margin-top:1.25rem; flex-wrap:wrap; }
-    .photo-pager-btn { padding:0.35rem 0.9rem; border:1px solid var(--border-strong); background:#fff; border-radius:var(--radius-sm); font-family:var(--sans); font-size:0.82rem; color:var(--ep-green); cursor:pointer; }
-    .photo-pager-btn:hover:not([disabled]) { background:var(--ep-green); color:#fff; }
-    .photo-pager-btn[disabled] { opacity:0.35; cursor:not-allowed; }
-    .photo-pager-info { font-size:0.78rem; color:var(--text-muted); font-family:var(--mono); }
-    .photo-filter-bar { display:flex; gap:0.5rem; align-items:center; flex-wrap:wrap; margin-bottom:1.25rem; }
-    .photo-filter-btn { padding:0.3rem 0.85rem; border:1px solid var(--border-strong); background:#fff; border-radius:2rem; font-size:0.78rem; color:var(--text-secondary); cursor:pointer; }
-    .photo-filter-btn.on { background:var(--ep-green); color:#fff; border-color:var(--ep-green); }
+    /* ── API status grid ── */
+    .api-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1rem}
+    .api-card{background:#fff;border:1px solid var(--border);border-radius:var(--radius-lg);padding:1rem 1.1rem}
+    .api-card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:.6rem}
+    .api-card-name{font-weight:700;font-size:.88rem;color:var(--ep-green);display:flex;align-items:center;gap:.4rem}
+    .api-card-status{font-size:.7rem;font-weight:600;padding:2px 8px;border-radius:10px}
+    .api-s-ok{background:rgba(34,197,94,.12);color:#15803d}
+    .api-s-warn{background:rgba(245,158,11,.12);color:#b45309}
+    .api-s-err{background:rgba(239,68,68,.12);color:#b91c1c}
+    .api-card-meta{font-size:.74rem;color:var(--text-muted);line-height:1.65}
+    .api-card-meta a{color:var(--ep-green)}
+
+    /* ── Email panel ── */
+    .email-template-tabs{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:1.25rem}
+    .et-tab{padding:.38rem 1rem;border:1.5px solid var(--border-strong);border-radius:2rem;font-family:var(--sans);font-size:.8rem;cursor:pointer;color:var(--ep-green);background:transparent;transition:all .12s}
+    .et-tab:hover{background:rgba(33,67,50,.07)}
+    .et-tab.on{background:var(--ep-green);color:#fff;border-color:var(--ep-green)}
+    .composer-wrap{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem}
+    @media(max-width:900px){.composer-wrap{grid-template-columns:1fr}}
+    .compose-field label{display:block;font-size:.75rem;font-weight:600;color:var(--text-muted);margin-bottom:.3rem;text-transform:uppercase;letter-spacing:.06em}
+    .compose-field input,.compose-field select{width:100%;padding:.6rem .9rem;border:1.5px solid var(--border-strong);border-radius:var(--radius-sm);font-family:var(--sans);font-size:.9rem;color:var(--text-primary);background:#fff;outline:none;box-sizing:border-box}
+    .compose-field input:focus,.compose-field select:focus{border-color:var(--ep-green)}
+    .wysiwyg-toolbar{display:flex;gap:2px;flex-wrap:wrap;padding:.4rem;background:var(--ep-cream-dark);border:1.5px solid var(--border-strong);border-bottom:none;border-radius:var(--radius-sm) var(--radius-sm) 0 0}
+    .wb{padding:.25rem .6rem;border:none;background:transparent;font-family:var(--sans);font-size:.82rem;cursor:pointer;border-radius:3px;color:var(--text-secondary)}
+    .wb:hover{background:rgba(33,67,50,.1)}
+    .wysiwyg-body{min-height:240px;border:1.5px solid var(--border-strong);border-top:none;border-radius:0 0 var(--radius-sm) var(--radius-sm);padding:1rem;font-family:var(--sans);font-size:.9rem;line-height:1.7;outline:none;background:#fff;overflow-y:auto}
+    .preview-frame{border:1.5px solid var(--border-strong);border-radius:var(--radius-sm);background:#fff;overflow:hidden}
+    .preview-header{background:var(--ep-green);color:var(--ep-cream);padding:1rem 1.5rem}
+    .preview-body{padding:1.5rem;min-height:160px;font-size:.9rem;line-height:1.8;color:#333}
+    .preview-footer{background:rgba(33,67,50,.05);padding:.75rem 1.5rem;font-size:.72rem;color:var(--text-muted);text-align:center;border-top:1px solid var(--border)}
+    .segment-pills{display:flex;gap:.4rem;flex-wrap:wrap}
+    .seg-pill{padding:.25rem .75rem;border-radius:2rem;border:1px solid var(--border-strong);font-size:.78rem;cursor:pointer;color:var(--text-secondary);background:transparent}
+    .seg-pill.on{background:var(--ep-green);color:#fff;border-color:var(--ep-green)}
+    .send-bar{display:flex;gap:.75rem;align-items:center;flex-wrap:wrap;margin-top:.75rem;padding-top:.75rem;border-top:1px solid var(--border)}
+    .send-note{font-size:.78rem;color:var(--text-muted);flex:1}
+    .diag-row{display:flex;align-items:center;justify-content:space-between;padding:.5rem 0;border-bottom:1px solid var(--border);font-size:.82rem}
+    .diag-row:last-child{border-bottom:none}
+
+    /* ── Trees moderation ── */
+    .tree-mod-card{background:#fff;border:1px solid var(--border);border-radius:var(--radius-lg);padding:1rem 1.1rem;margin-bottom:.75rem;display:flex;gap:1rem;align-items:flex-start}
+    .tree-mod-photo{width:80px;height:80px;border-radius:var(--radius-md);object-fit:cover;background:var(--ep-cream-dark);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:2rem;overflow:hidden}
+    .tree-mod-photo img{width:80px;height:80px;object-fit:cover;display:block}
+    .tree-mod-body{flex:1;min-width:0}
+    .tree-mod-name{font-weight:700;font-size:.9rem;color:var(--ep-green);margin-bottom:2px}
+    .tree-mod-sci{font-style:italic;font-size:.75rem;color:var(--text-muted);margin-bottom:.35rem}
+    .tree-mod-meta{font-size:.73rem;color:var(--text-muted);line-height:1.65;margin-bottom:.5rem}
+    .tree-mod-badge{display:inline-block;font-size:.62rem;font-weight:700;padding:2px 8px;border-radius:10px;background:rgba(234,179,8,.15);color:#78350f;border:1px solid rgba(234,179,8,.3)}
+    .tree-mod-actions{display:flex;gap:.5rem;flex-shrink:0;flex-direction:column}
+    .mod-btn{padding:.35rem .85rem;border:none;border-radius:var(--radius-sm);font-family:var(--sans);font-size:.75rem;font-weight:600;cursor:pointer;transition:opacity .15s;white-space:nowrap}
+    .mod-approve{background:rgba(22,163,74,.12);color:#15803d}
+    .mod-approve:hover{background:rgba(22,163,74,.2)}
+    .mod-reject{background:rgba(220,38,38,.08);color:#dc2626}
+    .mod-reject:hover{background:rgba(220,38,38,.15)}
+    .mod-btn:disabled{opacity:.4;cursor:not-allowed}
+
+    /* ── Photo gallery ── */
+    .photo-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1rem}
+    .photo-card{background:#fff;border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;transition:box-shadow .15s}
+    .photo-card:hover{box-shadow:0 4px 16px rgba(33,67,50,.12)}
+    .photo-card img{width:100%;aspect-ratio:16/10;object-fit:cover;display:block;background:var(--ep-cream-dark)}
+    .photo-card-body{padding:.75rem .9rem}
+    .photo-card-date{font-size:.78rem;font-weight:600;color:var(--ep-green);margin-bottom:3px}
+    .photo-card-meta{font-family:var(--mono);font-size:.68rem;color:var(--text-muted);line-height:1.6;margin-bottom:.6rem}
+    .photo-card-actions{display:flex;gap:.5rem}
+    .photo-btn{flex:1;padding:.38rem 0;border:none;border-radius:var(--radius-sm);font-family:var(--sans);font-size:.78rem;font-weight:500;cursor:pointer;transition:background .15s;text-align:center;text-decoration:none;display:inline-block;line-height:1.8}
+    .photo-btn.keep{background:rgba(33,67,50,.08);color:var(--ep-green)}
+    .photo-btn.keep:hover{background:rgba(33,67,50,.15)}
+    .photo-btn.del{background:rgba(220,38,38,.08);color:#dc2626}
+    .photo-btn.del:hover{background:rgba(220,38,38,.15)}
+    .photo-btn.del:disabled{opacity:.4;cursor:not-allowed}
+    .photo-pager{display:flex;align-items:center;justify-content:center;gap:.5rem;margin-top:1.25rem;flex-wrap:wrap}
+    .photo-pager-btn{padding:.35rem .9rem;border:1px solid var(--border-strong);background:#fff;border-radius:var(--radius-sm);font-family:var(--sans);font-size:.82rem;color:var(--ep-green);cursor:pointer}
+    .photo-pager-btn:hover:not([disabled]){background:var(--ep-green);color:#fff}
+    .photo-pager-btn[disabled]{opacity:.35;cursor:not-allowed}
+    .photo-filter-bar{display:flex;gap:.5rem;align-items:center;flex-wrap:wrap;margin-bottom:1.25rem}
+    .photo-filter-btn{padding:.3rem .85rem;border:1px solid var(--border-strong);background:#fff;border-radius:2rem;font-size:.78rem;color:var(--text-secondary);cursor:pointer}
+    .photo-filter-btn.on{background:var(--ep-green);color:#fff;border-color:var(--ep-green)}
+
+    /* ── Toggle ── */
+    .toggle{position:relative;width:40px;height:22px;flex-shrink:0}
+    .toggle input{opacity:0;width:0;height:0}
+    .toggle-slider{position:absolute;inset:0;background:var(--border-strong);border-radius:22px;cursor:pointer;transition:background .2s}
+    .toggle-slider::before{content:'';position:absolute;width:16px;height:16px;left:3px;top:3px;background:#fff;border-radius:50%;transition:transform .2s}
+    .toggle input:checked + .toggle-slider{background:var(--ep-green)}
+    .toggle input:checked + .toggle-slider::before{transform:translateX(18px)}
+    .toggle-row{display:flex;align-items:center;gap:.75rem;margin-bottom:.5rem}
   </style>
 </head>
 <body>
 <div id="ep-nav"></div>
 
 <div class="admin-wrap">
+
+  <!-- SIDEBAR -->
   <div class="admin-side">
-    <div class="admin-brand">⚙ Admin</div>
+    <div class="admin-brand">⚙ Admin Panel</div>
+
+    <div class="admin-cat">Monitoring</div>
     <button class="al on" id="al-overview"  onclick="sp('overview',this)">📊 Overview</button>
-    <button class="al"     id="al-users"     onclick="sp('users',this)">👥 Users</button>
-    <button class="al"     id="al-system"    onclick="sp('system',this)">🖥 System health</button>
-    <button class="al"     id="al-logs"      onclick="sp('logs',this)">📋 Recent logs</button>
-    <button class="al"     id="al-usage"     onclick="sp('usage',this)">💰 API usage</button>
-    <button class="al"     id="al-email"     onclick="sp('email',this)">✉️ Email sender</button>
-    <button class="al"     id="al-analytics" onclick="sp('analytics',this)">📈 Analytics</button>
-    <button class="al"     id="al-data"      onclick="sp('data',this)">🗄 Data</button>
-    <button class="al"     id="al-photos"    onclick="sp('photos',this)">📷 Photos</button>
+    <button class="al"    id="al-sensors"   onclick="sp('sensors',this)">🔴 Live sensors</button>
+    <button class="al"    id="al-apis"      onclick="sp('apis',this)">🔌 API status</button>
+    <button class="al"    id="al-logs"      onclick="sp('logs',this)">📋 Logs</button>
+    <button class="al"    id="al-system"    onclick="sp('system',this)">🖥 System health</button>
+
+    <div class="admin-sep"></div>
+    <div class="admin-cat">Content</div>
+    <button class="al"    id="al-trees"     onclick="sp('trees',this)">🌿 Plant moderation</button>
+    <button class="al"    id="al-photos"    onclick="sp('photos',this)">📷 Photos</button>
+    <button class="al"    id="al-data"      onclick="sp('data',this)">🗄 Data tables</button>
+
+    <div class="admin-sep"></div>
+    <div class="admin-cat">Communications</div>
+    <button class="al"    id="al-email"     onclick="sp('email',this)">✉️ Email sender</button>
+    <button class="al"    id="al-users"     onclick="sp('users',this)">👥 Subscribers</button>
+
+    <div class="admin-sep"></div>
+    <div class="admin-cat">Reports</div>
+    <button class="al"    id="al-usage"     onclick="sp('usage',this)">💰 API usage</button>
+    <button class="al"    id="al-analytics" onclick="sp('analytics',this)">📈 Analytics</button>
+
     <div class="sp"></div>
     <button class="al danger" onclick="doSignOut()">→ Sign out</button>
   </div>
 
+  <!-- MAIN -->
   <div class="admin-main">
 
-    <!-- OVERVIEW -->
+    <!-- ══════════════ OVERVIEW ══════════════ -->
     <div class="panel on" id="panel-overview">
       <div class="ptitle">Overview</div>
       <div class="psub">Last refreshed <span id="ov-time">—</span> · <button class="refresh-btn" onclick="loadOverview()">↻ Refresh</button></div>
-      <div class="stat-grid" id="ov-stats"><div class="ep-skeleton" style="height:80px;border-radius:var(--radius-lg);"></div><div class="ep-skeleton" style="height:80px;border-radius:var(--radius-lg);"></div><div class="ep-skeleton" style="height:80px;border-radius:var(--radius-lg);"></div><div class="ep-skeleton" style="height:80px;border-radius:var(--radius-lg);"></div></div>
-      <div class="card"><div class="card-title">System status</div><div id="ov-status">Loading…</div></div>
-      <div class="card"><div class="card-title">Data freshness</div><div id="ov-fresh">Loading…</div></div>
-    </div>
-
-    <!-- USERS -->
-    <div class="panel" id="panel-users">
-      <div class="ptitle">Users</div>
-      <div class="psub" id="user-sub">Loading…</div>
-      <div style="background:#fff;border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;">
-        <table class="tbl"><thead><tr><th>Email</th><th>Subscribed</th><th>Source</th></tr></thead><tbody id="users-body"><tr><td colspan="3" style="text-align:center;padding:2rem;color:var(--text-muted);">Loading…</td></tr></tbody></table>
+      <div class="stat-grid" id="ov-stats">
+        <div class="ep-skeleton" style="height:80px;border-radius:var(--radius-lg)"></div>
+        <div class="ep-skeleton" style="height:80px;border-radius:var(--radius-lg)"></div>
+        <div class="ep-skeleton" style="height:80px;border-radius:var(--radius-lg)"></div>
+        <div class="ep-skeleton" style="height:80px;border-radius:var(--radius-lg)"></div>
+        <div class="ep-skeleton" style="height:80px;border-radius:var(--radius-lg)"></div>
       </div>
-      <p style="font-size:0.78rem;color:var(--text-muted);margin-top:0.75rem;">Shows newsletter subscribers. Full auth user list available in Supabase dashboard → Authentication → Users.</p>
+      <div class="card"><div class="card-title">Data freshness — all tables</div><div id="ov-fresh">Loading…</div></div>
+      <div class="card"><div class="card-title">Node status</div><div id="ov-nodes">Loading…</div></div>
     </div>
 
-    <!-- SYSTEM -->
-    <div class="panel" id="panel-system">
-      <div class="ptitle">System health</div>
-      <div class="psub">Live status of all Earth Pulse components. <button class="refresh-btn" onclick="loadSystem()">↻ Refresh</button></div>
-      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1rem;" id="sys-grid"><div class="ep-skeleton" style="height:120px;border-radius:var(--radius-lg);"></div><div class="ep-skeleton" style="height:120px;border-radius:var(--radius-lg);"></div></div>
+    <!-- ══════════════ LIVE SENSORS ══════════════ -->
+    <div class="panel" id="panel-sensors">
+      <div class="ptitle">Live Sensor Readings</div>
+      <div class="psub">Current readings from both Pi nodes. Auto-refreshes every 60 seconds. <button class="refresh-btn" onclick="loadSensors()">↻ Refresh now</button></div>
+
+      <div style="font-size:.8rem;font-weight:700;color:var(--ep-tan);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.6rem;">🏠 Baner Main Node (baner_01 — east balcony)</div>
+      <div class="sensor-strip" id="sensor-main">
+        <div class="ep-skeleton" style="height:90px;border-radius:var(--radius-md)"></div>
+        <div class="ep-skeleton" style="height:90px;border-radius:var(--radius-md)"></div>
+        <div class="ep-skeleton" style="height:90px;border-radius:var(--radius-md)"></div>
+        <div class="ep-skeleton" style="height:90px;border-radius:var(--radius-md)"></div>
+      </div>
+
+      <div style="font-size:.8rem;font-weight:700;color:var(--ep-tan);text-transform:uppercase;letter-spacing:.08em;margin:.75rem 0 .6rem;">🌿 South Node (baner_south_01 — facing Baner Hill)</div>
+      <div class="sensor-strip" id="sensor-south">
+        <div class="ep-skeleton" style="height:90px;border-radius:var(--radius-md)"></div>
+        <div class="ep-skeleton" style="height:90px;border-radius:var(--radius-md)"></div>
+      </div>
+
+      <div style="font-size:.8rem;font-weight:700;color:var(--ep-tan);text-transform:uppercase;letter-spacing:.08em;margin:.75rem 0 .6rem;">🌡️ Weather Union (ZWL008983 — hyperlocal)</div>
+      <div class="sensor-strip" id="sensor-wu">
+        <div class="ep-skeleton" style="height:90px;border-radius:var(--radius-md)"></div>
+        <div class="ep-skeleton" style="height:90px;border-radius:var(--radius-md)"></div>
+      </div>
+
+      <div class="card" style="margin-top:1rem">
+        <div class="card-title">Last 5 climate readings (main node)</div>
+        <div id="sensor-recent">Loading…</div>
+      </div>
     </div>
 
-    <!-- LOGS -->
+    <!-- ══════════════ API STATUS ══════════════ -->
+    <div class="panel" id="panel-apis">
+      <div class="ptitle">API Status</div>
+      <div class="psub">Live ping of all external APIs and internal Workers. <button class="refresh-btn" onclick="loadApis()">↻ Refresh</button></div>
+      <div class="api-grid" id="api-grid">
+        <div class="ep-skeleton" style="height:120px;border-radius:var(--radius-lg)"></div>
+        <div class="ep-skeleton" style="height:120px;border-radius:var(--radius-lg)"></div>
+        <div class="ep-skeleton" style="height:120px;border-radius:var(--radius-lg)"></div>
+        <div class="ep-skeleton" style="height:120px;border-radius:var(--radius-lg)"></div>
+      </div>
+    </div>
+
+    <!-- ══════════════ LOGS ══════════════ -->
     <div class="panel" id="panel-logs">
       <div class="ptitle">Recent logs</div>
       <div class="psub">Last 48 climate readings — shows gaps and errors. <button class="refresh-btn" onclick="loadLogs()">↻ Refresh</button></div>
-      <div class="card" style="max-height:600px;overflow-y:auto;" id="logs-wrap">Loading…</div>
+      <div class="card" style="max-height:600px;overflow-y:auto" id="logs-wrap">Loading…</div>
     </div>
 
-    <!-- USAGE -->
-    <div class="panel" id="panel-usage">
-      <div class="ptitle">API usage this month</div>
-      <div class="psub">Estimated usage against free tier limits.</div>
-      <div id="usage-wrap">Loading…</div>
+    <!-- ══════════════ SYSTEM ══════════════ -->
+    <div class="panel" id="panel-system">
+      <div class="ptitle">System health</div>
+      <div class="psub">Live status of all Earth Pulse components — both Pi nodes, all Workers, Supabase, and Cloudflare. <button class="refresh-btn" onclick="loadSystem()">↻ Refresh</button></div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem" id="sys-grid">
+        <div class="ep-skeleton" style="height:140px;border-radius:var(--radius-lg)"></div>
+        <div class="ep-skeleton" style="height:140px;border-radius:var(--radius-lg)"></div>
+        <div class="ep-skeleton" style="height:140px;border-radius:var(--radius-lg)"></div>
+        <div class="ep-skeleton" style="height:140px;border-radius:var(--radius-lg)"></div>
+      </div>
     </div>
 
-    <!-- EMAIL SENDER -->
+    <!-- ══════════════ PLANT MODERATION ══════════════ -->
+    <div class="panel" id="panel-trees">
+      <div class="ptitle">🌿 Plant Moderation Queue</div>
+      <div class="psub">Plant identifications submitted without GPS verification — user confirmed they were at Baner Hill. Review and approve or reject each one. <button class="refresh-btn" onclick="loadTrees()">↻ Refresh</button></div>
+      <div id="trees-pending">Loading…</div>
+      <div style="margin-top:1.5rem">
+        <div class="card-title" style="color:var(--ep-green)">✅ Recently approved</div>
+        <div id="trees-approved">Loading…</div>
+      </div>
+    </div>
+
+    <!-- ══════════════ PHOTOS ══════════════ -->
+    <div class="panel" id="panel-photos">
+      <div class="ptitle">Photo Gallery</div>
+      <div class="psub">All timelapse frames. Delete removes the Supabase row (R2 file remains for now). <button class="refresh-btn" onclick="loadPhotos(true)">↻ Refresh</button></div>
+      <div class="photo-filter-bar">
+        <span style="font-size:.78rem;color:var(--text-muted);font-weight:600">Filter:</span>
+        <button class="photo-filter-btn on" onclick="setPhotoFilter('all',this)">All</button>
+        <button class="photo-filter-btn" onclick="setPhotoFilter('rain',this)">🌧️ Rainy</button>
+        <button class="photo-filter-btn" onclick="setPhotoFilter('hot',this)">🔥 Hot (&gt;35°C)</button>
+        <button class="photo-filter-btn" onclick="setPhotoFilter('aqi',this)">⚠️ High AQI (&gt;80)</button>
+        <span id="photo-count-label" style="margin-left:auto;font-size:.78rem;color:var(--text-muted);font-family:var(--mono)"></span>
+      </div>
+      <div class="photo-grid" id="photo-grid">
+        <div class="ep-skeleton" style="height:220px;border-radius:var(--radius-lg)"></div>
+        <div class="ep-skeleton" style="height:220px;border-radius:var(--radius-lg)"></div>
+        <div class="ep-skeleton" style="height:220px;border-radius:var(--radius-lg)"></div>
+      </div>
+      <div class="photo-pager" id="photo-pager"></div>
+    </div>
+
+    <!-- ══════════════ DATA ══════════════ -->
+    <div class="panel" id="panel-data">
+      <div class="ptitle">Data tables</div>
+      <div class="psub">Row counts for all Supabase tables. Destructive operations must be done in the SQL editor.</div>
+      <div class="stat-grid" id="data-stats">Loading…</div>
+      <div class="card">
+        <div class="card-title">Table health — last write per table</div>
+        <div id="data-health">Loading…</div>
+      </div>
+      <div class="card" style="border-color:rgba(220,38,38,.25)">
+        <div class="card-title" style="color:#dc2626">⚠️ Danger zone</div>
+        <p style="font-size:.82rem;color:var(--text-muted);margin-bottom:.75rem">All DELETE and TRUNCATE operations must be run in the Supabase SQL Editor with the service role key. This prevents accidental browser-side deletions.</p>
+        <a href="https://supabase.com/dashboard/project/krmczyqwblsoekceanlj/editor" target="_blank" class="ext-btn danger">Open SQL Editor →</a>
+      </div>
+    </div>
+
+    <!-- ══════════════ EMAIL ══════════════ -->
     <div class="panel" id="panel-email">
       <div class="ptitle">Email Sender</div>
-      <div class="psub">Compose and send newsletters and automated alerts to your subscribers. All emails are sent via Resend.com — <a href="https://resend.com" target="_blank" style="color:var(--ep-green);">sign up free</a> (3,000 emails/month free tier).</div>
+      <div class="psub">Compose newsletters and send alerts to subscribers via Resend (vaibhav@ektitli.org — verified sender).</div>
 
-      <!-- Automated triggers -->
-      <div class="card" style="margin-bottom:1.5rem;">
-        <div class="card-title">🤖 Automated email triggers</div>
-        <p style="font-size:0.82rem;color:var(--text-muted);margin-bottom:1rem;">These emails are sent automatically by a cron job on your Pi or a Cloudflare Worker on a schedule. Requires Resend API key in your .env file.</p>
-
-        <div class="auto-trigger-card">
-          <div class="auto-trigger-title">🐦 New species detected alert</div>
-          <div class="auto-trigger-desc">Sent at 4:00 PM daily if a species was detected for the first time this year. Goes to subscribers who opted in for bird alerts.</div>
-          <div class="toggle-wrap">
-            <label class="toggle"><input type="checkbox" id="trig-new-species" checked><span class="toggle-slider"></span></label>
-            <span style="font-size:0.82rem;color:var(--text-secondary);">Enabled — triggers daily at 4 PM if new species detected</span>
-          </div>
+      <!-- Email diagnostics -->
+      <div class="card" style="margin-bottom:1.5rem">
+        <div class="card-title">🔧 Email diagnostics</div>
+        <div id="email-diag">
+          <div class="diag-row"><span>Resend API connection</span><button class="ext-btn sec" style="font-size:.72rem;padding:.3rem .75rem" onclick="testResendConn()">Test connection</button></div>
+          <div class="diag-row"><span>FROM address</span><span style="font-family:var(--mono);font-size:.8rem">vaibhav@ektitli.org</span></div>
+          <div class="diag-row"><span>Admin secret</span><span style="font-family:var(--mono);font-size:.8rem">earthpulse-admin ✓</span></div>
+          <div class="diag-row"><span>Subscriber count</span><span id="diag-sub-count" style="font-family:var(--mono);font-size:.8rem">Loading…</span></div>
         </div>
-
-        <div class="auto-trigger-card">
-          <div class="auto-trigger-title">🍃 AQI alert</div>
-          <div class="auto-trigger-desc">Sent within 1 hour when AQI crosses Good (≤40) or Poor (≥80) threshold. Subscribers choose their threshold in Data Explorer → My Alerts.</div>
-          <div class="toggle-wrap">
-            <label class="toggle"><input type="checkbox" id="trig-aqi" checked><span class="toggle-slider"></span></label>
-            <span style="font-size:0.82rem;color:var(--text-secondary);">Enabled — threshold-based, near real-time</span>
-          </div>
-        </div>
-
-        <div class="auto-trigger-card">
-          <div class="auto-trigger-title">📬 Monthly Earth Pulse report</div>
-          <div class="auto-trigger-desc">Sent on the 1st of each month. Top birds detected, AQI trends, monsoon update, hill photo of the month. You compose it below.</div>
-          <div class="toggle-wrap">
-            <label class="toggle"><input type="checkbox" id="trig-monthly" checked><span class="toggle-slider"></span></label>
-            <span style="font-size:0.82rem;color:var(--text-secondary);">Enabled — 1st of each month</span>
-          </div>
-        </div>
-
-        <p style="font-size:0.78rem;color:var(--text-muted);margin-top:0.75rem;padding-top:0.75rem;border-top:1px solid var(--border);">
-          To activate these triggers: add <code style="background:var(--ep-cream-dark);padding:1px 5px;border-radius:3px;font-size:0.78rem;">RESEND_API_KEY=re_xxxx</code> to your .env file and deploy the included Python trigger script to your Pi's cron.
-        </p>
+        <div id="email-diag-result" style="margin-top:.75rem;font-size:.8rem"></div>
       </div>
 
-      <!-- Manual composer -->
+      <!-- Composer -->
       <div class="card">
-        <div class="card-title">✍️ Compose & send now</div>
+        <div class="card-title">✍️ Compose & send</div>
 
-        <!-- Template picker -->
-        <div style="margin-bottom:1.25rem;">
-          <div style="font-size:0.75rem;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:0.5rem;">Start from template</div>
+        <div style="margin-bottom:1.25rem">
+          <div style="font-size:.75rem;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.5rem">Template</div>
           <div class="email-template-tabs">
-            <button class="et-tab on" onclick="loadTemplate('monthly',this)">📬 Monthly report</button>
-            <button class="et-tab" onclick="loadTemplate('new-bird',this)">🐦 New species alert</button>
+            <button class="et-tab on" onclick="loadTemplate('monthly',this)">📬 Monthly</button>
+            <button class="et-tab" onclick="loadTemplate('new-bird',this)">🐦 New species</button>
             <button class="et-tab" onclick="loadTemplate('aqi-alert',this)">🍃 AQI alert</button>
-            <button class="et-tab" onclick="loadTemplate('monsoon',this)">🌧️ Monsoon update</button>
+            <button class="et-tab" onclick="loadTemplate('monsoon',this)">🌧️ Monsoon</button>
             <button class="et-tab" onclick="loadTemplate('blank',this)">✏️ Blank</button>
           </div>
         </div>
 
-        <!-- Recipient segment -->
-        <div style="margin-bottom:1.25rem;">
-          <div style="font-size:0.75rem;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:0.5rem;">Send to</div>
+        <div style="margin-bottom:1.25rem">
+          <div style="font-size:.75rem;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.5rem">Send to</div>
           <div class="segment-pills">
             <button class="seg-pill on" onclick="toggleSeg(this,'all')">All subscribers</button>
-            <button class="seg-pill" onclick="toggleSeg(this,'birds')">Bird alert opt-ins</button>
-            <button class="seg-pill" onclick="toggleSeg(this,'aqi')">AQI alert opt-ins</button>
+            <button class="seg-pill" onclick="toggleSeg(this,'birds')">Bird opt-ins</button>
             <button class="seg-pill" onclick="toggleSeg(this,'newsletter')">Newsletter only</button>
           </div>
-          <div id="seg-count" style="font-size:0.8rem;color:var(--ep-green);margin-top:0.5rem;font-family:var(--mono);">Loading subscriber count…</div>
+          <div id="seg-count" style="font-size:.8rem;color:var(--ep-green);margin-top:.5rem;font-family:var(--mono)">Loading subscriber count…</div>
         </div>
 
-        <!-- Composer -->
         <div class="composer-wrap">
-          <div class="compose-side">
+          <div style="display:flex;flex-direction:column;gap:.75rem">
             <div class="compose-field">
               <label>Subject line</label>
-              <input type="text" id="em-subject" placeholder="Earth Pulse · April 2026 — Top birds, AQI trends & more">
+              <input type="text" id="em-subject" placeholder="Earth Pulse · May 2026 — Top birds, AQI & more" oninput="updatePreview()">
             </div>
             <div class="compose-field">
-              <label>From name</label>
-              <input type="text" id="em-from" value="Earth Pulse · Baner, Pune">
+              <label>From name (display only)</label>
+              <input type="text" id="em-from" value="Earth Pulse · Baner, Pune" readonly>
             </div>
             <div>
-              <div style="font-size:0.75rem;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:0.4rem;">Email body (WYSIWYG)</div>
+              <div style="font-size:.75rem;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.4rem">Email body</div>
               <div class="wysiwyg-toolbar">
-                <button class="wb" title="Bold" onclick="fmt('bold')"><b>B</b></button>
-                <button class="wb" title="Italic" onclick="fmt('italic')"><em>I</em></button>
-                <button class="wb" title="H2" onclick="fmt('formatBlock','<h2>')">H2</button>
-                <button class="wb" title="H3" onclick="fmt('formatBlock','<h3>')">H3</button>
-                <button class="wb" title="Bullet list" onclick="fmt('insertUnorderedList')">• List</button>
-                <button class="wb" title="Link" onclick="insertLink()">🔗</button>
-                <button class="wb" title="Divider" onclick="fmt('insertHorizontalRule')">— hr</button>
-                <button class="wb" title="Clear" onclick="clearBody()" style="margin-left:auto;color:#dc2626;">✕ Clear</button>
+                <button class="wb" onclick="fmt('bold')"><b>B</b></button>
+                <button class="wb" onclick="fmt('italic')"><em>I</em></button>
+                <button class="wb" onclick="fmt('formatBlock','<h2>')">H2</button>
+                <button class="wb" onclick="fmt('formatBlock','<h3>')">H3</button>
+                <button class="wb" onclick="fmt('insertUnorderedList')">• List</button>
+                <button class="wb" onclick="insertLink()">🔗 Link</button>
+                <button class="wb" onclick="fmt('insertHorizontalRule')">— hr</button>
+                <button class="wb" onclick="clearBody()" style="margin-left:auto;color:#dc2626">✕ Clear</button>
               </div>
-              <div class="wysiwyg-body" id="em-body" contenteditable="true" onkeyup="updatePreview()" oninput="updatePreview()">
-                Loading template…
-              </div>
+              <div class="wysiwyg-body" id="em-body" contenteditable="true" onkeyup="updatePreview()" oninput="updatePreview()">Loading template…</div>
             </div>
           </div>
-
-          <!-- Live preview -->
           <div>
-            <div style="font-size:0.75rem;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:0.5rem;">Live preview</div>
+            <div style="font-size:.75rem;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.5rem">Live preview</div>
             <div class="preview-frame">
               <div class="preview-header">
-                <div style="font-size:0.7rem;opacity:0.6;margin-bottom:2px;text-transform:uppercase;letter-spacing:0.1em;">Earth Pulse · Baner, Pune</div>
-                <div id="preview-subject" style="font-size:1rem;font-weight:600;">Subject line…</div>
+                <div style="font-size:.7rem;opacity:.6;margin-bottom:2px;text-transform:uppercase;letter-spacing:.1em">Earth Pulse · Baner, Pune</div>
+                <div id="preview-subject" style="font-size:1rem;font-weight:600">Subject line…</div>
               </div>
               <div class="preview-body" id="preview-body"></div>
-              <div class="preview-footer">
-                Earth Pulse · earthpulse.pages.dev · Baner, Pune<br>
-                <span style="color:var(--ep-tan);">Unsubscribe</span>
-              </div>
+              <div class="preview-footer">Earth Pulse · earth-pulse.org · Baner, Pune<br><span style="color:var(--ep-tan)">Unsubscribe</span></div>
             </div>
-
-            <div class="send-preview-bar">
-              <div class="send-note" id="send-status">Ready to send</div>
-              <button class="ext-btn" style="background:rgba(33,67,50,0.1);color:var(--ep-green);border:1.5px solid var(--ep-green);" onclick="sendTestEmail()">📤 Send test to me</button>
+            <div class="send-bar">
+              <div class="send-note" id="send-status">Ready — compose your email above.</div>
+              <button class="ext-btn sec" onclick="sendTestEmail()">📤 Test to me</button>
               <button class="ext-btn" onclick="sendBroadcast()">✉️ Send to all</button>
             </div>
           </div>
@@ -329,274 +438,113 @@
       </div>
     </div>
 
-    <!-- ANALYTICS -->
+    <!-- ══════════════ USERS / SUBSCRIBERS ══════════════ -->
+    <div class="panel" id="panel-users">
+      <div class="ptitle">Subscribers</div>
+      <div class="psub" id="user-sub">Loading…</div>
+      <div style="background:#fff;border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden">
+        <table class="tbl">
+          <thead><tr><th>Email</th><th>Subscribed</th><th>Source</th></tr></thead>
+          <tbody id="users-body"><tr><td colspan="3" style="text-align:center;padding:2rem;color:var(--text-muted)">Loading…</td></tr></tbody>
+        </table>
+      </div>
+      <p style="font-size:.78rem;color:var(--text-muted);margin-top:.75rem">Full auth user list: Supabase dashboard → Authentication → Users.</p>
+    </div>
+
+    <!-- ══════════════ USAGE ══════════════ -->
+    <div class="panel" id="panel-usage">
+      <div class="ptitle">API usage this month</div>
+      <div class="psub">Estimated usage against free tier limits. All numbers are estimates based on cron schedules.</div>
+      <div id="usage-wrap">Loading…</div>
+    </div>
+
+    <!-- ══════════════ ANALYTICS ══════════════ -->
     <div class="panel" id="panel-analytics">
       <div class="ptitle">Analytics</div>
-      <div class="psub">Quick links to your external dashboards — all in one place.</div>
-      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:1rem;">
-        <div class="card" style="text-align:center;">
-          <div style="font-size:2rem;margin-bottom:0.5rem;">📊</div>
-          <div style="font-weight:600;color:var(--ep-green);margin-bottom:0.4rem;">Google Analytics 4</div>
-          <p style="font-size:0.82rem;color:var(--text-muted);margin-bottom:1rem;">Real-time visitors, page views, traffic sources.</p>
-          <a href="https://analytics.google.com/analytics/web/#/a51730239p530359596/reports/intelligenthome" target="_blank" class="ext-btn">Open GA4 →</a>
-        </div>
-        <div class="card" style="text-align:center;">
-          <div style="font-size:2rem;margin-bottom:0.5rem;">☁</div>
-          <div style="font-weight:600;color:var(--ep-green);margin-bottom:0.4rem;">Cloudflare Analytics</div>
-          <p style="font-size:0.82rem;color:var(--text-muted);margin-bottom:1rem;">Requests, bandwidth, cache rate, threats.</p>
-          <a href="https://dash.cloudflare.com/e340725bb3d0ace4725db23e1516a2a1/web-analytics/overview?siteTag~in=48534a3e2afd41b5975f4b59e947791d&excludeBots=Yes" target="_blank" class="ext-btn">Open Cloudflare →</a>
-        </div>
-        <div class="card" style="text-align:center;">
-          <div style="font-size:2rem;margin-bottom:0.5rem;">🗄</div>
-          <div style="font-weight:600;color:var(--ep-green);margin-bottom:0.4rem;">Supabase Dashboard</div>
-          <p style="font-size:0.82rem;color:var(--text-muted);margin-bottom:1rem;">DB size, API logs, auth users, storage.</p>
-          <a href="https://supabase.com/dashboard/project/krmczyqwblsoekceanlj" target="_blank" class="ext-btn">Open Supabase →</a>
-        </div>
-        <div class="card" style="text-align:center;">
-          <div style="font-size:2rem;margin-bottom:0.5rem;">🔑</div>
-          <div style="font-weight:600;color:var(--ep-green);margin-bottom:0.4rem;">Google Cloud Console</div>
-          <p style="font-size:0.82rem;color:var(--text-muted);margin-bottom:1rem;">Air Quality API quota and billing alerts.</p>
-          <a href="https://console.cloud.google.com/apis/dashboard?project=fangchu" target="_blank" class="ext-btn">Open GCloud →</a>
-        </div>
+      <div class="psub">Quick links to all external dashboards.</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1rem">
+        <div class="card" style="text-align:center"><div style="font-size:2rem;margin-bottom:.5rem">📊</div><div style="font-weight:600;color:var(--ep-green);margin-bottom:.4rem">Google Analytics 4</div><p style="font-size:.82rem;color:var(--text-muted);margin-bottom:1rem">Real-time visitors, page views, traffic sources.</p><a href="https://analytics.google.com/analytics/web/#/a51730239p530359596/reports/intelligenthome" target="_blank" class="ext-btn">Open GA4 →</a></div>
+        <div class="card" style="text-align:center"><div style="font-size:2rem;margin-bottom:.5rem">☁</div><div style="font-weight:600;color:var(--ep-green);margin-bottom:.4rem">Cloudflare Analytics</div><p style="font-size:.82rem;color:var(--text-muted);margin-bottom:1rem">Requests, bandwidth, cache, threats.</p><a href="https://dash.cloudflare.com/e340725bb3d0ace4725db23e1516a2a1/web-analytics/overview" target="_blank" class="ext-btn">Open Cloudflare →</a></div>
+        <div class="card" style="text-align:center"><div style="font-size:2rem;margin-bottom:.5rem">🗄</div><div style="font-weight:600;color:var(--ep-green);margin-bottom:.4rem">Supabase Dashboard</div><p style="font-size:.82rem;color:var(--text-muted);margin-bottom:1rem">DB size, API logs, auth, storage.</p><a href="https://supabase.com/dashboard/project/krmczyqwblsoekceanlj" target="_blank" class="ext-btn">Open Supabase →</a></div>
+        <div class="card" style="text-align:center"><div style="font-size:2rem;margin-bottom:.5rem">🔑</div><div style="font-weight:600;color:var(--ep-green);margin-bottom:.4rem">Google Cloud Console</div><p style="font-size:.82rem;color:var(--text-muted);margin-bottom:1rem">Air Quality API quota and billing alerts.</p><a href="https://console.cloud.google.com/apis/dashboard?project=fangchu" target="_blank" class="ext-btn">Open GCloud →</a></div>
+        <div class="card" style="text-align:center"><div style="font-size:2rem;margin-bottom:.5rem">📧</div><div style="font-weight:600;color:var(--ep-green);margin-bottom:.4rem">Resend Dashboard</div><p style="font-size:.82rem;color:var(--text-muted);margin-bottom:1rem">Email sends, bounces, delivery rates.</p><a href="https://resend.com/dashboard" target="_blank" class="ext-btn">Open Resend →</a></div>
+        <div class="card" style="text-align:center"><div style="font-size:2rem;margin-bottom:.5rem">🌿</div><div style="font-weight:600;color:var(--ep-green);margin-bottom:.4rem">PlantNet Dashboard</div><p style="font-size:.82rem;color:var(--text-muted);margin-bottom:1rem">Daily identification quota usage.</p><a href="https://my.plantnet.org" target="_blank" class="ext-btn">Open PlantNet →</a></div>
       </div>
     </div>
 
-    <!-- PHOTOS -->
-    <div class="panel" id="panel-photos">
-      <div class="ptitle">Photo Gallery</div>
-      <div class="psub">All timelapse frames. Delete removes the Supabase row (R2 file remains). <button class="refresh-btn" onclick="loadPhotos(true)">&#8635; Refresh</button></div>
-      <div class="photo-filter-bar">
-        <span style="font-size:0.78rem;color:var(--text-muted);font-weight:600;">Filter:</span>
-        <button class="photo-filter-btn on" onclick="setPhotoFilter('all',this)">All photos</button>
-        <button class="photo-filter-btn" onclick="setPhotoFilter('rain',this)">&#127751; Rainy</button>
-        <button class="photo-filter-btn" onclick="setPhotoFilter('hot',this)">&#128293; Hot (&gt;35&#176;C)</button>
-        <button class="photo-filter-btn" onclick="setPhotoFilter('aqi',this)">&#9888;&#65039; High AQI (&gt;80)</button>
-        <span id="photo-count-label" style="margin-left:auto;font-size:0.78rem;color:var(--text-muted);font-family:var(--mono);"></span>
-      </div>
-      <div class="photo-grid" id="photo-grid">
-        <div class="ep-skeleton" style="height:220px;border-radius:var(--radius-lg);"></div>
-        <div class="ep-skeleton" style="height:220px;border-radius:var(--radius-lg);"></div>
-        <div class="ep-skeleton" style="height:220px;border-radius:var(--radius-lg);"></div>
-        <div class="ep-skeleton" style="height:220px;border-radius:var(--radius-lg);"></div>
-      </div>
-      <div class="photo-pager" id="photo-pager"></div>
-    </div>
-
-    <!-- DATA -->
-    <div class="panel" id="panel-data">
-      <div class="ptitle">Data management</div>
-      <div class="psub">Row counts and admin actions. Destructive operations must be done in Supabase SQL Editor.</div>
-      <div class="stat-grid" id="data-stats">Loading…</div>
-      <div class="card" style="border-color:rgba(220,38,38,0.25);">
-        <div class="card-title" style="color:#dc2626;">⚠️ Danger zone</div>
-        <p style="font-size:0.82rem;color:var(--text-muted);margin-bottom:0.75rem;">All DELETE and TRUNCATE operations must be run in the Supabase SQL Editor with the service role key. This prevents accidental browser-side deletions.</p>
-        <a href="https://supabase.com/dashboard/project/krmczyqwblsoekceanlj/editor" target="_blank" class="ext-btn" style="background:#dc2626;">Open SQL Editor →</a>
-      </div>
-    </div>
-
-  </div>
-</div>
+  </div><!-- /admin-main -->
+</div><!-- /admin-wrap -->
 
 <div id="ep-footer"></div>
 <script src="analytics.js"></script>
 <script src="nav.js"></script>
 <script>
-// ── EMAIL PANEL ───────────────────────────────────────────────────────────────
-var selectedSegment = 'all';
-var subCount = 0;
+/* ─────────────────────────────────────────────────────────────────────────────
+   admin.html — complete rewrite May 2026
+   - Gemini replaces Anthropic for AI calls
+   - Both Pi nodes monitored (baner_01 + baner_south_01)
+   - All APIs tracked: PlantNet, Trefle, Gemini, Google AQI, Weather Union, Resend
+   - Plant moderation queue (pending_review from identify.html)
+   - Email diagnostics before send
+   - Email FROM fixed to vaibhav@ektitli.org (verified Resend sender)
+───────────────────────────────────────────────────────────────────────────── */
 
-var TEMPLATES = {
-  'monthly': {
-    subject: 'Earth Pulse · ' + new Date().toLocaleDateString('en-IN',{month:'long',year:'numeric'}) + ' — Top birds, AQI trends & more',
-    body: `<h2>🌿 Baner's living pulse this month</h2>
-<p>Here's what Earth Pulse recorded from the Sahyadri foothills in the past month.</p>
-<hr>
-<h3>🐦 Birds of the month</h3>
-<p><strong>[Top species]</strong> was the most frequently detected species this month, heard <strong>[X] times</strong>. A total of <strong>[N] species</strong> were identified by BirdNET acoustic AI.</p>
-<h3>🍃 Air quality highlights</h3>
-<p>Average EU AQI this month: <strong>[avg]</strong>. Best day: <strong>[date] at AQI [n]</strong> (Good). Worst: <strong>[date] at AQI [n]</strong>.</p>
-<h3>🌡️ Climate snapshot</h3>
-<p>Temperature ranged from <strong>[min]°C to [max]°C</strong>. Total rainfall: <strong>[mm]mm</strong>.</p>
-<h3>📸 Hill photo of the month</h3>
-<p>[Add hill photo link or description here]</p>
-<hr>
-<p><a href="https://earthpulse.pages.dev">View the full dataset →</a></p>`
-  },
-  'new-bird': {
-    subject: 'New bird detected in Baner! 🐦 [Species name] heard for the first time this year',
-    body: `<h2>🎉 A new species has arrived in Baner!</h2>
-<p>Our BirdNET acoustic monitor on the Sahyadri foothills has detected a species for the first time this year.</p>
-<h3>[Species common name] (<em>[Scientific name]</em>)</h3>
-<p>First detected at <strong>[time]</strong> today with <strong>[confidence]% confidence</strong>. This is the <strong>[Nth] species</strong> detected in Baner so far this year.</p>
-<p><strong>About this bird:</strong> [Brief description — habitat, behaviour, migration status]</p>
-<p><a href="https://earthpulse.pages.dev/species.html?bird=[scientific_name]">View full detection profile →</a></p>
-<hr>
-<p style="font-size:0.85em;color:#666;">You're receiving this because you opted in for bird detection alerts on Earth Pulse.</p>`
-  },
-  'aqi-alert': {
-    subject: 'Air quality alert for Baner 🍃 AQI now [level]',
-    body: `<h2>🍃 Air quality update — Baner, Pune</h2>
-<p>The EU AQI in Baner has changed significantly and you asked to be notified.</p>
-<table style="border-collapse:collapse;width:100%;margin:1rem 0;">
-<tr style="background:#f0f4f0;"><td style="padding:0.5rem 1rem;font-weight:600;">EU AQI</td><td style="padding:0.5rem 1rem;font-size:1.5rem;font-weight:700;color:#214332;">[value]</td><td style="padding:0.5rem 1rem;color:#555;">[status]</td></tr>
-<tr><td style="padding:0.5rem 1rem;font-weight:600;">India AQI</td><td style="padding:0.5rem 1rem;">[india_value]</td><td style="padding:0.5rem 1rem;color:#555;">[india_status]</td></tr>
-<tr style="background:#f0f4f0;"><td style="padding:0.5rem 1rem;font-weight:600;">Dominant pollutant</td><td style="padding:0.5rem 1rem;" colspan="2">[pollutant]</td></tr>
-</table>
-<p><strong>Recommendation:</strong> [health_recommendation]</p>
-<p><a href="https://earthpulse.pages.dev/climate.html">See full AQI history →</a></p>`
-  },
-  'monsoon': {
-    subject: '🌧️ Monsoon update from Baner — [date]',
-    body: `<h2>🌧️ Monsoon season update</h2>
-<p>Here's the latest from Earth Pulse on the Baner monsoon.</p>
-<h3>Rainfall so far this season</h3>
-<p>Total rainfall recorded: <strong>[total]mm</strong>. This compares to <strong>[prev_year]mm</strong> in the same period last year.</p>
-<h3>Birds responding to the rains</h3>
-<p>Monsoon species are beginning to appear — <strong>[monsoon_birds]</strong> have been detected following the first rains.</p>
-<p><a href="https://earthpulse.pages.dev/monsoon.html">View monsoon tracker →</a></p>`
-  },
-  'blank': {
-    subject: '',
-    body: '<p>Compose your message here…</p>'
-  }
-};
+var _SB_URL    = 'https://krmczyqwblsoekceanlj.supabase.co';
+var _SB_KEY    = 'sb_publishable_DrHFT5J0vmrkYraUXIlpQQ_gsk1rdq6';
+var AI_WORKER  = 'https://earthpulse-ai.fangchu.workers.dev';
+var EMAIL_WRKR = 'https://earthpulse-email.fangchu.workers.dev';
+var ADMIN_SEC  = 'earthpulse-admin';
+var ADMIN_EMAIL= 'fangchu@gmail.com';
 
-function loadTemplate(name, btn) {
-  document.querySelectorAll('.et-tab').forEach(function(t){ t.classList.remove('on'); });
-  btn.classList.add('on');
-  var t = TEMPLATES[name] || TEMPLATES['blank'];
-  document.getElementById('em-subject').value = t.subject;
-  document.getElementById('em-body').innerHTML = t.body;
-  updatePreview();
+/* ── Helpers ── */
+function ge(id){ return document.getElementById(id); }
+function staleness(ts) {
+  if (!ts) return '<span class="sd err-dot"></span>No data';
+  var mins = Math.round((Date.now()-new Date(ts).getTime())/60000);
+  var cls  = mins<130?'ok-dot':mins<360?'warn-dot':'err-dot';
+  var str  = mins<60?mins+'m ago':Math.floor(mins/60)+'h ago';
+  return '<span class="sd '+cls+'"></span>'+str;
+}
+async function sbCount(table) {
+  var r = await fetch(_SB_URL+'/rest/v1/'+table+'?select=id&limit=1',
+    {headers:{'apikey':_SB_KEY,'Authorization':'Bearer '+_SB_KEY,'Prefer':'count=exact'}});
+  return parseInt(r.headers.get('content-range')?.split('/')[1]||'0');
+}
+async function sbGet(path) {
+  var r = await fetch(_SB_URL+'/rest/v1'+path,
+    {headers:{'apikey':_SB_KEY,'Authorization':'Bearer '+_SB_KEY}});
+  return r.json();
 }
 
-function updatePreview() {
-  var subj = document.getElementById('em-subject').value || 'Subject line…';
-  var body = document.getElementById('em-body').innerHTML;
-  document.getElementById('preview-subject').textContent = subj;
-  document.getElementById('preview-body').innerHTML = body;
-}
-
-function fmt(cmd, val) {
-  document.getElementById('em-body').focus();
-  document.execCommand(cmd, false, val || null);
-  updatePreview();
-}
-function insertLink() {
-  var url = prompt('Enter URL:');
-  if (url) document.execCommand('createLink', false, url);
-  updatePreview();
-}
-function clearBody() {
-  if (confirm('Clear the email body?')) {
-    document.getElementById('em-body').innerHTML = '';
-    updatePreview();
-  }
-}
-
-function toggleSeg(btn, seg) {
-  document.querySelectorAll('.seg-pill').forEach(function(p){ p.classList.remove('on'); });
-  btn.classList.add('on');
-  selectedSegment = seg;
-  updateSegCount();
-}
-
-async function updateSegCount() {
-  try {
-    var rows = await sbGet('/newsletter_signups?select=id&limit=1000');
-    subCount = Array.isArray(rows) ? rows.length : 0;
-    document.getElementById('seg-count').textContent = subCount + ' recipient' + (subCount!==1?'s':'') + ' · ' + selectedSegment.replace('-',' ') + ' list';
-  } catch(e) { document.getElementById('seg-count').textContent = 'Could not load subscriber count'; }
-}
-
-var EMAIL_WORKER = 'https://earthpulse-email.fangchu.workers.dev';
-var ADMIN_SECRET = 'earthpulse-admin'; // Set this in both the Worker and here
-
-async function sendTestEmail() {
-  var subject = document.getElementById('em-subject').value;
-  var body    = document.getElementById('em-body').innerHTML;
-  if (!subject) { alert('Please add a subject line first.'); return; }
-
-  var status = document.getElementById('send-status');
-  status.textContent = 'Sending test to fangchu@gmail.com…';
-
-  try {
-    var res = await fetch(EMAIL_WORKER + '/send', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + ADMIN_SECRET },
-      body: JSON.stringify({ to: 'fangchu@gmail.com', subject: '[TEST] ' + subject, html: body })
-    });
-    var d = await res.json();
-    if (!res.ok) throw new Error(d.error || 'Worker error ' + res.status);
-    status.innerHTML = '✅ Test sent to fangchu@gmail.com! Check your inbox. (Resend ID: ' + (d.id||'ok') + ')';
-  } catch(e) {
-    status.innerHTML = '⚠️ Error: ' + e.message + ' — check that your Resend FROM address is verified at resend.com/domains';
-  }
-}
-
-async function sendBroadcast() {
-  var subject = document.getElementById('em-subject').value;
-  var html    = document.getElementById('em-body').innerHTML;
-  if (!subject) { alert('Please add a subject line first.'); return; }
-
-  // Fetch subscriber list
-  var recipients = [];
-  try {
-    var rows = await sbGet('/newsletter_signups?select=email&limit=1000');
-    if (Array.isArray(rows)) recipients = rows.map(function(r){ return r.email; }).filter(Boolean);
-  } catch(e) { alert('Could not load subscribers: ' + e.message); return; }
-
-  if (!recipients.length) { alert('No subscribers found.'); return; }
-  if (!confirm('Send to ' + recipients.length + ' subscribers? This cannot be undone.')) return;
-
-  var status = document.getElementById('send-status');
-  status.textContent = 'Sending to ' + recipients.length + ' subscribers…';
-
-  try {
-    var res = await fetch(EMAIL_WORKER + '/send-batch', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + ADMIN_SECRET },
-      body: JSON.stringify({ recipients, subject, html })
-    });
-    var d = await res.json();
-    if (!res.ok) throw new Error(d.error || 'Worker error ' + res.status);
-    status.innerHTML = '✅ Broadcast sent! ' + d.sent + ' delivered' + (d.failed ? ', ' + d.failed + ' failed' : '') + '.';
-  } catch(e) {
-    status.innerHTML = '⚠️ Error: ' + e.message;
-  }
-}
-
-// Load template and subscriber count on panel open
-function initEmailPanel() {
-  loadTemplate('monthly', document.querySelector('.et-tab.on'));
-  updateSegCount();
-  document.getElementById('em-subject').addEventListener('input', updatePreview);
-}
-
-// Call initEmailPanel when email panel is activated
-var _origSp = window.sp;
-var _emailPanelInited = false;
+/* ── Panel router ── */
+var _emailInited = false;
 function sp(id, btn) {
-  document.querySelectorAll('.panel').forEach(function(p){ p.classList.remove('on'); });
-  document.querySelectorAll('.al').forEach(function(b){ b.classList.remove('on'); });
-  var el = document.getElementById('panel-' + id);
+  document.querySelectorAll('.panel').forEach(function(p){p.classList.remove('on')});
+  document.querySelectorAll('.al').forEach(function(b){b.classList.remove('on')});
+  var el = ge('panel-'+id);
   if (el) el.classList.add('on');
   if (btn) btn.classList.add('on');
-  if (id==='overview')  loadOverview();
-  if (id==='users')     loadUsers();
-  if (id==='system')    loadSystem();
-  if (id==='logs')      loadLogs();
-  if (id==='usage')     loadUsage();
-  if (id==='data')      loadData();
-  if (id==='photos')    loadPhotos(false);
-  if (id==='email' && !_emailPanelInited) { _emailPanelInited=true; setTimeout(initEmailPanel, 100); }
+  var loaders = {
+    overview:  loadOverview,
+    sensors:   loadSensors,
+    apis:      loadApis,
+    logs:      loadLogs,
+    system:    loadSystem,
+    trees:     loadTrees,
+    photos:    function(){ loadPhotos(false); },
+    data:      loadData,
+    usage:     loadUsage,
+    users:     loadUsers,
+  };
+  if (loaders[id]) loaders[id]();
+  if (id==='email' && !_emailInited) { _emailInited=true; setTimeout(initEmailPanel,100); }
 }
 
 window.addEventListener('DOMContentLoaded', function() {
   if (!_sb) return;
   _sb.auth.getSession().then(function(d) {
-    if (!d.data||!d.data.session) { window.location.href='register.html'; return; }
-    if (d.data.session.user.email !== ADMIN_EMAIL) { window.location.href='data.html'; return; }
+    if (!d.data||!d.data.session){ window.location.href='register.html'; return; }
+    if (d.data.session.user.email!==ADMIN_EMAIL){ window.location.href='data.html'; return; }
     _user = d.data.session.user;
     loadOverview();
   });
@@ -604,474 +552,678 @@ window.addEventListener('DOMContentLoaded', function() {
 
 async function doSignOut() {
   if (_sb) await _sb.auth.signOut().catch(function(){});
-  try { Object.keys(localStorage).forEach(function(k){ if(k.indexOf('supabase')!==-1)localStorage.removeItem(k); }); } catch(e) {}
-  window.location.href = 'index.html';
+  try{Object.keys(localStorage).forEach(function(k){if(k.indexOf('supabase')!==-1)localStorage.removeItem(k)});}catch(e){}
+  window.location.href='index.html';
 }
 
-async function sbCount(table) {
-  var r = await fetch(_SB_URL + '/rest/v1/' + table + '?select=id&limit=1', { headers: {'apikey':_SB_KEY,'Authorization':'Bearer '+_SB_KEY,'Prefer':'count=exact'} });
-  return parseInt(r.headers.get('content-range')?.split('/')[1] || '0');
-}
-async function sbGet(path) {
-  var r = await fetch(_SB_URL + '/rest/v1' + path, { headers: {'apikey':_SB_KEY,'Authorization':'Bearer '+_SB_KEY} });
-  return r.json();
-}
-function staleness(ts) {
-  if (!ts) return '<span class="status-dot err-dot"></span>No data';
-  var mins = Math.round((Date.now()-new Date(ts).getTime())/60000);
-  var cls  = mins<130?'ok-dot':mins<360?'warn-dot':'err-dot';
-  var str  = mins<60?mins+'m ago':Math.floor(mins/60)+'h ago';
-  return '<span class="status-dot '+cls+'"></span>'+str;
-}
-
-// ── OVERVIEW ──────────────────────────────────────────────────────────────────
+/* ══════════════════════════════════════════════════════════════════════════
+   OVERVIEW
+══════════════════════════════════════════════════════════════════════════ */
 async function loadOverview() {
-  document.getElementById('ov-time').textContent = new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit',hour12:true,timeZone:'Asia/Kolkata'}) + ' IST';
+  ge('ov-time').textContent = new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit',hour12:true,timeZone:'Asia/Kolkata'})+' IST';
   try {
-    // Fetch all counts in parallel
-    var [cr, bd, tf, ns, allBirds] = await Promise.all([
+    var [cr,bd,tf,ns,wr,ht] = await Promise.all([
       sbCount('climate_readings'),
       sbCount('bird_detections'),
       sbCount('timelapse_frames'),
       sbCount('newsletter_signups'),
-      sbGet('/bird_detections?select=species_common,species_scientific&limit=5000'),
+      sbCount('weather_union_readings'),
+      sbCount('hill_trees'),
     ]);
 
-    // Compute unique species and classifications
-    var speciesMap = {};
-    if (Array.isArray(allBirds)) {
-      allBirds.forEach(function(b) { speciesMap[b.species_scientific] = b.species_common; });
-    }
-    var uniqueSpecies = Object.keys(speciesMap).length;
-
-    // Classify species
-    var RARE_WORDS      = ['kestrel','nightjar','heron','owl','osprey','vulture','falcon','crake','rail'];
-    var MIGRATORY_WORDS = ['warbler','martin','swift','pipit','bee-eater','flycatcher','redstart','wagtail','chat','stint','sandpiper','wheatear','swift'];
-    var rareCount = 0, migCount = 0, commonCount = 0;
-    Object.values(speciesMap).forEach(function(name) {
-      var l = name.toLowerCase();
-      if      (RARE_WORDS.some(function(w){return l.includes(w);}))      rareCount++;
-      else if (MIGRATORY_WORDS.some(function(w){return l.includes(w);})) migCount++;
-      else commonCount++;
-    });
-
-    // Fetch auth users count via newsletter as proxy (anon key can't read auth.users)
-    var thisYearISO = new Date(new Date().getFullYear(),0,1).toISOString();
-    var newThisYear = Array.isArray(allBirds) ? (function(){
-      var set = new Set(); allBirds.forEach(function(b){ set.add(b.species_scientific); }); return set.size;
-    })() : 0;
-
-    // Build stat cards — first row: database overview
-    var statsHtml = [
-      {icon:'📊', val:cr.toLocaleString(),      label:'Climate records',       sub:'hourly since Jan 2022'},
-      {icon:'🔊', val:bd.toLocaleString(),      label:'Bird detections',       sub:'total acoustic calls'},
-      {icon:'🐦', val:uniqueSpecies,            label:'Unique species',        sub:'ever detected in Baner'},
-      {icon:'📸', val:tf.toLocaleString(),      label:'Hill photos',           sub:'timelapse archive'},
-      {icon:'📬', val:ns.toLocaleString(),      label:'Subscribers',           sub:'newsletter + registered'},
+    ge('ov-stats').innerHTML = [
+      {icon:'📊',val:cr.toLocaleString('en-IN'),   label:'Climate records',   sub:'hourly since Jan 2022'},
+      {icon:'🔊',val:bd.toLocaleString('en-IN'),   label:'Bird detections',   sub:'acoustic calls logged'},
+      {icon:'💧',val:wr.toLocaleString('en-IN'),   label:'WU readings',       sub:'hyperlocal weather'},
+      {icon:'🌿',val:ht.toLocaleString('en-IN'),   label:'Trees logged',      sub:'Baner Hill database'},
+      {icon:'📬',val:ns.toLocaleString('en-IN'),   label:'Subscribers',       sub:'newsletter list'},
     ].map(function(s){
-      return '<div class="stat-box"><div class="stat-box-icon">'+s.icon+'</div><div class="stat-box-val">'+s.val+'</div><div class="stat-box-label">'+s.label+'</div><div class="stat-box-sub">'+s.sub+'</div></div>';
+      return '<div class="stat-box"><div class="stat-box-icon">'+s.icon+'</div><div class="stat-box-val">'+s.val+'</div>'
+        +'<div class="stat-box-label">'+s.label+'</div><div class="stat-box-sub">'+s.sub+'</div></div>';
     }).join('');
 
-    document.getElementById('ov-stats').innerHTML = statsHtml;
-
-    // Bird classification breakdown card
-    var birdBreakdown =
-      '<div class="card" style="margin-bottom:1rem;">' +
-      '<div class="card-title">🐦 Species breakdown — ' + uniqueSpecies + ' unique species detected</div>' +
-      '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:0.75rem;margin-bottom:0.75rem;">' +
-        '<div style="background:rgba(33,67,50,0.07);border-radius:var(--radius-md);padding:1rem;text-align:center;">' +
-          '<div style="font-family:var(--serif);font-size:1.6rem;color:var(--ep-green);">' + commonCount + '</div>' +
-          '<div style="font-size:0.68rem;font-weight:600;text-transform:uppercase;letter-spacing:0.07em;color:var(--text-muted);">Resident / Common</div>' +
-          '<div style="font-size:0.72rem;color:var(--ep-tan);margin-top:2px;">Year-round Baner species</div>' +
-        '</div>' +
-        '<div style="background:rgba(191,155,123,0.1);border-radius:var(--radius-md);padding:1rem;text-align:center;">' +
-          '<div style="font-family:var(--serif);font-size:1.6rem;color:var(--ep-tan);">' + migCount + '</div>' +
-          '<div style="font-size:0.68rem;font-weight:600;text-transform:uppercase;letter-spacing:0.07em;color:var(--text-muted);">Migratory</div>' +
-          '<div style="font-size:0.72rem;color:var(--ep-tan);margin-top:2px;">Seasonal visitors</div>' +
-        '</div>' +
-        '<div style="background:rgba(220,38,38,0.05);border-radius:var(--radius-md);padding:1rem;text-align:center;">' +
-          '<div style="font-family:var(--serif);font-size:1.6rem;color:#dc2626;">' + rareCount + '</div>' +
-          '<div style="font-size:0.68rem;font-weight:600;text-transform:uppercase;letter-spacing:0.07em;color:var(--text-muted);">Rare / Uncommon</div>' +
-          '<div style="font-size:0.72rem;color:#dc2626;margin-top:2px;">Kestrel, Owl, Heron, Nightjar…</div>' +
-        '</div>' +
-      '</div>' +
-      '<p style="font-size:0.75rem;color:var(--text-muted);">Classification is rule-based on common name — visit <a href="birds.html" style="color:var(--ep-green);">Birds page</a> for full species profiles.</p>' +
-      '</div>';
-
-    // Stitch it all together
-    document.getElementById('ov-stats').insertAdjacentHTML('afterend', birdBreakdown);
-
-    // System status and data freshness
-    var [lat, bird, photo] = await Promise.all([
-      sbGet('/climate_readings?select=recorded_at,aqi,temperature&order=recorded_at.desc&limit=1'),
+    /* Data freshness across all key tables */
+    var [cr1,bd1,wu1,ht1,tf1] = await Promise.all([
+      sbGet('/climate_readings?select=recorded_at&order=recorded_at.desc&limit=1'),
       sbGet('/bird_detections?select=detected_at&order=detected_at.desc&limit=1'),
+      sbGet('/weather_union_readings?select=recorded_at&order=recorded_at.desc&limit=1'),
+      sbGet('/hill_trees?select=submitted_at&order=submitted_at.desc&limit=1'),
       sbGet('/timelapse_frames?select=captured_at&order=captured_at.desc&limit=1'),
     ]);
-    var aqiAge  = lat[0]  ? Math.round((Date.now()-new Date(lat[0].recorded_at).getTime())/60000) : 9999;
-    var birdAge = bird[0] ? Math.round((Date.now()-new Date(bird[0].detected_at).getTime())/60000) : 9999;
 
-    document.getElementById('ov-status').innerHTML = [
-      ['Pi 3B+ (AQI cron)',       aqiAge<130  ? 'ok-dot':'err-dot',  aqiAge<130  ? 'Running ('+aqiAge+'m ago)' : '⚠️ Last update '+aqiAge+'m ago — check Pi'],
-      ['Pi 3B (BirdNET)',         birdAge<70  ? 'ok-dot':'warn-dot', birdAge<70  ? 'Listening ('+birdAge+'m ago)' : 'No detection for '+birdAge+'m'],
-      ['Supabase',                'ok-dot',   'Connected · RLS enabled on all tables'],
-      ['Cloudflare Pages',        'ok-dot',   'Live · earthpulse.pages.dev'],
-      ['AI Worker (Claude)',      'ok-dot',   'earthpulse-ai.fangchu.workers.dev'],
-      ['Email Worker (Resend)',   'ok-dot',   'earthpulse-email.fangchu.workers.dev'],
-    ].map(function(r){ return '<div class="kv"><span class="kv-k"><span class="status-dot '+r[1]+'"></span>'+r[0]+'</span><span class="kv-v">'+r[2]+'</span></div>'; }).join('');
+    ge('ov-fresh').innerHTML = [
+      ['climate_readings (hourly AQI)', cr1[0]?.recorded_at, 130],
+      ['bird_detections (BirdNET)',     bd1[0]?.detected_at, 70],
+      ['weather_union_readings (15min)',wu1[0]?.recorded_at, 60],
+      ['hill_trees (plant submissions)',ht1[0]?.submitted_at, null],
+      ['timelapse_frames (hill photos)',tf1[0]?.captured_at, null],
+    ].map(function(r){
+      var ageHtml = staleness(r[1]);
+      var warn = r[2] && r[1] ? Math.round((Date.now()-new Date(r[1]).getTime())/60000) > r[2] : false;
+      return '<div class="kv"><span class="kv-k">'+r[0]+'</span><span class="kv-v">'+ageHtml+(warn?' ⚠️':'')+'</span></div>';
+    }).join('');
 
-    document.getElementById('ov-fresh').innerHTML = [
-      ['Last climate reading', staleness(lat[0]?.recorded_at)  + ' · AQI ' + (lat[0]?.aqi||'—') + ' · ' + (lat[0]?.temperature||'—') + '°C'],
-      ['Last bird detection',  staleness(bird[0]?.detected_at)],
-      ['Last hill photo',      staleness(photo[0]?.captured_at)],
-    ].map(function(r){ return '<div class="kv"><span class="kv-k">'+r[0]+'</span><span class="kv-v">'+r[1]+'</span></div>'; }).join('');
+    /* Node status */
+    var crAge  = cr1[0] ? Math.round((Date.now()-new Date(cr1[0].recorded_at).getTime())/60000) : 9999;
+    var bdAge  = bd1[0] ? Math.round((Date.now()-new Date(bd1[0].detected_at).getTime())/60000) : 9999;
 
-  } catch(e) {
-    document.getElementById('ov-stats').textContent = 'Error loading overview: ' + e.message;
-  }
+    /* Check south node specifically */
+    var southBird = await sbGet('/bird_detections?select=detected_at&node_id=eq.baner_south_01&order=detected_at.desc&limit=1');
+    var southAge  = southBird[0] ? Math.round((Date.now()-new Date(southBird[0].detected_at).getTime())/60000) : 9999;
+
+    ge('ov-nodes').innerHTML = [
+      ['🏠 baner_01 (east balcony — AQI + BirdNET)',  crAge<130?'ok-dot':'err-dot',  crAge<130?'✅ AQI script running ('+crAge+'m ago)':'⚠️ AQI gap — check Pi printkiosk'],
+      ['🎙 baner_01 BirdNET',                          bdAge<70?'ok-dot':'warn-dot',  bdAge<70?'✅ Listening (last detection '+bdAge+'m ago)':'⚠️ No detection for '+bdAge+'m'],
+      ['🌿 baner_south_01 (south — facing Baner Hill)',southAge<120?'ok-dot':'warn-dot',southAge<120?'✅ South node active ('+southAge+'m ago)':'⚠️ South node silent for '+southAge+'m — check baner south Pi'],
+    ].map(function(r){
+      return '<div class="kv"><span class="kv-k"><span class="sd '+r[1]+'"></span>'+r[0]+'</span><span class="kv-v">'+r[2]+'</span></div>';
+    }).join('');
+
+  } catch(e) { ge('ov-stats').textContent='Error: '+e.message; }
 }
 
-// ── USERS ─────────────────────────────────────────────────────────────────────
-async function loadUsers() {
+/* ══════════════════════════════════════════════════════════════════════════
+   LIVE SENSORS
+══════════════════════════════════════════════════════════════════════════ */
+function sensorCard(icon, val, unit, label, node) {
+  return '<div class="sensor-card">'
+    +'<div class="sensor-val">'+val+'<span class="sensor-unit">'+unit+'</span></div>'
+    +'<div class="sensor-label">'+label+'</div>'
+    +(node?'<div class="sensor-node">'+node+'</div>':'')
+    +'</div>';
+}
+
+async function loadSensors() {
   try {
-    var resp = await sbGet('/newsletter_signups?select=*&order=created_at.desc&limit=200');
-    // Supabase may return an array or an error object
-    var rows = Array.isArray(resp) ? resp : [];
-    var count = rows.length;
-    document.getElementById('user-sub').textContent = count + ' newsletter subscriber' + (count!==1?'s':'') + ' · Full auth user list in Supabase dashboard → Authentication → Users.';
-    if (!count) {
-      document.getElementById('users-body').innerHTML = '<tr><td colspan="3" style="text-align:center;padding:1.5rem;color:var(--text-muted);">No subscribers yet — they come from the homepage newsletter form and registration.</td></tr>';
-      return;
+    /* Main node — latest climate reading */
+    var main = await sbGet('/climate_readings?select=*&order=recorded_at.desc&limit=1');
+    var m    = main[0] || {};
+    ge('sensor-main').innerHTML = m.recorded_at ? [
+      sensorCard('🌡️', m.temperature?.toFixed(1)||'—', '°C', 'Temperature', 'baner_01'),
+      sensorCard('💧', m.humidity||'—', '%', 'Humidity', 'baner_01'),
+      sensorCard('🌬️', m.aqi||'—', '', 'EU AQI', 'baner_01'),
+      sensorCard('🇮🇳', m.google_aqi_india||'—', '', 'India AQI', 'baner_01'),
+      sensorCard('📊', m.pm2_5?.toFixed(1)||'—', 'µg', 'PM2.5', 'baner_01'),
+      sensorCard('🌧️', m.precipitation||'0', 'mm', 'Precipitation', 'baner_01'),
+    ].join('') : '<div style="color:var(--text-muted);font-size:.85rem;padding:.5rem 0">No climate data yet</div>';
+
+    /* South node — latest bird detection from south */
+    var south = await sbGet('/bird_detections?select=detected_at,species_common,confidence&node_id=eq.baner_south_01&order=detected_at.desc&limit=1');
+    var s     = south[0] || {};
+    ge('sensor-south').innerHTML = s.detected_at ? [
+      sensorCard('🐦', s.species_common||'—', '', 'Last species', 'baner_south_01'),
+      sensorCard('🎯', s.confidence?(s.confidence*100).toFixed(0)+'%':'—', '', 'Confidence', 'baner_south_01'),
+    ].join('') : '<div style="color:var(--text-muted);font-size:.85rem;padding:.5rem 0">No south node detections yet</div>';
+
+    /* Weather Union — via Worker proxy */
+    var wu = null;
+    try {
+      var wuRes = await fetch(AI_WORKER+'/weather');
+      if (wuRes.ok) wu = (await wuRes.json()).locality_weather_data;
+    } catch(e) {}
+    ge('sensor-wu').innerHTML = wu ? [
+      sensorCard('🌡️', wu.temperature?.toFixed(1)||'—', '°C', 'WU Temperature', 'ZWL008983'),
+      sensorCard('💧', wu.humidity?.toFixed(0)||'—', '%', 'WU Humidity', 'ZWL008983'),
+      sensorCard('💨', wu.wind_speed?.toFixed(1)||'—', 'm/s', 'Wind speed', 'ZWL008983'),
+      sensorCard('🌧️', wu.rain_intensity||'0', 'mm/min', 'Rain intensity', 'ZWL008983'),
+    ].join('') : '<div style="color:var(--text-muted);font-size:.85rem;padding:.5rem 0">Weather Union unavailable</div>';
+
+    /* Recent 5 readings */
+    var recent = await sbGet('/climate_readings?select=recorded_at,aqi,temperature,precipitation&order=recorded_at.desc&limit=5');
+    ge('sensor-recent').innerHTML = recent.map(function(r){
+      var t = new Date(r.recorded_at).toLocaleString('en-IN',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit',hour12:true,timeZone:'Asia/Kolkata'});
+      return '<div class="log-line"><span class="log-time">'+t+'</span><span class="log-ok">✅</span>'
+        +'<span>AQI '+r.aqi+' · '+r.temperature+'°C'+(r.precipitation>0?' · 🌧️ '+r.precipitation+'mm':'')+'</span></div>';
+    }).join('');
+
+  } catch(e) { ge('sensor-main').textContent='Error: '+e.message; }
+}
+
+/* Auto-refresh sensors every 60s when panel is active */
+setInterval(function(){
+  if (ge('panel-sensors')?.classList.contains('on')) loadSensors();
+}, 60000);
+
+/* ══════════════════════════════════════════════════════════════════════════
+   API STATUS
+══════════════════════════════════════════════════════════════════════════ */
+async function loadApis() {
+  var grid = ge('api-grid');
+  grid.innerHTML = '<div style="color:var(--text-muted);font-size:.85rem;grid-column:1/-1;padding:.5rem 0">Pinging APIs…</div>';
+
+  /* Ping AI worker health (includes plant-quota) */
+  var aiOk=false, plantOk=false, geminiOk=false;
+  try {
+    var aiRes = await fetch(AI_WORKER+'/health',{signal:AbortSignal.timeout(5000)});
+    aiOk = aiRes.ok;
+    var aiData = aiRes.ok ? await aiRes.json() : {};
+    var quotaRes = await fetch(AI_WORKER+'/plant-quota',{signal:AbortSignal.timeout(5000)});
+    if (quotaRes.ok) {
+      var qd = await quotaRes.json();
+      plantOk  = qd.plantnet_key==='configured';
+      geminiOk = qd.gemini_key==='configured';
     }
-    document.getElementById('users-body').innerHTML = rows.map(function(r) {
-      var dt  = r.created_at ? new Date(r.created_at).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}) : '—';
-      var src = r.source || 'newsletter';
-      return '<tr><td style="font-family:var(--mono);font-size:0.82rem;">' + (r.email||'—') + '</td>' +
-        '<td style="font-size:0.78rem;color:var(--text-muted);">' + dt + '</td>' +
-        '<td><span style="font-size:0.68rem;background:rgba(33,67,50,0.1);color:var(--ep-green);padding:1px 8px;border-radius:20px;font-weight:600;">' + src + '</span></td></tr>';
-    }).join('');
-  } catch(e) {
-    document.getElementById('users-body').innerHTML = '<tr><td colspan="3" style="color:#dc2626;padding:1rem;">Error: ' + e.message + '</td></tr>';
-  }
-}
+  } catch(e) {}
 
-// ── SYSTEM ────────────────────────────────────────────────────────────────────
-async function loadSystem() {
+  var emailOk = false;
   try {
-    var [lat, bird] = await Promise.all([
-      sbGet('/climate_readings?select=recorded_at,aqi,temperature&order=recorded_at.desc&limit=1'),
-      sbGet('/bird_detections?select=detected_at&order=detected_at.desc&limit=1'),
-    ]);
-    var aqiAge  = lat[0]  ? Math.round((Date.now()-new Date(lat[0].recorded_at).getTime())/60000) : 9999;
-    var birdAge = bird[0] ? Math.round((Date.now()-new Date(bird[0].detected_at).getTime())/60000) : 9999;
+    var emailRes = await fetch(EMAIL_WRKR+'/health',{signal:AbortSignal.timeout(5000)});
+    emailOk = emailRes.ok;
+  } catch(e) {}
 
-    // Ping AI worker to check it's alive
-    var aiOk = false;
-    try {
-      var aiRes = await fetch('https://earthpulse-ai.fangchu.workers.dev/health', { signal: AbortSignal.timeout(4000) });
-      aiOk = aiRes.ok;
-    } catch(e) { aiOk = false; }
+  /* WU via Worker */
+  var wuOk = false;
+  try {
+    var wuRes = await fetch(AI_WORKER+'/weather',{signal:AbortSignal.timeout(5000)});
+    wuOk = wuRes.ok;
+  } catch(e) {}
 
-    // Ping email worker health check
-    var emailOk = false;
-    try {
-      var emailRes = await fetch('https://earthpulse-email.fangchu.workers.dev/health', { signal: AbortSignal.timeout(4000) });
-      emailOk = emailRes.ok;
-    } catch(e) { emailOk = false; }
+  var apis = [
+    {icon:'🤖', name:'earthpulse-ai Worker',     ok:aiOk,    meta:'Routes: /health /weather /gemini /query /identify /plant-save', link:'https://dash.cloudflare.com'},
+    {icon:'📧', name:'earthpulse-email Worker',  ok:emailOk, meta:'FROM: vaibhav@ektitli.org · Routes: /send /send-batch /health', link:'https://dash.cloudflare.com'},
+    {icon:'🌿', name:'PlantNet API',             ok:plantOk, meta:'500 identifications/day · Key configured in earthpulse-ai', link:'https://my.plantnet.org'},
+    {icon:'✨', name:'Google Gemini 2.0 Flash',  ok:geminiOk,meta:'Free tier: 1,500 req/day · Conservation profiles + insights', link:'https://aistudio.google.com'},
+    {icon:'🌱', name:'Trefle.io Botanical API',  ok:null,    meta:'60 req/min · Used for plant growth data · Checked via Worker', link:'https://trefle.io'},
+    {icon:'🍃', name:'Google Air Quality API',   ok:null,    meta:'Unlimited daily quota · 1 call/hour from Pi · key in .env', link:'https://console.cloud.google.com'},
+    {icon:'🌤️', name:'Open-Meteo (AQI + Weather)',ok:null,   meta:'Free · No key needed · Used for hourly AQI + climate data', link:'https://open-meteo.com'},
+    {icon:'💧', name:'Weather Union',            ok:wuOk,    meta:'Station ZWL008983 · 15min data · Key in Pi .env + Worker', link:'https://www.weatherunion.com'},
+    {icon:'📊', name:'GBIF Species API',         ok:null,    meta:'Free · No key · Used for plant/bird range maps in browser', link:'https://www.gbif.org'},
+    {icon:'📖', name:'Wikipedia REST API',       ok:null,    meta:'Free · No key · Species extracts and thumbnails', link:'https://en.wikipedia.org'},
+  ];
 
-    var cards = [
-      {title:'🖥 Pi 3B+ (AQI & data pipeline)', dot:aqiAge<130?'ok-dot':'err-dot',
-       rows:[['Last AQI fetch',aqiAge+'m ago'],['Latest AQI',(lat[0]?.aqi||'—')],['Latest temp',(lat[0]?.temperature||'—')+'°C'],['Status',aqiAge<130?'✅ Running normally':'⚠️ Check Pi — cron may be stopped']]},
-      {title:'🎙 Pi 3B (BirdNET)', dot:birdAge<70?'ok-dot':'warn-dot',
-       rows:[['Last detection',birdAge+'m ago'],['Mic device','plughw:2,0'],['Status',birdAge<70?'✅ Listening':'⚠️ No detection for '+birdAge+'m — check Pi or no birds near mic']]},
-      {title:'🤖 AI Worker (Claude proxy)', dot:aiOk?'ok-dot':'warn-dot',
-       rows:[['URL','earthpulse-ai.fangchu.workers.dev'],['Status',aiOk?'✅ Responding':'⚠️ Not responding — check Cloudflare dashboard'],['API key','ANTHROPIC_API_KEY set'],['Model','claude-sonnet-4-20250514']]},
-      {title:'📧 Email Worker (Resend)', dot:emailOk?'ok-dot':'warn-dot',
-       rows:[['URL','earthpulse-email.fangchu.workers.dev'],['Status',emailOk?'✅ Responding':'⚠️ Not responding — check Cloudflare dashboard'],['API key','RESEND_API_KEY set'],['Free tier','3,000 emails/month']]},
-      {title:'🗄 Supabase', dot:'ok-dot',
-       rows:[['Database','✅ Connected'],['RLS','✅ Enabled on all tables'],['Storage','✅ timelapse bucket public'],['Auth','✅ Email auth enabled']]},
-      {title:'☁ Cloudflare Pages + R2', dot:'ok-dot',
-       rows:[['Deployment','✅ Live at earthpulse.pages.dev'],['CDN','✅ Global edge network'],['R2 Storage','earthpulse-files bucket'],['Deploy','Via GitHub push to main branch']]},
-    ];
-
-    document.getElementById('sys-grid').innerHTML = cards.map(function(c){
-      return '<div class="card"><div class="card-title"><span class="status-dot '+c.dot+'"></span>'+c.title+'</div>'+
-        c.rows.map(function(r){ return '<div class="kv"><span class="kv-k">'+r[0]+'</span><span class="kv-v">'+r[1]+'</span></div>'; }).join('')+'</div>';
-    }).join('');
-  } catch(e) { document.getElementById('sys-grid').textContent = 'Error: ' + e.message; }
+  grid.innerHTML = apis.map(function(a){
+    var statusClass = a.ok===null?'api-s-warn':a.ok?'api-s-ok':'api-s-err';
+    var statusText  = a.ok===null?'Not pinged':a.ok?'✅ Online':'❌ Error';
+    return '<div class="api-card">'
+      +'<div class="api-card-header">'
+        +'<div class="api-card-name">'+a.icon+' '+a.name+'</div>'
+        +'<span class="api-card-status '+statusClass+'">'+statusText+'</span>'
+      +'</div>'
+      +'<div class="api-card-meta">'+a.meta+'<br>'
+        +(a.link?'<a href="'+a.link+'" target="_blank" rel="noopener">Dashboard →</a>':'')
+      +'</div>'
+    +'</div>';
+  }).join('');
 }
 
-// ── LOGS ──────────────────────────────────────────────────────────────────────
+/* ══════════════════════════════════════════════════════════════════════════
+   LOGS
+══════════════════════════════════════════════════════════════════════════ */
 async function loadLogs() {
   try {
-    var rows = await sbGet('/climate_readings?select=recorded_at,aqi,temperature,precipitation&order=recorded_at.desc&limit=48');
-    var lastTs = rows[0]?.recorded_at;
-    var gapMins = lastTs ? Math.round((Date.now()-new Date(lastTs).getTime())/60000) : 9999;
-    var html = '';
-    if (gapMins > 130) html += '<div class="log-line"><span class="log-err">⚠️ ALERT</span><span>Last climate reading was '+gapMins+'m ago — Pi AQI cron may have stopped</span></div>';
-    html += rows.map(function(r) {
+    var rows = await sbGet('/climate_readings?select=recorded_at,aqi,temperature,precipitation,google_aqi_india&order=recorded_at.desc&limit=48');
+    if (!rows.length) { ge('logs-wrap').textContent='No data'; return; }
+    var lastTs   = rows[0]?.recorded_at;
+    var gapMins  = lastTs ? Math.round((Date.now()-new Date(lastTs).getTime())/60000) : 9999;
+    var html     = '';
+    if (gapMins > 130) html += '<div class="log-line"><span class="log-err">⚠️ GAP ALERT</span><span>Last reading '+gapMins+'m ago — Pi AQI cron may be stopped. SSH and check: tail -50 /home/fangchu/earth_pulse/aqi/aqi.log</span></div>';
+
+    /* Check for gaps between consecutive readings */
+    for (var i=0; i<rows.length; i++) {
+      var r  = rows[i];
       var t  = new Date(r.recorded_at).toLocaleString('en-IN',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit',hour12:true,timeZone:'Asia/Kolkata'});
       var ok = r.aqi!=null && r.temperature!=null;
-      var rain = r.precipitation>0 ? ' · 🌧️ '+r.precipitation+'mm' : '';
-      return '<div class="log-line"><span class="log-time">'+t+'</span><span class="'+(ok?'log-ok':'log-warn')+'">'+(ok?'✅':'⚠️')+'</span><span>'+(ok?'AQI '+r.aqi+' · '+r.temperature+'°C'+rain:'Incomplete — some fields null')+'</span></div>';
-    }).join('');
-    document.getElementById('logs-wrap').innerHTML = html || '<p style="color:var(--text-muted)">No logs found.</p>';
-  } catch(e) { document.getElementById('logs-wrap').textContent='Error: '+e.message; }
+      var rain = r.precipitation>0?' · 🌧️ '+r.precipitation+'mm':'';
+      var gap  = '';
+      if (i < rows.length-1) {
+        var diff = Math.round((new Date(r.recorded_at)-new Date(rows[i+1].recorded_at))/60000);
+        if (diff > 75) gap = ' <span style="color:#f59e0b">⚠️ '+diff+'m gap</span>';
+      }
+      html += '<div class="log-line">'
+        +'<span class="log-time">'+t+'</span>'
+        +'<span class="'+(ok?'log-ok':'log-warn')+'">'+(ok?'✅':'⚠️')+'</span>'
+        +'<span>'+(ok?'AQI(EU) '+r.aqi+(r.google_aqi_india?' · AQI(IN) '+r.google_aqi_india:'')+' · '+r.temperature+'°C'+rain:'Incomplete data — some fields null')+gap+'</span>'
+        +'</div>';
+    }
+    ge('logs-wrap').innerHTML = html;
+  } catch(e) { ge('logs-wrap').textContent='Error: '+e.message; }
 }
 
-// ── USAGE ─────────────────────────────────────────────────────────────────────
-async function loadUsage() {
-  var dom  = new Date().getDate();         // day of month
-  var mon  = new Date().getMonth() + 1;    // month number
-
-  // Estimated API calls this month (based on cron schedule)
-  var googleCalls    = dom * 24;           // 1 call/hour
-  var anthropicCalls = dom * 5;            // ~5 AI queries/day avg estimate
-  var resendSent     = dom * 1;            // rough: 1 email alert/day avg
-  var workerReqs     = dom * 24 * 3;       // 3 worker hits per hour (AI + email)
-
+/* ══════════════════════════════════════════════════════════════════════════
+   SYSTEM HEALTH
+══════════════════════════════════════════════════════════════════════════ */
+async function loadSystem() {
   try {
-    var [cr, bd, tf, ns] = await Promise.all([
-      sbCount('climate_readings'), sbCount('bird_detections'),
-      sbCount('timelapse_frames'), sbCount('newsletter_signups'),
+    var [lat,bird,wu,southBird] = await Promise.all([
+      sbGet('/climate_readings?select=recorded_at,aqi,temperature&order=recorded_at.desc&limit=1'),
+      sbGet('/bird_detections?select=detected_at&node_id=eq.baner_01&order=detected_at.desc&limit=1'),
+      sbGet('/weather_union_readings?select=recorded_at&order=recorded_at.desc&limit=1'),
+      sbGet('/bird_detections?select=detected_at&node_id=eq.baner_south_01&order=detected_at.desc&limit=1'),
     ]);
-    var totalRows = cr + bd + tf;
-    var dbMB = (totalRows * 0.5 / 1024).toFixed(1);
-    var sbApiEst = dom * 24 * 6;
+
+    var crAge    = lat[0]       ? Math.round((Date.now()-new Date(lat[0].recorded_at).getTime())/60000)  : 9999;
+    var bdAge    = bird[0]      ? Math.round((Date.now()-new Date(bird[0].detected_at).getTime())/60000)  : 9999;
+    var wuAge    = wu[0]        ? Math.round((Date.now()-new Date(wu[0].recorded_at).getTime())/60000)    : 9999;
+    var southAge = southBird[0] ? Math.round((Date.now()-new Date(southBird[0].detected_at).getTime())/60000): 9999;
+
+    var aiOk=false, emailOk=false;
+    try { var ar=await fetch(AI_WORKER+'/health',{signal:AbortSignal.timeout(4000)}); aiOk=ar.ok; } catch(e){}
+    try { var er=await fetch(EMAIL_WRKR+'/health',{signal:AbortSignal.timeout(4000)}); emailOk=er.ok; } catch(e){}
 
     var cards = [
-      {
-        title: '🌍 Google Air Quality API',
-        val: googleCalls + ' / 10,000 calls est.',
-        pct: Math.round(googleCalls/10000*100),
-        note: 'Free: ~10,000 calls/month. At 24/day you use ~' + (dom*24) + ' so far. Safe for the whole month.',
-        link: 'https://console.cloud.google.com/apis/api/airquality.googleapis.com/quotas',
-        linkLabel: 'View quota →'
-      },
-      {
-        title: '🤖 Anthropic Claude API',
-        val: '~' + anthropicCalls + ' queries est. this month',
-        pct: Math.round(anthropicCalls/1000*100), // relative to 1000 budget
-        note: 'Pay-per-use. At ~$0.003 per query, ' + anthropicCalls + ' queries ≈ $' + (anthropicCalls*0.003).toFixed(2) + '. Monitor credits in Anthropic Console.',
-        link: 'https://console.anthropic.com',
-        linkLabel: 'Check credits →'
-      },
-      {
-        title: '📧 Resend Email (earthpulse-email Worker)',
-        val: '~' + resendSent + ' emails sent est.',
-        pct: Math.round(resendSent/3000*100),
-        note: 'Free: 3,000 emails/month. At your current volume, you will use <1% of the free tier.',
-        link: 'https://resend.com/dashboard',
-        linkLabel: 'View dashboard →'
-      },
-      {
-        title: '⚙ Cloudflare Workers',
-        val: '~' + workerReqs.toLocaleString() + ' requests est.',
-        pct: Math.round(workerReqs/100000*100),
-        note: 'Free: 100,000 requests/day. Both workers combined are well below limit.',
-        link: 'https://dash.cloudflare.com',
-        linkLabel: 'View metrics →'
-      },
-      {
-        title: '🗄 Supabase — database',
-        val: totalRows.toLocaleString() + ' rows · ~' + dbMB + 'MB est.',
-        pct: Math.round(totalRows/500000*100),
-        note: 'Free: 500MB storage, 2M API requests/month. At current growth, database lasts years on free tier.',
-        link: 'https://supabase.com/dashboard/project/krmczyqwblsoekceanlj',
-        linkLabel: 'View dashboard →'
-      },
-      {
-        title: '☁ Cloudflare R2 Storage',
-        val: 'Hill photo archive',
-        pct: 0,
-        note: 'Free: 10GB storage, 1M read ops/month. R2 usage depends on timelapse upload frequency — check Cloudflare dashboard.',
-        link: 'https://dash.cloudflare.com',
-        linkLabel: 'View R2 usage →'
-      },
-      {
-        title: '📈 Cloudflare Pages',
-        val: 'Unlimited requests · free forever',
-        pct: 0,
-        note: 'No request limits on Pages. DNS and CDN included. Deploy via GitHub push.',
-        link: 'https://dash.cloudflare.com',
-        linkLabel: 'View analytics →'
-      },
+      {title:'🏠 Pi baner_01 — AQI (printkiosk)',  dot:crAge<130?'ok-dot':'err-dot',
+       rows:[['Last AQI log',crAge+'m ago'],['Latest EU AQI',lat[0]?.aqi||'—'],['Latest temp',lat[0]?.temperature+'°C'],['Cron schedule','Every hour (0 * * * *)'],['Status',crAge<130?'✅ Running':'⚠️ Check: systemctl status cron']]},
+      {title:'🎙 Pi baner_01 — BirdNET',           dot:bdAge<70?'ok-dot':'warn-dot',
+       rows:[['Last detection',bdAge+'m ago'],['Mic device','plughw:2,0 (east balcony)'],['Node ID','baner_01'],['Status',bdAge<70?'✅ Listening':'⚠️ No detection for '+bdAge+'m']]},
+      {title:'🌿 Pi baner_south_01 — South node',  dot:southAge<120?'ok-dot':'warn-dot',
+       rows:[['Last detection',southAge+'m ago'],['Node ID','baner_south_01'],['Faces','Baner Hill (south)'],['Status',southAge<120?'✅ Active':'⚠️ Silent for '+southAge+'m — check south Pi']]},
+      {title:'💧 Weather Union (ZWL008983)',        dot:wuAge<60?'ok-dot':'warn-dot',
+       rows:[['Last reading',wuAge+'m ago'],['Station','ZWL008983 — Baner'],['Schedule','Every 15 min (*/15 * * * *)'],['Status',wuAge<60?'✅ Reporting':'⚠️ Gap detected — check log_weather_union.py']]},
+      {title:'🤖 earthpulse-ai Worker',            dot:aiOk?'ok-dot':'err-dot',
+       rows:[['URL','earthpulse-ai.fangchu.workers.dev'],['Endpoints','/gemini /query /identify /plant-save /plant-quota /weather'],['Status',aiOk?'✅ Responding':'❌ Not responding — check Cloudflare dashboard']]},
+      {title:'📧 earthpulse-email Worker',         dot:emailOk?'ok-dot':'err-dot',
+       rows:[['URL','earthpulse-email.fangchu.workers.dev'],['FROM','vaibhav@ektitli.org (verified in Resend)'],['Status',emailOk?'✅ Responding':'❌ Not responding']]},
+      {title:'🗄 Supabase',                        dot:'ok-dot',
+       rows:[['Connection','✅ Connected'],['RLS','✅ Enabled on all tables'],['Auth','✅ Email auth enabled'],['New tables','hill_trees, hill_ndvi_weekly, soundscape_readings']]},
+      {title:'☁ Cloudflare Pages + R2',           dot:'ok-dot',
+       rows:[['Live URL','earth-pulse.org'],['Deploy','GitHub push → auto-deploy'],['R2 bucket','timelapse (public read)'],['Workers','earthpulse-ai, earthpulse-email, earthpulse-weekly']]},
     ];
 
-    document.getElementById('usage-wrap').innerHTML = cards.map(function(u) {
-      var barCls = u.pct > 80 ? 'danger' : u.pct > 50 ? 'warn' : '';
-      return '<div class="card">' +
-        '<div class="card-title" style="display:flex;justify-content:space-between;align-items:center;">' +
-          u.title +
-          (u.link ? '<a href="'+u.link+'" target="_blank" style="font-size:0.72rem;color:var(--ep-tan);text-decoration:none;font-weight:500;">'+u.linkLabel+'</a>' : '') +
-        '</div>' +
-        '<div style="font-family:var(--mono);font-size:0.95rem;color:var(--ep-green);margin-bottom:0.4rem;">' + u.val + '</div>' +
-        (u.pct > 0 ? '<div class="ubar" style="margin-bottom:0.4rem;"><div class="ufill ' + barCls + '" style="width:' + Math.min(u.pct,100) + '%"></div></div>' : '') +
-        '<div style="font-size:0.76rem;color:var(--text-muted);">' + u.note + '</div>' +
-        '</div>';
-    }).join('') +
-    '<div style="background:rgba(33,67,50,0.05);border:1px solid rgba(33,67,50,0.15);border-radius:var(--radius-lg);padding:1rem 1.25rem;font-size:0.78rem;color:var(--text-muted);line-height:1.8;margin-top:0.5rem;">' +
-    '💡 <strong style="color:var(--ep-green);">Spend protection:</strong> ' +
-    'Set billing alerts in Google Cloud ($5) and Anthropic Console ($10). ' +
-    'Resend, Cloudflare, and Supabase are free at your scale. ' +
-    'PostHog free tier (1M events/month) and Sentry free tier (5k errors/month) available for analytics and error tracking.' +
-    '</div>';
-
-  } catch(e) { document.getElementById('usage-wrap').textContent = 'Error: ' + e.message; }
+    ge('sys-grid').innerHTML = cards.map(function(c){
+      return '<div class="card"><div class="card-title"><span class="sd '+c.dot+'"></span>'+c.title+'</div>'
+        +c.rows.map(function(r){ return '<div class="kv"><span class="kv-k">'+r[0]+'</span><span class="kv-v">'+r[1]+'</span></div>'; }).join('')
+        +'</div>';
+    }).join('');
+  } catch(e) { ge('sys-grid').textContent='Error: '+e.message; }
 }
 
-// ── DATA ──────────────────────────────────────────────────────────────────────
+/* ══════════════════════════════════════════════════════════════════════════
+   PLANT MODERATION
+══════════════════════════════════════════════════════════════════════════ */
+async function loadTrees() {
+  try {
+    var [pending,approved] = await Promise.all([
+      sbGet('/hill_trees?select=*&status=eq.pending_review&order=submitted_at.desc'),
+      sbGet('/hill_trees?select=*&status=in.(approved,confirmed)&order=submitted_at.desc&limit=10'),
+    ]);
+
+    /* Pending */
+    if (!pending.length) {
+      ge('trees-pending').innerHTML = '<div class="card" style="text-align:center;padding:2rem;color:var(--text-muted)">✅ No pending submissions — queue is clear!</div>';
+    } else {
+      ge('trees-pending').innerHTML = '<div style="font-size:.82rem;font-weight:600;color:var(--ep-tan);margin-bottom:.75rem">'+pending.length+' pending review'+(pending.length!==1?'s':'')+'</div>'
+        + pending.map(function(t){ return treeModCard(t); }).join('');
+    }
+
+    /* Recently approved */
+    ge('trees-approved').innerHTML = approved.length
+      ? '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:.6rem">'
+        + approved.map(function(t){
+          return '<div style="background:#fff;border:1px solid var(--border);border-radius:var(--radius-md);padding:.7rem">'
+            +'<div style="font-weight:600;font-size:.82rem;color:var(--ep-green)">'+t.common_name+'</div>'
+            +'<div style="font-style:italic;font-size:.7rem;color:var(--text-muted)">'+t.scientific_name+'</div>'
+            +'<div style="font-size:.68rem;color:var(--ep-tan);margin-top:3px">'+t.status+'</div>'
+            +'</div>';
+        }).join('')+'</div>'
+      : '<div style="font-size:.82rem;color:var(--text-muted)">No approved community submissions yet.</div>';
+
+  } catch(e) { ge('trees-pending').textContent='Error: '+e.message; }
+}
+
+function treeModCard(t) {
+  var conf   = t.plant_id_confidence ? Math.round(t.plant_id_confidence*100)+'%' : '—';
+  var subAt  = t.submitted_at ? new Date(t.submitted_at).toLocaleString('en-IN',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit',hour12:true,timeZone:'Asia/Kolkata'}) : '—';
+  return '<div class="tree-mod-card" id="tmc-'+t.id+'">'
+    +'<div class="tree-mod-photo">🌿</div>'
+    +'<div class="tree-mod-body">'
+      +'<div class="tree-mod-name">'+t.common_name+'</div>'
+      +'<div class="tree-mod-sci">'+t.scientific_name+'</div>'
+      +'<div class="tree-mod-meta">'
+        +'Family: '+(t.family||'Unknown')+' · Confidence: '+conf+'<br>'
+        +'Submitted: '+subAt+'<br>'
+        +'Location: No GPS — user confirmed they were at Baner Hill'
+      +'</div>'
+      +'<span class="tree-mod-badge">⏳ pending_review</span>'
+    +'</div>'
+    +'<div class="tree-mod-actions">'
+      +'<button class="mod-btn mod-approve" id="approve-'+t.id+'" onclick="approveTree(\''+t.id+'\')">✅ Approve</button>'
+      +'<button class="mod-btn mod-reject"  id="reject-'+t.id+'"  onclick="rejectTree(\''+t.id+'\')">❌ Reject</button>'
+    +'</div>'
+    +'</div>';
+}
+
+async function approveTree(id) {
+  var ab=ge('approve-'+id), rb=ge('reject-'+id);
+  if(ab)ab.disabled=true; if(rb)rb.disabled=true;
+  if(ab)ab.textContent='Approving…';
+  try {
+    var r = await fetch(_SB_URL+'/rest/v1/hill_trees?id=eq.'+id,{
+      method:'PATCH',
+      headers:{'apikey':_SB_KEY,'Authorization':'Bearer '+_SB_KEY,'Content-Type':'application/json','Prefer':'return=minimal'},
+      body:JSON.stringify({status:'approved',origin:'unknown'})
+    });
+    if (r.ok||r.status===204) {
+      var card=ge('tmc-'+id);
+      if(card){card.style.opacity='0';card.style.transition='opacity .3s';setTimeout(function(){loadTrees();},350);}
+    } else { alert('Approve failed: '+await r.text()); if(ab)ab.disabled=false; if(rb)rb.disabled=false; }
+  } catch(e) { alert('Error: '+e.message); if(ab)ab.disabled=false; if(rb)rb.disabled=false; }
+}
+
+async function rejectTree(id) {
+  if (!confirm('Reject this submission? It will be marked rejected and hidden from the public database.')) return;
+  var ab=ge('approve-'+id), rb=ge('reject-'+id);
+  if(ab)ab.disabled=true; if(rb)rb.disabled=true;
+  if(rb)rb.textContent='Rejecting…';
+  try {
+    var r = await fetch(_SB_URL+'/rest/v1/hill_trees?id=eq.'+id,{
+      method:'PATCH',
+      headers:{'apikey':_SB_KEY,'Authorization':'Bearer '+_SB_KEY,'Content-Type':'application/json','Prefer':'return=minimal'},
+      body:JSON.stringify({status:'rejected'})
+    });
+    if (r.ok||r.status===204) {
+      var card=ge('tmc-'+id);
+      if(card){card.style.opacity='0';card.style.transition='opacity .3s';setTimeout(function(){loadTrees();},350);}
+    } else { alert('Reject failed: '+await r.text()); if(ab)ab.disabled=false; if(rb)rb.disabled=false; }
+  } catch(e) { alert('Error: '+e.message); if(ab)ab.disabled=false; if(rb)rb.disabled=false; }
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   DATA TABLES
+══════════════════════════════════════════════════════════════════════════ */
 async function loadData() {
   try {
-    var [cr,bd,tf] = await Promise.all([sbCount('climate_readings'),sbCount('bird_detections'),sbCount('timelapse_frames')]);
-    document.getElementById('data-stats').innerHTML = [
-      {icon:'📊',val:cr.toLocaleString(),label:'climate_readings',sub:'hourly environmental data'},
-      {icon:'🐦',val:bd.toLocaleString(),label:'bird_detections',sub:'acoustic detections'},
-      {icon:'📸',val:tf.toLocaleString(),label:'timelapse_frames',sub:'hill photo metadata'},
-    ].map(function(s){
-      return '<div class="stat-box"><div class="stat-box-icon">'+s.icon+'</div><div class="stat-box-val">'+s.val+'</div><div class="stat-box-label">'+s.label+'</div><div class="stat-box-sub">'+s.sub+'</div></div>';
+    var tables = [
+      'climate_readings','bird_detections','weather_union_readings',
+      'timelapse_frames','newsletter_signups','hill_trees',
+      'soundscape_readings','noise_readings','pm25_readings',
+      'user_alerts','contact_messages','photo_submissions'
+    ];
+    var counts = await Promise.all(tables.map(function(t){ return sbCount(t).then(function(c){return{t,c};}); }));
+
+    ge('data-stats').innerHTML = counts.filter(function(x){return x.c>0;}).map(function(x){
+      return '<div class="stat-box"><div class="stat-box-val">'+x.c.toLocaleString('en-IN')+'</div><div class="stat-box-label">'+x.t+'</div></div>';
     }).join('');
-  } catch(e) { document.getElementById('data-stats').textContent='Error: '+e.message; }
+
+    /* Last write per table */
+    var timestampCols = {
+      climate_readings:'recorded_at',bird_detections:'detected_at',
+      weather_union_readings:'recorded_at',timelapse_frames:'captured_at',
+      hill_trees:'submitted_at',soundscape_readings:'recorded_at',
+      noise_readings:'recorded_at',pm25_readings:'recorded_at',
+    };
+    var healthRows = await Promise.all(
+      Object.entries(timestampCols).map(async function(entry){
+        var t=entry[0], col=entry[1];
+        try {
+          var rows=await sbGet('/'+t+'?select='+col+'&order='+col+'.desc&limit=1');
+          return {t, ts: rows[0]?.[col]||null};
+        } catch(e){ return {t, ts:null}; }
+      })
+    );
+    ge('data-health').innerHTML = healthRows.map(function(r){
+      return '<div class="kv"><span class="kv-k">'+r.t+'</span><span class="kv-v">'+staleness(r.ts)+'</span></div>';
+    }).join('');
+
+  } catch(e) { ge('data-stats').textContent='Error: '+e.message; }
 }
 
-// ── PHOTOS ────────────────────────────────────────────────────────────────────
-var _photoAll    = [];
-var _photoFilter = 'all';
-var _photoPage   = 0;
-var PHOTO_PER_PAGE = 12;
+/* ══════════════════════════════════════════════════════════════════════════
+   EMAIL
+══════════════════════════════════════════════════════════════════════════ */
+var selectedSegment = 'all';
 
-async function loadPhotos(forceReload) {
-  if (!_photoAll.length || forceReload) {
-    document.getElementById('photo-grid').innerHTML =
-      '<div class="ep-skeleton" style="height:220px;border-radius:var(--radius-lg);grid-column:1/-1"></div>';
-    try {
-      var all = [];
-      var offset = 0;
-      while (true) {
-        var rows = await sbGet(
-          '/timelapse_frames?select=id,r2_url,captured_at,temperature,aqi,google_aqi_india,precipitation,cloudcover,filename' +
-          '&order=captured_at.desc&limit=1000&offset=' + offset
-        );
-        if (!Array.isArray(rows) || !rows.length) break;
-        all = all.concat(rows);
-        if (rows.length < 1000) break;
-        offset += 1000;
+var TEMPLATES = {
+  monthly:{
+    subject:'Earth Pulse · '+new Date().toLocaleDateString('en-IN',{month:'long',year:'numeric'})+' — Top birds, AQI trends & more',
+    body:'<h2>🌿 Baner\'s living pulse this month</h2><p>Here\'s what Earth Pulse recorded from the Sahyadri foothills in the past month.</p><hr><h3>🐦 Birds of the month</h3><p><strong>[Top species]</strong> was the most frequently detected species this month. A total of <strong>[N] species</strong> identified by BirdNET acoustic AI.</p><h3>🍃 Air quality</h3><p>Average EU AQI: <strong>[avg]</strong>. Best day: <strong>[date] AQI [n]</strong>. Worst: <strong>[date] AQI [n]</strong>.</p><h3>🌡️ Climate</h3><p>Temperature ranged <strong>[min]–[max]°C</strong>. Rainfall: <strong>[mm]mm</strong>.</p><hr><p><a href="https://earth-pulse.org">View the full dataset →</a></p>'
+  },
+  'new-bird':{
+    subject:'New bird detected in Baner! 🐦 [Species] heard for the first time this year',
+    body:'<h2>🎉 A new species has arrived in Baner!</h2><p>Our BirdNET acoustic monitor detected <strong>[Species common name]</strong> (<em>[Scientific name]</em>) for the first time this year.</p><p>Detected at <strong>[time]</strong> with <strong>[confidence]% confidence</strong>. This is species number <strong>[N]</strong> this year.</p><p><a href="https://earth-pulse.org/birds.html">View all detected species →</a></p>'
+  },
+  'aqi-alert':{
+    subject:'Air quality alert for Baner 🍃 AQI now [level]',
+    body:'<h2>🍃 Air quality update</h2><p>EU AQI in Baner is now <strong>[value]</strong> ([status]).</p><p>Dominant pollutant: <strong>[pollutant]</strong>. Recommendation: [advice].</p><p><a href="https://earth-pulse.org/aqi.html">See AQI history →</a></p>'
+  },
+  monsoon:{
+    subject:'🌧️ Monsoon update from Baner',
+    body:'<h2>🌧️ Monsoon season update</h2><p>Total rainfall this season: <strong>[mm]mm</strong>. Monsoon species beginning to arrive — <strong>[birds]</strong> detected following the first rains.</p><p><a href="https://earth-pulse.org/rain.html">View monsoon tracker →</a></p>'
+  },
+  blank:{subject:'',body:'<p>Compose your message here…</p>'}
+};
+
+function loadTemplate(name, btn) {
+  document.querySelectorAll('.et-tab').forEach(function(t){t.classList.remove('on')});
+  btn.classList.add('on');
+  var t = TEMPLATES[name]||TEMPLATES.blank;
+  ge('em-subject').value = t.subject;
+  ge('em-body').innerHTML = t.body;
+  updatePreview();
+}
+function updatePreview() {
+  ge('preview-subject').textContent = ge('em-subject').value||'Subject line…';
+  ge('preview-body').innerHTML = ge('em-body').innerHTML;
+}
+function fmt(cmd,val){ ge('em-body').focus(); document.execCommand(cmd,false,val||null); updatePreview(); }
+function insertLink(){ var url=prompt('Enter URL:'); if(url){document.execCommand('createLink',false,url);} updatePreview(); }
+function clearBody(){ if(confirm('Clear body?')){ ge('em-body').innerHTML=''; updatePreview(); } }
+function toggleSeg(btn,seg){
+  document.querySelectorAll('.seg-pill').forEach(function(p){p.classList.remove('on')});
+  btn.classList.add('on'); selectedSegment=seg; updateSegCount();
+}
+async function updateSegCount() {
+  try {
+    var rows = await sbGet('/newsletter_signups?select=id&limit=1000');
+    var n = Array.isArray(rows)?rows.length:0;
+    ge('seg-count').textContent = n+' recipient'+(n!==1?'s':'')+' · '+selectedSegment+' list';
+    ge('diag-sub-count').textContent = n+' subscribers';
+  } catch(e) { ge('seg-count').textContent='Could not load'; }
+}
+
+async function testResendConn() {
+  var r = ge('email-diag-result');
+  r.innerHTML = '<span style="color:var(--text-muted)">Testing…</span>';
+  try {
+    var res = await fetch(EMAIL_WRKR+'/health',{signal:AbortSignal.timeout(5000)});
+    if (res.ok) {
+      r.innerHTML = '✅ earthpulse-email Worker is online. Now sending a test email…';
+      /* Try actual test send */
+      var sendRes = await fetch(EMAIL_WRKR+'/send',{
+        method:'POST',
+        headers:{'Content-Type':'application/json','Authorization':'Bearer '+ADMIN_SEC},
+        body:JSON.stringify({to:ADMIN_EMAIL,subject:'[EP Diagnostics] Connection test',html:'<p>Email Worker is working correctly. Sent from admin.html diagnostics.</p>'})
+      });
+      var sd = await sendRes.json();
+      if (sendRes.ok) {
+        r.innerHTML = '✅ Worker online · ✅ Test email sent to '+ADMIN_EMAIL+' · Resend ID: '+(sd.id||sd.data?.id||'ok');
+      } else {
+        r.innerHTML = '✅ Worker online · ❌ Send failed: '+(sd.error||JSON.stringify(sd));
       }
-      _photoAll = all;
-    } catch(e) {
-      document.getElementById('photo-grid').innerHTML =
-        '<p style="color:#dc2626;padding:1rem;">Error: ' + e.message + '</p>';
+    } else {
+      r.innerHTML = '❌ Worker not responding (HTTP '+res.status+') — check Cloudflare dashboard.';
+    }
+  } catch(e) {
+    r.innerHTML = '❌ Could not reach Worker: '+e.message+'. Check if Worker is deployed.';
+  }
+}
+
+async function sendTestEmail() {
+  var subject = ge('em-subject').value;
+  var html    = ge('em-body').innerHTML;
+  if (!subject) { alert('Add a subject line first.'); return; }
+  var s = ge('send-status');
+  s.textContent = 'Sending test to '+ADMIN_EMAIL+'…';
+  try {
+    var res = await fetch(EMAIL_WRKR+'/send',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+ADMIN_SEC},
+      body:JSON.stringify({to:ADMIN_EMAIL,subject:'[TEST] '+subject,html:html})
+    });
+    var d = await res.json();
+    if (!res.ok) throw new Error(d.error||'Worker error '+res.status+' — '+JSON.stringify(d));
+    s.innerHTML = '✅ Test sent to '+ADMIN_EMAIL+'! Check your inbox. Resend ID: '+(d.id||d.data?.id||'ok');
+  } catch(e) {
+    s.innerHTML = '❌ '+e.message;
+  }
+}
+
+async function sendBroadcast() {
+  var subject = ge('em-subject').value;
+  var html    = ge('em-body').innerHTML;
+  if (!subject) { alert('Add a subject line first.'); return; }
+  var rows;
+  try {
+    rows = await sbGet('/newsletter_signups?select=email&limit=1000');
+    if (!Array.isArray(rows)||!rows.length) { alert('No subscribers found.'); return; }
+  } catch(e) { alert('Could not load subscribers: '+e.message); return; }
+  var recipients = rows.map(function(r){return r.email;}).filter(Boolean);
+  if (!confirm('Send to '+recipients.length+' subscribers? This cannot be undone.')) return;
+  var s=ge('send-status');
+  s.textContent='Sending to '+recipients.length+' subscribers…';
+  try {
+    var res = await fetch(EMAIL_WRKR+'/send-batch',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+ADMIN_SEC},
+      body:JSON.stringify({recipients,subject,html})
+    });
+    var d = await res.json();
+    if (!res.ok) throw new Error(d.error||'Worker error '+res.status);
+    s.innerHTML = '✅ Broadcast sent! '+(d.sent||recipients.length)+' delivered'+(d.failed?', '+d.failed+' failed':'')+'.';
+  } catch(e) {
+    s.innerHTML = '❌ '+e.message;
+  }
+}
+
+function initEmailPanel() {
+  loadTemplate('monthly', document.querySelector('.et-tab.on'));
+  updateSegCount();
+  ge('em-subject').addEventListener('input', updatePreview);
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   USERS
+══════════════════════════════════════════════════════════════════════════ */
+async function loadUsers() {
+  try {
+    var rows = await sbGet('/newsletter_signups?select=*&order=created_at.desc&limit=200');
+    rows = Array.isArray(rows)?rows:[];
+    ge('user-sub').textContent = rows.length+' newsletter subscriber'+(rows.length!==1?'s':'')+' · Full auth user list in Supabase → Authentication → Users.';
+    if (!rows.length) {
+      ge('users-body').innerHTML = '<tr><td colspan="3" style="text-align:center;padding:1.5rem;color:var(--text-muted)">No subscribers yet.</td></tr>';
       return;
     }
+    ge('users-body').innerHTML = rows.map(function(r){
+      var dt  = r.created_at?new Date(r.created_at).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}):'—';
+      return '<tr><td style="font-family:var(--mono);font-size:.82rem">'+(r.email||'—')+'</td>'
+        +'<td style="font-size:.78rem;color:var(--text-muted)">'+dt+'</td>'
+        +'<td><span style="font-size:.68rem;background:rgba(33,67,50,.1);color:var(--ep-green);padding:1px 8px;border-radius:20px;font-weight:600">'+(r.source||'newsletter')+'</span></td></tr>';
+    }).join('');
+  } catch(e) {
+    ge('users-body').innerHTML = '<tr><td colspan="3" style="color:#dc2626;padding:1rem">Error: '+e.message+'</td></tr>';
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   USAGE
+══════════════════════════════════════════════════════════════════════════ */
+async function loadUsage() {
+  var dom = new Date().getDate();
+  try {
+    var [cr,bd,wr] = await Promise.all([sbCount('climate_readings'),sbCount('bird_detections'),sbCount('weather_union_readings')]);
+    var totalRows = cr + bd + wr;
+    var dbMB = (totalRows * 0.5 / 1024).toFixed(1);
+
+    var items = [
+      {title:'🍃 Google Air Quality API',   val:dom*24+' / ~10,000 calls est.',pct:Math.round(dom*24/10000*100),note:'Free tier: ~10,000 calls/month. 1 call/hour from Pi. Safe for the full month.',link:'https://console.cloud.google.com/apis/api/airquality.googleapis.com/quotas'},
+      {title:'✨ Google Gemini 2.0 Flash',   val:dom*10+' queries est.',        pct:Math.round(dom*10/1500*100), note:'Free: 1,500 req/day. Used for conservation profiles and insights. Well within limit.',link:'https://aistudio.google.com'},
+      {title:'🌿 PlantNet API',              val:dom*2+' identifications est.', pct:Math.round(dom*2/500*100),  note:'Free: 500 identifications/day. Only called when users submit a photo — very low volume.',link:'https://my.plantnet.org'},
+      {title:'📧 Resend Email',              val:dom*1+' emails est.',          pct:Math.round(dom*1/3000*100), note:'Free: 3,000 emails/month. Alerts + newsletters. Well under limit.',link:'https://resend.com/dashboard'},
+      {title:'⚙ Cloudflare Workers (both)', val:(dom*24*5).toLocaleString()+' req est.',pct:Math.round(dom*24*5/100000*100),note:'Free: 100,000 req/day per Worker. Both workers well under limit.',link:'https://dash.cloudflare.com'},
+      {title:'🗄 Supabase',                  val:totalRows.toLocaleString()+' rows · ~'+dbMB+'MB',pct:Math.round(totalRows/500000*100),note:'Free: 500MB storage, 2M API req/month. Database will last years on free tier.',link:'https://supabase.com/dashboard/project/krmczyqwblsoekceanlj'},
+      {title:'🤖 Anthropic Claude (paid)',   val:'~'+dom*3+' queries est.',     pct:0, note:'Pay-per-use. Used only for /query endpoint (not conservation profiles — that uses free Gemini). Monitor credits.',link:'https://console.anthropic.com'},
+    ];
+
+    ge('usage-wrap').innerHTML = items.map(function(u){
+      var barCls = u.pct>80?'danger':u.pct>50?'warn':'';
+      return '<div class="card">'
+        +'<div class="card-title" style="display:flex;justify-content:space-between;align-items:center">'
+          +u.title
+          +(u.link?'<a href="'+u.link+'" target="_blank" style="font-size:.72rem;color:var(--ep-tan);text-decoration:none">Dashboard →</a>':'')
+        +'</div>'
+        +'<div style="font-family:var(--mono);font-size:.95rem;color:var(--ep-green);margin-bottom:.4rem">'+u.val+'</div>'
+        +(u.pct>0?'<div class="ubar" style="margin-bottom:.4rem"><div class="ufill '+barCls+'" style="width:'+Math.min(u.pct,100)+'%"></div></div>':'')
+        +'<div style="font-size:.76rem;color:var(--text-muted)">'+u.note+'</div>'
+        +'</div>';
+    }).join('');
+  } catch(e) { ge('usage-wrap').textContent='Error: '+e.message; }
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   PHOTOS
+══════════════════════════════════════════════════════════════════════════ */
+var _photoAll=[], _photoFilter='all', _photoPage=0, PHOTO_PER=12;
+
+async function loadPhotos(force) {
+  if (!_photoAll.length||force) {
+    ge('photo-grid').innerHTML = '<div class="ep-skeleton" style="height:220px;border-radius:var(--radius-lg);grid-column:1/-1"></div>';
+    try {
+      var all=[], off=0;
+      while(true){
+        var rows=await sbGet('/timelapse_frames?select=id,r2_url,captured_at,temperature,aqi,google_aqi_india,precipitation,cloudcover,filename&order=captured_at.desc&limit=1000&offset='+off);
+        if(!Array.isArray(rows)||!rows.length)break;
+        all=all.concat(rows);if(rows.length<1000)break;off+=1000;
+      }
+      _photoAll=all;
+    } catch(e){ ge('photo-grid').innerHTML='<p style="color:#dc2626;padding:1rem">Error: '+e.message+'</p>'; return; }
   }
   renderPhotos();
 }
 
-function setPhotoFilter(filter, btn) {
-  _photoFilter = filter;
-  _photoPage   = 0;
-  document.querySelectorAll('.photo-filter-btn').forEach(function(b){ b.classList.remove('on'); });
-  btn.classList.add('on');
-  renderPhotos();
+function setPhotoFilter(f,btn){
+  _photoFilter=f;_photoPage=0;
+  document.querySelectorAll('.photo-filter-btn').forEach(function(b){b.classList.remove('on')});
+  btn.classList.add('on');renderPhotos();
 }
-
-function filteredPhotos() {
-  return _photoAll.filter(function(p) {
-    if (_photoFilter === 'rain') return (p.precipitation || 0) > 0;
-    if (_photoFilter === 'hot')  return (p.temperature  || 0) > 35;
-    if (_photoFilter === 'aqi')  return (p.aqi          || 0) > 80;
+function filteredPhotos(){
+  return _photoAll.filter(function(p){
+    if(_photoFilter==='rain')return(p.precipitation||0)>0;
+    if(_photoFilter==='hot') return(p.temperature||0)>35;
+    if(_photoFilter==='aqi') return(p.aqi||0)>80;
     return true;
   });
 }
-
-function renderPhotos() {
-  var photos  = filteredPhotos();
-  var total   = photos.length;
-  var maxPage = Math.max(0, Math.ceil(total / PHOTO_PER_PAGE) - 1);
-  if (_photoPage > maxPage) _photoPage = maxPage;
-  var slice   = photos.slice(_photoPage * PHOTO_PER_PAGE, (_photoPage + 1) * PHOTO_PER_PAGE);
-
-  document.getElementById('photo-count-label').textContent =
-    total + ' photo' + (total !== 1 ? 's' : '') + ' \u00b7 page ' + (_photoPage + 1) + ' of ' + (maxPage + 1);
-
-  if (!slice.length) {
-    document.getElementById('photo-grid').innerHTML =
-      '<p style="color:var(--text-muted);padding:2rem;grid-column:1/-1;">No photos match this filter.</p>';
-    document.getElementById('photo-pager').innerHTML = '';
-    return;
+function renderPhotos(){
+  var photos=filteredPhotos(),total=photos.length;
+  var maxPg=Math.max(0,Math.ceil(total/PHOTO_PER)-1);
+  if(_photoPage>maxPg)_photoPage=maxPg;
+  var slice=photos.slice(_photoPage*PHOTO_PER,(_photoPage+1)*PHOTO_PER);
+  ge('photo-count-label').textContent=total+' photo'+(total!==1?'s':'')+' · page '+(_photoPage+1)+' of '+(maxPg+1);
+  if(!slice.length){ge('photo-grid').innerHTML='<p style="color:var(--text-muted);padding:2rem;grid-column:1/-1">No photos match.</p>';ge('photo-pager').innerHTML='';return;}
+  ge('photo-grid').innerHTML=slice.map(function(p){
+    var dt=p.captured_at?new Date(p.captured_at).toLocaleString('en-IN',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit',hour12:true,timeZone:'Asia/Kolkata'}):'—';
+    var meta=[];
+    if(p.temperature!=null)meta.push('🌡️ '+p.temperature+'°C');
+    if(p.aqi!=null)meta.push('AQI '+p.aqi);
+    if(p.precipitation>0)meta.push('🌧️ '+p.precipitation+'mm');
+    return '<div class="photo-card" id="pc-'+p.id+'">'
+      +(p.r2_url?'<img src="'+p.r2_url+'" alt="'+dt+'" loading="lazy">':'<div style="background:var(--ep-cream-dark);height:150px;display:flex;align-items:center;justify-content:center;color:var(--text-muted)">No URL</div>')
+      +'<div class="photo-card-body">'
+        +'<div class="photo-card-date">'+dt+'</div>'
+        +'<div class="photo-card-meta">'+(meta.join(' · ')||'No climate data')+'</div>'
+        +'<div class="photo-card-actions">'
+          +(p.r2_url?'<a href="'+p.r2_url+'" target="_blank" class="photo-btn keep">🔍 View</a>':'')
+          +'<button class="photo-btn del" id="del-'+p.id+'" onclick="deletePhoto(\''+p.id+'\')">🗑 Delete</button>'
+        +'</div>'
+      +'</div>'
+    +'</div>';
+  }).join('');
+  var pager='';
+  if(total>PHOTO_PER){
+    pager='<button class="photo-pager-btn" onclick="goPhotoPage('+(_photoPage-1)+')" '+(_photoPage===0?'disabled':'')+'>← Prev</button>'
+      +'<span class="photo-pager-info">'+(_photoPage*PHOTO_PER+1)+'–'+Math.min((_photoPage+1)*PHOTO_PER,total)+' of '+total+'</span>'
+      +'<button class="photo-pager-btn" onclick="goPhotoPage('+(_photoPage+1)+')" '+(_photoPage>=maxPg?'disabled':'')+'>Next →</button>';
   }
-
-  var html = '';
-  for (var i = 0; i < slice.length; i++) {
-    var p    = slice[i];
-    var dt   = p.captured_at ? new Date(p.captured_at).toLocaleString('en-IN',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit',hour12:true,timeZone:'Asia/Kolkata'}) : '\u2014';
-    var meta = [];
-    if (p.temperature != null)       meta.push('\u{1F321}\uFE0F ' + p.temperature + '\u00b0C');
-    if (p.aqi != null)               meta.push('AQI(EU) ' + p.aqi);
-    if (p.google_aqi_india != null)  meta.push('AQI(IN) ' + p.google_aqi_india);
-    if (p.precipitation > 0)         meta.push('\u{1F327}\uFE0F ' + p.precipitation + 'mm');
-    if (p.cloudcover != null)        meta.push('\u2601\uFE0F ' + p.cloudcover + '%');
-    var metaStr = meta.join(' \u00b7 ') || 'No climate data';
-    var fn = p.filename ? '<div style="font-size:0.65rem;color:var(--text-muted);font-family:var(--mono);margin-bottom:0.5rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + p.filename + '</div>' : '';
-    var imgHtml = p.r2_url
-      ? '<img src="' + p.r2_url + '" alt="Hill ' + dt + '" loading="lazy" onerror="this.style.opacity=0.2">'
-      : '<div style="background:var(--ep-cream-dark);aspect-ratio:16/10;display:flex;align-items:center;justify-content:center;color:var(--text-muted);font-size:0.8rem;">No image URL</div>';
-    var viewBtn = p.r2_url ? '<a href="' + p.r2_url + '" target="_blank" class="photo-btn keep">\u{1F50D} View</a>' : '';
-    html += '<div class="photo-card" id="pc-' + p.id + '">' +
-      imgHtml +
-      '<div class="photo-card-body">' +
-        '<div class="photo-card-date">' + dt + '</div>' +
-        '<div class="photo-card-meta">' + metaStr + '</div>' +
-        fn +
-        '<div class="photo-card-actions">' +
-          viewBtn +
-          '<button class="photo-btn del" id="del-' + p.id + '" onclick="deletePhoto(' + JSON.stringify(p.id) + ')">\u{1F5D1} Delete</button>' +
-        '</div>' +
-      '</div>' +
-    '</div>';
-  }
-  document.getElementById('photo-grid').innerHTML = html;
-
-  var pager = '';
-  if (total > PHOTO_PER_PAGE) {
-    pager +=
-      '<button class="photo-pager-btn" onclick="goPhotoPage(' + (_photoPage - 1) + ')" ' + (_photoPage === 0 ? 'disabled' : '') + '>&#8592; Prev</button>' +
-      '<span class="photo-pager-info">Showing ' + (_photoPage * PHOTO_PER_PAGE + 1) + '&#8211;' + Math.min((_photoPage + 1) * PHOTO_PER_PAGE, total) + ' of ' + total + '</span>' +
-      '<button class="photo-pager-btn" onclick="goPhotoPage(' + (_photoPage + 1) + ')" ' + (_photoPage >= maxPage ? 'disabled' : '') + '>Next &#8594;</button>';
-  }
-  document.getElementById('photo-pager').innerHTML = pager;
+  ge('photo-pager').innerHTML=pager;
 }
-
-function goPhotoPage(p) {
-  var max = Math.max(0, Math.ceil(filteredPhotos().length / PHOTO_PER_PAGE) - 1);
-  if (p < 0 || p > max) return;
-  _photoPage = p;
-  renderPhotos();
-  document.getElementById('panel-photos').scrollIntoView({behavior:'smooth',block:'start'});
-}
-
-async function deletePhoto(id) {
-  if (!confirm('Delete this row from timelapse_frames?\n\nNote: The R2 image file is NOT deleted automatically.')) return;
-  var btn = document.getElementById('del-' + id);
-  if (btn) { btn.disabled = true; btn.textContent = 'Deleting...'; }
+function goPhotoPage(p){var max=Math.max(0,Math.ceil(filteredPhotos().length/PHOTO_PER)-1);if(p<0||p>max)return;_photoPage=p;renderPhotos();ge('panel-photos').scrollIntoView({behavior:'smooth',block:'start'});}
+async function deletePhoto(id){
+  if(!confirm('Delete this row from timelapse_frames?\n\nNote: R2 image file is NOT automatically deleted.'))return;
+  var btn=ge('del-'+id);if(btn){btn.disabled=true;btn.textContent='Deleting…';}
   try {
-    var r = await fetch(_SB_URL + '/rest/v1/timelapse_frames?id=eq.' + id, {
-      method: 'DELETE',
-      headers: { 'apikey': _SB_KEY, 'Authorization': 'Bearer ' + _SB_KEY, 'Prefer': 'return=minimal' }
-    });
-    if (r.ok || r.status === 204) {
-      _photoAll = _photoAll.filter(function(p){ return String(p.id) !== String(id); });
-      var card = document.getElementById('pc-' + id);
-      if (card) { card.style.transition = 'opacity 0.3s'; card.style.opacity = '0'; }
-      setTimeout(function(){ renderPhotos(); }, 320);
-    } else {
-      var txt = await r.text();
-      alert('Delete failed (' + r.status + '): ' + txt.slice(0,200));
-      if (btn) { btn.disabled = false; btn.textContent = '\u{1F5D1} Delete'; }
-    }
-  } catch(e) {
-    alert('Error: ' + e.message);
-    if (btn) { btn.disabled = false; btn.textContent = '\u{1F5D1} Delete'; }
-  }
+    var r=await fetch(_SB_URL+'/rest/v1/timelapse_frames?id=eq.'+id,{method:'DELETE',headers:{'apikey':_SB_KEY,'Authorization':'Bearer '+_SB_KEY,'Prefer':'return=minimal'}});
+    if(r.ok||r.status===204){_photoAll=_photoAll.filter(function(p){return String(p.id)!==String(id);});var card=ge('pc-'+id);if(card){card.style.opacity='0';card.style.transition='opacity .3s';}setTimeout(function(){renderPhotos();},320);}
+    else{var txt=await r.text();alert('Delete failed ('+r.status+'): '+txt.slice(0,200));if(btn){btn.disabled=false;btn.textContent='🗑 Delete';}}
+  } catch(e){alert('Error: '+e.message);if(btn){btn.disabled=false;btn.textContent='🗑 Delete';}}
 }
 </script>
 </body>
