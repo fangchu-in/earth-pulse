@@ -28,9 +28,9 @@
     body{margin:0}
 
     /* ── Mobile tab bar (replaces sidebar on small screens) ── */
-    .mob-tab-bar{display:none;position:sticky;top:0;z-index:100;background:#0f1923;
+    .mob-tab-bar{display:none;position:sticky;top:0;z-index:200;background:#0f1923;
       overflow-x:auto;white-space:nowrap;padding:.5rem .75rem;gap:.35rem;
-      -webkit-overflow-scrolling:touch;scrollbar-width:none}
+      -webkit-overflow-scrolling:touch;scrollbar-width:none;flex-shrink:0}
     .mob-tab-bar::-webkit-scrollbar{display:none}
     .mob-tab-bar button{display:inline-block;padding:.38rem .85rem;border-radius:2rem;
       border:1px solid rgba(255,255,255,.12);font-family:var(--sans);font-size:.75rem;
@@ -42,7 +42,10 @@
 
     /* ── Desktop layout ── */
     .admin-wrap{display:grid;grid-template-columns:220px 1fr;min-height:calc(100vh - 62px)}
-    @media(max-width:800px){.admin-wrap{grid-template-columns:1fr}.admin-side{display:none}}
+    @media(max-width:800px){
+      .admin-wrap{grid-template-columns:1fr;min-height:auto}
+      .admin-side{display:none !important}
+    }
     .admin-side{background:#0f1923;padding:1.5rem 1rem;display:flex;flex-direction:column;
       gap:2px;position:sticky;top:62px;height:calc(100vh - 62px);overflow-y:auto}
     .admin-brand{color:rgba(242,240,230,.45);font-size:.65rem;font-weight:700;
