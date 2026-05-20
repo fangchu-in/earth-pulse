@@ -243,6 +243,10 @@
 
     /* ── Table overflow wrapper ── */
     .table-scroll { overflow-x:auto; }
+
+    /* ── Why grid ── */
+    .why-grid { display:grid; grid-template-columns:1fr 1fr; gap:3rem; align-items:start; }
+    @media(max-width:680px){ .why-grid { grid-template-columns:1fr; gap:1.5rem; } }
   </style>
 </head>
 <body>
@@ -256,7 +260,7 @@
   <p class="ep-hero-sub">Earth Pulse is a ground-level environmental observatory on the edge of the Western Ghats — tracking air quality, hyperlocal weather, sound, birds, and plants from one location, continuously, since January 2022.</p>
 </div>
 
-<!-- OBJECTIVE -->
+<!-- OBJECTIVE + WHY -->
 <section class="ep-section">
   <div class="ep-section-inner">
     <div class="objective-block">
@@ -267,6 +271,30 @@
     </div>
   </div>
 </section>
+
+<!-- WHY ONE PLACE -->
+<section class="ep-section" style="background:white;">
+  <div class="ep-section-inner">
+    <div class="why-grid">
+      <div>
+        <span class="section-tag">Why this place matters</span>
+        <h2 class="ep-section-title" style="margin-bottom:1rem;">The Western Ghats edge</h2>
+        <p style="font-size:0.92rem;color:var(--text-muted);line-height:1.85;margin-bottom:1rem;">Baner Hill sits at 560 metres on the eastern edge of the Western Ghats — a UNESCO World Heritage Site and one of Earth's eight biodiversity hotspots. These mountains are older than the Himalayas, hold 30% of India's plant and animal species within less than 6% of its land area, and are monitored by almost no one at the hyperlocal level.</p>
+        <p style="font-size:0.92rem;color:var(--text-muted);line-height:1.85;margin-bottom:1rem;">Baner is where the city meets the Sahyadri. On one side: Pune's fastest-growing suburb, with traffic, construction, and rising temperatures. On the other: a forested hill where bee-eaters nest, Indian rollers flash overhead, and the monsoon arrives two days before the city centre. Earth Pulse sits exactly at that edge — recording both worlds, continuously.</p>
+        <p style="font-size:0.92rem;color:var(--text-muted);line-height:1.85;">Earth Pulse is the first continuous, open, citizen-science environmental observatory on this edge — recording hourly air quality, hyperlocal weather, acoustic bird diversity, plant life, and hill photography since January 2022.</p>
+      </div>
+      <div>
+        <span class="section-tag">Why one place, over time</span>
+        <h2 class="ep-section-title" style="margin-bottom:1rem;">Depth over breadth</h2>
+        <p style="font-size:0.92rem;color:var(--text-muted);line-height:1.85;margin-bottom:1rem;">Most environmental monitoring moves fast and wide — snapshots from satellites, monthly averages, data that tells you a region is changing but cannot tell you when, or exactly how, or what it felt and sounded like when it did.</p>
+        <p style="font-size:0.92rem;color:var(--text-muted);line-height:1.85;margin-bottom:1rem;">Earth Pulse moves slowly and deep. The same sensors, the same location, every hour, for years. That consistency is the point. It is what allows a question like "has the monsoon been arriving later since 2022?" or "does air quality drop when the hill birds go quiet?" to have a real answer, grounded in local data rather than extrapolated from somewhere else.</p>
+        <p style="font-size:0.92rem;color:var(--text-muted);line-height:1.85;">Sustained attention to one place is its own kind of science — and its own kind of care. Every reading logged is a small act of paying attention to something that most people pass on the way to somewhere else.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
 
 <!-- IMPACT NUMBERS -->
 <section class="ep-section" style="background:white;">
@@ -835,21 +863,39 @@ function safeVal(obj, key, decimals) {
   return decimals !== undefined ? parseFloat(v).toFixed(decimals) : v;
 }
 
+// Paginated fetch of all distinct species names — handles 30,000+ detections correctly
+async function fetchDistinctSpeciesCount() {
+  var seen = new Set();
+  var offset = 0;
+  while (true) {
+    var r = await fetch(
+      SUPABASE_URL + '/rest/v1/bird_detections?select=species_scientific&order=species_scientific.asc&limit=1000&offset=' + offset,
+      {headers: HDR}
+    );
+    var rows = await r.json();
+    if (!Array.isArray(rows) || rows.length === 0) break;
+    rows.forEach(function(row) { if (row.species_scientific) seen.add(row.species_scientific); });
+    if (rows.length < 1000) break;
+    offset += 1000;
+  }
+  return seen.size;
+}
+
 async function loadImpact() {
   try {
-    var [countRes,totalBirdsRes,framesRes,wuRes,birdsRes,maxAqiRes,minAqiRes,maxTempRes,minTempRes,maxRainRes,maxGAqiRes,minGAqiRes] = await Promise.all([
+    // Use climate_readings directly for extremes — it has all columns and reliable RLS
+    // Filter syntax: column=gte.value (PostgREST), not column=gt.value in some contexts
+    var [countRes,totalBirdsRes,framesRes,wuRes,maxAqiRes,minAqiRes,maxTempRes,minTempRes,maxGAqiRes,minGAqiRes] = await Promise.all([
       fetch(SUPABASE_URL+'/rest/v1/climate_readings?select=id&limit=1',{headers:{...HDR,'Prefer':'count=exact'}}),
       fetch(SUPABASE_URL+'/rest/v1/bird_detections?select=id&limit=1',{headers:{...HDR,'Prefer':'count=exact'}}),
       fetch(SUPABASE_URL+'/rest/v1/timelapse_frames?select=id&limit=1',{headers:{...HDR,'Prefer':'count=exact'}}),
       fetch(SUPABASE_URL+'/rest/v1/weather_union_readings?select=id&limit=1',{headers:{...HDR,'Prefer':'count=exact'}}),
-      fetch(SUPABASE_URL+'/rest/v1/bird_detections?select=species_scientific&limit=5000',{headers:HDR}),
-      fetch(SUPABASE_URL+'/rest/v1/combined_readings?select=aqi,recorded_at&aqi=gt.0&order=aqi.desc&limit=1',{headers:HDR}),
-      fetch(SUPABASE_URL+'/rest/v1/combined_readings?select=aqi,recorded_at&aqi=gt.0&order=aqi.asc&limit=1',{headers:HDR}),
-      fetch(SUPABASE_URL+'/rest/v1/combined_readings?select=temperature,recorded_at&order=temperature.desc&limit=1',{headers:HDR}),
-      fetch(SUPABASE_URL+'/rest/v1/combined_readings?select=temperature,recorded_at&order=temperature.asc&limit=1',{headers:HDR}),
-      fetch(SUPABASE_URL+'/rest/v1/combined_readings?select=precipitation,recorded_at&precipitation=gt.0&order=precipitation.desc&limit=1',{headers:HDR}),
-      fetch(SUPABASE_URL+'/rest/v1/combined_readings?select=google_aqi_india,recorded_at&google_aqi_india=gt.0&order=google_aqi_india.desc&limit=1',{headers:HDR}),
-      fetch(SUPABASE_URL+'/rest/v1/combined_readings?select=google_aqi_india,recorded_at&google_aqi_india=gt.0&order=google_aqi_india.asc&limit=1',{headers:HDR}),
+      fetch(SUPABASE_URL+'/rest/v1/climate_readings?select=aqi,recorded_at&aqi=gte.1&order=aqi.desc&limit=1',{headers:HDR}),
+      fetch(SUPABASE_URL+'/rest/v1/climate_readings?select=aqi,recorded_at&aqi=gte.1&order=aqi.asc&limit=1',{headers:HDR}),
+      fetch(SUPABASE_URL+'/rest/v1/climate_readings?select=temperature,recorded_at&order=temperature.desc&limit=1',{headers:HDR}),
+      fetch(SUPABASE_URL+'/rest/v1/climate_readings?select=temperature,recorded_at&order=temperature.asc&limit=1',{headers:HDR}),
+      fetch(SUPABASE_URL+'/rest/v1/climate_readings?select=google_aqi_india,recorded_at&google_aqi_india=gte.1&order=google_aqi_india.desc&limit=1',{headers:HDR}),
+      fetch(SUPABASE_URL+'/rest/v1/climate_readings?select=google_aqi_india,recorded_at&google_aqi_india=gte.1&order=google_aqi_india.asc&limit=1',{headers:HDR}),
     ]);
 
     var climateCount = parseInt(countRes.headers.get('content-range')?.split('/')[1] || '0');
@@ -857,14 +903,13 @@ async function loadImpact() {
     var frameCount   = parseInt(framesRes.headers.get('content-range')?.split('/')[1] || '0');
     var wuCount      = parseInt(wuRes.headers.get('content-range')?.split('/')[1] || '0');
 
-    var birds   = await birdsRes.json();
-    var species = new Set(Array.isArray(birds) ? birds.map(b => b.species_scientific) : []).size;
+    // Fetch distinct species count via paginated query — never truncated
+    var species = await fetchDistinctSpeciesCount();
 
     var maxAqiArr  = await maxAqiRes.json();
     var minAqiArr  = await minAqiRes.json();
     var maxTempArr = await maxTempRes.json();
     var minTempArr = await minTempRes.json();
-    var maxRainArr = await maxRainRes.json();
     var maxGAqiArr = await maxGAqiRes.json();
     var minGAqiArr = await minGAqiRes.json();
 
@@ -872,7 +917,6 @@ async function loadImpact() {
     var minAqiD  = Array.isArray(minAqiArr)  && minAqiArr.length  ? minAqiArr[0]  : null;
     var maxTempD = Array.isArray(maxTempArr) && maxTempArr.length ? maxTempArr[0] : null;
     var minTempD = Array.isArray(minTempArr) && minTempArr.length ? minTempArr[0] : null;
-    var maxRainD = Array.isArray(maxRainArr) && maxRainArr.length ? maxRainArr[0] : null;
     var maxGAqiD = Array.isArray(maxGAqiArr) && maxGAqiArr.length ? maxGAqiArr[0] : null;
     var minGAqiD = Array.isArray(minGAqiArr) && minGAqiArr.length ? minGAqiArr[0] : null;
 
@@ -911,7 +955,12 @@ async function loadImpact() {
 
     document.getElementById('lock-overlay').style.display = 'block';
 
-  } catch(e) { console.error('Impact load error:', e); }
+  } catch(e) {
+    console.error('Impact load error:', e);
+    // Show fallback text in cards rather than leaving skeletons
+    var grid = document.getElementById('impact-grid');
+    if (grid) grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;color:var(--text-muted);padding:2rem;font-size:0.85rem;">Data temporarily unavailable — please refresh.</div>';
+  }
 }
 
 // ── Register interest form ────────────────────────────────────────────────────
