@@ -246,7 +246,129 @@
       border-top:1px solid var(--border); padding-top:0.6rem; margin-top:0.75rem;
       line-height:1.6;
     }
-    .support-source a { color:var(--ep-green); }
+    /* ════════════════════════════════════════════
+       NEW: In its own words (voice card)
+    ════════════════════════════════════════════ */
+    .voice-card {
+      background: linear-gradient(135deg, rgba(33,67,50,0.06), rgba(191,155,123,0.1));
+      border: 1px solid rgba(191,155,123,0.3);
+      border-left: 4px solid var(--ep-tan);
+      border-radius: var(--radius-lg);
+      padding: 1.25rem 1.4rem;
+      margin-bottom: 1.25rem;
+      position: relative;
+    }
+    .voice-card-label {
+      font-size: 0.66rem; font-weight: 700; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--ep-tan);
+      margin-bottom: 0.5rem;
+      display: flex; align-items: center; gap: 0.4rem;
+    }
+    .voice-card-text {
+      font-family: var(--serif); font-style: italic;
+      font-size: 1.02rem; color: var(--ep-green); line-height: 1.7;
+    }
+    .voice-card-text strong { font-style: normal; color: var(--ep-tan); font-weight: 600; }
+
+    /* ════════════════════════════════════════════
+       NEW: Rank badge in hero
+    ════════════════════════════════════════════ */
+    .badge-rank {
+      background: rgba(191,155,123,0.18);
+      color: #ffe0c0;
+      border: 1px solid rgba(191,155,123,0.35);
+    }
+
+    /* ════════════════════════════════════════════
+       NEW: Phenology pill in at-a-glance
+    ════════════════════════════════════════════ */
+    .phenology-pill {
+      display: inline-block;
+      background: rgba(33,67,50,0.07);
+      border: 1px solid rgba(33,67,50,0.18);
+      color: var(--ep-green);
+      font-size: 0.75rem; font-weight: 600;
+      padding: 3px 10px; border-radius: 20px;
+    }
+    .phenology-pill.winter { background: rgba(59,130,246,0.08); color: #1d4ed8; border-color: rgba(59,130,246,0.2); }
+    .phenology-pill.monsoon { background: rgba(6,182,212,0.08); color: #0891b2; border-color: rgba(6,182,212,0.2); }
+    .phenology-pill.summer { background: rgba(234,88,12,0.08); color: #c2410c; border-color: rgba(234,88,12,0.2); }
+
+    /* ════════════════════════════════════════════
+       NEW: Sound action buttons
+    ════════════════════════════════════════════ */
+    .sound-actions {
+      display: flex; flex-wrap: wrap; gap: 0.5rem;
+      margin-top: 0.85rem; padding-top: 0.85rem;
+      border-top: 1px solid var(--border);
+    }
+    .sound-btn {
+      display: inline-flex; align-items: center; gap: 5px;
+      background: var(--ep-cream-dark);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 6px 12px;
+      font-size: 0.76rem; font-weight: 600;
+      color: var(--ep-green);
+      text-decoration: none;
+      transition: background 0.15s;
+    }
+    .sound-btn:hover { background: rgba(33,67,50,0.08); }
+    .sound-btn-icon { font-size: 0.9rem; line-height: 1; }
+
+    /* ════════════════════════════════════════════
+       NEW: Co-occurring birds (heard alongside)
+    ════════════════════════════════════════════ */
+    .cooccur-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+      gap: 0.6rem;
+      margin-top: 0.5rem;
+    }
+    .cooccur-card {
+      display: flex; align-items: center; gap: 0.65rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 0.55rem 0.7rem;
+      text-decoration: none; color: inherit;
+      transition: box-shadow 0.15s, transform 0.15s;
+    }
+    .cooccur-card:hover { box-shadow: 0 3px 12px rgba(33,67,50,0.1); transform: translateY(-1px); }
+    .cooccur-thumb {
+      width: 42px; height: 42px; border-radius: 50%;
+      flex-shrink: 0;
+      background: var(--ep-cream-dark);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.2rem;
+      overflow: hidden;
+    }
+    .cooccur-thumb img { width: 42px; height: 42px; border-radius: 50%; object-fit: cover; display: block; }
+    .cooccur-info { flex: 1; min-width: 0; }
+    .cooccur-name {
+      font-size: 0.78rem; font-weight: 600; color: var(--ep-green);
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    }
+    .cooccur-count {
+      font-family: var(--mono); font-size: 0.65rem; color: var(--text-muted);
+    }
+    .cooccur-empty {
+      font-size: 0.82rem; color: var(--text-muted); padding: 0.5rem 0;
+    }
+
+    /* ════════════════════════════════════════════
+       NEW: Activity trend mini-stat
+    ════════════════════════════════════════════ */
+    .trend-line {
+      display: flex; align-items: baseline; gap: 0.5rem;
+      margin-top: 0.5rem;
+      font-size: 0.83rem; color: var(--text-muted);
+    }
+    .trend-arrow { font-weight: 700; font-size: 1rem; }
+    .trend-arrow.up { color: var(--ep-green); }
+    .trend-arrow.down { color: #c2410c; }
+    .trend-arrow.flat { color: var(--text-muted); }
+
   </style>
 </head>
 <body>
@@ -419,10 +541,10 @@ function initRangeMap(containerId, taxonKey, name, sci) {
     return;
   }
 
-  // Initialise Leaflet — world view
+  // Initialise Leaflet — start at India-region zoom for immediate context
   var map = L.map('range-map', {
     center: [20, 78],   // centre on India
-    zoom: 2,
+    zoom: 4,            // sub-continental view
     zoomControl: true,
     attributionControl: false,
     scrollWheelZoom: false   // avoid accidental scroll-hijack on mobile
@@ -787,6 +909,111 @@ function renderHabitatSupport(hs) {
 }
 
 /* ════════════════════════════════════════════════════════════════════════════
+   NEW: Helper builders — phenology, voice card, sound links, co-occur
+════════════════════════════════════════════════════════════════════════════ */
+
+/* Convert hour to friendly 12h string */
+function fmtHour12(h) {
+  if (h === 0) return '12 AM';
+  if (h === 12) return '12 PM';
+  if (h < 12) return h + ' AM';
+  return (h-12) + ' PM';
+}
+
+/* Determine phenology from monC counts */
+function getPhenology(monC, total) {
+  if (!total) return {label:'No data', cls:''};
+  var monsoonShare = (monC[5]+monC[6]+monC[7]+monC[8]) / total;
+  var winterShare  = (monC[9]+monC[10]+monC[11]+monC[0]+monC[1]) / total;
+  var summerShare  = (monC[2]+monC[3]+monC[4]) / total;
+  var activeMonths = monC.filter(function(c){return c > 0;}).length;
+
+  if (activeMonths >= 9) return {label:'Heard year-round', cls:''};
+  if (winterShare > 0.7) return {label:'Winter visitor', cls:'winter'};
+  if (monsoonShare > 0.7) return {label:'Monsoon peak', cls:'monsoon'};
+  if (summerShare > 0.6) return {label:'Summer peak', cls:'summer'};
+  if (activeMonths <= 4) return {label:'Seasonal visitor', cls:''};
+  return {label:'Mostly resident', cls:''};
+}
+
+/* Build the "in its own words" voice card text */
+function buildVoiceText(name, sci, total, peakH, monC, dawnPct, nightN, southPct, total_) {
+  var voice = '<strong>"</strong>';
+  // Lead with name/identity
+  voice += 'I\'m the ' + name + '. ';
+
+  // Heard pattern
+  if (total === 1) {
+    voice += 'I\'ve only been heard once on Baner Hill so far — a rare passing call. ';
+  } else if (total < 10) {
+    voice += 'I\'ve been heard ' + total + ' times so far — still uncommon on the hill. ';
+  } else if (total < 50) {
+    voice += 'Earth Pulse has caught my voice <strong>' + total + ' times</strong>. ';
+  } else {
+    voice += 'My voice has been picked up <strong>' + total.toLocaleString('en-IN') + ' times</strong> — I\'m a regular here. ';
+  }
+
+  // When am I most active
+  if (dawnPct > 50) {
+    voice += 'I love the dawn chorus — most of my calls happen between 5 and 8 AM, when the hill wakes up. ';
+  } else if (nightN > total * 0.4) {
+    voice += 'I\'m a creature of the night — most of my calls come between 9 PM and 5 AM, when the city sleeps. ';
+  } else if (peakH >= 17 && peakH <= 20) {
+    voice += 'I prefer the cool of evening — you\'re most likely to hear me around ' + fmtHour12(peakH) + '. ';
+  } else {
+    voice += 'You\'re most likely to hear me around <strong>' + fmtHour12(peakH) + '</strong>. ';
+  }
+
+  // Sensor location preference
+  if (southPct > 60) {
+    voice += 'I forage closer to the south slope of Baner Hill — that\'s where the south-facing sensor catches me most. ';
+  } else if (southPct < 20 && southPct > 0) {
+    voice += 'I stay around the east-facing balcony — closer to the homes and gardens of Baner. ';
+  }
+
+  voice += '<strong>"</strong>';
+  return voice;
+}
+
+/* Phenology label as plain text for SEO/AI */
+function getPhenologySentence(name, phen, peakH, peakM, monC, total) {
+  if (phen.label === 'Heard year-round') {
+    return name + ' is a year-round resident in Baner, Pune — detected in every month of the year.';
+  }
+  if (phen.label === 'Winter visitor') {
+    return name + ' is a winter visitor to Baner, Pune — primarily detected between October and February.';
+  }
+  if (phen.label === 'Monsoon peak') {
+    return name + ' peaks during the monsoon season (June–September) in Baner, Pune.';
+  }
+  if (phen.label === 'Summer peak') {
+    return name + ' is most active during the summer months (March–May) in Baner, Pune.';
+  }
+  if (phen.label === 'Seasonal visitor') {
+    return name + ' appears seasonally in Baner — detected during ' + monC.filter(function(c){return c>0;}).length + ' months of the year.';
+  }
+  return name + ' is mostly resident in Baner, Pune.';
+}
+
+/* External sound and citizen-science links */
+function buildSoundLinksHtml(sci, name) {
+  var sciSlug = sci.replace(/ /g,'+');
+  var sciUnderscore = sci.replace(/ /g,'_');
+  return '<div class="sound-actions" role="group" aria-label="Listen to and learn more about this species">'
+    + '<a class="sound-btn" href="https://xeno-canto.org/explore?query=' + encodeURIComponent(sci) + '" target="_blank" rel="noopener" aria-label="Listen to ' + name + ' calls on Xeno-canto">'
+    + '<span class="sound-btn-icon">🔊</span> Hear my call (Xeno-canto)</a>'
+    + '</div>';
+}
+
+/* Best-effort eBird species slug: lowercase first word + first letter of others */
+/* eBird uses 6-char codes (e.g. "rvbulb1" for Red-vented Bulbul) which we cannot reliably */
+/* construct from scientific name. So we send users to a search URL instead. */
+function sciToEbirdSlug(sci) {
+  // Falls back to general search if direct slug doesn't exist
+  return encodeURIComponent(sci.toLowerCase().replace(/ /g,'-'));
+}
+
+/* ════════════════════════════════════════════════════════════════════════════
    Structured data + meta
 ════════════════════════════════════════════════════════════════════════════ */
 function injectStructuredData(name, sci, total, best, firstTs, lastTs, wikiUrl, wikiExtract) {
@@ -828,11 +1055,12 @@ function injectStructuredData(name, sci, total, best, firstTs, lastTs, wikiUrl, 
 
 function updateMeta(name, sci, total, best, wikiExtract, wikiThumb) {
   var pageUrl = 'https://earth-pulse.org/species.html?bird=' + encodeURIComponent(sci.replace(/ /g,'_'));
-  var desc = name + ' (' + sci + ') detected ' + total + ' times in Baner, Pune by BirdNET acoustic AI. ' + (wikiExtract ? wikiExtract.slice(0,140) : 'Western Ghats biodiversity monitoring from the Sahyadri foothills.');
-  document.title = name + ' — Bird detected in Baner, Pune | Earth Pulse';
+  var desc = name + ' (' + sci + ') detected ' + total.toLocaleString('en-IN') + ' times in Baner, Pune by BirdNET acoustic AI. ' + (wikiExtract ? wikiExtract.slice(0,140) : 'Western Ghats biodiversity monitoring from the Sahyadri foothills.');
+  // Dynamic title includes count — freshness signal
+  document.title = name + ' (' + sci + ') — Heard ' + total.toLocaleString('en-IN') + (total===1?' time':' times') + ' in Baner, Pune | Earth Pulse';
   var setMeta = function(sel, val) { var el = document.querySelector(sel); if (el) el.setAttribute('content', val); };
   setMeta('meta[name="description"]', desc);
-  setMeta('meta[property="og:title"]', name + ' — Earth Pulse, Baner, Pune');
+  setMeta('meta[property="og:title"]', name + ' — Heard ' + total.toLocaleString('en-IN') + ' times in Baner, Pune');
   setMeta('meta[property="og:description"]', desc);
   setMeta('meta[property="og:url"]', pageUrl);
   var canon = ge('page-canonical'); if (canon) canon.href = pageUrl;
@@ -976,6 +1204,35 @@ async function renderSpeciesPage(sci) {
   var hasAnyNewFlag = detections.some(function(x){return x.is_new_species_this_year;});
   var earliestTs = detections[detections.length-1].detected_at;
 
+  /* ── NEW: Phenology ── */
+  var phenology = getPhenology(monC, total);
+  var phenologySentence = getPhenologySentence(name, phenology, peakH, peakM, monC, total);
+
+  /* ── NEW: 30-day trend ── */
+  var now30 = Date.now() - 30*86400000;
+  var prev30 = Date.now() - 60*86400000;
+  var last30Count = 0, prev30Count = 0;
+  detections.forEach(function(x){
+    var t = new Date(x.detected_at).getTime();
+    if (t >= now30) last30Count++;
+    else if (t >= prev30) prev30Count++;
+  });
+  var trendArrow = '→', trendCls = 'flat', trendText = '';
+  if (prev30Count === 0 && last30Count > 0) {
+    trendArrow = '↑'; trendCls = 'up';
+    trendText = 'newly active — ' + last30Count + ' detection' + (last30Count!==1?'s':'') + ' in the last 30 days, none in the 30 days before';
+  } else if (last30Count === 0 && prev30Count > 0) {
+    trendArrow = '↓'; trendCls = 'down';
+    trendText = 'gone quiet — no detections in the last 30 days (' + prev30Count + ' in the prior 30)';
+  } else if (prev30Count > 0) {
+    var trendPct = Math.round((last30Count - prev30Count) / prev30Count * 100);
+    if (trendPct > 20)      { trendArrow = '↑'; trendCls = 'up';   trendText = 'up ' + Math.abs(trendPct) + '% in the last 30 days vs the prior 30'; }
+    else if (trendPct < -20){ trendArrow = '↓'; trendCls = 'down'; trendText = 'down ' + Math.abs(trendPct) + '% in the last 30 days vs the prior 30'; }
+    else                    { trendArrow = '→'; trendCls = 'flat'; trendText = 'stable activity over the last 60 days'; }
+  } else if (total > 0) {
+    trendText = 'historical record only — no recent detections to compare';
+  }
+
   updateMeta(name, sci, total, best, w ? w.extract : null, w ? w.thumb : null);
   injectStructuredData(name, sci, total, best, detections[detections.length-1].detected_at, detections[0].detected_at, w ? w.url : null, w ? w.extract.slice(0,200) : null);
 
@@ -1035,10 +1292,18 @@ async function renderSpeciesPage(sci) {
       + '</p></div>';
   }
 
+  /* ── NEW: Voice card HTML ── */
+  var dawnPct = Math.round(dawnN/total*100);
+  var voiceText = buildVoiceText(name, sci, total, peakH, monC, dawnPct, nightN, southPct, total);
+  var voiceCardHtml = '<div class="voice-card">'
+    + '<div class="voice-card-label">🎙️ In its own words</div>'
+    + '<div class="voice-card-text">' + voiceText + '</div>'
+    + '</div>';
+
   var wowHtml = '<div class="wow-grid">'
     + '<div class="wow-card"><div class="wow-val">' + total.toLocaleString('en-IN') + '</div><div class="wow-label">Total detections</div></div>'
     + '<div class="wow-card"><div class="wow-val">' + daysSpan + '</div><div class="wow-label">Days in dataset</div></div>'
-    + '<div class="wow-card"><div class="wow-val">' + Math.round(dawnN/total*100) + '%</div><div class="wow-label">Dawn chorus %</div></div>'
+    + (dawnN > 0 ? '<div class="wow-card"><div class="wow-val">' + Math.round(dawnN/total*100) + '%</div><div class="wow-label">Dawn chorus %</div></div>' : '')
     + '<div class="wow-card"><div class="wow-val">' + (best*100).toFixed(0) + '%</div><div class="wow-label">Best confidence</div></div>'
     + (maxGap > 0 ? '<div class="wow-card"><div class="wow-val">' + maxGap + 'd</div><div class="wow-label">Longest silent gap</div></div>' : '')
     + (nightN > 0 ? '<div class="wow-card"><div class="wow-val">' + nightN + '</div><div class="wow-label">Night detections</div></div>' : '')
@@ -1087,6 +1352,7 @@ async function renderSpeciesPage(sci) {
 
     /* MAIN CONTENT */
     + '<div class="ep-section"><div class="ep-section-inner">'
+      + voiceCardHtml
       + wowHtml
       + '<div class="species-layout">'
 
@@ -1100,12 +1366,15 @@ async function renderSpeciesPage(sci) {
             + '<div class="fact-row"><span class="fact-label">Days in dataset</span><span class="fact-val">' + daysSpan + '</span></div>'
             + '<div class="fact-row"><span class="fact-label">First heard</span><span class="fact-val">' + fmtIST(first,{day:'numeric',month:'short',year:'numeric'}) + '</span></div>'
             + '<div class="fact-row"><span class="fact-label">Last heard</span><span class="fact-val">' + fmtIST(last,{day:'numeric',month:'short',year:'numeric'}) + '</span></div>'
-            + '<div class="fact-row"><span class="fact-label">Peak hour</span><span class="fact-val">' + String(peakH).padStart(2,'0') + ':00 IST</span></div>'
+            + '<div class="fact-row"><span class="fact-label">Peak hour</span><span class="fact-val">' + fmtHour12(peakH) + '</span></div>'
             + '<div class="fact-row"><span class="fact-label">Peak season</span><span class="fact-val">' + getSeasonLabel(peakM) + '</span></div>'
+            + '<div class="fact-row"><span class="fact-label">Phenology</span><span class="fact-val"><span class="phenology-pill ' + phenology.cls + '">' + phenology.label + '</span></span></div>'
             + '<div class="fact-row"><span class="fact-label">Active months</span><span class="fact-val" style="font-size:0.7rem;">' + (actMonths||'—') + '</span></div>'
-            + '<div class="fact-row"><span class="fact-label">Dawn chorus %</span><span class="fact-val">' + Math.round(dawnN/total*100) + '%</span></div>'
-            + '<div class="fact-row"><span class="fact-label">Night detections</span><span class="fact-val">' + nightN + '</span></div>'
-            + (maxGap > 1 ? '<div class="fact-row"><span class="fact-label">Longest silent gap</span><span class="fact-val">' + maxGap + ' days</span></div>' : '')
+            + (dawnN > 0 ? '<div class="fact-row"><span class="fact-label">Dawn chorus %</span><span class="fact-val">' + Math.round(dawnN/total*100) + '%</span></div>' : '')
+            + (nightN > 0 ? '<div class="fact-row"><span class="fact-label">Night detections</span><span class="fact-val">' + nightN + '</span></div>' : '')
+            + (maxGap > 1 ? '<div class="fact-row" title="Note: gaps may reflect sensor downtime, not absence."><span class="fact-label">Longest silent gap</span><span class="fact-val">' + maxGap + ' days</span></div>' : '')
+            + (trendText ? '<div class="trend-line"><span class="trend-arrow ' + trendCls + '">' + trendArrow + '</span><span>' + trendText + '</span></div>' : '')
+            + buildSoundLinksHtml(sci, name)
           + '</div>'
           /* Wikipedia */
           + wikiHtml
@@ -1154,6 +1423,17 @@ async function renderSpeciesPage(sci) {
             + '<div class="chart-sub">Most recent ' + Math.min(total,100) + ' of ' + total.toLocaleString('en-IN') + ' detections. 🌿 = south sensor (Baner Hill facing). ★ = first recorded this year.</div>'
             + '<div class="timeline">' + tlRows + '</div>'
           + '</div>'
+          /* ── NEW: Co-occurring birds ── */
+          + '<div class="chart-block">'
+            + '<h2 class="chart-title" style="font-family:var(--serif);font-size:1rem;color:var(--ep-green);margin-bottom:0.2rem;">Who does it sing with?</h2>'
+            + '<div class="chart-sub">Other species heard within 10 minutes of ' + name + ' on Baner Hill — the soundscape neighbours.</div>'
+            + '<div class="cooccur-grid" id="cooccur-grid">'
+              + '<div class="ep-skeleton" style="height:60px;border-radius:var(--radius-md);"></div>'
+              + '<div class="ep-skeleton" style="height:60px;border-radius:var(--radius-md);"></div>'
+              + '<div class="ep-skeleton" style="height:60px;border-radius:var(--radius-md);"></div>'
+              + '<div class="ep-skeleton" style="height:60px;border-radius:var(--radius-md);"></div>'
+            + '</div>'
+          + '</div>'
           /* Fun fact */
           + factHtml
           /* ── NEW: FAQ ── */
@@ -1186,7 +1466,7 @@ async function renderSpeciesPage(sci) {
     /* SEO context */
     + '<section class="seo-context" aria-label="About ' + name + ' in Baner">'
       + '<h2>' + name + ' (' + sci + ') in Baner, Pune</h2>'
-      + '<p>' + name + ' has been acoustically detected ' + total.toLocaleString('en-IN') + ' times in Baner, Pune by Earth Pulse, a citizen science environmental observatory on the edge of the Western Ghats and Sahyadri range. Detections span ' + daysSpan + ' days, with peak activity at ' + String(peakH).padStart(2,'0') + ':00 IST during the ' + getSeasonLabel(peakM) + ' season. ' + (avgTemp ? 'Average temperature at detection: ' + avgTemp + '°C. ' : '') + (avgAqi ? 'Average AQI at detection: ' + avgAqi + '. ' : '') + '</p>'
+      + '<p>' + name + ' has been acoustically detected ' + total.toLocaleString('en-IN') + ' times in Baner, Pune by Earth Pulse, a citizen science environmental observatory on the edge of the Western Ghats and Sahyadri range. ' + phenologySentence + ' Peak activity at ' + fmtHour12(peakH) + ' (IST). ' + (avgTemp ? 'Average temperature at detection: ' + avgTemp + '°C. ' : '') + (avgAqi ? 'Average AQI at detection: ' + avgAqi + '. ' : '') + '</p>'
       + '<p>Earth Pulse uses two Raspberry Pi sensor nodes — one east-facing and one south-facing toward Baner Hill — running Cornell Lab\'s BirdNET AI v2.4 to continuously record and identify birds by their calls. All data is open and updated in real time.</p>'
       + '<p>' + name + ' belongs to the ' + (getEcoTags(name,sci)[0].label) + ' ecological group. ' + (nightN > 0 ? 'It has been detected ' + nightN + ' times between 21:00 and 05:00 IST, confirming nocturnal activity at this location. ' : '') + 'Baner Hill, situated on the northern edge of the Pune urban area, is an ecotone between the Sahyadri Western Ghats and the Deccan plateau — supporting exceptional avian diversity for an urban site.</p>'
     + '</section>';
@@ -1222,12 +1502,29 @@ async function renderSpeciesPage(sci) {
   var cc = ge('confChart');
   if (cc && total > 0) {
     var confSorted = detections.slice().sort(function(a,b){return new Date(a.detected_at)-new Date(b.detected_at);});
-    var pts = confSorted.map(function(x,i){return {x:i, y:Math.round(x.confidence*100)};});
+    // Use timestamp (in days since first) for x-axis so spacing reflects actual time
+    var t0 = new Date(confSorted[0].detected_at).getTime();
+    var pts = confSorted.map(function(x){
+      var daysSince = (new Date(x.detected_at).getTime() - t0) / 86400000;
+      return {x: daysSince, y: Math.round(x.confidence*100)};
+    });
+    var maxX = pts.length ? pts[pts.length-1].x : 0;
     new Chart(cc, {
       type: 'scatter',
       data: {datasets:[{data:pts, backgroundColor:'rgba(191,155,123,0.55)', pointRadius:3}]},
-      options: {responsive:true, plugins:{legend:{display:false}}, scales:{
-        x:{title:{display:true,text:'Detection #',font:{size:10}}, ticks:{font:{size:9},color:'#6b6b6b'}, grid:{display:false}},
+      options: {responsive:true, plugins:{
+        legend:{display:false},
+        tooltip:{callbacks:{
+          label: function(ctx) { return ctx.parsed.y + '% confidence, day ' + Math.round(ctx.parsed.x); }
+        }}
+      }, scales:{
+        x:{
+          title:{display:true,text:'Days since first detection',font:{size:10}},
+          min: 0,
+          max: Math.max(1, maxX),
+          ticks:{font:{size:9},color:'#6b6b6b',callback:function(v){return Math.round(v);}},
+          grid:{display:false}
+        },
         y:{min:0, max:100, ticks:{callback:function(v){return v+'%';}, font:{size:10},color:'#6b6b6b'}, grid:{color:'rgba(0,0,0,0.05)'}}
       }}
     });
@@ -1241,6 +1538,9 @@ async function renderSpeciesPage(sci) {
   /* ── Related species ── */
   var currentCls = ecoTags.length ? ecoTags[0].cls : '';
   loadRelated(sci, currentCls);
+
+  /* ── NEW: Co-occurring birds ── */
+  loadCoOccurring(sci, name, detections);
 }
 
 /* ════════════════════════════════════════════════════════════════════════════
@@ -1271,6 +1571,125 @@ async function loadRelated(sci, currentCls) {
       });
     });
   } catch(e) {}
+}
+
+/* ════════════════════════════════════════════════════════════════════════════
+   NEW: CO-OCCURRING BIRDS
+   Find birds detected within ±10 minutes of this species' detections.
+   Algorithm:
+     1. For each detection of THIS species, build a 20-minute window.
+     2. Fetch detections in those windows (capped to ~50 most recent windows for perf).
+     3. Count unique species, exclude self, rank by co-occurrence count.
+     4. Show top 6.
+════════════════════════════════════════════════════════════════════════════ */
+async function loadCoOccurring(sci, name, ownDetections) {
+  var grid = ge('cooccur-grid');
+  if (!grid) return;
+
+  try {
+    // Use up to 50 most recent detections to build windows — keeps query bounded
+    var sample = ownDetections.slice(0, Math.min(50, ownDetections.length));
+    if (sample.length < 2) {
+      grid.innerHTML = '<div class="cooccur-empty">Not enough detections yet to find soundscape neighbours.</div>';
+      return;
+    }
+
+    // Build a combined OR filter of time ranges
+    // PostgREST: detected_at=gte.X&detected_at=lte.Y won't work for OR — use rpc-style or fetch by broad range
+    // Simpler: fetch by min/max detection range, then filter client-side
+    var times = sample.map(function(d){ return new Date(d.detected_at).getTime(); });
+    var minT = Math.min.apply(null, times) - 10*60*1000;
+    var maxT = Math.max.apply(null, times) + 10*60*1000;
+
+    // Cap to last 90 days regardless, to keep query small
+    var ninetyDaysAgo = Date.now() - 90*86400000;
+    if (minT < ninetyDaysAgo) minT = ninetyDaysAgo;
+
+    var minIso = new Date(minT).toISOString();
+    var maxIso = new Date(maxT).toISOString();
+
+    var url = '/rest/v1/bird_detections?select=species_common,species_scientific,detected_at'
+      + '&detected_at=gte.' + encodeURIComponent(minIso)
+      + '&detected_at=lte.' + encodeURIComponent(maxIso)
+      + '&species_scientific=neq.' + encodeURIComponent(sci)
+      + '&order=detected_at.desc';
+
+    var nearby = await fetchAll(url, 1000);
+    if (!Array.isArray(nearby) || !nearby.length) {
+      grid.innerHTML = '<div class="cooccur-empty">No co-occurring species detected yet.</div>';
+      return;
+    }
+
+    // Build sorted timestamp array of own detections (within last 90 days)
+    var ownTimes = sample
+      .map(function(d){ return new Date(d.detected_at).getTime(); })
+      .filter(function(t){ return t >= ninetyDaysAgo; })
+      .sort(function(a,b){ return a - b; });
+
+    if (!ownTimes.length) {
+      grid.innerHTML = '<div class="cooccur-empty">No recent detections to compare.</div>';
+      return;
+    }
+
+    // For each nearby detection, check if any own time is within ±10min
+    // Use binary search for performance
+    var WINDOW = 10*60*1000;
+    function inWindow(t) {
+      // Binary search for closest own time
+      var lo = 0, hi = ownTimes.length - 1;
+      while (lo <= hi) {
+        var mid = (lo + hi) >> 1;
+        var diff = t - ownTimes[mid];
+        if (Math.abs(diff) <= WINDOW) return true;
+        if (diff > 0) lo = mid + 1; else hi = mid - 1;
+      }
+      // Also check neighbours after loop exits
+      if (lo < ownTimes.length && Math.abs(t - ownTimes[lo]) <= WINDOW) return true;
+      if (hi >= 0 && Math.abs(t - ownTimes[hi]) <= WINDOW) return true;
+      return false;
+    }
+
+    var coCount = {};
+    nearby.forEach(function(d){
+      var t = new Date(d.detected_at).getTime();
+      if (!inWindow(t)) return;
+      var key = d.species_scientific;
+      if (!coCount[key]) coCount[key] = {sci:key, common:d.species_common, count:0};
+      coCount[key].count++;
+    });
+
+    var ranked = Object.keys(coCount)
+      .map(function(k){return coCount[k];})
+      .sort(function(a,b){return b.count - a.count;})
+      .slice(0, 6);
+
+    if (!ranked.length) {
+      grid.innerHTML = '<div class="cooccur-empty">'+name+' tends to call alone — no consistent soundscape neighbours found within the same 20-minute windows.</div>';
+      return;
+    }
+
+    grid.innerHTML = ranked.map(function(s, i){
+      return '<a class="cooccur-card" href="species.html?bird=' + s.sci.replace(/ /g,'_') + '" aria-label="' + s.common + ' — heard ' + s.count + ' times near ' + name + '">'
+        + '<div class="cooccur-thumb" id="cot-' + i + '">🦜</div>'
+        + '<div class="cooccur-info">'
+        + '<div class="cooccur-name">' + s.common + '</div>'
+        + '<div class="cooccur-count">' + s.count + ' co-detection' + (s.count!==1?'s':'') + '</div>'
+        + '</div>'
+        + '</a>';
+    }).join('');
+
+    // Lazy-load thumbnails
+    ranked.forEach(function(s, i){
+      fetchWiki(s.sci).then(function(w){
+        var el = ge('cot-' + i);
+        if (el && w && w.thumb) {
+          el.innerHTML = '<img src="' + w.thumb + '" alt="' + s.common + '" loading="lazy">';
+        }
+      });
+    });
+  } catch(e) {
+    grid.innerHTML = '<div class="cooccur-empty">Could not load co-occurring species.</div>';
+  }
 }
 </script>
 
