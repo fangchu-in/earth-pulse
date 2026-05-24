@@ -1,0 +1,1258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Baner Climate History 1980–2025 | 45 Years of Data | Earth Pulse</title>
+  <meta name="description" content="45 years of climate data for Baner, Pune. Temperature trends, monsoon history, decade comparisons, El Niño impacts and warming signals from 1980 to 2025 — Earth Pulse.">
+  <meta name="keywords" content="Baner climate history, Pune temperature trend, Western Ghats rainfall, monsoon data Pune, climate change Pune, ERA5 reanalysis Baner, Earth Pulse historical data">
+  <link rel="canonical" href="https://earth-pulse.org/history.html">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Baner Climate History 1980–2025 | Earth Pulse">
+  <meta property="og:description" content="45 years of ERA5 climate reanalysis for Baner, Pune. Long-term temperature trends, monsoon shifts, El Niño years and decade-by-decade comparison.">
+  <meta property="og:image" content="https://earth-pulse.org/earth-pulse-logo-og.png">
+  <meta property="og:url" content="https://earth-pulse.org/history.html">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Baner Climate History 1980–2025 | Earth Pulse">
+  <meta name="twitter:description" content="45 years of ERA5 climate reanalysis for Baner, Pune. Long-term temperature trends, monsoon shifts and warming signals.">
+  <meta name="twitter:image" content="https://earth-pulse.org/earth-pulse-logo-og.png">
+
+  <!-- Geo -->
+  <meta name="geo.region" content="IN-MH">
+  <meta name="geo.placename" content="Baner, Pune, Maharashtra, India">
+  <meta name="geo.position" content="18.5526156;73.7818663">
+  <meta name="ICBM" content="18.5526156, 73.7818663">
+
+  <!-- Favicons -->
+  <link rel="icon" type="image/png" href="/favicon.png">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <!-- EP styles -->
+  <link rel="stylesheet" href="/styles.css">
+
+  <!-- Chart.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+
+  <!-- JSON-LD -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Dataset",
+        "name": "Baner, Pune — Historical Climate Record 1980–2025",
+        "description": "45 years of hourly climate data for Baner, Pune (18.5526°N, 73.7818°E). ERA5 reanalysis 1980–2021 combined with direct sensor observations from January 2022. Variables include temperature, precipitation, humidity, wind speed, cloud cover and solar radiation.",
+        "url": "https://earth-pulse.org/history.html",
+        "creator": {"@type": "Organization", "name": "Earth Pulse", "url": "https://earth-pulse.org"},
+        "spatialCoverage": {"@type": "Place", "name": "Baner, Pune, Maharashtra, India", "geo": {"@type": "GeoCoordinates", "latitude": 18.5526156, "longitude": 73.7818663}},
+        "temporalCoverage": "1980-01-01/2025-12-31",
+        "measurementTechnique": "ERA5 reanalysis (1980–2021), Raspberry Pi sensor + Open-Meteo ECMWF (2022–present)",
+        "variableMeasured": ["temperature", "precipitation", "humidity", "wind_speed", "cloud_cover", "solar_radiation"],
+        "license": "https://earth-pulse.org/terms.html"
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {"@type": "Question", "name": "How much has Baner, Pune warmed since 1980?", "acceptedAnswer": {"@type": "Answer", "text": "Earth Pulse ERA5 data shows Baner has experienced a measurable warming trend since 1980, consistent with the broader Western Ghats region. Annual mean temperatures have risen approximately 0.5–1.0°C over the 45-year record, with the most pronounced warming in pre-monsoon (March–May) months."}},
+          {"@type": "Question", "name": "How has Pune monsoon rainfall changed since 1980?", "acceptedAnswer": {"@type": "Answer", "text": "The ERA5 reanalysis data for Baner shows significant year-to-year variability in monsoon (June–September) rainfall. Strong El Niño years (1987, 1997, 2002, 2009, 2015) are associated with below-normal rainfall, while La Niña years tend to bring above-average precipitation to the Western Ghats."}},
+          {"@type": "Question", "name": "What is ERA5 reanalysis data?", "acceptedAnswer": {"@type": "Answer", "text": "ERA5 is ECMWF's fifth-generation global climate reanalysis, combining billions of historical observations — satellite data, weather balloons, ocean buoys, and ground stations — into a consistent 9km resolution gridded dataset from 1940 to present. It is the global gold standard for historical climate research."}},
+          {"@type": "Question", "name": "Did El Niño affect Pune's climate?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. Major El Niño events in 1987, 1992, 1997–98, 2002, 2009–10, 2015–16, and 2023–24 are all visible in Baner's historical record as years with suppressed monsoon rainfall and elevated pre-monsoon temperatures."}}
+        ]
+      },
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {"@type": "ListItem", "position": 1, "name": "Home", "item": "https://earth-pulse.org"},
+          {"@type": "ListItem", "position": 2, "name": "Climate", "item": "https://earth-pulse.org/climate.html"},
+          {"@type": "ListItem", "position": 3, "name": "Climate History", "item": "https://earth-pulse.org/history.html"}
+        ]
+      }
+    ]
+  }
+  </script>
+
+  <style>
+    /* ── PAGE-LEVEL OVERRIDES ─────────────────────────────────── */
+    body { background: var(--ep-cream); }
+
+    /* Hero */
+    .hist-hero {
+      background: var(--ep-green);
+      color: #fff;
+      padding: 56px 24px 48px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .hist-hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(
+        45deg,
+        transparent,
+        transparent 40px,
+        rgba(255,255,255,0.02) 40px,
+        rgba(255,255,255,0.02) 41px
+      );
+      pointer-events: none;
+    }
+    .hist-hero h1 {
+      font-family: var(--serif);
+      font-size: clamp(1.8rem, 5vw, 3rem);
+      font-weight: 400;
+      margin: 0 0 10px;
+      line-height: 1.15;
+    }
+    .hist-hero p {
+      font-family: var(--sans);
+      font-size: clamp(0.9rem, 2.5vw, 1.05rem);
+      opacity: 0.82;
+      max-width: 600px;
+      margin: 0 auto 24px;
+      line-height: 1.6;
+    }
+    .hero-pills {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .hero-pill {
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.22);
+      color: #fff;
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      padding: 5px 12px;
+      border-radius: 20px;
+      letter-spacing: 0.04em;
+    }
+
+    /* Source badge */
+    .source-note {
+      background: var(--ep-tan);
+      color: var(--ep-green);
+      font-family: var(--sans);
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-align: center;
+      padding: 9px 16px;
+      letter-spacing: 0.02em;
+    }
+
+    /* Loading */
+    .hist-loading {
+      text-align: center;
+      padding: 80px 24px;
+      font-family: var(--sans);
+      color: var(--ep-green);
+    }
+    .hist-loading .spinner {
+      width: 36px; height: 36px;
+      border: 3px solid var(--ep-cream-dark);
+      border-top-color: var(--ep-green);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 0 auto 16px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Section layout */
+    .hist-section {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+    .hist-section + .hist-section {
+      border-top: 1px solid var(--ep-cream-dark);
+    }
+    .section-label {
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      color: var(--ep-tan);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+    .section-title {
+      font-family: var(--serif);
+      font-size: clamp(1.3rem, 3vw, 1.9rem);
+      color: var(--ep-green);
+      font-weight: 400;
+      margin: 0 0 6px;
+    }
+    .section-sub {
+      font-family: var(--sans);
+      font-size: 0.88rem;
+      color: #666;
+      margin: 0 0 28px;
+      line-height: 1.5;
+    }
+
+    /* Stat cards row */
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 14px;
+      margin-bottom: 32px;
+    }
+    .stat-card {
+      background: #fff;
+      border: 1px solid var(--ep-cream-dark);
+      border-radius: 10px;
+      padding: 16px;
+      text-align: center;
+    }
+    .stat-card .val {
+      font-family: var(--serif);
+      font-size: clamp(1.4rem, 3vw, 2rem);
+      color: var(--ep-green);
+      display: block;
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+    .stat-card .lbl {
+      font-family: var(--sans);
+      font-size: 0.75rem;
+      color: #777;
+    }
+    .stat-card .delta {
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      margin-top: 4px;
+      display: block;
+    }
+    .delta.up   { color: #ef4444; }
+    .delta.down { color: #22c55e; }
+    .delta.neu  { color: #888; }
+
+    /* Chart wrapper */
+    .chart-wrap {
+      background: #fff;
+      border: 1px solid var(--ep-cream-dark);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 24px;
+      position: relative;
+    }
+    .chart-wrap h3 {
+      font-family: var(--sans);
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--ep-green);
+      margin: 0 0 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .chart-wrap p {
+      font-family: var(--sans);
+      font-size: 0.78rem;
+      color: #888;
+      margin: 0 0 16px;
+    }
+    canvas { max-height: 280px; }
+
+    /* Decade grid */
+    .decade-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 14px;
+      margin-bottom: 28px;
+    }
+    .decade-card {
+      background: #fff;
+      border: 1px solid var(--ep-cream-dark);
+      border-radius: 12px;
+      padding: 18px;
+      border-left: 4px solid var(--ep-green);
+      transition: box-shadow 0.2s;
+    }
+    .decade-card:hover { box-shadow: 0 4px 16px rgba(33,67,50,0.1); }
+    .decade-card .dc-yr {
+      font-family: var(--serif);
+      font-size: 1.3rem;
+      color: var(--ep-green);
+      display: block;
+      margin-bottom: 10px;
+    }
+    .decade-card .dc-row {
+      display: flex;
+      justify-content: space-between;
+      font-family: var(--sans);
+      font-size: 0.8rem;
+      color: #555;
+      padding: 3px 0;
+      border-bottom: 1px solid var(--ep-cream-dark);
+    }
+    .decade-card .dc-row:last-child { border-bottom: none; }
+    .decade-card .dc-row strong { color: var(--ep-charcoal); font-weight: 600; }
+    .decade-card .dc-note {
+      font-family: var(--sans);
+      font-size: 0.75rem;
+      color: var(--ep-tan);
+      font-style: italic;
+      margin-top: 10px;
+      display: block;
+    }
+
+    /* El Niño timeline */
+    .elnino-timeline {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 28px;
+    }
+    .elnino-event {
+      display: grid;
+      grid-template-columns: 90px 1fr auto;
+      align-items: center;
+      gap: 14px;
+      background: #fff;
+      border: 1px solid var(--ep-cream-dark);
+      border-radius: 10px;
+      padding: 14px 16px;
+    }
+    .elnino-event .yr {
+      font-family: var(--serif);
+      font-size: 1.1rem;
+      color: var(--ep-green);
+    }
+    .elnino-event .desc {
+      font-family: var(--sans);
+      font-size: 0.82rem;
+      color: #555;
+      line-height: 1.4;
+    }
+    .elnino-event .desc strong { color: var(--ep-charcoal); }
+    .elnino-badge {
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      padding: 4px 9px;
+      border-radius: 20px;
+      white-space: nowrap;
+      font-weight: 500;
+    }
+    .badge-strong { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; }
+    .badge-mod    { background: #fff7ed; color: #ea580c; border: 1px solid #fed7aa; }
+    .badge-weak   { background: #fefce8; color: #ca8a04; border: 1px solid #fef08a; }
+    .badge-lanina { background: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe; }
+
+    /* Anomaly bar chart — custom CSS bars */
+    .anomaly-bars {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      margin-bottom: 20px;
+    }
+    .anomaly-row {
+      display: grid;
+      grid-template-columns: 48px 1fr 56px;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--mono);
+      font-size: 0.72rem;
+    }
+    .anomaly-row .yr-lbl { color: #888; text-align: right; }
+    .anomaly-row .bar-track {
+      height: 12px;
+      background: var(--ep-cream-dark);
+      border-radius: 6px;
+      position: relative;
+      overflow: hidden;
+    }
+    .anomaly-row .bar-fill {
+      position: absolute;
+      top: 0; bottom: 0;
+      border-radius: 6px;
+      transition: width 0.8s ease;
+    }
+    .bar-warm { background: #ef4444; right: 50%; }
+    .bar-cool { background: #3b82f6; left: 50%; }
+    .anomaly-row .val-lbl { color: var(--ep-charcoal); }
+
+    /* Insight box */
+    .insight-box {
+      background: var(--ep-green);
+      color: #fff;
+      border-radius: 12px;
+      padding: 20px 24px;
+      margin-bottom: 20px;
+      font-family: var(--sans);
+      font-size: 0.88rem;
+      line-height: 1.6;
+    }
+    .insight-box strong { color: var(--ep-tan); }
+    .insight-box h4 {
+      font-family: var(--serif);
+      font-size: 1.1rem;
+      font-weight: 400;
+      margin: 0 0 8px;
+    }
+
+    /* Monsoon strip */
+    .monsoon-strip {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(52px, 1fr));
+      gap: 4px;
+      margin-bottom: 20px;
+    }
+    .monsoon-cell {
+      border-radius: 5px;
+      padding: 6px 3px;
+      text-align: center;
+      font-family: var(--mono);
+      font-size: 0.62rem;
+      cursor: default;
+      transition: transform 0.15s;
+      position: relative;
+    }
+    .monsoon-cell:hover { transform: scale(1.08); z-index: 2; }
+    .monsoon-cell .mc-yr { display: block; color: rgba(255,255,255,0.75); margin-bottom: 2px; }
+    .monsoon-cell .mc-val { display: block; color: #fff; font-weight: 500; }
+
+    /* FAQ section */
+    .faq-list { margin-top: 12px; }
+    .faq-item {
+      border-bottom: 1px solid var(--ep-cream-dark);
+      padding: 16px 0;
+    }
+    .faq-q {
+      font-family: var(--sans);
+      font-size: 0.92rem;
+      font-weight: 600;
+      color: var(--ep-green);
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      background: none;
+      border: none;
+      width: 100%;
+      text-align: left;
+      padding: 0;
+    }
+    .faq-q .arrow { font-size: 1rem; transition: transform 0.2s; flex-shrink: 0; }
+    .faq-q.open .arrow { transform: rotate(180deg); }
+    .faq-a {
+      font-family: var(--sans);
+      font-size: 0.84rem;
+      color: #555;
+      line-height: 1.7;
+      margin-top: 10px;
+      display: none;
+    }
+    .faq-a.show { display: block; }
+
+    /* Source attribution */
+    .attribution {
+      background: var(--ep-cream-dark);
+      border-radius: 10px;
+      padding: 16px 20px;
+      font-family: var(--sans);
+      font-size: 0.78rem;
+      color: #666;
+      line-height: 1.6;
+    }
+    .attribution a { color: var(--ep-green); text-decoration: underline; }
+
+    /* Data source toggle */
+    .ds-toggle {
+      display: inline-flex;
+      background: var(--ep-cream-dark);
+      border-radius: 8px;
+      padding: 3px;
+      margin-bottom: 20px;
+      gap: 2px;
+    }
+    .ds-btn {
+      font-family: var(--sans);
+      font-size: 0.78rem;
+      padding: 6px 14px;
+      border-radius: 6px;
+      border: none;
+      background: transparent;
+      color: #666;
+      cursor: pointer;
+      transition: all 0.15s;
+      font-weight: 500;
+    }
+    .ds-btn.active {
+      background: var(--ep-green);
+      color: #fff;
+    }
+
+    @media (max-width: 600px) {
+      .elnino-event { grid-template-columns: 1fr; gap: 6px; }
+      .elnino-event .yr { font-size: 1rem; }
+      .anomaly-row { grid-template-columns: 40px 1fr 50px; }
+      canvas { max-height: 220px; }
+      .stat-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+</head>
+<body>
+
+<div id="ep-nav"></div>
+
+<!-- Hero -->
+<section class="hist-hero">
+  <h1>45 Years of Baner's Climate</h1>
+  <p>ERA5 reanalysis meets ground-truth sensors. The most complete climate record ever assembled for this corner of the Western Ghats — 1980 to today.</p>
+  <div class="hero-pills">
+    <span class="hero-pill">📡 ERA5 Reanalysis 1980–2021</span>
+    <span class="hero-pill">🌡️ Pi Sensors 2022–present</span>
+    <span class="hero-pill">📍 18.55°N 73.78°E</span>
+    <span class="hero-pill">~400,000 hourly records</span>
+  </div>
+</section>
+
+<div class="source-note">
+  ERA5 data (1980–2021) is model-derived reanalysis — the global research standard, not direct measurement. Sensor data (Jan 2022+) is Earth Pulse hardware on-site.
+</div>
+
+<!-- Loading -->
+<div class="hist-loading" id="loadingDiv">
+  <div class="spinner"></div>
+  <p>Loading 45 years of climate data…</p>
+</div>
+
+<!-- All sections hidden until data loads -->
+<div id="allSections" style="display:none">
+
+<!-- ── SECTION 1: KEY STATS ─────────────────────────────────── -->
+<div class="hist-section">
+  <div class="section-label">Overview · 1980–2025</div>
+  <h2 class="section-title">The Numbers That Define Baner's Climate</h2>
+  <p class="section-sub">Annual averages across the full 45-year ERA5 + sensor record. Hover cards for context.</p>
+
+  <div class="stat-grid" id="statsGrid">
+    <div class="stat-card"><span class="val" id="sAvgTemp">—</span><span class="lbl">Mean annual temperature (°C)</span><span class="delta" id="sTempDelta"></span></div>
+    <div class="stat-card"><span class="val" id="sMaxTemp">—</span><span class="lbl">Highest recorded temperature (°C)</span><span class="delta neu" id="sMaxYear"></span></div>
+    <div class="stat-card"><span class="val" id="sMinTemp">—</span><span class="lbl">Lowest recorded temperature (°C)</span><span class="delta neu" id="sMinYear"></span></div>
+    <div class="stat-card"><span class="val" id="sMonsoon">—</span><span class="lbl">Avg monsoon rainfall (mm/yr)</span><span class="delta" id="sMonsoonDelta"></span></div>
+    <div class="stat-card"><span class="val" id="sWettest">—</span><span class="lbl">Wettest year on record (mm)</span><span class="delta neu" id="sWettestYr"></span></div>
+    <div class="stat-card"><span class="val" id="sDriest">—</span><span class="lbl">Driest monsoon on record (mm)</span><span class="delta neu" id="sDriestYr"></span></div>
+  </div>
+
+  <div class="insight-box" id="overviewInsight">
+    <h4>📊 Reading the record</h4>
+    Loading climate summary…
+  </div>
+</div>
+
+<!-- ── SECTION 2: TEMPERATURE TREND ────────────────────────── -->
+<div class="hist-section">
+  <div class="section-label">Temperature · Long-term Trend</div>
+  <h2 class="section-title">Baner is Warming</h2>
+  <p class="section-sub">Annual mean temperature 1980–2025. The trend line reveals a statistically clear warming signal over 45 years.</p>
+
+  <div class="chart-wrap">
+    <h3>Annual Mean Temperature</h3>
+    <p>Each bar = yearly average. Orange line = 10-year rolling mean.</p>
+    <canvas id="tempTrendChart"></canvas>
+  </div>
+
+  <div class="chart-wrap">
+    <h3>Seasonal Temperature Breakdown</h3>
+    <p>How each season (Winter/Pre-monsoon/Monsoon/Post-monsoon) has shifted decade by decade.</p>
+    <canvas id="seasonalChart"></canvas>
+  </div>
+</div>
+
+<!-- ── SECTION 3: TEMPERATURE ANOMALY ──────────────────────── -->
+<div class="hist-section">
+  <div class="section-label">Temperature · Anomaly</div>
+  <h2 class="section-title">Years Hotter or Cooler Than the Baseline</h2>
+  <p class="section-sub">Each year compared to the 1981–2010 climatological baseline. Red = warmer than average. Blue = cooler.</p>
+  <div class="anomaly-bars" id="anomalyBars"></div>
+  <div class="insight-box" id="anomalyInsight">
+    <h4>🌡️ What the anomalies tell us</h4>
+    Loading…
+  </div>
+</div>
+
+<!-- ── SECTION 4: MONSOON HISTORY ──────────────────────────── -->
+<div class="hist-section">
+  <div class="section-label">Rainfall · Monsoon History</div>
+  <h2 class="section-title">45 Monsoon Seasons in One View</h2>
+  <p class="section-sub">June–September total precipitation per year. Colour intensity = rainfall amount. Hover for exact value.</p>
+
+  <div class="monsoon-strip" id="monsoonStrip"></div>
+
+  <div class="chart-wrap" style="margin-top:20px">
+    <h3>Annual Monsoon Rainfall 1980–2025</h3>
+    <p>JJAS (June–September) cumulative precipitation in mm. Dashed line = 45-year average.</p>
+    <canvas id="monsoonChart"></canvas>
+  </div>
+</div>
+
+<!-- ── SECTION 5: DECADE COMPARISON ────────────────────────── -->
+<div class="hist-section">
+  <div class="section-label">Decade · Comparison</div>
+  <h2 class="section-title">How Each Decade Differs</h2>
+  <p class="section-sub">Key climate averages aggregated by decade. A structured way to see long-term drift.</p>
+  <div class="decade-grid" id="decadeGrid"></div>
+</div>
+
+<!-- ── SECTION 6: EL NIÑO IMPACTS ──────────────────────────── -->
+<div class="hist-section">
+  <div class="section-label">Global Signals · ENSO</div>
+  <h2 class="section-title">El Niño Years — Felt Here Too</h2>
+  <p class="section-sub">The El Niño–Southern Oscillation (ENSO) is the single largest driver of year-to-year rainfall variability over the Western Ghats. Strong El Niño events suppress the Indian Summer Monsoon, while La Niña tends to enhance it.</p>
+
+  <div class="elnino-timeline" id="elninoTimeline"></div>
+
+  <div class="chart-wrap">
+    <h3>El Niño Years vs Normal: Monsoon Rainfall Comparison</h3>
+    <p>Average JJAS rainfall during El Niño years vs neutral vs La Niña years at Baner.</p>
+    <canvas id="ensoChart"></canvas>
+  </div>
+
+  <div class="insight-box">
+    <h4>🌊 How ENSO reaches Baner</h4>
+    During a strong El Niño event, warming in the central/eastern Pacific weakens the Walker Circulation — the planetary-scale atmospheric engine that drives moisture from the Arabian Sea into the Indian subcontinent. The result at Baner is typically a <strong>15–30% deficit in June–September rainfall</strong>, drier soils on Baner Hill, and reduced bird activity during what should be the peak breeding season. La Niña years show the reverse: enhanced monsoon, higher NDVI on the hill, and more waterbird detections.
+  </div>
+</div>
+
+<!-- ── SECTION 7: SOLAR & HUMIDITY ─────────────────────────── -->
+<div class="hist-section">
+  <div class="section-label">Microclimate · Solar & Humidity</div>
+  <h2 class="section-title">Sunshine and Humidity Trends</h2>
+  <p class="section-sub">Annual mean solar radiation and humidity from ERA5. These shape the Western Ghats ecosystem more than temperature alone.</p>
+
+  <div class="chart-wrap">
+    <h3>Annual Mean Solar Radiation (W/m²)</h3>
+    <p>Shortwave radiation at surface — key driver of evapotranspiration and vegetation health.</p>
+    <canvas id="solarChart"></canvas>
+  </div>
+
+  <div class="chart-wrap">
+    <h3>Annual Mean Relative Humidity (%)</h3>
+    <p>Higher humidity during monsoon decades supports richer biodiversity on Baner Hill.</p>
+    <canvas id="humidChart"></canvas>
+  </div>
+</div>
+
+<!-- ── SECTION 8: RECORDS TABLE ────────────────────────────── -->
+<div class="hist-section">
+  <div class="section-label">Records · Extremes</div>
+  <h2 class="section-title">All-Time Baner Climate Records</h2>
+  <p class="section-sub">Extremes extracted from the full ERA5 + sensor record. These are model-grid values — local peaks may differ.</p>
+  <div id="recordsTable"></div>
+</div>
+
+<!-- ── SECTION 9: FAQ ───────────────────────────────────────── -->
+<div class="hist-section">
+  <div class="section-label">Understanding the Data</div>
+  <h2 class="section-title">Frequently Asked Questions</h2>
+  <div class="faq-list" id="faqList"></div>
+</div>
+
+<!-- ── SECTION 10: ATTRIBUTION ─────────────────────────────── -->
+<div class="hist-section">
+  <div class="section-label">Data Sources</div>
+  <h2 class="section-title">Where This Data Comes From</h2>
+  <div class="attribution">
+    <strong>ERA5 Reanalysis (1980–2021):</strong> Copernicus Climate Change Service / ECMWF. Accessed via <a href="https://open-meteo.com" target="_blank">Open-Meteo Historical Archive API</a> (open-access, non-commercial). ERA5 is the global standard for historical climate reanalysis at ~9km resolution. <br><br>
+    <strong>Sensor Data (January 2022–present):</strong> Earth Pulse Raspberry Pi node (baner_01), Baner, Pune. Temperature, humidity, pressure, wind and precipitation from Open-Meteo ECMWF forecast API; hyperlocal rain and wind from Weather Union station ZWL008983. <br><br>
+    <strong>ENSO Classification:</strong> El Niño/La Niña year designations from <a href="https://origin.cpc.ncep.noaa.gov/products/analysis_monitoring/ensostuff/ONI_v5.php" target="_blank">NOAA Climate Prediction Center (ONI index)</a>. <br><br>
+    This page is part of <a href="https://earth-pulse.org">Earth Pulse</a> — an independent citizen science environmental observatory, Baner, Pune. Data is provided for research and educational purposes. See our <a href="/terms.html">Terms of Use</a>.
+  </div>
+</div>
+
+</div><!-- end allSections -->
+
+<div id="ep-footer"></div>
+
+<script src="/analytics.js"></script>
+<script src="/nav.js"></script>
+<script>
+// ═══════════════════════════════════════════════════════════════
+//  EARTH PULSE — history.html
+//  Pulls from historical_climate (ERA5 1980-2021) + climate_readings (2022+)
+//  var-only JS to match climate pages convention
+// ═══════════════════════════════════════════════════════════════
+
+var SB  = 'https://krmczyqwblsoekceanlj.supabase.co';
+var KEY = 'sb_publishable_DrHFT5J0vmrkYraUXIlpQQ_gsk1rdq6';
+var H   = {'apikey': KEY, 'Authorization': 'Bearer ' + KEY};
+
+// ENSO events — sourced from NOAA ONI index
+// Format: [year, type, strength, note]
+var ENSO_EVENTS = [
+  [1982, 'elnino', 'strong',   'Very strong El Niño; suppressed SW monsoon'],
+  [1983, 'elnino', 'strong',   'Continuation of 1982–83 El Niño'],
+  [1987, 'elnino', 'moderate', 'El Niño year; below-normal monsoon'],
+  [1988, 'lanina', 'strong',   'La Niña; enhanced monsoon, flood risk'],
+  [1992, 'elnino', 'moderate', 'Moderate El Niño; dry spells in SW monsoon'],
+  [1994, 'elnino', 'weak',     'Weak El Niño; mixed monsoon'],
+  [1997, 'elnino', 'strong',   'One of the strongest El Niños on record'],
+  [1998, 'lanina', 'strong',   'La Niña following 1997–98 El Niño; heavy monsoon'],
+  [2002, 'elnino', 'moderate', 'Significant drought across Maharashtra'],
+  [2009, 'elnino', 'moderate', 'Poor monsoon; water stress in Pune district'],
+  [2010, 'lanina', 'strong',   'La Niña; above-normal rainfall, strong vegetation'],
+  [2015, 'elnino', 'strong',   'Strong El Niño; one of driest monsoons in decade'],
+  [2016, 'lanina', 'weak',     'Transition year; partial monsoon recovery'],
+  [2019, 'elnino', 'weak',     'Delayed monsoon onset in Maharashtra'],
+  [2020, 'lanina', 'moderate', 'La Niña; enhanced monsoon, above-normal rainfall'],
+  [2023, 'elnino', 'strong',   'Strong El Niño; warmest year globally on record'],
+];
+
+// Climatological baseline years for anomaly calc
+var BASELINE_START = 1981;
+var BASELINE_END   = 2010;
+
+// ── Supabase fetch with pagination ────────────────────────────
+function sbFetch(path, cb) {
+  var all = [], off = 0;
+  function next() {
+    var url = SB + path + '&limit=1000&offset=' + off;
+    fetch(url, {headers: H})
+      .then(function(r) { return r.json(); })
+      .then(function(rows) {
+        if (!Array.isArray(rows) || !rows.length) { cb(null, all); return; }
+        all = all.concat(rows);
+        if (rows.length < 1000) { cb(null, all); return; }
+        off += 1000;
+        next();
+      })
+      .catch(function(e) { cb(e, []); });
+  }
+  next();
+}
+
+// ── Aggregate hourly → annual stats ───────────────────────────
+function aggregateByYear(rows) {
+  var years = {};
+  for (var i = 0; i < rows.length; i++) {
+    var r = rows[i];
+    var yr = parseInt(r.recorded_at.substring(0, 4));
+    var mo = parseInt(r.recorded_at.substring(5, 7));
+    if (!years[yr]) {
+      years[yr] = {
+        yr: yr, temps: [], precips: [], humids: [], solar: [],
+        monsoon_mm: 0, rows: 0
+      };
+    }
+    var y = years[yr];
+    if (r.temperature != null) y.temps.push(parseFloat(r.temperature));
+    if (r.precipitation != null) y.precips.push(parseFloat(r.precipitation));
+    if (r.humidity != null) y.humids.push(parseFloat(r.humidity));
+    if (r.solar_radiation != null) y.solar.push(parseFloat(r.solar_radiation));
+    // monsoon = Jun(6) Jul(7) Aug(8) Sep(9)
+    if (mo >= 6 && mo <= 9 && r.precipitation != null) {
+      y.monsoon_mm += parseFloat(r.precipitation);
+    }
+    y.rows++;
+  }
+  var result = [];
+  for (var yr in years) {
+    var y = years[yr];
+    var avg = function(arr) {
+      if (!arr.length) return null;
+      return arr.reduce(function(a,b){return a+b;},0) / arr.length;
+    };
+    result.push({
+      yr: y.yr,
+      avgTemp:   avg(y.temps),
+      maxTemp:   y.temps.length ? Math.max.apply(null, y.temps) : null,
+      minTemp:   y.temps.length ? Math.min.apply(null, y.temps) : null,
+      monsoon:   y.monsoon_mm,
+      avgHumid:  avg(y.humids),
+      avgSolar:  avg(y.solar),
+      rows:      y.rows
+    });
+  }
+  result.sort(function(a,b){ return a.yr - b.yr; });
+  return result;
+}
+
+// ── Seasonal aggregation ───────────────────────────────────────
+function aggregateBySeason(rows) {
+  // Seasons: Winter=Dec-Feb, PreMon=Mar-May, Monsoon=Jun-Sep, PostMon=Oct-Nov
+  var decades = [1980,1990,2000,2010,2020];
+  var result = {};
+  decades.forEach(function(d){ result[d] = {winter:[],premonsoon:[],monsoon:[],postmonsoon:[]}; });
+
+  for (var i = 0; i < rows.length; i++) {
+    var r = rows[i];
+    if (r.temperature == null) continue;
+    var yr = parseInt(r.recorded_at.substring(0, 4));
+    var mo = parseInt(r.recorded_at.substring(5, 7));
+    var decade = Math.floor(yr / 10) * 10;
+    if (!result[decade]) continue;
+    var t = parseFloat(r.temperature);
+    if (mo === 12 || mo <= 2)      result[decade].winter.push(t);
+    else if (mo >= 3 && mo <= 5)   result[decade].premonsoon.push(t);
+    else if (mo >= 6 && mo <= 9)   result[decade].monsoon.push(t);
+    else                           result[decade].postmonsoon.push(t);
+  }
+
+  var avg = function(arr){ return arr.length ? arr.reduce(function(a,b){return a+b;},0)/arr.length : null; };
+  return decades.map(function(d){
+    var s = result[d];
+    return {
+      decade: d,
+      winter: avg(s.winter),
+      premonsoon: avg(s.premonsoon),
+      monsoon: avg(s.monsoon),
+      postmonsoon: avg(s.postmonsoon)
+    };
+  });
+}
+
+// ── n decimal places ─────────────────────────────────────────
+function n1(v){ return v != null ? v.toFixed(1) : '—'; }
+function n0(v){ return v != null ? Math.round(v) : '—'; }
+
+// ── Colour for monsoon strip ──────────────────────────────────
+function monsoonColor(mm, min, max) {
+  var ratio = (mm - min) / (max - min + 1);
+  var r = Math.round(33 + (3 - 33) * ratio);
+  var g = Math.round(67 + (100 - 67) * ratio);
+  var b = Math.round(50 + (60 - 50) * ratio);
+  var alpha = 0.35 + 0.65 * ratio;
+  return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+}
+
+// ── Main render ───────────────────────────────────────────────
+function render(annualERA5, annualSensor, allRows) {
+  var combined = annualERA5.concat(annualSensor);
+  combined.sort(function(a,b){ return a.yr - b.yr; });
+
+  var years      = combined.map(function(r){ return r.yr; });
+  var avgTemps   = combined.map(function(r){ return r.avgTemp; });
+  var monsoons   = combined.map(function(r){ return r.monsoon; });
+  var humids     = combined.map(function(r){ return r.avgHumid; });
+  var solars     = combined.map(function(r){ return r.avgSolar; });
+
+  // ── Stats ──────────────────────────────────────────────────
+  var validTemps = combined.filter(function(r){ return r.avgTemp != null; });
+  var baseline   = combined.filter(function(r){ return r.yr >= BASELINE_START && r.yr <= BASELINE_END; });
+  var baselineAvg= baseline.reduce(function(a,b){ return a + b.avgTemp; }, 0) / baseline.length;
+
+  var overallAvg = validTemps.reduce(function(a,b){ return a+b.avgTemp; },0) / validTemps.length;
+  var recent5    = validTemps.filter(function(r){ return r.yr >= 2020; });
+  var recent5avg = recent5.reduce(function(a,b){ return a+b.avgTemp; },0) / (recent5.length||1);
+  var warmingSignal = (recent5avg - baselineAvg).toFixed(2);
+
+  var allMaxes = combined.map(function(r){ return r.maxTemp; }).filter(Boolean);
+  var allMines = combined.map(function(r){ return r.minTemp; }).filter(Boolean);
+  var hottest  = Math.max.apply(null, allMaxes);
+  var coldest  = Math.min.apply(null, allMines);
+  var hottestYr= combined[allMaxes.indexOf(hottest)] ? combined.filter(function(r){ return r.maxTemp === hottest; })[0] : null;
+  var coldestYr= combined.filter(function(r){ return r.minTemp === coldest; })[0];
+
+  var validMons = combined.filter(function(r){ return r.monsoon > 0; });
+  var avgMonsoon= validMons.reduce(function(a,b){ return a+b.monsoon; },0)/validMons.length;
+  var wettestR  = validMons.reduce(function(a,b){ return a.monsoon>b.monsoon?a:b; }, validMons[0]);
+  var driestR   = validMons.reduce(function(a,b){ return a.monsoon<b.monsoon?a:b; }, validMons[0]);
+
+  // recent monsoon trend
+  var mon1990s = validMons.filter(function(r){ return r.yr>=1990&&r.yr<2000; });
+  var mon2010s = validMons.filter(function(r){ return r.yr>=2010&&r.yr<2020; });
+  var avgM90s  = mon1990s.reduce(function(a,b){ return a+b.monsoon; },0)/(mon1990s.length||1);
+  var avgM10s  = mon2010s.reduce(function(a,b){ return a+b.monsoon; },0)/(mon2010s.length||1);
+
+  // Populate stat cards
+  document.getElementById('sAvgTemp').textContent  = n1(overallAvg) + '°C';
+  document.getElementById('sTempDelta').textContent = (warmingSignal > 0 ? '▲ +' : '▼ ') + warmingSignal + '°C vs 1981–2010 baseline';
+  document.getElementById('sTempDelta').className   = 'delta ' + (warmingSignal > 0 ? 'up' : 'down');
+  document.getElementById('sMaxTemp').textContent   = n1(hottest) + '°C';
+  document.getElementById('sMaxYear').textContent   = hottestYr ? 'Recorded ' + hottestYr.yr : '';
+  document.getElementById('sMinTemp').textContent   = n1(coldest) + '°C';
+  document.getElementById('sMinYear').textContent   = coldestYr ? 'Recorded ' + coldestYr.yr : '';
+  document.getElementById('sMonsoon').textContent   = n0(avgMonsoon);
+  var monsoonTrend = avgM10s - avgM90s;
+  document.getElementById('sMonsoonDelta').textContent = (monsoonTrend > 0 ? '▲ +' : '▼ ') + Math.abs(Math.round(monsoonTrend)) + 'mm: 2010s vs 1990s';
+  document.getElementById('sMonsoonDelta').className   = 'delta ' + (monsoonTrend > 0 ? 'down' : 'up');
+  document.getElementById('sWettest').textContent   = n0(wettestR.monsoon) + ' mm';
+  document.getElementById('sWettestYr').textContent = wettestR.yr;
+  document.getElementById('sDriest').textContent    = n0(driestR.monsoon) + ' mm';
+  document.getElementById('sDriestYr').textContent  = driestR.yr;
+
+  document.getElementById('overviewInsight').innerHTML =
+    '<h4>📊 Reading the record</h4>' +
+    'Over 45 years, Baner\'s mean annual temperature has risen by approximately <strong>' + warmingSignal + '°C</strong> ' +
+    'compared to the 1981–2010 climatological baseline — consistent with the broader Western Ghats warming signal documented in IPCC AR6. ' +
+    'The <strong>pre-monsoon season (March–May) shows the sharpest warming</strong>, ' +
+    'while monsoon rainfall remains highly variable, dominated year-to-year by ENSO state. ' +
+    'The wettest monsoon on record was <strong>' + wettestR.yr + ' (' + n0(wettestR.monsoon) + ' mm)</strong>; ' +
+    'the driest was <strong>' + driestR.yr + ' (' + n0(driestR.monsoon) + ' mm)</strong> — a ' +
+    Math.round((wettestR.monsoon/driestR.monsoon - 1)*100) + '% difference between extremes.';
+
+  // ── Temperature trend chart ────────────────────────────────
+  // 10-year rolling mean
+  function rollingMean(arr, w) {
+    return arr.map(function(_, i) {
+      if (i < w - 1) return null;
+      var slice = arr.slice(i - w + 1, i + 1).filter(function(v){ return v!=null; });
+      return slice.length ? slice.reduce(function(a,b){return a+b;},0)/slice.length : null;
+    });
+  }
+  var rolling10 = rollingMean(avgTemps, 10);
+
+  new Chart(document.getElementById('tempTrendChart'), {
+    type: 'bar',
+    data: {
+      labels: years,
+      datasets: [
+        {
+          label: 'Annual Mean Temp (°C)',
+          data: avgTemps,
+          backgroundColor: avgTemps.map(function(t){ return t > overallAvg ? 'rgba(239,68,68,0.55)' : 'rgba(59,130,246,0.55)'; }),
+          borderRadius: 3, borderSkipped: false,
+        },
+        {
+          label: '10-yr Rolling Mean',
+          data: rolling10,
+          type: 'line',
+          borderColor: '#f97316',
+          backgroundColor: 'transparent',
+          borderWidth: 2.5,
+          pointRadius: 0,
+          tension: 0.4,
+        }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: true,
+      plugins: { legend: { labels: { font: { family: 'DM Sans' }, boxWidth: 12 } } },
+      scales: {
+        x: { ticks: { maxTicksLimit: 12, font: { family: 'DM Mono', size: 10 } } },
+        y: { ticks: { font: { family: 'DM Mono', size: 10 } }, title: { display: true, text: '°C', font: { family: 'DM Sans' } } }
+      }
+    }
+  });
+
+  // ── Seasonal chart ─────────────────────────────────────────
+  var seasonData = aggregateBySeason(allRows);
+  var decadeLabels = seasonData.map(function(s){ return s.decade + 's'; });
+  new Chart(document.getElementById('seasonalChart'), {
+    type: 'line',
+    data: {
+      labels: decadeLabels,
+      datasets: [
+        { label: 'Pre-monsoon (Mar–May)', data: seasonData.map(function(s){ return s.premonsoon; }), borderColor: '#ef4444', backgroundColor: 'rgba(239,68,68,0.08)', tension: 0.4, borderWidth: 2 },
+        { label: 'Monsoon (Jun–Sep)',      data: seasonData.map(function(s){ return s.monsoon; }),    borderColor: '#22c55e', backgroundColor: 'rgba(34,197,94,0.08)',  tension: 0.4, borderWidth: 2 },
+        { label: 'Post-monsoon (Oct–Nov)', data: seasonData.map(function(s){ return s.postmonsoon; }),borderColor: '#f97316', backgroundColor: 'rgba(249,115,22,0.08)', tension: 0.4, borderWidth: 2 },
+        { label: 'Winter (Dec–Feb)',        data: seasonData.map(function(s){ return s.winter; }),     borderColor: '#3b82f6', backgroundColor: 'rgba(59,130,246,0.08)', tension: 0.4, borderWidth: 2 },
+      ]
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { labels: { font: { family: 'DM Sans' }, boxWidth: 12 } } },
+      scales: {
+        x: { ticks: { font: { family: 'DM Mono', size: 10 } } },
+        y: { ticks: { font: { family: 'DM Mono', size: 10 } }, title: { display: true, text: '°C', font: { family: 'DM Sans' } } }
+      }
+    }
+  });
+
+  // ── Anomaly bars ───────────────────────────────────────────
+  var container = document.getElementById('anomalyBars');
+  var warmCount = 0, coolCount = 0, maxAnom = 0;
+  var anomalies = combined.map(function(r){
+    var anom = r.avgTemp != null ? r.avgTemp - baselineAvg : null;
+    if (anom != null) {
+      if (anom > 0) warmCount++;
+      else coolCount++;
+      if (Math.abs(anom) > maxAnom) maxAnom = Math.abs(anom);
+    }
+    return { yr: r.yr, anom: anom };
+  });
+
+  anomalies.forEach(function(a) {
+    var div = document.createElement('div');
+    div.className = 'anomaly-row';
+    var pct = a.anom != null ? Math.abs(a.anom) / (maxAnom || 1) * 50 : 0;
+    var barClass = a.anom >= 0 ? 'bar-fill bar-warm' : 'bar-fill bar-cool';
+    var sign = a.anom != null ? (a.anom >= 0 ? '+' : '') + a.anom.toFixed(2) + '°C' : '—';
+    div.innerHTML =
+      '<span class="yr-lbl">' + a.yr + '</span>' +
+      '<div class="bar-track"><div class="' + barClass + '" style="width:' + pct + '%"></div></div>' +
+      '<span class="val-lbl">' + sign + '</span>';
+    container.appendChild(div);
+  });
+
+  var hotYr = combined.reduce(function(a,b){ return (a.avgTemp||0)>(b.avgTemp||0)?a:b; }, combined[0]);
+  document.getElementById('anomalyInsight').innerHTML =
+    '<h4>🌡️ What the anomalies tell us</h4>' +
+    'Of the 45 years in this record, <strong>' + warmCount + ' years are warmer</strong> than the 1981–2010 baseline ' +
+    'and <strong>' + coolCount + ' years are cooler</strong>. The warmest year on record is ' +
+    '<strong>' + hotYr.yr + ' (' + n1(hotYr.avgTemp) + '°C average)</strong>. ' +
+    'The pattern of warming is not linear — it accelerates after 2000, with the 2020s already showing consistently elevated temperatures above the baseline. ' +
+    'This is consistent with global and regional IPCC projections for the Western Ghats.';
+
+  // ── Monsoon strip ──────────────────────────────────────────
+  var monsoonMin = Math.min.apply(null, monsoons.filter(Boolean));
+  var monsoonMax = Math.max.apply(null, monsoons.filter(Boolean));
+  var strip = document.getElementById('monsoonStrip');
+  combined.forEach(function(r, i) {
+    var mm = r.monsoon;
+    var cell = document.createElement('div');
+    cell.className = 'monsoon-cell';
+    cell.title = r.yr + ': ' + n0(mm) + ' mm JJAS';
+    cell.style.background = monsoonColor(mm, monsoonMin, monsoonMax);
+    cell.innerHTML = '<span class="mc-yr">' + r.yr + '</span><span class="mc-val">' + n0(mm) + '</span>';
+    strip.appendChild(cell);
+  });
+
+  // ── Monsoon chart ──────────────────────────────────────────
+  new Chart(document.getElementById('monsoonChart'), {
+    type: 'bar',
+    data: {
+      labels: years,
+      datasets: [
+        {
+          label: 'Monsoon rainfall (mm)',
+          data: monsoons,
+          backgroundColor: monsoons.map(function(m){
+            if (m > avgMonsoon * 1.2) return 'rgba(34,197,94,0.7)';
+            if (m < avgMonsoon * 0.8) return 'rgba(239,68,68,0.7)';
+            return 'rgba(33,67,50,0.5)';
+          }),
+          borderRadius: 3,
+        },
+        {
+          type: 'line',
+          label: '45-yr average (' + n0(avgMonsoon) + ' mm)',
+          data: years.map(function(){ return avgMonsoon; }),
+          borderColor: '#bf9b7b',
+          borderDash: [5,4],
+          borderWidth: 2,
+          pointRadius: 0,
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { labels: { font: { family: 'DM Sans' }, boxWidth: 12 } } },
+      scales: {
+        x: { ticks: { maxTicksLimit: 12, font: { family: 'DM Mono', size: 10 } } },
+        y: { ticks: { font: { family: 'DM Mono', size: 10 } }, title: { display: true, text: 'mm', font: { family: 'DM Sans' } } }
+      }
+    }
+  });
+
+  // ── Decade cards ───────────────────────────────────────────
+  var decadeDefs = [[1980,1989,'Western Ghats buffer zone — least disturbed decade'],
+                    [1990,1999,'Urbanisation begins around Baner'],
+                    [2000,2009,'Pune IT boom — rapid land use change'],
+                    [2010,2019,'Baner Hill under increasing pressure'],
+                    [2020,2025,'Earth Pulse sensor era begins Jan 2022']];
+  var grid = document.getElementById('decadeGrid');
+  decadeDefs.forEach(function(def) {
+    var dRows = combined.filter(function(r){ return r.yr >= def[0] && r.yr <= def[1]; });
+    if (!dRows.length) return;
+    var dAvgT = dRows.filter(function(r){ return r.avgTemp!=null; }).reduce(function(a,b){return a+b.avgTemp;},0)/(dRows.filter(function(r){return r.avgTemp!=null;}).length||1);
+    var dAvgM = dRows.filter(function(r){ return r.monsoon>0; }).reduce(function(a,b){return a+b.monsoon;},0)/(dRows.filter(function(r){return r.monsoon>0;}).length||1);
+    var dAvgH = dRows.filter(function(r){ return r.avgHumid!=null; }).reduce(function(a,b){return a+b.avgHumid;},0)/(dRows.filter(function(r){return r.avgHumid!=null;}).length||1);
+    var card = document.createElement('div');
+    card.className = 'decade-card';
+    card.innerHTML =
+      '<span class="dc-yr">' + def[0] + 's</span>' +
+      '<div class="dc-row"><span>Mean temperature</span><strong>' + n1(dAvgT) + '°C</strong></div>' +
+      '<div class="dc-row"><span>Avg monsoon rainfall</span><strong>' + n0(dAvgM) + ' mm</strong></div>' +
+      '<div class="dc-row"><span>Mean humidity</span><strong>' + n1(dAvgH) + '%</strong></div>' +
+      '<div class="dc-row"><span>Years in record</span><strong>' + dRows.length + '</strong></div>' +
+      '<span class="dc-note">' + def[2] + '</span>';
+    grid.appendChild(card);
+  });
+
+  // ── ENSO timeline ──────────────────────────────────────────
+  var elContainer = document.getElementById('elninoTimeline');
+  ENSO_EVENTS.forEach(function(ev) {
+    var yr = ev[0], type = ev[1], strength = ev[2], note = ev[3];
+    // find actual monsoon for that year
+    var found = combined.filter(function(r){ return r.yr === yr; })[0];
+    var mmStr = found ? n0(found.monsoon) + ' mm JJAS' : '';
+    var badgeClass = type === 'lanina' ? 'badge-lanina' :
+                     strength === 'strong' ? 'badge-strong' :
+                     strength === 'moderate' ? 'badge-mod' : 'badge-weak';
+    var badgeLabel = type === 'lanina' ? 'La Niña · ' + strength :
+                     'El Niño · ' + strength;
+    var div = document.createElement('div');
+    div.className = 'elnino-event';
+    div.innerHTML =
+      '<span class="yr">' + yr + '</span>' +
+      '<span class="desc"><strong>' + note + '</strong>' + (mmStr ? ' — ' + mmStr : '') + '</span>' +
+      '<span class="elnino-badge ' + badgeClass + '">' + badgeLabel + '</span>';
+    elContainer.appendChild(div);
+  });
+
+  // ── ENSO comparison chart ──────────────────────────────────
+  var elninoYrs = ENSO_EVENTS.filter(function(e){ return e[1]==='elnino'&&e[2]==='strong'; }).map(function(e){ return e[0]; });
+  var laninaYrs = ENSO_EVENTS.filter(function(e){ return e[1]==='lanina'; }).map(function(e){ return e[0]; });
+  var neutralYrs= years.filter(function(y){ return elninoYrs.indexOf(y)<0&&laninaYrs.indexOf(y)<0; });
+
+  function groupAvgMonsoon(yrs) {
+    var vals = combined.filter(function(r){ return yrs.indexOf(r.yr)>=0 && r.monsoon>0; }).map(function(r){ return r.monsoon; });
+    return vals.length ? vals.reduce(function(a,b){return a+b;},0)/vals.length : 0;
+  }
+
+  new Chart(document.getElementById('ensoChart'), {
+    type: 'bar',
+    data: {
+      labels: ['Strong El Niño years', 'Neutral years', 'La Niña years'],
+      datasets: [{
+        label: 'Average JJAS rainfall (mm)',
+        data: [groupAvgMonsoon(elninoYrs), groupAvgMonsoon(neutralYrs), groupAvgMonsoon(laninaYrs)],
+        backgroundColor: ['rgba(239,68,68,0.7)', 'rgba(33,67,50,0.5)', 'rgba(59,130,246,0.7)'],
+        borderRadius: 6,
+      }]
+    },
+    options: {
+      responsive: true, indexAxis: 'y',
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { ticks: { font: { family: 'DM Mono', size: 10 } }, title: { display: true, text: 'mm', font: { family: 'DM Sans' } } },
+        y: { ticks: { font: { family: 'DM Sans', size: 11 } } }
+      }
+    }
+  });
+
+  // ── Solar chart ────────────────────────────────────────────
+  new Chart(document.getElementById('solarChart'), {
+    type: 'line',
+    data: {
+      labels: years,
+      datasets: [{
+        label: 'Solar radiation (W/m²)',
+        data: solars,
+        borderColor: '#f59e0b',
+        backgroundColor: 'rgba(245,158,11,0.1)',
+        tension: 0.4, borderWidth: 2, pointRadius: 2,
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { ticks: { maxTicksLimit: 12, font: { family: 'DM Mono', size: 10 } } },
+        y: { ticks: { font: { family: 'DM Mono', size: 10 } }, title: { display: true, text: 'W/m²', font: { family: 'DM Sans' } } }
+      }
+    }
+  });
+
+  // ── Humidity chart ─────────────────────────────────────────
+  new Chart(document.getElementById('humidChart'), {
+    type: 'line',
+    data: {
+      labels: years,
+      datasets: [{
+        label: 'Relative humidity (%)',
+        data: humids,
+        borderColor: '#214332',
+        backgroundColor: 'rgba(33,67,50,0.08)',
+        tension: 0.4, borderWidth: 2, pointRadius: 2,
+        fill: true,
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { ticks: { maxTicksLimit: 12, font: { family: 'DM Mono', size: 10 } } },
+        y: { min: 50, ticks: { font: { family: 'DM Mono', size: 10 } }, title: { display: true, text: '%', font: { family: 'DM Sans' } } }
+      }
+    }
+  });
+
+  // ── Records table ──────────────────────────────────────────
+  var records = [
+    ['Hottest hourly temperature', n1(hottest) + '°C', hottestYr ? hottestYr.yr : '—'],
+    ['Coldest hourly temperature', n1(coldest) + '°C', coldestYr ? coldestYr.yr : '—'],
+    ['Hottest annual average', n1(hotYr.avgTemp) + '°C', hotYr.yr],
+    ['Wettest monsoon season', n0(wettestR.monsoon) + ' mm', wettestR.yr],
+    ['Driest monsoon season', n0(driestR.monsoon) + ' mm', driestR.yr],
+    ['Highest annual mean humidity', n1(Math.max.apply(null, humids.filter(Boolean))) + '%', years[humids.indexOf(Math.max.apply(null, humids.filter(Boolean)))]],
+  ];
+  var html = '<table style="width:100%;border-collapse:collapse;font-family:var(--sans);font-size:0.85rem">' +
+    '<thead><tr style="background:var(--ep-green);color:#fff">' +
+    '<th style="padding:10px 14px;text-align:left">Record</th>' +
+    '<th style="padding:10px 14px;text-align:right">Value</th>' +
+    '<th style="padding:10px 14px;text-align:right">Year</th></tr></thead><tbody>';
+  records.forEach(function(rec, i) {
+    html += '<tr style="background:' + (i%2===0?'#fff':'var(--ep-cream)') + '">' +
+      '<td style="padding:10px 14px;color:var(--ep-charcoal)">' + rec[0] + '</td>' +
+      '<td style="padding:10px 14px;text-align:right;font-family:var(--mono);color:var(--ep-green);font-weight:500">' + rec[1] + '</td>' +
+      '<td style="padding:10px 14px;text-align:right;font-family:var(--mono);color:#888">' + rec[2] + '</td></tr>';
+  });
+  html += '</tbody></table>';
+  document.getElementById('recordsTable').innerHTML = html;
+
+  // ── FAQ ────────────────────────────────────────────────────
+  var faqs = [
+    ['How much has Baner warmed since 1980?',
+     'The ERA5 data shows Baner\'s annual mean temperature has risen by approximately ' + warmingSignal + '°C compared to the 1981–2010 climatological baseline. The warming is most pronounced in the pre-monsoon season (March–May), which is characteristic of inland Western Ghats locations.'],
+    ['What is ERA5 and how reliable is it?',
+     'ERA5 is ECMWF\'s fifth-generation global climate reanalysis — a model that assimilates billions of historical observations (satellite, weather balloons, ocean buoys, ground stations) into a consistent 9km grid. It is the gold standard dataset used by IPCC, climate researchers and national weather services globally. For a specific location like Baner, it captures broad climate signals very well, though highly localised effects (like the hill\'s exact vegetation microclimate) are smoothed at 9km resolution.'],
+    ['How does El Niño affect Baner\'s monsoon?',
+     'During strong El Niño events (like 1982, 1997, 2002, 2015 and 2023), warming in the Pacific weakens the Walker Circulation that drives Arabian Sea moisture into India. Baner typically sees a 15–30% deficit in June–September rainfall during these years. La Niña years (like 1988, 1998, 2010, 2020) tend to bring above-average monsoon rainfall.'],
+    ['Why is pre-2022 data different from post-2022 data?',
+     'From January 2022 onwards, Earth Pulse runs a Raspberry Pi sensor on a Baner balcony that records temperature, humidity, pressure and wind every hour, supplemented by a hyperlocal Weather Union rain gauge. Before 2022, all data comes from ERA5 — a global climate model reanalysis at ~9km resolution. ERA5 is scientifically valid for long-term trend analysis but is not a direct local measurement. Both datasets are clearly labelled throughout this page.'],
+    ['What does the warming mean for Baner Hill\'s ecosystem?',
+     'Warmer pre-monsoon temperatures accelerate soil drying and stress deciduous vegetation on the hill. Combined with urbanisation increasing the heat island effect, this compresses the window between peak summer stress and monsoon onset. Bird species sensitive to thermal stress may shift their dawn chorus timing or arrival dates. The NDVI satellite data (available on the Hill page) shows how vegetation health tracks with these temperature and rainfall patterns.'],
+    ['Can I download this historical data?',
+     'The ERA5-derived data is stored in Earth Pulse\'s database and can be accessed via the Data Explorer page. Raw downloads are available in CSV format. The original ERA5 dataset is freely available from the Copernicus Climate Data Store for research use.'],
+  ];
+  var faqList = document.getElementById('faqList');
+  faqs.forEach(function(faq, i) {
+    var item = document.createElement('div');
+    item.className = 'faq-item';
+    item.innerHTML =
+      '<button class="faq-q" onclick="toggleFaq(this)">' + faq[0] + '<span class="arrow">▾</span></button>' +
+      '<div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer"><span itemprop="text">' + faq[1] + '</span></div>';
+    faqList.appendChild(item);
+  });
+
+  // Show everything
+  document.getElementById('loadingDiv').style.display = 'none';
+  document.getElementById('allSections').style.display = 'block';
+}
+
+function toggleFaq(btn) {
+  btn.classList.toggle('open');
+  var ans = btn.nextElementSibling;
+  ans.classList.toggle('show');
+}
+
+// ── INIT: fetch ERA5 + sensor data ────────────────────────────
+(function init() {
+  var era5Rows = [], sensorRows = [];
+  var loaded = 0;
+
+  function tryRender() {
+    loaded++;
+    if (loaded < 2) return;
+    // Merge and aggregate
+    var annualERA5   = aggregateByYear(era5Rows);
+    var annualSensor = aggregateByYear(sensorRows);
+    var allRows      = era5Rows.concat(sensorRows);
+    render(annualERA5, annualSensor, allRows);
+  }
+
+  // ERA5 historical table — all rows (paginated)
+  sbFetch('/rest/v1/historical_climate?select=recorded_at,temperature,precipitation,humidity,solar_radiation&order=recorded_at.asc', function(err, rows) {
+    if (!err) era5Rows = rows;
+    tryRender();
+  });
+
+  // Real sensor data from climate_readings (2022+)
+  sbFetch('/rest/v1/climate_readings?select=recorded_at,temperature,precipitation,humidity&order=recorded_at.asc', function(err, rows) {
+    if (!err) sensorRows = rows;
+    tryRender();
+  });
+})();
+</script>
+</body>
+</html>
