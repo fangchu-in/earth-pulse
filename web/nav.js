@@ -1,12 +1,7 @@
 /* Earth Pulse — nav.js
    Auth-aware navigation with hamburger menu for mobile.
-   Birds has dropdown (desktop) / accordion (mobile) with sub-pages.
-   Climate has dropdown (desktop) / accordion (mobile) with sub-pages.
-   Supabase v2 key: "sb-[project-ref]-auth-token"
-   where project-ref = "krmczyqwblsoekceanlj"
-
-   Updated: Added Birds dropdown (Bird of the Day, Migratory Birds),
-            Trees link, identify link — all new pages from May 2026 build.
+   Updated May 2026: Added Climate History, Terms, Privacy links.
+   Footer redesigned: two-column link grid + legal bar.
 */
 (function() {
   var SITE    = 'Earth Pulse';
@@ -15,45 +10,59 @@
   var SB_KEY_NAME = 'sb-krmczyqwblsoekceanlj-auth-token';
 
   var LINKS = [
-    { href:BASE+'/index.html',      label:'Home' },
-    { href:BASE+'/birds.html',      label:'Birds', dropdown:[
-        { href:BASE+'/birds.html',            label:'All Birds of Baner',    icon:'&#128038;' },
-        { href:BASE+'/bird-of-the-day.html',  label:'Bird of the Day',       icon:'&#127749;' },
-        { href:BASE+'/migratory.html',        label:'Migratory Birds',        icon:'&#9992;&#65039;' },
-        { href:BASE+'/species.html',          label:'Species Profiles',       icon:'&#128269;' },
+    { href:BASE+'/index.html',   label:'Home' },
+    { href:BASE+'/birds.html',   label:'Birds', dropdown:[
+        { href:BASE+'/birds.html',           label:'All Birds of Baner',  icon:'&#128038;' },
+        { href:BASE+'/bird-of-the-day.html', label:'Bird of the Day',     icon:'&#127749;' },
+        { href:BASE+'/migratory.html',       label:'Migratory Birds',     icon:'&#9992;&#65039;' },
+        { href:BASE+'/species.html',         label:'Species Profiles',    icon:'&#128269;' },
     ]},
-    { href:BASE+'/trees.html',      label:'Trees', dropdown:[
-        { href:BASE+'/trees.html',     label:'Trees Encyclopedia',    icon:'&#127795;' },
-        { href:BASE+'/identify.html',  label:'Identify a Plant',       icon:'&#128247;' },
+    { href:BASE+'/trees.html',   label:'Trees', dropdown:[
+        { href:BASE+'/trees.html',    label:'Trees Encyclopedia', icon:'&#127795;' },
+        { href:BASE+'/identify.html', label:'Identify a Plant',   icon:'&#128247;' },
     ]},
-    { href:BASE+'/climate.html',    label:'Climate', dropdown:[
-        { href:BASE+'/temperature.html', label:'Temperature',    icon:'&#127777;&#65039;' },
-        { href:BASE+'/rain.html',        label:'Monsoon & Rain', icon:'&#127783;&#65039;' },
-        { href:BASE+'/aqi.html',         label:'Air Quality',    icon:'&#127807;'         },
+    { href:BASE+'/climate.html', label:'Climate', dropdown:[
+        { href:BASE+'/temperature.html', label:'Temperature',      icon:'&#127777;&#65039;' },
+        { href:BASE+'/rain.html',        label:'Monsoon & Rain',   icon:'&#127783;&#65039;' },
+        { href:BASE+'/aqi.html',         label:'Air Quality',      icon:'&#127807;'         },
+        { href:BASE+'/history.html',     label:'Climate History',  icon:'&#128202;'         },
     ]},
-    { href:BASE+'/hill.html',       label:'Baner Hill' },
-    { href:BASE+'/blog.html',       label:'Blog' },
-    { href:BASE+'/about.html',      label:'About' },
+    { href:BASE+'/hill.html',    label:'Baner Hill' },
+    { href:BASE+'/blog.html',    label:'Blog' },
+    { href:BASE+'/about.html',   label:'About' },
   ];
 
-  var FOOTER_LINKS = [
-    { href:BASE+'/index.html',            label:'Home' },
-    { href:BASE+'/birds.html',            label:'Birds' },
-    { href:BASE+'/species.html',          label:'Species' },
-    { href:BASE+'/bird-of-the-day.html',  label:'Bird of the Day' },
-    { href:BASE+'/migratory.html',        label:'Migratory Birds' },
-    { href:BASE+'/trees.html',            label:'Trees & Plants' },
-    { href:BASE+'/identify.html',         label:'Identify a Plant' },
-    { href:BASE+'/climate.html',          label:'Climate' },
-    { href:BASE+'/temperature.html',      label:'Temperature' },
-    { href:BASE+'/rain.html',             label:'Monsoon & Rain' },
-    { href:BASE+'/aqi.html',              label:'Air Quality' },
-    { href:BASE+'/hill.html',             label:'Baner Hill' },
-    { href:BASE+'/blog.html',             label:'Blog' },
-    { href:BASE+'/register.html',         label:'Register / Sign in' },
-    { href:BASE+'/contribute.html',       label:'Contribute' },
-    { href:BASE+'/about.html',            label:'About' },
-    { href:BASE+'/contact.html',          label:'Contact' },
+  /* Footer organised into columns */
+  var FOOTER_COLS = [
+    { heading: 'Nature', links: [
+        { href:BASE+'/birds.html',           label:'All Birds' },
+        { href:BASE+'/bird-of-the-day.html', label:'Bird of the Day' },
+        { href:BASE+'/migratory.html',       label:'Migratory Birds' },
+        { href:BASE+'/species.html',         label:'Species Profiles' },
+        { href:BASE+'/trees.html',           label:'Trees & Plants' },
+        { href:BASE+'/identify.html',        label:'Identify a Plant' },
+        { href:BASE+'/hill.html',            label:'Baner Hill' },
+    ]},
+    { heading: 'Climate', links: [
+        { href:BASE+'/climate.html',     label:'Climate Overview' },
+        { href:BASE+'/temperature.html', label:'Temperature' },
+        { href:BASE+'/rain.html',        label:'Monsoon & Rain' },
+        { href:BASE+'/aqi.html',         label:'Air Quality' },
+        { href:BASE+'/history.html',     label:'Climate History' },
+    ]},
+    { heading: 'Explore', links: [
+        { href:BASE+'/data.html',        label:'Data Explorer' },
+        { href:BASE+'/blog.html',        label:'Blog' },
+        { href:BASE+'/about.html',       label:'About' },
+        { href:BASE+'/contact.html',     label:'Contact' },
+        { href:BASE+'/register.html',    label:'Register / Sign in' },
+    ]},
+  ];
+
+  var FOOTER_LEGAL = [
+    { href:BASE+'/terms.html',   label:'Terms of Use' },
+    { href:BASE+'/privacy.html', label:'Privacy Policy' },
+    { href:BASE+'/contact.html', label:'Contact' },
   ];
 
   function page() { return window.location.pathname.split('/').pop() || 'index.html'; }
@@ -97,7 +106,6 @@
     var pg = page();
     var isAdmin = session.ok && session.email === 'fangchu@gmail.com';
 
-    /* Desktop nav links */
     var links = LINKS.map(function(l) {
       var isActive    = pg === l.href.split('#')[0].split('/').pop();
       var isSubActive = l.dropdown && l.dropdown.some(function(s){ return pg === s.href.split('/').pop(); });
@@ -116,7 +124,6 @@
       return '<li><a href="' + l.href + '"' + (isActive ? ' class="active"' : '') + '>' + l.label + '</a></li>';
     }).join('');
 
-    /* Desktop CTA */
     var cta;
     if (session.ok) {
       cta = '<a href="' + BASE + (isAdmin ? '/admin.html' : '/data.html') + '" class="ep-nav-cta" style="background:rgba(33,67,50,0.12);color:var(--ep-green);border:1.5px solid var(--ep-green);">' + (isAdmin ? '&#9881; Admin' : '&#128100; My account') + '</a>';
@@ -124,7 +131,6 @@
       cta = '<a href="' + BASE + '/register.html" class="ep-nav-cta">Register</a>';
     }
 
-    /* Mobile drawer links */
     var drawerLinks = LINKS.map(function(l) {
       var isCurrent    = pg === l.href.split('/').pop();
       var isSubCurrent = l.dropdown && l.dropdown.some(function(s){ return pg === s.href.split('/').pop(); });
@@ -179,11 +185,9 @@
       '</div>' +
       '<div class="ep-mob-overlay" id="ep-mob-overlay" aria-hidden="true"></div>' +
       '<style>' +
-        /* Nav right */
         '.ep-nav-right{display:flex;align-items:center;gap:0.4rem;}' +
         '.ep-nav-search-btn{display:flex;align-items:center;padding:0.4rem;border-radius:var(--radius-sm,6px);color:var(--text-muted,#888);text-decoration:none;transition:color 0.2s;}' +
         '.ep-nav-search-btn:hover{color:var(--ep-green,#214332);}' +
-        /* Desktop dropdown */
         '.ep-has-drop{position:relative;}' +
         '.ep-has-drop>a{display:inline-flex;align-items:center;gap:3px;}' +
         '.ep-drop-caret{opacity:0.55;transition:transform 0.18s;}' +
@@ -194,44 +198,64 @@
         '.ep-drop-active{background:rgba(33,67,50,0.07);color:var(--ep-green,#214332);font-weight:600;}' +
         '.ep-drop-inner{background:#fff;border:1px solid var(--border,#e5e0d8);border-radius:10px;box-shadow:0 10px 32px rgba(0,0,0,0.13);padding:5px;}' +
         '.ep-has-drop:hover .ep-dropdown{display:block;}' +
-        /* Hamburger */
         '.ep-hamburger{display:none;flex-direction:column;justify-content:center;align-items:center;gap:5px;width:40px;height:40px;padding:8px;background:transparent;border:none;cursor:pointer;border-radius:var(--radius-sm,6px);flex-shrink:0;}' +
         '.ep-hamburger span{display:block;width:20px;height:2px;background:var(--ep-green,#214332);border-radius:2px;transition:transform 0.22s ease,opacity 0.18s ease;}' +
         '.ep-hamburger:hover{background:rgba(33,67,50,0.07);}' +
         '.ep-hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg);}' +
         '.ep-hamburger.open span:nth-child(2){opacity:0;transform:scaleX(0);}' +
         '.ep-hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}' +
-        /* Drawer */
         '.ep-mob-drawer{position:fixed;top:62px;left:0;right:0;z-index:299;background:var(--ep-cream,#F2F0E6);border-bottom:1px solid var(--border,#e5e0d8);box-shadow:0 12px 40px rgba(0,0,0,0.14);transform:translateY(-12px);opacity:0;pointer-events:none;transition:transform 0.22s ease,opacity 0.2s ease;visibility:hidden;overflow-y:auto;max-height:calc(100vh - 62px);}' +
         '.ep-mob-drawer.open{transform:translateY(0);opacity:1;pointer-events:auto;visibility:visible;}' +
         '.ep-mob-inner{max-width:480px;margin:0 auto;padding:0.75rem 1.25rem 1.5rem;}' +
         '.ep-mob-link{display:flex;align-items:center;padding:0.72rem 0.85rem;font-size:0.95rem;color:var(--text-secondary,#444);text-decoration:none;border-radius:var(--radius-sm,6px);font-family:var(--sans,sans-serif);font-weight:400;transition:background 0.12s,color 0.12s;margin-bottom:1px;width:100%;box-sizing:border-box;background:none;border:none;cursor:pointer;text-align:left;}' +
         '.ep-mob-link:hover{background:rgba(33,67,50,0.07);color:var(--ep-green,#214332);}' +
         '.ep-mob-active{background:rgba(33,67,50,0.08);color:var(--ep-green,#214332);font-weight:600;}' +
-        /* Mobile accordion */
         '.ep-mob-group{margin-bottom:1px;}' +
         '.ep-mob-group-hd{display:flex;align-items:center;justify-content:space-between;}' +
         '.ep-mob-arrow{margin-left:auto;opacity:0.5;flex-shrink:0;transition:transform 0.2s ease;}' +
         '.ep-mob-sub-list{overflow:hidden;max-height:0;transition:max-height 0.25s ease;}' +
-        '.ep-mob-group-open .ep-mob-sub-list{max-height:280px;}' +
+        '.ep-mob-group-open .ep-mob-sub-list{max-height:320px;}' +
         '.ep-mob-group-open .ep-mob-arrow{transform:rotate(180deg);}' +
         '.ep-mob-sub{padding-left:2.2rem;font-size:0.88rem;color:var(--text-muted,#666);}' +
         '.ep-mob-sub:hover,.ep-mob-sub.ep-mob-active{color:var(--ep-green,#214332);}' +
-        /* Divider / auth */
         '.ep-mob-sep{height:1px;background:var(--border,#e5e0d8);margin:0.6rem 0;}' +
         '.ep-mob-auth{color:var(--ep-green,#214332);font-weight:600;}' +
         '.ep-mob-signout{color:var(--text-muted,#999);font-size:0.88rem;}' +
-        /* Overlay */
         '.ep-mob-overlay{display:none;position:fixed;inset:0;z-index:298;background:rgba(0,0,0,0.28);backdrop-filter:blur(2px);}' +
         '.ep-mob-overlay.open{display:block;}' +
-        /* Mobile breakpoint */
+        /* ── Footer styles ── */
+        '.ep-footer{background:var(--ep-green,#214332);color:rgba(255,255,255,0.75);padding:48px 24px 0;font-family:var(--sans,sans-serif);}' +
+        '.ep-footer-top{max-width:960px;margin:0 auto;display:grid;grid-template-columns:1fr auto;gap:40px;align-items:start;padding-bottom:36px;border-bottom:1px solid rgba(255,255,255,0.1);}' +
+        '.ep-footer-brand img{height:34px;width:auto;opacity:0.9;display:block;margin-bottom:10px;}' +
+        '.ep-footer-tagline{font-size:0.82rem;color:rgba(255,255,255,0.5);letter-spacing:0.03em;margin-bottom:14px;}' +
+        '.ep-footer-credits{font-size:0.73rem;color:rgba(255,255,255,0.38);line-height:1.6;max-width:320px;}' +
+        '.ep-footer-credits a{color:rgba(255,255,255,0.5);text-decoration:none;}' +
+        '.ep-footer-credits a:hover{color:#fff;}' +
+        '.ep-footer-cols{display:flex;gap:36px;flex-wrap:wrap;}' +
+        '.ep-footer-col h4{font-size:0.7rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.4);margin:0 0 12px;}' +
+        '.ep-footer-col a{display:block;font-size:0.82rem;color:rgba(255,255,255,0.65);text-decoration:none;margin-bottom:7px;transition:color 0.15s;}' +
+        '.ep-footer-col a:hover{color:#fff;}' +
+        /* Legal bar */
+        '.ep-footer-legal{max-width:960px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;padding:14px 0;gap:12px;flex-wrap:wrap;}' +
+        '.ep-footer-legal-copy{font-size:0.72rem;color:rgba(255,255,255,0.32);}' +
+        '.ep-footer-legal-links{display:flex;gap:16px;}' +
+        '.ep-footer-legal-links a{font-size:0.72rem;color:rgba(255,255,255,0.38);text-decoration:none;transition:color 0.15s;}' +
+        '.ep-footer-legal-links a:hover{color:rgba(255,255,255,0.75);}' +
+        /* Mobile footer */
+        '@media(max-width:640px){' +
+          '.ep-footer-top{grid-template-columns:1fr;gap:28px;}' +
+          '.ep-footer-cols{gap:24px;}' +
+          '.ep-footer-col{min-width:120px;}' +
+          '.ep-footer-legal{flex-direction:column;align-items:flex-start;gap:8px;}' +
+          '.ep-footer-credits{max-width:100%;}' +
+        '}' +
+        /* Nav mobile breakpoint */
         '@media(max-width:720px){' +
           '.ep-nav-links{display:none!important;}' +
           '.ep-nav-right{display:none!important;}' +
           '.ep-hamburger{display:flex!important;}' +
           '.ep-nav-logo-full{height:24px!important;width:auto!important;max-width:none;}' +
         '}' +
-        /* Slightly wider breakpoint than before — more nav items now */
         '@media(min-width:721px) and (max-width:900px){' +
           '.ep-nav-links a,.ep-nav-links button{font-size:0.82rem;}' +
         '}' +
@@ -243,39 +267,29 @@
     var overlay   = document.getElementById('ep-mob-overlay');
 
     function isOpen() { return drawer && drawer.classList.contains('open'); }
-
     function openMenu() {
       if (!hamburger || !drawer || !overlay) return;
-      hamburger.classList.add('open');
-      hamburger.setAttribute('aria-expanded', 'true');
-      drawer.classList.add('open');
-      drawer.setAttribute('aria-hidden', 'false');
-      overlay.classList.add('open');
-      document.body.style.overflow = 'hidden';
+      hamburger.classList.add('open'); hamburger.setAttribute('aria-expanded','true');
+      drawer.classList.add('open'); drawer.setAttribute('aria-hidden','false');
+      overlay.classList.add('open'); document.body.style.overflow = 'hidden';
     }
-
     function closeMenu() {
       if (!hamburger || !drawer || !overlay) return;
-      hamburger.classList.remove('open');
-      hamburger.setAttribute('aria-expanded', 'false');
-      drawer.classList.remove('open');
-      drawer.setAttribute('aria-hidden', 'true');
-      overlay.classList.remove('open');
-      document.body.style.overflow = '';
+      hamburger.classList.remove('open'); hamburger.setAttribute('aria-expanded','false');
+      drawer.classList.remove('open'); drawer.setAttribute('aria-hidden','true');
+      overlay.classList.remove('open'); document.body.style.overflow = '';
     }
 
     if (hamburger) hamburger.addEventListener('click', function(){ isOpen() ? closeMenu() : openMenu(); });
     if (overlay)   overlay.addEventListener('click', closeMenu);
     document.addEventListener('keydown', function(e){ if (e.key === 'Escape' && isOpen()) closeMenu(); });
 
-    /* Mobile accordion toggle — works for both Birds and Climate */
     if (drawer) {
       var grpHds = drawer.querySelectorAll('.ep-mob-group-hd');
       for (var gi = 0; gi < grpHds.length; gi++) {
         grpHds[gi].addEventListener('click', function() {
           var grp = this.parentElement;
           var willOpen = !grp.classList.contains('ep-mob-group-open');
-          /* Close other open accordions */
           var allGrps = drawer.querySelectorAll('.ep-mob-group');
           for (var j = 0; j < allGrps.length; j++) {
             if (allGrps[j] !== grp) {
@@ -288,7 +302,6 @@
           this.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
         });
       }
-      /* Close drawer on any leaf link click */
       var anchors = drawer.querySelectorAll('a');
       for (var i = 0; i < anchors.length; i++) {
         anchors[i].addEventListener('click', function() {
@@ -297,12 +310,10 @@
       }
     }
 
-    /* Sign out */
     var soBtn = document.getElementById('ep-mob-signout-btn');
     if (soBtn) {
       soBtn.addEventListener('click', function(e) {
-        e.preventDefault();
-        closeMenu();
+        e.preventDefault(); closeMenu();
         try {
           var ks = Object.keys(localStorage);
           ks.forEach(function(k){ if (k.indexOf('sb-') === 0 || k.indexOf('supabase') !== -1) localStorage.removeItem(k); });
@@ -311,7 +322,6 @@
       });
     }
 
-    /* Close on resize to desktop */
     window.addEventListener('resize', function() {
       if (window.innerWidth > 720 && isOpen()) closeMenu();
     });
@@ -320,15 +330,38 @@
   function buildFooter() {
     var el = document.getElementById('ep-footer');
     if (!el) return;
-    var flinks = FOOTER_LINKS.map(function(l) {
-      return '<a href="' + l.href + '"' + (l.ext ? ' target="_blank" rel="noopener"' : '') + '>' + l.label + '</a>';
+
+    var cols = FOOTER_COLS.map(function(col) {
+      var links = col.links.map(function(l) {
+        return '<a href="' + l.href + '">' + l.label + '</a>';
+      }).join('');
+      return '<div class="ep-footer-col"><h4>' + col.heading + '</h4>' + links + '</div>';
     }).join('');
+
+    var legalLinks = FOOTER_LEGAL.map(function(l) {
+      return '<a href="' + l.href + '">' + l.label + '</a>';
+    }).join('');
+
+    var yr = new Date().getFullYear();
+
     el.outerHTML =
       '<footer class="ep-footer">' +
-        '<img src="' + BASE + '/earth-pulse-logo-white.png" alt="' + SITE + '" style="height:38px;width:auto;margin-bottom:0.75rem;opacity:0.88;" onerror="this.style.display=\'none\'">' +
-        '<div class="ep-footer-tagline">' + TAGLINE + '</div>' +
-        '<div class="ep-footer-links">' + flinks + '</div>' +
-        '<div class="ep-footer-credits">Recording since January 2022 \u00b7 Data: Open-Meteo (CAMS) \u00b7 Google Air Quality \u00b7 BirdNET (Cornell Lab) \u00b7 Weather Union \u00b7 Built with curiosity \u00b7 Built with \u2764\ufe0f &amp; <a href="https://claude.ai" target="_blank" rel="noopener">Claude</a></div>' +
+        '<div class="ep-footer-top">' +
+          '<div class="ep-footer-brand">' +
+            '<img src="' + BASE + '/earth-pulse-logo-white.png" alt="' + SITE + '" onerror="this.style.display=\'none\'">' +
+            '<div class="ep-footer-tagline">' + TAGLINE + '</div>' +
+            '<div class="ep-footer-credits">' +
+              'Recording since January 2022 &middot; Baner, Pune, Maharashtra, India.<br>' +
+              'Data: Open-Meteo &middot; Google Air Quality &middot; BirdNET (Cornell Lab) &middot; Weather Union &middot; ERA5 (Copernicus).<br>' +
+              'Built with curiosity &amp; <a href="https://claude.ai" target="_blank" rel="noopener">Claude</a>.' +
+            '</div>' +
+          '</div>' +
+          '<div class="ep-footer-cols">' + cols + '</div>' +
+        '</div>' +
+        '<div class="ep-footer-legal">' +
+          '<span class="ep-footer-legal-copy">&copy; ' + yr + ' Earth Pulse &middot; Independent citizen science observatory</span>' +
+          '<div class="ep-footer-legal-links">' + legalLinks + '</div>' +
+        '</div>' +
       '</footer>';
   }
 
