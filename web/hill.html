@@ -3,20 +3,42 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Baner Hill — Watching a Biodiversity Hotspot Change | Earth Pulse, Pune</title>
-  <meta name="description" content="Baner Hill (678m) sits on the edge of the Western Ghats — one of the world's 8 biodiversity hotspots. Every photo annotated with live AQI, temperature and weather. A citizen science project from Pune, India.">
-  <meta name="keywords" content="Baner Hill Pune, Western Ghats biodiversity, Sahyadri hills photos, Pune AQI timelapse, Baner nature, citizen science Pune, hill greenery monsoon, NDVI satellite">
+  <title>Baner Hill — Live Timelapse, NDVI Data &amp; Photo Archive | Earth Pulse, Pune</title>
+  <meta name="description" content="Baner Hill (678m) sits on the edge of the Western Ghats — one of the world's 8 biodiversity hotspots. Daily photos paired with live AQI, temperature and rainfall. 35 years of NDVI satellite data showing +278% greening since 1990. Built-in time-lapse player.">
+  <meta name="keywords" content="Baner Hill Pune, Western Ghats biodiversity, Sahyadri hills photos, Pune AQI timelapse, Baner nature timelapse, citizen science Pune, hill greenery monsoon, NDVI satellite Baner">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://earth-pulse.org/hill.html">
   <meta property="og:title" content="Baner Hill — A Biodiversity Hotspot, Over Time">
-  <meta property="og:description" content="35 years of satellite data proves Baner Hill is +278% greener than 1990. Watch it change through seasons, with live AQI and weather data on every photo.">
+  <meta property="og:description" content="35 years of satellite data proves Baner Hill is +278% greener than 1990. Watch a daily time-lapse with live AQI and weather on every photo.">
   <meta property="og:image" content="https://earth-pulse.org/earth-pulse-logo-og.png">
   <meta name="twitter:image" content="https://earth-pulse.org/earth-pulse-logo-og.png">
   <meta property="og:url" content="https://earth-pulse.org/hill.html">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Earth Pulse · Baner, Pune">
   <meta name="twitter:card" content="summary_large_image">
+
+  <!-- Geo + locale -->
+  <meta name="geo.region" content="IN-MH">
+  <meta name="geo.placename" content="Baner Hill, Pune, Maharashtra">
+  <meta name="geo.position" content="18.5526;73.7819">
+  <meta property="og:locale" content="en_IN">
+
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"ImageGallery","name":"Baner Hill Photo Archive — Earth Pulse","description":"Time-lapse photo record of Baner Hill (678m), part of the Western Ghats UNESCO World Heritage ecosystem. Photos annotated with real-time AQI, temperature, humidity and precipitation data from Earth Pulse citizen science observatory.","url":"https://earth-pulse.org/hill.html","locationCreated":{"@type":"Place","name":"Baner Hill, Pune, Maharashtra, India","geo":{"@type":"GeoCoordinates","latitude":18.5526156,"longitude":73.7818663},"elevation":"678 meters"}}</script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {"@type":"Question","name":"How tall is Baner Hill in Pune?","acceptedAnswer":{"@type":"Answer","text":"Baner Hill stands at 678 metres above sea level — the third highest point within Pune city limits. It lies at coordinates 18.5526°N, 73.7819°E on the eastern edge of the Western Ghats."}},
+      {"@type":"Question","name":"Why is Baner Hill ecologically important?","acceptedAnswer":{"@type":"Answer","text":"Baner Hill is an outlier spur of the Western Ghats — a UNESCO World Heritage biodiversity hotspot older than the Himalayas. The Western Ghats harbour 30% of India's plant, fish, herpetofauna, bird and mammal species on less than 6% of the country's land area."}},
+      {"@type":"Question","name":"How green is Baner Hill compared to the past?","acceptedAnswer":{"@type":"Answer","text":"Satellite NDVI data from Landsat-5 and Sentinel-2 shows Baner Hill is +278% greener in 2025 than in 1990. The dry-season NDVI rose from 0.074 (bare rock) to 0.278 (active greening). During the 2025 monsoon, individual pixels on the north slope reached 0.957, comparable to dense Amazon rainforest."}},
+      {"@type":"Question","name":"When did Baner Hill start recovering?","acceptedAnswer":{"@type":"Answer","text":"The inflection point was 2017, when NDVI jumped from 0.138 to 0.211 in two years — a 53% rise. This is when human reforestation efforts became visible from orbit. Since 2017, gains have not reversed."}},
+      {"@type":"Question","name":"When is the best time to visit Baner Hill?","acceptedAnswer":{"@type":"Answer","text":"The hill is greenest from July to October, peaking in August during the monsoon. November to February offers clear views with cooler temperatures. April–May is hottest and the hill appears brown. Visit early morning (6–8 AM) or evening (5–7 PM) for the best light and bird activity."}},
+      {"@type":"Question","name":"Where should new trees be planted on Baner Hill?","acceptedAnswer":{"@type":"Answer","text":"The south-west corridor (NDVI 0.11) and south-facing mid-slope (NDVI 0.14) are the highest priority planting zones. These bare laterite areas have not recovered since 1990. Recommended native species include Karvi, Teak, Flame of the Forest, Neem, Pongamia and Bel — planted in clusters of 5–10 for mutual protection."}}
+    ]
+  }
+  </script>
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
@@ -27,7 +49,7 @@
     .filter-bar {
       background:var(--bg-card); border-bottom:1px solid var(--border);
       padding:1rem 2rem; display:flex; gap:1rem; align-items:center;
-      flex-wrap:wrap; position:sticky; top:62px; z-index:90;
+      flex-wrap:wrap; position:sticky; top:0; z-index:90;
     }
     .filter-group { display:flex; align-items:center; gap:0.5rem; }
     .filter-label { font-size:0.72rem; font-weight:600; text-transform:uppercase; letter-spacing:0.08em; color:var(--text-muted); white-space:nowrap; }
@@ -218,6 +240,333 @@
     .empty-icon { font-size:3rem; margin-bottom:1rem; }
     .empty-state h3 { font-family:var(--serif); font-size:1.4rem; color:var(--ep-green); margin-bottom:0.5rem; }
     .empty-state p { font-size:0.88rem; max-width:380px; margin:0 auto 1.5rem; line-height:1.7; }
+
+    /* ═══════════════════════════════════════════════
+       NEW: India AQI chip (different colour scale)
+    ═══════════════════════════════════════════════ */
+    .chip-india-aqi-good      { background:rgba(34,197,94,0.12);  color:#166534; }
+    .chip-india-aqi-satisfact { background:rgba(132,204,22,0.12); color:#365314; }
+    .chip-india-aqi-moderate  { background:rgba(202,138,4,0.14);  color:#713f12; }
+    .chip-india-aqi-poor      { background:rgba(234,88,12,0.12);  color:#7c2d12; }
+    .chip-india-aqi-vpoor     { background:rgba(220,38,38,0.12);  color:#7f1d1d; }
+    .chip-india-aqi-severe    { background:rgba(127,29,29,0.20);  color:#fef2f2; }
+
+    /* ═══════════════════════════════════════════════
+       NEW: Time-lapse player
+    ═══════════════════════════════════════════════ */
+    .timelapse-section {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      display: none;
+    }
+    .timelapse-section.active { display: block; }
+    .tl-header {
+      display: flex; align-items: baseline; justify-content: space-between;
+      gap: 1rem; margin-bottom: 0.75rem; flex-wrap: wrap;
+    }
+    .tl-title {
+      font-family: var(--serif); font-size: 1.15rem;
+      color: var(--ep-green); margin: 0;
+    }
+    .tl-subtitle {
+      font-size: 0.78rem; color: var(--text-muted);
+    }
+    .tl-viewer {
+      position: relative; background: #000;
+      border-radius: var(--radius-md); overflow: hidden;
+      aspect-ratio: 16/10; max-width: 100%;
+    }
+    .tl-img {
+      position: absolute; inset: 0; width: 100%; height: 100%;
+      object-fit: contain; background: #000;
+    }
+    .tl-overlay-info {
+      position: absolute; top: 12px; left: 12px;
+      background: rgba(0,0,0,0.72); padding: 6px 12px;
+      border-radius: 6px; color: #fff;
+      font-size: 0.78rem; backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      max-width: calc(100% - 24px);
+    }
+    .tl-overlay-date {
+      font-weight: 600; font-size: 0.85rem; margin-bottom: 2px;
+    }
+    .tl-overlay-time {
+      font-family: var(--mono); font-size: 0.7rem; color: rgba(255,255,255,0.7);
+    }
+    .tl-overlay-chips {
+      position: absolute; bottom: 12px; left: 12px;
+      display: flex; gap: 4px; flex-wrap: wrap;
+      max-width: calc(100% - 24px);
+    }
+    .tl-overlay-chips .climate-chip {
+      backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+    }
+    .tl-progress-wrap {
+      position: absolute; left: 0; right: 0; bottom: 0;
+      height: 4px; background: rgba(255,255,255,0.15);
+      cursor: pointer;
+    }
+    .tl-progress-bar {
+      height: 100%; background: var(--ep-tan);
+      transition: width 0.1s linear;
+    }
+    .tl-controls {
+      display: flex; align-items: center; gap: 0.75rem;
+      margin-top: 0.85rem; flex-wrap: wrap;
+    }
+    .tl-play-btn {
+      width: 44px; height: 44px;
+      border-radius: 50%; border: none;
+      background: var(--ep-green); color: var(--ep-cream);
+      font-size: 1.15rem; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: transform 0.15s;
+      flex-shrink: 0;
+    }
+    .tl-play-btn:hover { transform: scale(1.05); }
+    .tl-play-btn:active { transform: scale(0.95); }
+    .tl-counter {
+      font-family: var(--mono); font-size: 0.82rem;
+      color: var(--text-muted); white-space: nowrap;
+    }
+    .tl-speed-group {
+      display: flex; gap: 4px; margin-left: auto;
+    }
+    .tl-speed-btn {
+      padding: 0.25rem 0.65rem;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-strong);
+      background: transparent;
+      font-family: var(--mono); font-size: 0.72rem;
+      color: var(--text-muted); cursor: pointer;
+      transition: all 0.15s;
+    }
+    .tl-speed-btn.active {
+      background: var(--ep-green); color: var(--ep-cream);
+      border-color: var(--ep-green);
+    }
+    @media(max-width:520px) {
+      .tl-speed-group { width: 100%; justify-content: flex-end; margin-left: 0; }
+    }
+
+    /* ═══════════════════════════════════════════════
+       NEW: On this day, photo of the day
+    ═══════════════════════════════════════════════ */
+    .feature-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.25rem;
+      margin-bottom: 2rem;
+    }
+    @media(max-width:800px) { .feature-row { grid-template-columns: 1fr; gap: 0.85rem; } }
+
+    .feature-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      cursor: pointer;
+      transition: box-shadow 0.2s, transform 0.2s;
+      display: flex;
+      flex-direction: column;
+    }
+    .feature-card:hover { box-shadow: 0 6px 24px rgba(33,67,50,0.12); transform: translateY(-2px); }
+    .feature-label {
+      font-size: 0.66rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.1em;
+      color: var(--ep-tan);
+      padding: 0.6rem 1rem 0.3rem;
+      display: flex; align-items: center; gap: 0.4rem;
+    }
+    .feature-img-wrap {
+      position: relative;
+      aspect-ratio: 16/10;
+      background: var(--ep-cream-dark);
+      overflow: hidden;
+    }
+    .feature-img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .feature-body { padding: 0.7rem 1rem 1rem; }
+    .feature-date { font-weight: 600; font-size: 0.92rem; color: var(--ep-green); }
+    .feature-time { font-family: var(--mono); font-size: 0.72rem; color: var(--text-muted); margin-bottom: 0.5rem; }
+    .feature-caption { font-size: 0.8rem; color: var(--text-muted); line-height: 1.5; margin-bottom: 0.5rem; }
+
+    /* ═══════════════════════════════════════════════
+       NEW: Filter context summary
+    ═══════════════════════════════════════════════ */
+    .context-summary {
+      background: linear-gradient(135deg, rgba(33,67,50,0.05), rgba(191,155,123,0.06));
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--ep-tan);
+      border-radius: var(--radius-md);
+      padding: 0.85rem 1.25rem;
+      margin-bottom: 1.25rem;
+      display: none;
+    }
+    .context-summary.visible { display: block; }
+    .context-summary-title {
+      font-size: 0.85rem; font-weight: 600;
+      color: var(--ep-green); margin-bottom: 0.35rem;
+    }
+    .context-stats {
+      display: flex; gap: 1.2rem; flex-wrap: wrap;
+      font-size: 0.8rem; color: var(--text-muted);
+    }
+    .context-stat strong { color: var(--ep-green); font-family: var(--mono); }
+
+    /* ═══════════════════════════════════════════════
+       NEW: Notable highlights
+    ═══════════════════════════════════════════════ */
+    .notable-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 0.75rem;
+      margin-bottom: 2rem;
+    }
+    .notable-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.15s;
+      text-align: left;
+    }
+    .notable-card:hover { transform: translateY(-2px); }
+    .notable-thumb {
+      width: 100%; aspect-ratio: 4/3;
+      object-fit: cover; display: block;
+      background: var(--ep-cream-dark);
+    }
+    .notable-body { padding: 0.55rem 0.75rem 0.7rem; }
+    .notable-cat {
+      font-size: 0.62rem; font-weight: 700;
+      letter-spacing: 0.07em; text-transform: uppercase;
+      color: var(--ep-tan); margin-bottom: 0.2rem;
+    }
+    .notable-val {
+      font-family: var(--mono); font-size: 0.85rem;
+      color: var(--ep-green); font-weight: 600;
+    }
+    .notable-date {
+      font-size: 0.68rem; color: var(--text-muted); margin-top: 0.15rem;
+    }
+
+    /* ═══════════════════════════════════════════════
+       NEW: Photo calendar heatmap (which dates have photos)
+    ═══════════════════════════════════════════════ */
+    .calendar-heatmap {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1rem 1.25rem;
+      margin-bottom: 1.5rem;
+      overflow-x: auto;
+    }
+    .ch-title {
+      font-size: 0.85rem; font-weight: 600;
+      color: var(--ep-green); margin-bottom: 0.6rem;
+      display: flex; justify-content: space-between; align-items: baseline;
+      gap: 0.5rem; flex-wrap: wrap;
+    }
+    .ch-subtitle { font-size: 0.72rem; color: var(--text-muted); font-weight: 400; }
+    .ch-grid {
+      display: flex; gap: 2px;
+      align-items: flex-end;
+      min-width: max-content;
+    }
+    .ch-month-col {
+      display: flex; flex-direction: column;
+      align-items: center; gap: 4px;
+      min-width: 16px;
+    }
+    .ch-bar {
+      width: 14px; min-width: 14px;
+      background: var(--ep-cream-dark);
+      border-radius: 2px;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .ch-bar:hover { outline: 1px solid var(--ep-tan); }
+    .ch-bar.has-photos { background: var(--ep-green); }
+    .ch-bar.level-1 { background: rgba(33,67,50,0.25); }
+    .ch-bar.level-2 { background: rgba(33,67,50,0.5); }
+    .ch-bar.level-3 { background: rgba(33,67,50,0.75); }
+    .ch-bar.level-4 { background: var(--ep-green); }
+    .ch-label {
+      font-family: var(--mono); font-size: 0.55rem;
+      color: var(--text-muted); transform: rotate(-45deg);
+      transform-origin: top left; height: 28px;
+      white-space: nowrap;
+    }
+
+    /* ═══════════════════════════════════════════════
+       NEW: FAQ
+    ═══════════════════════════════════════════════ */
+    .faq-section {
+      max-width: 900px; margin: 3rem auto 0;
+      padding: 0 2rem 2rem;
+    }
+    .faq-section h2 {
+      font-family: var(--serif); font-size: 1.4rem;
+      color: var(--ep-green); margin-bottom: 1rem;
+    }
+    .faq-item {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      margin-bottom: 0.6rem; overflow: hidden;
+    }
+    .faq-q {
+      width: 100%; background: none; border: none;
+      padding: 0.85rem 1.1rem;
+      font-family: var(--sans); font-size: 0.9rem; font-weight: 600;
+      color: var(--ep-green);
+      cursor: pointer; text-align: left;
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 0.5rem;
+    }
+    .faq-q::after {
+      content: "+"; font-size: 1.3rem; color: var(--ep-tan);
+      transition: transform 0.2s; line-height: 1;
+    }
+    .faq-item.open .faq-q::after { content: "−"; }
+    .faq-a {
+      padding: 0 1.1rem 1rem;
+      font-size: 0.85rem; color: var(--text-muted);
+      line-height: 1.8;
+      display: none;
+    }
+    .faq-item.open .faq-a { display: block; }
+    .faq-a a { color: var(--ep-green); }
+
+    /* ═══════════════════════════════════════════════
+       NEW: IST tag in lightbox / cards
+    ═══════════════════════════════════════════════ */
+    .ist-tag {
+      font-size: 0.62rem;
+      color: var(--text-muted);
+      font-family: var(--mono);
+      opacity: 0.7;
+      margin-left: 4px;
+    }
+
+    /* ═══════════════════════════════════════════════
+       NEW: Skeleton image fallback
+    ═══════════════════════════════════════════════ */
+    .photo-img-wrap {
+      position: relative;
+      background: var(--ep-cream-dark);
+    }
+    .img-fallback {
+      position: absolute; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--text-muted); font-size: 0.78rem;
+      background: var(--ep-cream-dark);
+    }
   </style>
 </head>
 <body>
@@ -493,8 +842,9 @@
     </div>
   </div>
 
-  <div style="display:flex;align-items:center;gap:0.75rem;margin-left:auto;">
+  <div style="display:flex;align-items:center;gap:0.75rem;margin-left:auto;flex-wrap:wrap;">
     <span class="filter-count" id="filter-count"></span>
+    <button id="launch-tl-btn" onclick="launchTimelapse()" style="padding:0.35rem 0.85rem;border-radius:var(--radius-sm);border:1px solid var(--ep-green);background:transparent;color:var(--ep-green);font-family:var(--sans);font-size:0.78rem;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:0.35rem;transition:all 0.15s;" onmouseover="this.style.background='var(--ep-green)';this.style.color='var(--ep-cream)';" onmouseout="this.style.background='transparent';this.style.color='var(--ep-green)';">🎬 Time-lapse</button>
     <div class="view-mode-toggle">
       <button class="view-btn active" id="viewNormal" onclick="setView('normal',this)" title="Normal view">▦</button>
       <button class="view-btn" id="viewCompact" onclick="setView('compact',this)" title="Compact grid">⊞</button>
@@ -506,6 +856,56 @@
 <div class="ep-section">
   <div class="ep-section-inner">
 
+    <!-- NEW: Photo of the day + On this day -->
+    <div class="feature-row" id="feature-row" style="display:none;">
+      <!-- Filled by JS -->
+    </div>
+
+    <!-- NEW: Time-lapse player section -->
+    <div class="timelapse-section" id="timelapse-section">
+      <div class="tl-header">
+        <div>
+          <h2 class="tl-title">🎬 Watch the hill change — time-lapse</h2>
+          <div class="tl-subtitle" id="tl-subtitle">Playback of filtered photos in chronological order. Each frame shows the AQI, temperature and rainfall at that moment.</div>
+        </div>
+      </div>
+      <div class="tl-viewer">
+        <img class="tl-img" id="tl-img" src="" alt="Time-lapse frame of Baner Hill">
+        <div class="tl-overlay-info">
+          <div class="tl-overlay-date" id="tl-overlay-date">—</div>
+          <div class="tl-overlay-time" id="tl-overlay-time">—</div>
+        </div>
+        <div class="tl-overlay-chips" id="tl-overlay-chips"></div>
+        <div class="tl-progress-wrap" id="tl-progress-wrap">
+          <div class="tl-progress-bar" id="tl-progress-bar" style="width:0%;"></div>
+        </div>
+      </div>
+      <div class="tl-controls">
+        <button class="tl-play-btn" id="tl-play-btn" onclick="toggleTimelapse()" aria-label="Play time-lapse">▶</button>
+        <div class="tl-counter" id="tl-counter">— / —</div>
+        <div class="tl-speed-group" role="group" aria-label="Playback speed">
+          <button class="tl-speed-btn" data-speed="1500" onclick="setTimelapseSpeed(1500, this)">Slow</button>
+          <button class="tl-speed-btn active" data-speed="600" onclick="setTimelapseSpeed(600, this)">Normal</button>
+          <button class="tl-speed-btn" data-speed="200" onclick="setTimelapseSpeed(200, this)">Fast</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- NEW: Calendar heatmap -->
+    <div class="calendar-heatmap" id="calendar-heatmap" style="display:none;">
+      <div class="ch-title">
+        <span>📅 Photo coverage timeline</span>
+        <span class="ch-subtitle" id="ch-subtitle">— months with photos</span>
+      </div>
+      <div class="ch-grid" id="ch-grid"></div>
+    </div>
+
+    <!-- NEW: Notable highlights -->
+    <div id="notable-section" style="display:none;">
+      <h2 style="font-family:var(--serif);font-size:1.15rem;color:var(--ep-green);margin:0 0 0.75rem;">🌟 Notable moments captured</h2>
+      <div class="notable-row" id="notable-row"></div>
+    </div>
+
     <!-- Compare banner — shown when cross-year mode is active -->
     <div class="compare-banner" id="compareBanner">
       <div class="compare-banner-icon">📅</div>
@@ -513,6 +913,12 @@
         <strong id="compareBannerTitle">Comparing across years</strong><br>
         <span id="compareBannerBody">Showing all photos from the same month across every year in the archive. Photos are grouped by year so you can see how the hill changes in the same season over time.</span>
       </div>
+    </div>
+
+    <!-- NEW: Filter context summary -->
+    <div class="context-summary" id="context-summary">
+      <div class="context-summary-title" id="context-summary-title"></div>
+      <div class="context-stats" id="context-stats"></div>
     </div>
 
     <!-- Stats -->
@@ -537,6 +943,39 @@
       <div class="pg-info" id="pgInfo"></div>
     </div>
 
+  </div>
+</div>
+
+<!-- NEW: FAQ -->
+<div class="faq-section">
+  <h2>Frequently asked questions</h2>
+  <div class="faq-item">
+    <button class="faq-q" onclick="this.parentElement.classList.toggle('open')">How tall is Baner Hill in Pune?</button>
+    <div class="faq-a">Baner Hill stands at <strong>678 metres</strong> above sea level — the third highest point within Pune city limits. It lies at coordinates 18.5526°N, 73.7819°E on the eastern edge of the Western Ghats, just above the Baner suburb.</div>
+  </div>
+  <div class="faq-item">
+    <button class="faq-q" onclick="this.parentElement.classList.toggle('open')">Why is Baner Hill ecologically important?</button>
+    <div class="faq-a">Baner Hill is an outlier spur of the Western Ghats — a UNESCO World Heritage biodiversity hotspot <strong>older than the Himalayas</strong>. The Western Ghats harbour 30% of India's plant, fish, herpetofauna, bird and mammal species on less than 6% of the country's land area. Baner Hill sits at the ecotone where Western Ghats meet the Deccan plateau.</div>
+  </div>
+  <div class="faq-item">
+    <button class="faq-q" onclick="this.parentElement.classList.toggle('open')">How green is Baner Hill compared to the past?</button>
+    <div class="faq-a">Satellite NDVI data from Landsat-5 and Sentinel-2 shows Baner Hill is <strong>+278% greener</strong> in 2025 than in 1990. The dry-season NDVI rose from 0.074 (bare rock) to 0.278 (active greening). During the 2025 monsoon, individual pixels on the north slope reached <strong>0.957</strong>, comparable to dense Amazon rainforest. See the Satellite Intelligence section above for the full 35-year record.</div>
+  </div>
+  <div class="faq-item">
+    <button class="faq-q" onclick="this.parentElement.classList.toggle('open')">When is the best time to visit Baner Hill?</button>
+    <div class="faq-a">The hill is greenest from <strong>July to October</strong>, peaking in August during the monsoon. November to February offers clear views with cooler temperatures. April–May is hottest and the hill appears brown. Visit early morning (6–8 AM) or evening (5–7 PM) for the best light and bird activity. Check the live AQI and weather on each photo in the archive below to see what conditions look like at different times.</div>
+  </div>
+  <div class="faq-item">
+    <button class="faq-q" onclick="this.parentElement.classList.toggle('open')">When did Baner Hill start recovering?</button>
+    <div class="faq-a">The inflection point was <strong>2017</strong>, when NDVI jumped from 0.138 to 0.211 in two years — a 53% rise. This is when human reforestation efforts became visible from orbit. Since 2017, gains have not reversed — the hill crossed a threshold of ecological resilience.</div>
+  </div>
+  <div class="faq-item">
+    <button class="faq-q" onclick="this.parentElement.classList.toggle('open')">Where should new trees be planted on Baner Hill?</button>
+    <div class="faq-a">The <strong>south-west corridor</strong> (NDVI 0.11) and <strong>south-facing mid-slope</strong> (NDVI 0.14) are the highest priority zones. These bare laterite areas have not recovered since 1990. Recommended native species include Karvi, Teak, Flame of the Forest, Neem, Pongamia and Bel — planted in clusters of 5–10 for mutual protection. See the Plant Here volunteer deployment map in the impact section above.</div>
+  </div>
+  <div class="faq-item">
+    <button class="faq-q" onclick="this.parentElement.classList.toggle('open')">How does Earth Pulse capture these photos?</button>
+    <div class="faq-a">Two Raspberry Pi camera nodes face Baner Hill — one from the east balcony and one south-facing. They capture timestamped photos automatically, and each frame is matched with the air quality, temperature, humidity and rainfall recorded at that exact moment by Earth Pulse environmental sensors. Photos are stored on Cloudflare R2 and indexed in Supabase. All timestamps shown are in Indian Standard Time (IST, UTC+5:30).</div>
   </div>
 </div>
 
@@ -789,22 +1228,36 @@ function enrichPhoto(p) {
 
 // ── Helpers ───────────────────────────────────────────────────────────────
 function aqiChipClass(v) {
-  if (!v) return '';
+  if (!v && v !== 0) return '';
   if (v<=20) return 'chip-aqi-good'; if (v<=40) return 'chip-aqi-fair';
   if (v<=60) return 'chip-aqi-moderate'; if (v<=80) return 'chip-aqi-poor';
   return 'chip-aqi-bad';
 }
+function indiaAqiChipClass(v) {
+  if (!v && v !== 0) return '';
+  if (v<=50)  return 'chip-india-aqi-good';
+  if (v<=100) return 'chip-india-aqi-satisfact';
+  if (v<=200) return 'chip-india-aqi-moderate';
+  if (v<=300) return 'chip-india-aqi-poor';
+  if (v<=400) return 'chip-india-aqi-vpoor';
+  return 'chip-india-aqi-severe';
+}
 function aqiWord(v) {
-  if (!v) return '—';
+  if (!v && v !== 0) return '—';
   if (v<=20) return 'Good'; if (v<=40) return 'Fair';
   if (v<=60) return 'Moderate'; if (v<=80) return 'Poor';
   if (v<=100) return 'Very Poor'; return 'Severe';
 }
 function indiaWord(v) {
-  if (!v) return '—';
+  if (!v && v !== 0) return '—';
   if (v<=50) return 'Good'; if (v<=100) return 'Satisfactory';
   if (v<=200) return 'Moderate'; if (v<=300) return 'Poor';
   if (v<=400) return 'Very Poor'; return 'Severe';
+}
+function windCardinal(deg) {
+  if (deg == null || isNaN(deg)) return '';
+  const dirs = ['N','NNE','NE','ENE','E','ESE','SE','SSE','S','SSW','SW','WSW','W','WNW','NW','NNW'];
+  return dirs[Math.round(((deg % 360) / 22.5))] || '';
 }
 function istDate(ts) {
   const d = new Date(ts);
@@ -833,19 +1286,428 @@ function buildChips(p, large=false) {
   if (p.temperature != null) chips.push(`<span class="climate-chip chip-temp" style="${s}">🌡️ ${p.temperature.toFixed(1)}°C</span>`);
   if (p.humidity    != null) chips.push(`<span class="climate-chip chip-hum"  style="${s}">💧 ${Math.round(p.humidity)}%</span>`);
   if (p.aqi != null) chips.push(`<span class="climate-chip ${aqiChipClass(p.aqi)}" style="${s}">EU AQI ${p.aqi} · ${aqiWord(p.aqi)}</span>`);
-  if (p.google_aqi_india) chips.push(`<span class="climate-chip ${aqiChipClass(p.google_aqi_india)}" style="${s}">India AQI ${p.google_aqi_india} · ${indiaWord(p.google_aqi_india)}</span>`);
+  if (p.google_aqi_india) chips.push(`<span class="climate-chip ${indiaAqiChipClass(p.google_aqi_india)}" style="${s}">India AQI ${p.google_aqi_india} · ${indiaWord(p.google_aqi_india)}</span>`);
   if (p.dominant_pollutant) chips.push(`<span class="climate-chip chip-cloud" style="${s}">${p.dominant_pollutant}</span>`);
   const rainVal = p.rain_accumulation ?? p.precipitation;
   if (rainVal > 0) chips.push(`<span class="climate-chip chip-rain" style="${s}">🌧️ ${Number(rainVal).toFixed(1)}mm</span>`);
   if (p.cloudcover != null) chips.push(`<span class="climate-chip chip-cloud" style="${s}">☁️ ${p.cloudcover}%</span>`);
-  if (p.wind_speed != null) chips.push(`<span class="climate-chip chip-cloud" style="${s}">💨 ${Number(p.wind_speed).toFixed(1)} km/h</span>`);
+  if (p.wind_speed != null) {
+    const cardinal = windCardinal(p.wind_direction);
+    chips.push(`<span class="climate-chip chip-cloud" style="${s}">💨 ${Number(p.wind_speed).toFixed(1)} km/h${cardinal ? ' ' + cardinal : ''}</span>`);
+  }
   if (large && p._wu_source) chips.push(`<span class="climate-chip chip-source" style="${s};background:rgba(191,155,123,0.12);color:var(--ep-tan);">📡 Weather Union</span>`);
   else if (large && !p._wu_source) chips.push(`<span class="climate-chip chip-source" style="${s};">Open-Meteo</span>`);
   if (!chips.length) chips.push(`<span class="climate-chip chip-source" style="${s}">No climate data</span>`);
   return chips.join('');
 }
 
-// ── Load data ─────────────────────────────────────────────────────────────
+// ════════════════════════════════════════════════════════════════════════
+// NEW FEATURES — timelapse, photo of day, on this day, notable, calendar
+// ════════════════════════════════════════════════════════════════════════
+
+// ── Photo of the day + On this day ────────────────────────────────────────
+function renderFeatureRow() {
+  if (!allPhotos.length) return;
+  const row = document.getElementById('feature-row');
+  const today = new Date();
+  const todayInfo = istDate(today);
+  const todayMD = todayInfo.monthOnly + '-' + String(today.getDate()).padStart(2,'0');
+
+  // Photo of the day: most recent photo (within 7 days if possible)
+  const recent = allPhotos[0]; // already sorted desc
+  const recentInfo = istDate(recent.captured_at);
+  const recentSrc = recent.r2_url || recent.image_url || '';
+
+  // On this day: photos from same date in past years (not today)
+  const onThisDay = allPhotos.filter(p => {
+    const d = new Date(p.captured_at);
+    const md = istDate(d).monthOnly + '-' + String(d.toLocaleDateString('en-CA',{timeZone:'Asia/Kolkata',day:'2-digit'})).slice(0,2);
+    const isToday = (d.toDateString() === today.toDateString());
+    return md === todayMD && !isToday;
+  });
+
+  let html = '';
+
+  // Photo of the day (always show — most recent)
+  const recentChips = buildChips(recent);
+  html += `<div class="feature-card" onclick="openPhotoByCapturedAt('${recent.captured_at}')">
+    <div class="feature-label">🌟 Latest photo</div>
+    <div class="feature-img-wrap">
+      <img class="feature-img" src="${recentSrc}" alt="Latest Baner Hill photo — ${recentInfo.full}" loading="lazy"
+        onerror="this.style.background='var(--ep-cream-dark)';this.removeAttribute('src')">
+    </div>
+    <div class="feature-body">
+      <div class="feature-date">${recentInfo.short}</div>
+      <div class="feature-time">${recentInfo.time}<span class="ist-tag">IST</span></div>
+      <div class="feature-caption">The most recent shot of Baner Hill from Earth Pulse sensors.</div>
+      <div class="photo-climate">${recentChips}</div>
+    </div>
+  </div>`;
+
+  // On this day (only if we have any)
+  if (onThisDay.length > 0) {
+    const otd = onThisDay[0]; // pick most recent of those
+    const otdInfo = istDate(otd.captured_at);
+    const otdSrc = otd.r2_url || otd.image_url || '';
+    const otdChips = buildChips(otd);
+    const yearsAgo = today.getFullYear() - new Date(otd.captured_at).getFullYear();
+    html += `<div class="feature-card" onclick="openPhotoByCapturedAt('${otd.captured_at}')">
+      <div class="feature-label">📅 On this day · ${yearsAgo} year${yearsAgo!==1?'s':''} ago</div>
+      <div class="feature-img-wrap">
+        <img class="feature-img" src="${otdSrc}" alt="Baner Hill on the same date in ${otdInfo.year} — ${otdInfo.full}" loading="lazy"
+          onerror="this.style.background='var(--ep-cream-dark)';this.removeAttribute('src')">
+      </div>
+      <div class="feature-body">
+        <div class="feature-date">${otdInfo.short}</div>
+        <div class="feature-time">${otdInfo.time}<span class="ist-tag">IST</span></div>
+        <div class="feature-caption">The hill on this exact date, ${yearsAgo} year${yearsAgo!==1?'s':''} ago. See how it has changed.</div>
+        <div class="photo-climate">${otdChips}</div>
+      </div>
+    </div>`;
+  } else {
+    // No "on this day" — show second-most-recent as backup
+    if (allPhotos.length > 1) {
+      const prev = allPhotos[1];
+      const prevInfo = istDate(prev.captured_at);
+      const prevSrc = prev.r2_url || prev.image_url || '';
+      const prevChips = buildChips(prev);
+      html += `<div class="feature-card" onclick="openPhotoByCapturedAt('${prev.captured_at}')">
+        <div class="feature-label">📷 Previously</div>
+        <div class="feature-img-wrap">
+          <img class="feature-img" src="${prevSrc}" alt="Baner Hill — ${prevInfo.full}" loading="lazy"
+            onerror="this.style.background='var(--ep-cream-dark)';this.removeAttribute('src')">
+        </div>
+        <div class="feature-body">
+          <div class="feature-date">${prevInfo.short}</div>
+          <div class="feature-time">${prevInfo.time}<span class="ist-tag">IST</span></div>
+          <div class="feature-caption">The frame before the latest one.</div>
+          <div class="photo-climate">${prevChips}</div>
+        </div>
+      </div>`;
+    }
+  }
+
+  row.innerHTML = html;
+  row.style.display = 'grid';
+}
+
+// Open any photo by its captured_at timestamp (jumps to its position in filtered array)
+function openPhotoByCapturedAt(ts) {
+  // If filtered doesn't include it, switch to all photos first
+  let idx = filtered.findIndex(p => p.captured_at === ts);
+  if (idx === -1) {
+    // Reset filter to show all, then open
+    document.getElementById('period-select').value = 'all';
+    document.getElementById('compare-select').value = 'none';
+    document.querySelectorAll('.season-pill').forEach((b,i)=>{
+      b.classList.toggle('active', i===0);
+    });
+    activeSeason = 'all';
+    applyFilters();
+    idx = filtered.findIndex(p => p.captured_at === ts);
+  }
+  if (idx >= 0) openLb(idx);
+}
+
+// ── Notable highlights — auto-discovered "moments" ────────────────────────
+function renderNotable() {
+  if (allPhotos.length < 4) return;
+  const section = document.getElementById('notable-section');
+  const row = document.getElementById('notable-row');
+
+  const cards = [];
+
+  // 1. Highest rainfall capture
+  const withRain = allPhotos.filter(p => (p.rain_accumulation || p.precipitation || 0) > 0);
+  if (withRain.length) {
+    const wettest = withRain.reduce((a,b) =>
+      (a.rain_accumulation||a.precipitation||0) > (b.rain_accumulation||b.precipitation||0) ? a : b
+    );
+    const mm = (wettest.rain_accumulation || wettest.precipitation).toFixed(1);
+    cards.push({
+      p: wettest,
+      cat: '🌧️ Wettest moment',
+      val: `${mm}mm rain`,
+      date: istDate(wettest.captured_at).short
+    });
+  }
+
+  // 2. Cleanest air (lowest EU AQI)
+  const withAqi = allPhotos.filter(p => p.aqi != null && p.aqi > 0);
+  if (withAqi.length) {
+    const cleanest = withAqi.reduce((a,b) => a.aqi < b.aqi ? a : b);
+    cards.push({
+      p: cleanest,
+      cat: '🍃 Cleanest air',
+      val: `EU AQI ${cleanest.aqi}`,
+      date: istDate(cleanest.captured_at).short
+    });
+  }
+
+  // 3. Hottest moment
+  const withTemp = allPhotos.filter(p => p.temperature != null);
+  if (withTemp.length) {
+    const hottest = withTemp.reduce((a,b) => a.temperature > b.temperature ? a : b);
+    cards.push({
+      p: hottest,
+      cat: '🌡️ Hottest day',
+      val: `${hottest.temperature.toFixed(1)}°C`,
+      date: istDate(hottest.captured_at).short
+    });
+    const coolest = withTemp.reduce((a,b) => a.temperature < b.temperature ? a : b);
+    cards.push({
+      p: coolest,
+      cat: '❄️ Coolest day',
+      val: `${coolest.temperature.toFixed(1)}°C`,
+      date: istDate(coolest.captured_at).short
+    });
+  }
+
+  // 4. Most humid (monsoon proxy)
+  const withHum = allPhotos.filter(p => p.humidity != null);
+  if (withHum.length) {
+    const mostHumid = withHum.reduce((a,b) => a.humidity > b.humidity ? a : b);
+    if (mostHumid.humidity >= 80) {
+      cards.push({
+        p: mostHumid,
+        cat: '💧 Most humid',
+        val: `${Math.round(mostHumid.humidity)}%`,
+        date: istDate(mostHumid.captured_at).short
+      });
+    }
+  }
+
+  if (!cards.length) return;
+
+  row.innerHTML = cards.map(c => {
+    const src = c.p.r2_url || c.p.image_url || '';
+    return `<div class="notable-card" onclick="openPhotoByCapturedAt('${c.p.captured_at}')">
+      <img class="notable-thumb" src="${src}" alt="${c.cat} — ${c.date}" loading="lazy"
+        onerror="this.style.background='var(--ep-cream-dark)';this.removeAttribute('src')">
+      <div class="notable-body">
+        <div class="notable-cat">${c.cat}</div>
+        <div class="notable-val">${c.val}</div>
+        <div class="notable-date">${c.date}</div>
+      </div>
+    </div>`;
+  }).join('');
+  section.style.display = 'block';
+}
+
+// ── Calendar heatmap (months with photos) ─────────────────────────────────
+function renderCalendar() {
+  if (!allPhotos.length) return;
+  const section = document.getElementById('calendar-heatmap');
+  const grid = document.getElementById('ch-grid');
+
+  // Group by month
+  const byMonth = {};
+  for (const p of allPhotos) {
+    const mn = istDate(p.captured_at).monthNum; // YYYY-MM
+    if (!byMonth[mn]) byMonth[mn] = 0;
+    byMonth[mn]++;
+  }
+
+  // Build month range from oldest to newest
+  const months = Object.keys(byMonth).sort();
+  if (!months.length) return;
+  const [firstY, firstM] = months[0].split('-').map(Number);
+  const [lastY, lastM] = months[months.length-1].split('-').map(Number);
+
+  // Find max count for level scaling
+  const maxCount = Math.max(...Object.values(byMonth));
+
+  const cells = [];
+  let y = firstY, m = firstM;
+  while (y < lastY || (y === lastY && m <= lastM)) {
+    const key = `${y}-${String(m).padStart(2,'0')}`;
+    const count = byMonth[key] || 0;
+    let level = 0;
+    if (count > 0) {
+      const ratio = count / maxCount;
+      if (ratio < 0.25) level = 1;
+      else if (ratio < 0.5) level = 2;
+      else if (ratio < 0.75) level = 3;
+      else level = 4;
+    }
+    const monthName = new Date(y, m-1, 1).toLocaleDateString('en-IN', {month:'short'});
+    cells.push({
+      key, count, level,
+      label: `${monthName} ${String(y).slice(2)}`,
+      tooltip: count ? `${monthName} ${y}: ${count} photo${count!==1?'s':''}` : `${monthName} ${y}: no photos`
+    });
+    m++;
+    if (m > 12) { m = 1; y++; }
+  }
+
+  grid.innerHTML = cells.map(c => `
+    <div class="ch-month-col">
+      <div class="ch-bar level-${c.level}" style="height:${c.count ? 30 + (c.level*8) : 14}px;"
+        title="${c.tooltip}"
+        onclick="${c.count ? `filterToMonth('${c.key}')` : ''}"></div>
+      <div class="ch-label">${c.label}</div>
+    </div>
+  `).join('');
+
+  document.getElementById('ch-subtitle').textContent =
+    `— ${months.length} months · click any month to filter`;
+
+  section.style.display = 'block';
+}
+
+function filterToMonth(monthKey) {
+  document.getElementById('period-select').value = monthKey;
+  document.getElementById('compare-select').value = 'none';
+  applyFilters();
+  // Scroll to grid
+  document.getElementById('photo-grid').scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+// ── Filter context summary (climate of current filter selection) ──────────
+function renderContextSummary() {
+  const wrap = document.getElementById('context-summary');
+  const period = document.getElementById('period-select').value;
+  const compare = document.getElementById('compare-select').value;
+
+  // Only show when a specific filter is active
+  if (period === 'all' && compare === 'none' && activeSeason === 'all') {
+    wrap.classList.remove('visible');
+    return;
+  }
+
+  if (!filtered.length) {
+    wrap.classList.remove('visible');
+    return;
+  }
+
+  // Build title
+  let title = '';
+  if (period !== 'all') {
+    const [y,m] = period.split('-');
+    title = new Date(+y, +m-1, 1).toLocaleDateString('en-IN', {month:'long', year:'numeric'}) + ' · climate context';
+  } else if (compare !== 'none') {
+    const monthName = new Date(2024, parseInt(compare)-1, 1).toLocaleDateString('en-IN',{month:'long'});
+    title = `${monthName} (all years) · climate context`;
+  } else if (activeSeason !== 'all') {
+    const seasonNames = {summer:'Summer · climate context', monsoon:'Monsoon · climate context', winter:'Winter · climate context', rain:'Rainy days · climate context'};
+    title = seasonNames[activeSeason] || '';
+  }
+  document.getElementById('context-summary-title').textContent = title;
+
+  // Compute climate stats
+  const temps = filtered.filter(p => p.temperature != null);
+  const aqis  = filtered.filter(p => p.aqi != null);
+  const indiaAqis = filtered.filter(p => p.google_aqi_india != null);
+  const rains = filtered.map(p => p.rain_accumulation || p.precipitation || 0);
+  const totalRain = rains.reduce((s,v) => s + v, 0);
+
+  const avgTemp = temps.length ? (temps.reduce((s,p)=>s+p.temperature,0)/temps.length).toFixed(1) : null;
+  const minTemp = temps.length ? Math.min(...temps.map(p=>p.temperature)).toFixed(1) : null;
+  const maxTemp = temps.length ? Math.max(...temps.map(p=>p.temperature)).toFixed(1) : null;
+  const avgAqi = aqis.length ? Math.round(aqis.reduce((s,p)=>s+p.aqi,0)/aqis.length) : null;
+  const avgIndiaAqi = indiaAqis.length ? Math.round(indiaAqis.reduce((s,p)=>s+p.google_aqi_india,0)/indiaAqis.length) : null;
+
+  const stats = [];
+  if (avgTemp) stats.push(`<div class="context-stat">🌡️ Avg <strong>${avgTemp}°C</strong> (${minTemp}–${maxTemp})</div>`);
+  if (avgAqi) stats.push(`<div class="context-stat">🍃 Avg EU AQI <strong>${avgAqi}</strong> · ${aqiWord(avgAqi)}</div>`);
+  if (avgIndiaAqi) stats.push(`<div class="context-stat">🇮🇳 Avg India AQI <strong>${avgIndiaAqi}</strong> · ${indiaWord(avgIndiaAqi)}</div>`);
+  if (totalRain > 0) stats.push(`<div class="context-stat">🌧️ Total rain captured <strong>${totalRain.toFixed(1)}mm</strong></div>`);
+  stats.push(`<div class="context-stat">📸 <strong>${filtered.length}</strong> photo${filtered.length!==1?'s':''}</div>`);
+
+  document.getElementById('context-stats').innerHTML = stats.join('');
+  wrap.classList.add('visible');
+}
+
+// ── Time-lapse player ────────────────────────────────────────────────────
+let tlPlaying = false;
+let tlIndex = 0;
+let tlSpeed = 600;
+let tlTimer = null;
+let tlPhotos = []; // sorted chronological asc
+
+function launchTimelapse() {
+  if (!filtered.length) {
+    alert('No photos to play. Try a different filter.');
+    return;
+  }
+  tlPhotos = filtered.slice().sort((a,b) => new Date(a.captured_at) - new Date(b.captured_at));
+  tlIndex = 0;
+  const section = document.getElementById('timelapse-section');
+  section.classList.add('active');
+  document.getElementById('tl-subtitle').textContent =
+    `${tlPhotos.length} frames · chronological · use the speed buttons to adjust pace`;
+  drawTimelapseFrame();
+  section.scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+function drawTimelapseFrame() {
+  const p = tlPhotos[tlIndex];
+  if (!p) return;
+  const {full, short, time} = istDate(p.captured_at);
+  const src = p.r2_url || p.image_url || '';
+  const img = document.getElementById('tl-img');
+  img.src = src;
+  img.alt = `Baner Hill — ${full}`;
+  document.getElementById('tl-overlay-date').textContent = short;
+  document.getElementById('tl-overlay-time').innerHTML = `${time} IST · ${full.split(',')[0]}`;
+  document.getElementById('tl-overlay-chips').innerHTML = buildChips(p, false);
+  document.getElementById('tl-counter').textContent = `${tlIndex+1} / ${tlPhotos.length}`;
+  document.getElementById('tl-progress-bar').style.width = ((tlIndex+1) / tlPhotos.length * 100) + '%';
+}
+
+function toggleTimelapse() {
+  if (!tlPhotos.length) { launchTimelapse(); return; }
+  tlPlaying = !tlPlaying;
+  const btn = document.getElementById('tl-play-btn');
+  if (tlPlaying) {
+    btn.innerHTML = '❚❚';
+    btn.setAttribute('aria-label', 'Pause time-lapse');
+    tlTimer = setInterval(() => {
+      tlIndex = (tlIndex + 1) % tlPhotos.length;
+      drawTimelapseFrame();
+      // Stop at end (don't loop)
+      if (tlIndex === 0) {
+        tlPlaying = false;
+        btn.innerHTML = '▶';
+        btn.setAttribute('aria-label', 'Play time-lapse');
+        clearInterval(tlTimer);
+        tlTimer = null;
+      }
+    }, tlSpeed);
+  } else {
+    btn.innerHTML = '▶';
+    btn.setAttribute('aria-label', 'Play time-lapse');
+    if (tlTimer) { clearInterval(tlTimer); tlTimer = null; }
+  }
+}
+
+function setTimelapseSpeed(ms, btn) {
+  tlSpeed = ms;
+  document.querySelectorAll('.tl-speed-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  // If currently playing, restart with new speed
+  if (tlPlaying) {
+    if (tlTimer) clearInterval(tlTimer);
+    tlPlaying = false;
+    toggleTimelapse();
+  }
+}
+
+// Progress-bar click to seek
+document.addEventListener('DOMContentLoaded', () => {
+  const wrap = document.getElementById('tl-progress-wrap');
+  if (wrap) {
+    wrap.addEventListener('click', (e) => {
+      if (!tlPhotos.length) return;
+      const rect = wrap.getBoundingClientRect();
+      const ratio = (e.clientX - rect.left) / rect.width;
+      tlIndex = Math.max(0, Math.min(tlPhotos.length - 1, Math.floor(ratio * tlPhotos.length)));
+      drawTimelapseFrame();
+    });
+  }
+});
+
+
 async function loadPhotos() {
   try {
     const [photoRes, birdRes] = await Promise.all([
@@ -863,6 +1725,10 @@ async function loadPhotos() {
     buildStats();
     buildPeriodSelect();
     buildCompareSelect();
+    // NEW renders — run after data is loaded
+    renderFeatureRow();
+    renderNotable();
+    renderCalendar();
     applyFilters();
     const statEl = document.getElementById('stat-bird-species');
     if (statEl) statEl.textContent = speciesCount || '—';
@@ -1000,6 +1866,7 @@ function applyFilters() {
 
   currentPage = 1;
   renderGrid();
+  renderContextSummary();
 }
 
 // ── Render grid with pagination ───────────────────────────────────────────
@@ -1063,12 +1930,12 @@ function photoCardHTML(p, idx) {
   const src = p.r2_url || p.image_url || '';
   const sourceTag = p.source === 'upload' ? '📤 Uploaded' : '📷 Pi camera';
   const compact = viewMode === 'compact' ? ' compact' : '';
-  return `<div class="photo-card${compact}" onclick="openLb(${idx})" aria-label="${full}">
+  return `<div class="photo-card${compact}" onclick="openLb(${idx})" aria-label="${full}, ${time} IST">
     <img class="photo-img" src="${src}" alt="Baner hills — ${short}" loading="lazy"
       onerror="this.style.background='var(--ep-cream-dark)';this.removeAttribute('src')">
     <div class="photo-body">
       <div class="photo-date">${short}</div>
-      <div class="photo-time">${time} · <span style="opacity:0.7">${sourceTag}</span></div>
+      <div class="photo-time">${time}<span class="ist-tag">IST</span> · <span style="opacity:0.7">${sourceTag}</span></div>
       <div class="photo-climate">${buildChips(p)}</div>
     </div>
   </div>`;
@@ -1139,7 +2006,7 @@ function drawLb() {
   const src = p.r2_url || p.image_url || '';
   document.getElementById('lb-img').src = src;
   document.getElementById('lb-img').alt = `Baner hills — ${full}`;
-  document.getElementById('lb-date').textContent = `${full} · ${time}`;
+  document.getElementById('lb-date').innerHTML = `${full} · ${time} <span class="ist-tag" style="font-size:0.7rem;">IST</span>`;
   document.getElementById('lb-chips').innerHTML = buildChips(p, true);
   document.getElementById('lb-counter').textContent = `${lbIdx+1} / ${filtered.length}`;
 }
