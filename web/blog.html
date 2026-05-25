@@ -204,7 +204,7 @@ function renderBlog() {
 
       // Monthly card
       if (monthlyPost && currentFilter !== 'weekly') {
-        var mpUrl = 'https://earth-pulse.org/blog/' + year + '/' + MONTH_NAMES[m].toLowerCase() + '.html';
+        var mpUrl = 'https://www.earth-pulse.org/blog/' + year + '/' + MONTH_NAMES[m].toLowerCase() + '.html';
         html += '<a class="blog-monthly-card" href="' + mpUrl + '">' +
           '<div class="blog-monthly-card-top">' +
             '<div class="blog-monthly-card-title">📅 ' + MONTH_NAMES[m] + ' ' + year + ' — Monthly Report</div>' +
@@ -223,7 +223,7 @@ function renderBlog() {
       // Weekly cards
       if (currentFilter !== 'monthly') {
         weeklyPosts.forEach(function(w) {
-          var wUrl = 'https://earth-pulse.org/blog/' + year + '/week-' + w.slug + '.html';
+          var wUrl = 'https://www.earth-pulse.org/blog/' + year + '/week-' + w.slug + '.html';
           var pc = pulseClass(w.pulse_score);
           html += '<a class="blog-weekly-card" href="' + wUrl + '">' +
             (w.hill_photo_url ? '<img class="blog-weekly-card-photo" src="' + w.hill_photo_url + '" alt="Baner Hill ' + w.slug + '" loading="lazy">' : '') +
