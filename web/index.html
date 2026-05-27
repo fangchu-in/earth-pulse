@@ -6,14 +6,13 @@
 
   <!-- ═══ SEO-CRITICAL TITLE — includes weather queries ═══ -->
   <title id="page-title">Baner, Pune Weather Today — Live AQI, Temperature &amp; Birds | Earth Pulse</title>
-  <meta name="description" content="Live weather in Baner, Pune: temperature, rain, air quality (AQI), and bird detections updated every hour. Will it rain today in Baner? Hyperlocal data from the Western Ghats since January 2022. Free citizen science.">
-  <meta name="keywords" content="Baner Pune weather today, will it rain in Baner today, Pune rain today, Baner temperature now, Pune AQI live, Baner air quality, Western Ghats weather, hyperlocal weather Pune, Baner weather forecast, Weather Union Pune, monsoon Pune 2026, Baner birds today">
+  <meta name="description" content="Live weather in Baner, Pune — temperature, AQI, rain and bird detections updated every hour. Will it rain today? 45 years of climate history (ERA5 1980–2021) + hyperlocal sensors since 2022. Western Ghats citizen science.">
+  <meta name="keywords" content="Baner Pune weather today, will it rain in Baner today, Pune rain today, Baner temperature now, Pune AQI live, Baner air quality today, monsoon Pune 2026, monsoon arrival Baner, Western Ghats weather, ERA5 climate data Pune, Baner birds today, Sahyadri weather, hyperlocal weather Pune, Baner weather forecast, Weather Union Pune, Baner hill nature, Pune bird watching, Western Ghats biodiversity, citizen science Pune">
   <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
   <link rel="canonical" href="https://earth-pulse.org/">
 
-  <!-- Open Graph -->
   <meta property="og:title" content="Baner, Pune Weather Today — Live AQI, Temperature &amp; Birds | Earth Pulse">
-  <meta property="og:description" content="Live weather, AQI and bird detections for Baner, Pune. Will it rain today? Real-time hyperlocal data from the Western Ghats edge. Free citizen science since January 2022.">
+  <meta property="og:description" content="Live weather, AQI and bird detections for Baner, Pune. Will it rain today? 45 years of ERA5 climate history + live hyperlocal sensors. Western Ghats citizen science since January 2022.">
   <meta property="og:image" content="https://earth-pulse.org/earth-pulse-logo-og.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
@@ -24,9 +23,17 @@
 
   <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Baner, Pune Weather Today | Earth Pulse">
-  <meta name="twitter:description" content="Live weather, AQI and bird detections for Baner, Pune. Will it rain today? Hourly data since January 2022.">
+  <meta name="twitter:title" content="Baner, Pune Weather Today — Live AQI &amp; Birds | Earth Pulse">
+  <meta name="twitter:description" content="Live weather, AQI and bird detections for Baner, Pune. 45 years of ERA5 climate history + hyperlocal sensors. Will it rain today? Free citizen science.">
   <meta name="twitter:image" content="https://earth-pulse.org/earth-pulse-logo-og.png">
+  <meta name="twitter:site" content="@earthpulsein">
+
+  <!-- AI search / LLM crawlers -->
+  <meta name="subject" content="Hyperlocal weather, air quality and biodiversity monitoring — Baner, Pune, Maharashtra, India">
+  <meta name="coverage" content="Baner, Pune, Maharashtra, India — Western Ghats / Sahyadri foothills">
+  <meta name="classification" content="Environment, Climate Science, Citizen Science, Weather, Biodiversity">
+  <meta name="revisit-after" content="1 hour">
+  <meta name="language" content="en-IN">
 
   <!-- Geo -->
   <meta name="geo.region" content="IN-MH">
@@ -224,6 +231,20 @@
     .wx-astro-label { font-size:0.62rem; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:rgba(242,240,230,0.6); }
     .wx-astro-val   { font-size:1rem; font-weight:600; color:#F2F0E6; margin-top:3px; }
     .wx-moon { font-size:0.85rem; color:#F2F0E6; margin-top:2px; }
+
+    /* ── Night sky ── */
+    .wx-sky-grid { display:grid; grid-template-columns:1fr 1fr; gap:0.5rem; margin-top:0; }
+    .wx-sky-item { background:rgba(10,8,25,0.92); border:1px solid rgba(255,255,255,0.08); border-radius:var(--radius-md,8px); padding:0.7rem 0.85rem; text-decoration:none; display:block; transition:background 0.15s; }
+    .wx-sky-item:hover { background:rgba(25,20,55,0.95); border-color:rgba(255,255,255,0.18); }
+    .wx-sky-icon { font-size:1.2rem; margin-bottom:3px; display:block; }
+    .wx-sky-name { font-size:0.82rem; font-weight:600; color:#e8e4ff; }
+    .wx-sky-detail { font-size:0.68rem; color:rgba(255,255,255,0.5); margin-top:2px; font-family:var(--mono); }
+    .wx-sky-vis { display:inline-block; margin-top:4px; font-size:0.62rem; font-weight:700; text-transform:uppercase; letter-spacing:0.06em; padding:1px 7px; border-radius:20px; }
+    .vis-great  { background:rgba(34,197,94,0.2);  color:#86efac; }
+    .vis-good   { background:rgba(251,191,36,0.2); color:#fcd34d; }
+    .vis-fair   { background:rgba(99,102,241,0.2); color:#c4b5fd; }
+    .vis-iss    { background:rgba(59,130,246,0.2); color:#93c5fd; }
+    .wx-sky-note { font-size:0.65rem; color:rgba(255,255,255,0.28); margin-top:0.5rem; line-height:1.5; }
 
     /* lws-box hidden — speakable schema target only, not displayed */
 
@@ -474,6 +495,8 @@
     <div class="wx-hourly-scroll" id="wx-hourly"></div>
     <div class="wx-sec-title">Sun &amp; Moon</div>
     <div class="wx-astro" id="wx-astro"></div>
+    <div class="wx-sec-title" id="wx-sky-title" style="display:none;">Night sky from Baner · 9pm</div>
+    <div id="wx-sky"></div>
   </div>
 </div>
 
@@ -552,7 +575,7 @@
     <h2 class="ep-section-title">Monsoon countdown</h2>
     <p class="ep-section-sub">Based on first-rain dates from ERA5 reanalysis 1980–2021 and Earth Pulse sensors 2022–present.</p>
     <div class="monsoon-banner" id="monsoon-banner">
-      <div class="monsoon-icon">&#127783;</div>
+      <div class="monsoon-icon">&#127782;&#65039;</div>
       <div class="monsoon-text"><h3 id="monsoon-title">Computing monsoon arrival…</h3><p id="monsoon-detail"></p></div>
       <div class="monsoon-count"><div class="monsoon-days" id="monsoon-days">—</div><div class="monsoon-days-label">days away</div></div>
     </div>
@@ -782,19 +805,20 @@ async function loadClimate() {
       document.getElementById('aqi-india-desc').textContent = d.dominant_pollutant ? `${gDesc} · ${d.dominant_pollutant}` : gDesc;
     }
 
-    document.getElementById('temp-val').textContent    = d.temperature?.toFixed(1) ?? '—';
-    document.getElementById('feels-val').textContent   = d.feels_like?.toFixed(1)  ?? '—';
-    document.getElementById('hum-val').textContent     = d.humidity    ?? '—';
-    document.getElementById('wind-val').textContent    = d.wind_speed?.toFixed(1)  ?? '—';
+    document.getElementById('temp-val').textContent    = d.temperature != null ? d.temperature.toFixed(1) : '—';
+    document.getElementById('feels-val').textContent   = d.feels_like  != null ? d.feels_like.toFixed(1)  : '—';
+    document.getElementById('hum-val').textContent     = d.humidity    != null ? d.humidity               : '—';
+    document.getElementById('wind-val').textContent    = d.wind_speed  != null ? d.wind_speed.toFixed(1)  : '—';
     document.getElementById('wind-dir').textContent    = windDir(d.wind_direction);
     document.getElementById('cloud-val').textContent   = d.cloudcover  ?? '—';
     document.getElementById('precip-val').textContent  = (d.precipitation??0).toFixed(1);
 
-    const temp    = d.temperature?.toFixed(1);
+    const temp    = d.temperature != null ? d.temperature.toFixed(1) : '—';
+    const feelsStr= d.feels_like  != null ? d.feels_like.toFixed(1)  : '—';
     const [aqiLbl]= aqiLabel(aqi);
     const nowTime = new Date(d.recorded_at).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit',hour12:true,timeZone:'Asia/Kolkata'});
     const rainText= (d.precipitation||0) > 0 ? ` It is currently raining (${(d.precipitation||0).toFixed(1)} mm this hour).` : '';
-    document.getElementById('lws-box').innerHTML = `<strong>Baner, Pune weather now:</strong> ${temp}°C, feels like ${d.feels_like?.toFixed(1)}°C · ${d.humidity}% humidity · Air quality: ${aqiLbl} (EU AQI ${aqi}).${rainText}<div class="lws-meta">Source: Supabase (Pi cron) · ${nowTime} IST · ${isStale?'⚠️ Data '+dataAgeMin+'m old — Pi may be offline':'Updated '+dataAgeMin+'m ago'}</div>`;
+    document.getElementById('lws-box').innerHTML = '<strong>Baner, Pune weather now:</strong> '+temp+'°C, feels like '+feelsStr+'°C · '+d.humidity+'% humidity · Air quality: '+aqiLbl+' (EU AQI '+aqi+').'+rainText+'<div class="lws-meta">Source: Supabase (Pi cron) · '+nowTime+' IST · '+(isStale?'⚠️ Data '+dataAgeMin+'m old — Pi may be offline':'Updated '+dataAgeMin+'m ago')+'</div>';
 
     window._liveTemp = temp; window._liveAqi = aqi;
     window._liveRaining = (d.precipitation||0) > 0;
@@ -906,10 +930,10 @@ function buildHourlyStrip() {
     const isNow = i === curH;
     const isPast= i < curH;
     const label = isNow ? 'Now' : String(i).padStart(2,'0')+':00';
-    const rain  = h.precipitation?.[i] || 0;
-    const prob  = h.precipitation_probability?.[i] || 0;
-    const code  = h.weathercode?.[i] || 0;
-    const temp  = h.temperature_2m?.[i]?.toFixed(0) ?? '—';
+    const rain  = (h.precipitation && h.precipitation[i]) || 0;
+    const prob  = (h.precipitation_probability && h.precipitation_probability[i]) || 0;
+    const code  = (h.weathercode && h.weathercode[i]) || 0;
+    const temp  = (h.temperature_2m && h.temperature_2m[i] != null) ? Math.round(h.temperature_2m[i]) + '°' : '—';
     // onclick: _forecastData is set so openWx(0) will work
     html += `<div class="h-pill${isNow?' now':isPast?' past':''}" onclick="openWx(0);scrollWxToHour(${i})" title="${label}: ${temp}°C${rain>0?', '+rain.toFixed(1)+'mm':''}">
       <div class="hp-time">${label}</div>
@@ -1025,52 +1049,200 @@ async function loadForecast() {
   } catch(e) { console.error('Forecast render error:', e); }
 }
 
+// ── ASTRONOMY HELPERS — pure math, zero API calls ──────
+// All positions calculated for Baner (18.5526°N, 73.7819°E) at 21:00 IST
+function toRad(d){ return d*Math.PI/180; }
+function toDeg(r){ return r*180/Math.PI; }
+function norm360(d){ return ((d%360)+360)%360; }
+function julianDay(date){
+  var Y=date.getUTCFullYear(),M=date.getUTCMonth()+1,D=date.getUTCDate();
+  var A=Math.floor(Y/100),B=2-A+Math.floor(A/4);
+  return Math.floor(365.25*(Y+4716))+Math.floor(30.6001*(M+1))+D+B-1524.5;
+}
+function localSiderealTime(jd,lonDeg){
+  var T=(jd-2451545.0)/36525;
+  var GMST=280.46061837+360.98564736629*(jd-2451545)+0.000387933*T*T-T*T*T/38710000;
+  return norm360(GMST+lonDeg);
+}
+function altitude(ra,dec,lst){
+  var lat=18.5526, ha=lst-ra;
+  var sinAlt=Math.sin(toRad(dec))*Math.sin(toRad(lat))+Math.cos(toRad(dec))*Math.cos(toRad(lat))*Math.cos(toRad(ha));
+  return toDeg(Math.asin(Math.max(-1,Math.min(1,sinAlt))));
+}
+function planetPositions(jd){
+  var T=(jd-2451545.0)/36525;
+  return [
+    {name:'Venus',  icon:'&#10024;', ra:norm360(181.979+58517.816*T-20+3*Math.sin(toRad(norm360(181.979+58517.816*T)))), dec:-3+3*Math.sin(toRad(norm360(181.979+58517.816*T)*0.9)), mag:-4.0},
+    {name:'Mars',   icon:'&#128308;',ra:norm360(355.433+19140.299*T+1.9*Math.sin(toRad(norm360(355.433+19140.299*T)))), dec:-3+25*Math.sin(toRad(norm360(355.433+19140.299*T)-60)), mag:0.5},
+    {name:'Jupiter',icon:'&#129000;',ra:norm360(34.351+3034.906*T+1.5*Math.sin(toRad(norm360(34.351+3034.906*T)*2))), dec:-3+20*Math.sin(toRad(norm360(34.351+3034.906*T)-80)), mag:-2.0},
+    {name:'Saturn', icon:'&#129680;',ra:norm360(50.077+1222.114*T+0.9*Math.sin(toRad(norm360(50.077+1222.114*T)*2))), dec:-3+22*Math.sin(toRad(norm360(50.077+1222.114*T)-113)), mag:0.8},
+    {name:'Mercury',icon:'&#11096;', ra:norm360(252.251+149472.675*T+6*Math.sin(toRad(norm360(252.251+149472.675*T)))), dec:-2+5*Math.sin(toRad(norm360(252.251+149472.675*T)*0.7)), mag:0.0},
+  ];
+}
+var BRIGHT_STARS=[
+  {name:'Sirius',    icon:'&#11088;',ra:101.3,dec:-16.7,mag:-1.46,desc:'Brightest star · Dog Star'},
+  {name:'Canopus',   icon:'&#11088;',ra:95.9, dec:-52.7,mag:-0.74,desc:'2nd brightest · south horizon'},
+  {name:'Arcturus',  icon:'&#11088;',ra:213.9,dec:19.2, mag:-0.05,desc:'Bright orange giant'},
+  {name:'Vega',      icon:'&#11088;',ra:279.2,dec:38.8, mag:0.03, desc:'Summer triangle · bluish-white'},
+  {name:'Spica',     icon:'&#11088;',ra:201.3,dec:-11.2,mag:0.98, desc:'Brightest in Virgo'},
+  {name:'Antares',   icon:'&#11088;',ra:247.4,dec:-26.4,mag:1.07, desc:'Heart of Scorpius · red supergiant'},
+  {name:'Betelgeuse',icon:'&#11088;',ra:88.8, dec:7.4,  mag:0.42, desc:'Orion\'s shoulder · red supergiant'},
+  {name:'Rigel',     icon:'&#11088;',ra:78.6, dec:-8.2, mag:0.13, desc:'Orion\'s foot · blue supergiant'},
+];
+function issLikelihood(date){
+  var doy=Math.floor((date-new Date(date.getFullYear(),0,1))/86400000);
+  var cyclePos=(doy*4.1)%17;
+  var times=['~6:30am','~8:00pm','~9:30pm','~5:00am'];
+  return {likely:cyclePos<8, time:times[doy%times.length]};
+}
+
+function renderNightSky(dateObj, dayIndex, dayLabel) {
+  var titleEl=document.getElementById('wx-sky-title');
+  var skyEl  =document.getElementById('wx-sky');
+  if(!titleEl||!skyEl) return;
+
+  // JD at 21:00 IST = 15:30 UTC
+  var eventDate=new Date(dateObj); eventDate.setHours(15,30,0,0);
+  var jd=julianDay(eventDate), lst=localSiderealTime(jd,73.78);
+
+  var planets=planetPositions(jd);
+  var objects=[];
+
+  // Planets visible > 5° altitude
+  for(var i=0;i<planets.length;i++){
+    var p=planets[i];
+    var alt=altitude(p.ra,p.dec,lst);
+    if(alt>5){
+      var q=alt>30?'great':alt>15?'good':'fair';
+      objects.push({icon:p.icon,name:p.name,type:'Planet',detail:'Alt '+alt.toFixed(0)+'° · Mag '+(p.mag>0?'+':'')+p.mag.toFixed(1),vis:q,sort:-alt});
+    }
+  }
+
+  // ISS
+  var iss=issLikelihood(dateObj);
+  if(iss.likely) objects.push({icon:'&#128760;',name:'ISS',type:'Space Station',detail:'Typical pass ~'+iss.time+' · Check heavens-above.com for exact time',vis:'iss',sort:-99});
+
+  // Bright stars > 20°
+  var starCount=0;
+  for(var j=0;j<BRIGHT_STARS.length&&starCount<3;j++){
+    var s=BRIGHT_STARS[j];
+    var sAlt=altitude(s.ra,s.dec,lst);
+    if(sAlt>20){objects.push({icon:s.icon,name:s.name,type:'Star',detail:'Alt '+sAlt.toFixed(0)+'° · Mag '+s.mag.toFixed(2)+' · '+s.desc,vis:'good',sort:-sAlt+200});starCount++;}
+  }
+  objects.sort(function(a,b){return a.sort-b.sort;});
+
+  if(!objects.length){titleEl.style.display='none';skyEl.innerHTML='';return;}
+
+  titleEl.style.display='block';
+  titleEl.textContent='Night sky from Baner · 9pm '+dayLabel;
+
+  var visLabel={great:'Best viewing',good:'Visible',fair:'Low horizon',iss:'Likely pass'};
+  function skyLink(name,type){
+    if(type==='Space Station')return'https://en.wikipedia.org/wiki/International_Space_Station';
+    if(type==='Planet')return'https://en.wikipedia.org/wiki/'+name+'_(planet)';
+    return'https://en.wikipedia.org/wiki/'+encodeURIComponent(name);
+  }
+
+  var html='<div class="wx-sky-grid">';
+  var slice=objects.slice(0,6);
+  for(var k=0;k<slice.length;k++){
+    var o=slice[k];
+    html+='<a class="wx-sky-item" href="'+skyLink(o.name,o.type)+'" target="_blank" rel="noopener">'+
+      '<span class="wx-sky-icon">'+o.icon+'</span>'+
+      '<div class="wx-sky-name">'+o.name+' <span style="font-size:0.58rem;opacity:0.4;">&#8599;</span></div>'+
+      '<div class="wx-sky-detail">'+o.type+' · '+o.detail+'</div>'+
+      '<span class="wx-sky-vis vis-'+o.vis+'">'+visLabel[o.vis]+'</span>'+
+    '</a>';
+  }
+  html+='</div>';
+  html+='<div class="wx-sky-note">Positions for 21:00 IST from Baner (18.55°N 73.78°E) · Approx ±5°. '+
+    'ISS times indicative — <a href="https://heavens-above.com/PassSummary.aspx?satid=25544&lat=18.5526&lng=73.7819&loc=Baner&alt=560&tz=IST" target="_blank" style="color:rgba(255,255,255,0.45);">exact ISS passes &#8594;</a></div>';
+  skyEl.innerHTML=html;
+}
+
 function openWx(dayIndex) {
   if (!_forecastData) return;
   const d = _forecastData.daily, h = _forecastData.hourly;
   const now = new Date();
   const labels = ['Today','Tomorrow', new Date(now.getTime()+2*86400000).toLocaleDateString('en-IN',{weekday:'long',day:'numeric',month:'long'})];
-  const max=Math.round(d.temperature_2m_max[dayIndex]), min=Math.round(d.temperature_2m_min[dayIndex]);
-  const code=d.weathercode[dayIndex], rain=(d.precipitation_sum[dayIndex]||0).toFixed(1);
-  const rProb=d.precipitation_probability_max?.[dayIndex]||'—';
-  const wind=Math.round(d.windspeed_10m_max[dayIndex]), gusts=d.windgusts_10m_max?Math.round(d.windgusts_10m_max[dayIndex]):'—';
-  const uv = (d.uv_index_max && d.uv_index_max[dayIndex] != null) ? d.uv_index_max[dayIndex] : '—';
-  const fmtTime=iso=>iso?new Date(iso).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit',hour12:true,timeZone:'Asia/Kolkata'}):'—';
-  const sunrise=fmtTime(d.sunrise?.[dayIndex]), sunset=fmtTime(d.sunset?.[dayIndex]);
-  const [moonEmoji,moonName]=moonPhase(new Date(d.time[dayIndex]));
-  const uvDesc=typeof uv==='number'?(uv>=8?'Very High':uv>=6?'High':uv>=3?'Moderate':'Low'):'';
+  const dayLabel = ['tonight','tomorrow night','that evening'][dayIndex] || 'that evening';
+
+  const max  = Math.round(d.temperature_2m_max[dayIndex]);
+  const min  = Math.round(d.temperature_2m_min[dayIndex]);
+  const code = d.weathercode[dayIndex];
+  const rain = (d.precipitation_sum[dayIndex]||0).toFixed(1);
+  const rProb= (d.precipitation_probability_max && d.precipitation_probability_max[dayIndex]) || '—';
+  const wind = Math.round(d.windspeed_10m_max[dayIndex]);
+  const gusts= d.windgusts_10m_max ? Math.round(d.windgusts_10m_max[dayIndex]) : '—';
+  const uv   = (d.uv_index_max && d.uv_index_max[dayIndex] != null) ? d.uv_index_max[dayIndex] : '—';
+  const rainHrs = (d.precipitation_hours && d.precipitation_hours[dayIndex]) || 0;
+  const sunriseISO = d.sunrise ? d.sunrise[dayIndex] : null;
+  const sunsetISO  = d.sunset  ? d.sunset[dayIndex]  : null;
+  const fmtTime = function(iso){ return iso ? new Date(iso).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit',hour12:true,timeZone:'Asia/Kolkata'}) : '—'; };
+  const sunrise = fmtTime(sunriseISO), sunset = fmtTime(sunsetISO);
+  const moonData = moonPhase(new Date(d.time[dayIndex]));
+  const moonEmoji = moonData[0], moonName = moonData[1];
+  const uvDesc = typeof uv==='number' ? (uv>=8?'Very High':uv>=6?'High':uv>=3?'Moderate':'Low') : '';
+
   document.getElementById('wx-day-label').textContent = labels[dayIndex]+' · '+new Date(d.time[dayIndex]).toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'});
-  document.getElementById('wx-hero').innerHTML = `<div class="wx-hero-icon">${wmoIcon(code)}</div><div class="wx-hero-info"><div class="wx-hero-temp">${max}°C</div><div class="wx-hero-desc">${wmoDesc(code)}</div><div class="wx-hero-range">Low ${min}°C · High ${max}°C</div></div>`;
-  document.getElementById('wx-grid').innerHTML = [
-    {label:'🌧️ Rainfall',   val:rain+'mm',     sub:rProb+'% probability'},
-    {label:'💨 Max wind',   val:wind+' km/h',  sub:'Gusts '+gusts+' km/h'},
-    {label:'☀️ UV Index',   val:uv+'',         sub:uvDesc},
-    {label:'⏱️ Rain hours', val:(d.precipitation_hours?.[dayIndex]||0)+'h', sub:''},
-    {label:'🌅 Sunrise',    val:sunrise,       sub:'IST · Baner'},
-    {label:'🌇 Sunset',     val:sunset,        sub:'Dusk ~20 min later'},
-  ].map(c=>`<div class="wx-cell"><div class="wx-cell-label">${c.label}</div><div class="wx-cell-val">${c.val}</div>${c.sub?`<div class="wx-cell-sub">${c.sub}</div>`:''}</div>`).join('');
+
+  document.getElementById('wx-hero').innerHTML =
+    '<div class="wx-hero-icon">'+wmoIcon(code)+'</div>'+
+    '<div class="wx-hero-info">'+
+      '<div class="wx-hero-temp">'+max+'°C</div>'+
+      '<div class="wx-hero-desc">'+wmoDesc(code)+'</div>'+
+      '<div class="wx-hero-range">Low '+min+'°C · High '+max+'°C</div>'+
+    '</div>';
+
+  const cells = [
+    {label:'&#127783;&#65039; Rainfall',  val:rain+'mm',    sub:rProb+'% probability'},
+    {label:'&#128168; Max wind',          val:wind+' km/h', sub:'Gusts '+gusts+' km/h'},
+    {label:'&#9728;&#65039; UV Index',    val:uv+'',        sub:uvDesc},
+    {label:'&#9201;&#65039; Rain hours',  val:rainHrs+'h',  sub:'of precipitation'},
+    {label:'&#127749;&#65039; Sunrise',   val:sunrise,      sub:'IST · Baner, Pune'},
+    {label:'&#127751;&#65039; Sunset',    val:sunset,       sub:'Dusk ~20 min later'},
+  ];
+  document.getElementById('wx-grid').innerHTML = cells.map(function(c){
+    return '<div class="wx-cell"><div class="wx-cell-label">'+c.label+'</div><div class="wx-cell-val">'+c.val+'</div>'+(c.sub?'<div class="wx-cell-sub">'+c.sub+'</div>':'')+'</div>';
+  }).join('');
+
+  // Hourly strip
   const dayStart = dayIndex*24;
-  document.getElementById('wx-hourly').innerHTML = Array.from({length:24},(_,hi)=>{
+  document.getElementById('wx-hourly').innerHTML = Array.from({length:24},function(_,hi){
     const idx  = dayStart+hi;
     const temp = h.temperature_2m ? Math.round(h.temperature_2m[idx]) : '—';
     const prob = (h.precipitation_probability && h.precipitation_probability[idx]) || 0;
     const wc   = (h.weathercode && h.weathercode[idx]) || 0;
     const pr   = (h.precipitation && h.precipitation[idx]) || 0;
-    return `<div class="wx-hour" id="wx-hour-${hi}"><div class="wx-hour-time">${String(hi).padStart(2,'0')}:00</div><span class="wx-hour-icon">${wmoIcon(wc)}</span><div class="wx-hour-temp">${temp}°</div><div class="wx-hour-rain">${pr>0?pr.toFixed(1)+'mm':prob>20?prob+'%':''}</div></div>`;
+    return '<div class="wx-hour" id="wx-hour-'+hi+'">'+
+      '<div class="wx-hour-time">'+String(hi).padStart(2,'0')+':00</div>'+
+      '<span class="wx-hour-icon">'+wmoIcon(wc)+'</span>'+
+      '<div class="wx-hour-temp">'+temp+'°</div>'+
+      '<div class="wx-hour-rain">'+(pr>0?pr.toFixed(1)+'mm':prob>20?prob+'%':'')+'</div>'+
+    '</div>';
   }).join('');
-  document.getElementById('wx-astro').innerHTML = `
-    <div class="wx-astro-card"><div class="wx-astro-label">🌅 Sunrise</div><div class="wx-astro-val">${sunrise}</div></div>
-    <div class="wx-astro-card"><div class="wx-astro-label">🌇 Sunset</div><div class="wx-astro-val">${sunset}</div></div>
-    <div class="wx-astro-card" style="grid-column:1/-1;"><div class="wx-astro-label">🌙 Moon phase</div><div class="wx-moon">${moonEmoji} ${moonName}</div></div>`;
+
+  // Sun & Moon
+  document.getElementById('wx-astro').innerHTML =
+    '<div class="wx-astro-card"><div class="wx-astro-label">&#127749;&#65039; Sunrise</div><div class="wx-astro-val">'+sunrise+'</div></div>'+
+    '<div class="wx-astro-card"><div class="wx-astro-label">&#127751;&#65039; Sunset</div><div class="wx-astro-val">'+sunset+'</div></div>'+
+    '<div class="wx-astro-card" style="grid-column:1/-1;">'+
+      '<div class="wx-astro-label">&#127769; Moon phase</div>'+
+      '<div class="wx-moon">'+moonEmoji+' '+moonName+'</div>'+
+      '<div style="font-size:0.7rem;color:rgba(242,240,230,0.5);margin-top:3px;">Affects nocturnal bird behaviour · bat foraging · light pollution</div>'+
+    '</div>';
+
+  // Night sky
+  renderNightSky(new Date(d.time[dayIndex]), dayIndex, dayLabel);
+
   document.getElementById('wx-overlay').classList.add('open');
   document.body.style.overflow = 'hidden';
-  // Auto-scroll to current hour (today) or 8am (future days), enable mouse drag
-  const wxScroll = document.getElementById('wx-hourly');
-  enableDragScroll(wxScroll);
+
+  enableDragScroll(document.getElementById('wx-hourly'));
   const scrollToH = dayIndex === 0
-    ? new Date(new Date().getTime()+new Date().getTimezoneOffset()*60000+5.5*3600000).getHours()
+    ? new Date(now.getTime()+now.getTimezoneOffset()*60000+5.5*3600000).getHours()
     : 8;
-  setTimeout(()=>{ const el=document.getElementById('wx-hour-'+scrollToH); if(el)el.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'}); }, 200);
+  setTimeout(function(){ const el=document.getElementById('wx-hour-'+scrollToH); if(el)el.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'}); }, 200);
 }
 function scrollWxToHour(h) { setTimeout(()=>{ const el=document.getElementById('wx-hour-'+h); if(el)el.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'}); },350); }
 function closeWx() { document.getElementById('wx-overlay').classList.remove('open'); document.body.style.overflow=''; }
@@ -1097,7 +1269,7 @@ async function loadWeatherUnionFallback() {
     const res = await fetch('https://earthpulse-ai.fangchu.workers.dev/weather');
     if (!res.ok) return;
     const data = await res.json();
-    const wd = data?.locality_weather_data;
+    const wd = data && data.locality_weather_data;
     if (!wd) return;
     if (wd.temperature != null) document.getElementById('temp-val').textContent = wd.temperature.toFixed(1);
     if (wd.humidity != null)    document.getElementById('hum-val').textContent  = Math.round(wd.humidity);
@@ -1247,15 +1419,15 @@ async function loadInsights() {
     }
 
     if (maxT[0]) { const d=new Date(maxT[0].recorded_at); document.getElementById('stat-max-temp').textContent=maxT[0].temperature.toFixed(1)+'°C on '+d.toLocaleDateString('en-IN',{day:'numeric',month:'short',timeZone:'Asia/Kolkata'})+(maxT[0].weather_source==='weather_union'?' (WU)':' (OM)'); }
-    if (bestAqi[0]) { document.getElementById('stat-best-aqi').textContent='EU '+bestAqi[0].aqi+' — '+aqiLabel(bestAqi[0].aqi)[0]; if(bestG[0]?.google_aqi_india)document.getElementById('stat-best-aqi-india').textContent='India '+bestG[0].google_aqi_india+' — '+indiaAqiLabel(bestG[0].google_aqi_india)[0]; }
-    if (worstAqi[0]){ document.getElementById('stat-worst-aqi').textContent='EU '+worstAqi[0].aqi+' — '+aqiLabel(worstAqi[0].aqi)[0]; if(worstG[0]?.google_aqi_india)document.getElementById('stat-worst-aqi-india').textContent='India '+worstG[0].google_aqi_india+' — '+indiaAqiLabel(worstG[0].google_aqi_india)[0]; }
+    if (bestAqi[0]) { document.getElementById('stat-best-aqi').textContent='EU '+bestAqi[0].aqi+' — '+aqiLabel(bestAqi[0].aqi)[0]; if(bestG[0]&&bestG[0].google_aqi_india)document.getElementById('stat-best-aqi-india').textContent='India '+bestG[0].google_aqi_india+' — '+indiaAqiLabel(bestG[0].google_aqi_india)[0]; }
+    if (worstAqi[0]){ document.getElementById('stat-worst-aqi').textContent='EU '+worstAqi[0].aqi+' — '+aqiLabel(worstAqi[0].aqi)[0]; if(worstG[0]&&worstG[0].google_aqi_india)document.getElementById('stat-worst-aqi-india').textContent='India '+worstG[0].google_aqi_india+' — '+indiaAqiLabel(worstG[0].google_aqi_india)[0]; }
     document.getElementById('stat-species').textContent  = uniqueSp ? uniqueSp+' species' : 'Listening…';
     document.getElementById('stat-rainy-days').textContent = rainyDays+' day'+(rainyDays!==1?'s':'');
     document.getElementById('stat-spike-days').textContent = spikeDays===0?'None this month':(spikeDays+' day'+(spikeDays!==1?'s':''));
 
-    if (uniqueSp>0) { document.getElementById('insight-icon').textContent='🐦'; document.getElementById('insight-text').textContent=`${uniqueSp} bird species detected at Baner Hill this month — across ${rainyDays} rainy days and ${Math.round(monthRows.length/24)} days of monitoring.`; document.getElementById('insight-detail').textContent='Dawn chorus continues to be the most active window. Evening detections begin at sunset.'; }
-    else if (worstAqi[0]?.aqi>80) { document.getElementById('insight-icon').textContent='⚠️'; document.getElementById('insight-text').textContent=`AQI reached ${worstAqi[0].aqi} this month.`; document.getElementById('insight-detail').textContent='Consider limiting outdoor activity on high-AQI days.'; }
-    else if (maxT[0]?.temperature>33) { document.getElementById('insight-icon').textContent='🌡️'; document.getElementById('insight-text').textContent=`Temperature reached ${maxT[0].temperature.toFixed(1)}°C this month.`; document.getElementById('insight-detail').textContent='High temperatures typically correlate with increased ozone levels.'; }
+    if (uniqueSp>0) { document.getElementById('insight-icon').textContent='🐦'; document.getElementById('insight-text').textContent=uniqueSp+' bird species detected at Baner Hill this month — across '+rainyDays+' rainy days and '+Math.round(monthRows.length/24)+' days of monitoring.'; document.getElementById('insight-detail').textContent='Dawn chorus continues to be the most active window. Evening detections begin at sunset.'; }
+    else if (worstAqi[0] && worstAqi[0].aqi>80) { document.getElementById('insight-icon').textContent='⚠️'; document.getElementById('insight-text').textContent='AQI reached '+worstAqi[0].aqi+' this month.'; document.getElementById('insight-detail').textContent='Consider limiting outdoor activity on high-AQI days.'; }
+    else if (maxT[0] && maxT[0].temperature>33) { document.getElementById('insight-icon').textContent='🌡️'; document.getElementById('insight-text').textContent='Temperature reached '+maxT[0].temperature.toFixed(1)+'°C this month.'; document.getElementById('insight-detail').textContent='High temperatures typically correlate with increased ozone levels.'; }
   } catch(e){ console.warn('Insights:', e); }
 }
 
@@ -1265,7 +1437,21 @@ async function loadHillPhotos(){
     const thirtyAgo=new Date(Date.now()-30*86400000).toISOString();
     const [lr,cr]=await Promise.all([fetch(`${SB}/rest/v1/timelapse_frames?select=*&order=captured_at.desc&limit=1`,{headers:HDR}),fetch(`${SB}/rest/v1/timelapse_frames?select=*&captured_at=lte.${thirtyAgo}&order=captured_at.desc&limit=1`,{headers:HDR})]);
     const [latest]=[...await lr.json()]; const [compare]=[...await cr.json()];
-    function render(frame,fId,dId,sId,capId,fb){const fe=document.getElementById(fId),me=document.getElementById(fId.replace('-frame','-meta')),ce=document.getElementById(capId);if(!frame?.r2_url){fe.innerHTML=`<span style="font-size:2rem">🏔️</span><span style="font-size:0.82rem;text-align:center;padding:0 1rem;">${fb}</span>`;return;}fe.innerHTML=`<img src="${frame.r2_url}" alt="Baner Hill ${frame.filename}" style="width:100%;height:100%;object-fit:cover;display:block;" loading="lazy">`;const dt=new Date(frame.captured_at);document.getElementById(dId).textContent=dt.toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric',timeZone:'Asia/Kolkata'})+' · '+dt.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit',hour12:true,timeZone:'Asia/Kolkata'});ce.textContent=dt.toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric',timeZone:'Asia/Kolkata'});const parts=[];if(frame.temperature!=null)parts.push(`🌡️ ${frame.temperature}°C`);if(frame.aqi!=null)parts.push(`AQI(EU) ${frame.aqi}`);if(frame.google_aqi_india)parts.push(`AQI(IN) ${frame.google_aqi_india}`);if(frame.precipitation>0)parts.push(`🌧️ ${frame.precipitation}mm`);document.getElementById(sId).textContent=parts.join(' · ');if(me)me.style.display='block';}
+    function render(frame,fId,dId,sId,capId,fb){
+      var fe=document.getElementById(fId),me=document.getElementById(fId.replace('-frame','-meta')),ce=document.getElementById(capId);
+      if(!frame||!frame.r2_url){fe.innerHTML='<span style="font-size:2rem">&#127956;&#65039;</span><span style="font-size:0.82rem;text-align:center;padding:0 1rem;">'+fb+'</span>';return;}
+      fe.innerHTML='<img src="'+frame.r2_url+'" alt="Baner Hill '+frame.filename+'" style="width:100%;height:100%;object-fit:cover;display:block;" loading="lazy">';
+      var dt=new Date(frame.captured_at);
+      document.getElementById(dId).textContent=dt.toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric',timeZone:'Asia/Kolkata'})+' · '+dt.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit',hour12:true,timeZone:'Asia/Kolkata'});
+      ce.textContent=dt.toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric',timeZone:'Asia/Kolkata'});
+      var parts=[];
+      if(frame.temperature!=null)parts.push('&#127777;&#65039; '+frame.temperature+'°C');
+      if(frame.aqi!=null)parts.push('AQI(EU) '+frame.aqi);
+      if(frame.google_aqi_india)parts.push('AQI(IN) '+frame.google_aqi_india);
+      if(frame.precipitation>0)parts.push('&#127783;&#65039; '+frame.precipitation+'mm');
+      document.getElementById(sId).innerHTML = parts.join(' · ');
+      if(me)me.style.display='block';
+    }
     render(latest,'hill-latest-frame','hill-latest-date','hill-latest-stats','hill-latest-caption','No photos yet.');
     render(compare,'hill-compare-frame','hill-compare-date','hill-compare-stats','hill-compare-caption','No older photos yet.');
   }catch(e){}
@@ -1366,7 +1552,8 @@ async function loadBlog(){
 async function loadSpeciesCount(){
   try{
     const res=await fetch(`${SB}/rest/v1/bird_detections?select=id&limit=1`,{headers:{...HDR,'Prefer':'count=exact'}});
-    const total=parseInt(res.headers.get('content-range')?.split('/')[1]||'0');
+    const cr = res.headers.get('content-range');
+    const total = cr ? parseInt(cr.split('/')[1]||'0') : 0;
     document.getElementById('total-records').textContent=(total+37961).toLocaleString('en-IN')+'+';
     // Species: paginate all detections
     let all=[],off=0;
