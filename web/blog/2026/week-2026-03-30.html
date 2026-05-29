@@ -63,7 +63,9 @@
       {"@type":"Thing","name":"Air Quality Index","description":"EU AQI 60–75 in Baner, Pune this week"},
       {"@type":"Thing","name":"Bird Biodiversity","description":"47 species detected at Baner Hill"},
       {"@type":"Thing","name":"Weather","description":"Temperature 19.6–36.2°C, 7.7mm rainfall"},
-      {"@type":"Thing","name":"ERA5 Climate Reanalysis","description":"46-year historical climate context for Baner Hill"}
+      {"@type":"Thing","name":"ERA5 Climate Reanalysis","description":"46-year historical climate context for Baner Hill"},
+      {"@type":"Thing","name":"Soundscape Health","description":"Acoustic ecology monitoring — NDSI measured at Baner Hill this week"},
+      {"@type":"Thing","name":"Urban Trees","description":"Native and endemic trees of Baner Hill, Pune identified by Earth Pulse"}
     ],
     "speakable": {
       "@type": "SpeakableSpecification",
@@ -115,6 +117,7 @@
     .ep-sec{margin-bottom:2.75rem;padding-bottom:2.25rem;border-bottom:1px solid var(--ep-cream-dark)}
     .ep-sec:last-of-type{border-bottom:none}
     .ep-sh{font-family:var(--serif);font-size:1.2rem;color:var(--ep-green);margin-bottom:.85rem;line-height:1.3}
+    .ep-sh a:hover{text-decoration:underline!important}
     .ep-subtext{font-size:.82rem;color:var(--text-muted);margin-bottom:1rem;line-height:1.65}
     .ep-link-note{font-size:.78rem;color:var(--text-muted);margin-top:.85rem;line-height:1.6}
 
@@ -185,7 +188,7 @@
     .ep-era5-badge{display:inline-block;background:rgba(191,155,123,.15);color:#92400e;font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;padding:.2rem .7rem;border-radius:1rem;border:1px solid rgba(191,155,123,.25);margin-bottom:.85rem}
     .ep-era5-grid{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin:1.1rem 0}
     @media(max-width:480px){.ep-era5-grid{grid-template-columns:1fr}}
-    .ep-era5-card{background:white;border:1px solid var(--border);border-radius:.85rem;padding:1rem 1.1rem}
+    .ep-era5-card{background:white;border:1px solid var(--border);border-radius:.85rem;padding:1rem 1.1rem;min-width:0}
     .ep-era5-warm{border-color:rgba(220,38,38,.2);background:rgba(254,242,242,.5)}
     .ep-era5-cool{border-color:rgba(22,163,74,.2);background:rgba(240,253,244,.5)}
     .ep-era5-card-label{font-size:.63rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text-muted);margin-bottom:.35rem}
@@ -210,18 +213,20 @@
     .ep-mom-row:last-child{border-bottom:none}
     .ep-mom-arrow{font-size:1rem;width:1.25rem;text-align:center;flex-shrink:0;font-family:var(--mono)}
     .ep-mom-name{flex:1;min-width:0}
-    .ep-mom-species{color:var(--ep-green);font-weight:500}
+    .ep-mom-species{color:var(--ep-green);font-weight:500;word-break:break-word}
     .ep-mom-sci{font-size:.68rem;color:var(--text-muted);font-style:italic}
     .ep-mom-count{font-family:var(--mono);font-size:.78rem;color:var(--text-muted);text-align:right;flex-shrink:0}
     .ep-mom-delta{font-size:.72rem;font-weight:700;flex-shrink:0;min-width:52px;text-align:right;font-family:var(--mono)}
     .ep-mom-table{background:var(--bg-card);border:1px solid var(--border);border-radius:.85rem;overflow:hidden;margin-bottom:1rem}
     .ep-mom-table{overflow-x:auto;-webkit-overflow-scrolling:touch}
     .ep-mom-head{display:grid;grid-template-columns:28px 1fr auto auto;gap:.5rem;padding:.55rem 1rem;background:var(--ep-green);font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:rgba(242,240,230,.7);min-width:280px}
-    .ep-mom-grid{display:grid;grid-template-columns:28px 1fr auto auto;gap:.5rem;padding:.65rem 1rem;border-top:1px solid var(--border);align-items:center}
+    .ep-mom-grid{display:grid;grid-template-columns:28px 1fr auto auto;gap:.5rem;padding:.65rem 1rem;border-top:1px solid var(--border);align-items:center;cursor:pointer;transition:background .12s}
+    .ep-mom-grid:hover{background:rgba(33,67,50,.04)}
     .ep-mom-sub{display:flex;gap:.65rem;flex-wrap:wrap;margin-top:.85rem}
     .ep-mom-pill{flex:1;min-width:140px;background:var(--bg-card);border:1px solid var(--border);border-radius:.75rem;padding:.75rem .9rem}
     .ep-mom-pill-label{font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:.5rem}
-    .ep-mom-pill-item{font-size:.8rem;color:var(--text-secondary);line-height:1.7}
+    .ep-mom-pill-item{font-size:.8rem;color:var(--text-secondary);line-height:1.7;padding:.15rem 0;border-radius:.3rem;transition:background .12s}
+    .ep-mom-pill-item:hover{background:rgba(33,67,50,.05)}
     .ep-mom-pill-sci{font-size:.67rem;color:var(--text-muted);font-style:italic}
 
     /* ── Pulse Score drivers ─────────────────────────────────── */
@@ -249,6 +254,17 @@
     .ep-soundscape-icon{font-size:2rem;margin-bottom:.5rem}
     .ep-soundscape-title{font-family:var(--serif);font-size:1rem;color:var(--ep-green);margin-bottom:.35rem}
     .ep-soundscape-text{font-size:.82rem;color:var(--text-muted);line-height:1.6}
+
+    /* ── Tree of the Week ───────────────────────────────────── */
+    .ep-tree{background:linear-gradient(135deg,rgba(33,67,50,.06),rgba(191,155,123,.07));border:1px solid rgba(33,67,50,.15);border-radius:.9rem;padding:1.1rem 1.25rem;margin-bottom:.75rem}
+    .ep-tree-badge{display:inline-block;font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;padding:.15rem .6rem;border-radius:1rem;background:rgba(33,67,50,.1);color:var(--ep-green);border:1px solid rgba(33,67,50,.2);margin-bottom:.7rem}
+    .ep-tree-row{display:flex;align-items:flex-start;gap:.9rem;margin-bottom:.75rem}
+    @media(max-width:480px){.ep-tree-row{flex-direction:column}}
+    .ep-tree-photo{width:88px;height:88px;object-fit:cover;border-radius:.75rem;border:1px solid var(--border);flex-shrink:0;background:var(--ep-cream-dark)}
+    .ep-tree-name{font-family:var(--serif);font-size:1.05rem;color:var(--ep-green);margin-bottom:.15rem}
+    .ep-tree-sci{font-size:.72rem;color:var(--text-muted);font-style:italic;margin-bottom:.45rem}
+    .ep-tree-facts{display:flex;flex-wrap:wrap;gap:.35rem;margin-top:.4rem}
+    .ep-tree-fact{font-size:.68rem;background:rgba(33,67,50,.07);color:var(--ep-green);border:1px solid rgba(33,67,50,.12);border-radius:1rem;padding:.12rem .55rem}
 
     /* ── Forecast card ───────────────────────────────────────── */
     .ep-fc{background:var(--ep-green);border-radius:.9rem;padding:1.4rem 1.6rem}
@@ -420,9 +436,8 @@
     <div class="ep-bird">
       <div style="font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--ep-tan);margin-bottom:.7rem;">🌟 Standout species this week</div>
       <div class="ep-bird-row">
-        <img id="bird-discovery-photo" src="" alt="Red-wattled Lapwing" loading="lazy"
-      style="width:72px;height:72px;object-fit:cover;border-radius:.65rem;border:1px solid var(--border);flex-shrink:0;background:var(--ep-cream-dark);"
-      onerror="this.style.display='none'">
+        <img id="bird-discovery-photo" alt="Red-wattled Lapwing" loading="lazy"
+      style="width:72px;height:72px;object-fit:cover;border-radius:.65rem;border:1px solid var(--border);flex-shrink:0;background:var(--ep-cream-dark);display:none;">
         <div style="flex:1;">
           <div class="ep-bn">Red-wattled Lapwing</div>
           <div class="ep-bsc">Vanellus indicus</div>
@@ -437,7 +452,7 @@
     if(!img)return;
     fetch('https://en.wikipedia.org/api/rest_v1/page/summary/Vanellus_indicus',{headers:{'Accept':'application/json'}})
       .then(function(r){return r.ok?r.json():null;})
-      .then(function(d){if(d&&d.thumbnail&&d.thumbnail.source){img.src=d.thumbnail.source;}else{img.style.display='none';}})
+      .then(function(d){if(d&&d.thumbnail&&d.thumbnail.source){img.src=d.thumbnail.source;img.style.display='block';}else{img.style.display='none';}})
       .catch(function(){img.style.display='none';});
   })();
   </script>
@@ -461,17 +476,58 @@
   <!-- NEW TO THE NEIGHBOURHOOD -->
   
 
-  <!-- SOUNDSCAPE HEALTH (Phase 3 — renders if data available) -->
+  <!-- TREE OF THE WEEK -->
   
-  <section class="ep-sec" aria-label="Soundscape health Baner Hill">
-    <h2 class="ep-sh">&#127925; Soundscape Health — <a href="#" style="color:inherit;text-decoration:none;border-bottom:1px solid rgba(33,67,50,.2);">Baner Hill</a></h2>
-    <p class="ep-subtext">Acoustic ecology metrics from continuous soundscape monitoring at Baner Hill — biophony (biological sounds), anthrophony (human noise), and the NDSI balance between them.</p>
-    <div class="ep-soundscape">
-      <div class="ep-soundscape-icon">&#127925;</div>
-      <div class="ep-soundscape-title">Soundscape data coming soon</div>
-      <div class="ep-soundscape-text">The South Pi node is being calibrated. Soundscape Health metrics — NDSI, biophony index, dawn chorus intensity — will appear here once monitoring begins.</div>
+  <section class="ep-sec" aria-label="Tree of the week Baner Hill">
+    <h2 class="ep-sh">&#127795; Tree of the Week — <a href="https://www.earth-pulse.org/trees.html" style="color:inherit;text-decoration:none;border-bottom:1px solid rgba(33,67,50,.2);">Baner Hill</a></h2>
+    <p class="ep-subtext">One of the trees growing on Baner Hill, identified by the Earth Pulse plant monitoring network.</p>
+    <div class="ep-tree">
+      <div class="ep-tree-badge">&#127795; Identified on Baner Hill</div>
+      <div class="ep-tree-row">
+        <img id="tree-photo-3e878d52-ba9b-47af-bfe6-212468faf4d0" class="ep-tree-photo"
+          
+          alt="Neem" loading="lazy"
+          style="display:none;"
+          onerror="this.style.display='none'">
+        <div style="flex:1;min-width:0;">
+          <div class="ep-tree-name">Neem</div>
+          <div class="ep-tree-sci">Azadirachta indica</div>
+          <div class="ep-tree-facts"><span class="ep-tree-fact">Meliaceae</span></div>
+          
+        </div>
+      </div>
+      
+      <div style="font-size:.86rem;color:var(--text-secondary);line-height:1.7;margin-bottom:.6rem;">Neem is one of India's most ecologically significant trees, revered across the Deccan for millennia. Its dense canopy provides critical shade in Pune's summer heat while its flowers feed insects that in turn feed Baner Hill's birds.</div>
+      
+      <div style="display:flex;align-items:flex-start;gap:.6rem;background:rgba(33,67,50,.05);border:1px solid rgba(33,67,50,.1);border-radius:.65rem;padding:.7rem .9rem;margin-bottom:.8rem;">
+        <span style="font-size:1rem;flex-shrink:0;">&#128161;</span>
+        <div style="font-size:.82rem;color:var(--text-secondary);line-height:1.6;font-style:italic;">Every part of the Neem tree — bark, leaves, seeds, oil — has documented medicinal or pesticidal properties, earning it the Sanskrit name "Sarva Roga Nivarini" meaning the curer of all ailments.</div>
+      </div>
+      <a href="https://www.earth-pulse.org/trees.html" style="display:inline-flex;align-items:center;gap:.3rem;font-size:.8rem;font-weight:600;color:var(--ep-green);text-decoration:none;">See all trees on Baner Hill →</a>
     </div>
   </section>
+  <script>
+  (function(){
+    
+    var img=document.getElementById('tree-photo-3e878d52-ba9b-47af-bfe6-212468faf4d0');
+    if(img){
+      fetch('https://en.wikipedia.org/api/rest_v1/page/summary/Azadirachta_indica',{headers:{'Accept':'application/json'}})
+        .then(function(r){return r.ok?r.json():null;})
+        .then(function(d){
+          if(d&&d.thumbnail&&d.thumbnail.source){
+            img.src=d.thumbnail.source;
+            img.style.display='block';
+          }
+          // If no Wikipedia photo, keep hidden — text content still shows
+        })
+        .catch(function(){/* silent — tree card shows without photo */});
+    }
+    
+  })();
+  </script>
+
+  <!-- SOUNDSCAPE HEALTH -->
+  
 
   <!-- MOMENTS THAT MATTERED -->
   <section class="ep-sec" aria-label="Moments That Mattered">
