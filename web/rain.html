@@ -3,53 +3,66 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Monsoon &amp; Rain — Baner, Pune | 45-Year Record Since 1980 | Earth Pulse</title>
-  <meta name="description" content="The most complete monsoon record for Baner, Pune — 45 years of ERA5 rainfall data from 1980, combined with live hyperlocal sensors since 2022. Decade analysis, monsoon trends, intensity breakdowns, and how rain reshapes birds and air quality.">
-  <meta name="keywords" content="Baner Pune rain, monsoon Pune 2026, Baner rainfall history, Pune monsoon 1980, Western Ghats rainfall trend, Sahyadri monsoon data, ERA5 Pune rain, hyperlocal weather Pune, monsoon onset Pune, rain impact air quality Pune, decade monsoon comparison">
+
+  <!-- ═══ DYNAMIC META — filled by JS on load ═══ -->
+  <title id="pg-title">Monsoon &amp; Rain — Baner, Pune | 45-Year Record Since 1980 | Earth Pulse</title>
+  <meta name="description" id="pg-desc" content="The most complete monsoon record for Baner, Pune — 45 years of ERA5 rainfall data from 1980, combined with live hyperlocal Weather Union sensors since Oct 2025. Decade analysis, monsoon trends, intensity breakdowns, and how rain reshapes birds and air quality.">
+  <meta name="keywords" content="Baner Pune rain, monsoon Pune 2026, Baner rainfall history, Pune monsoon 1980, Western Ghats rainfall trend, Sahyadri monsoon data, ERA5 Pune rain, hyperlocal weather Pune, monsoon onset Pune, rain impact air quality Pune, decade monsoon comparison, Pune rain today, how much rain Baner today">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://earth-pulse.org/rain.html">
-  <meta property="og:title" content="Monsoon &amp; Rain — Baner, Pune | 45-Year Record | Earth Pulse">
-  <meta property="og:description" content="45 years of monsoon data for Baner, Pune. ERA5 reanalysis 1980–2021 + live sensors. Decade analysis, rainfall trends, intensity breakdowns, bird and AQI impact.">
+
+  <!-- Open Graph -->
+  <meta property="og:title" id="og-title" content="Monsoon &amp; Rain — Baner, Pune | 45-Year Record | Earth Pulse">
+  <meta property="og:description" id="og-desc" content="45 years of monsoon data for Baner, Pune. ERA5 reanalysis 1980–2021 + Weather Union live sensor. Decade analysis, rainfall trends, intensity breakdowns, bird and AQI impact.">
   <meta property="og:image" content="https://earth-pulse.org/earth-pulse-logo-og.png">
   <meta property="og:url" content="https://earth-pulse.org/rain.html">
   <meta property="og:type" content="website">
   <meta property="og:locale" content="en_IN">
+
+  <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Monsoon &amp; Rain — Baner, Pune | 45-Year Record | Earth Pulse">
-  <meta name="twitter:description" content="45 years of monsoon data. ERA5 reanalysis 1980–2021 combined with live sensors since 2022. The most complete rainfall record for the Western Ghats foothills.">
+  <meta name="twitter:title" id="tw-title" content="Monsoon &amp; Rain — Baner, Pune | 45-Year Record | Earth Pulse">
+  <meta name="twitter:description" id="tw-desc" content="45 years of monsoon data. ERA5 reanalysis 1980–2021 + Weather Union live sensors. The most complete rainfall record for the Western Ghats foothills.">
+
+  <!-- Geo -->
   <meta name="geo.region" content="IN-MH">
   <meta name="geo.placename" content="Baner, Pune, Maharashtra">
   <meta name="geo.position" content="18.5526;73.7819">
   <meta name="ICBM" content="18.5526, 73.7819">
+
+  <!-- Favicons -->
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
   <link rel="manifest" href="/site.webmanifest">
 
-  <script type="application/ld+json">
+  <!-- Structured Data -->
+  <script type="application/ld+json" id="ld-json">
   {
     "@context": "https://schema.org",
     "@graph": [
       {
         "@type": "Dataset",
-        "name": "Earth Pulse — Monsoon & Rainfall Observatory, Baner, Pune 1980–2025",
-        "description": "45 years of rainfall data for Baner, Pune. ERA5 reanalysis 1980–2021 combined with hyperlocal sensors from January 2022. Includes daily totals, monsoon season tracking, decade analysis, first rain dates, rain impact on air quality and bird biodiversity.",
+        "name": "Earth Pulse — Monsoon & Rainfall Observatory, Baner, Pune 1980–2026",
+        "description": "45 years of rainfall data for Baner, Pune. ERA5 reanalysis 1980–2021 combined with Weather Union ZWL008983 hyperlocal sensor Oct 2025+. Includes daily totals, monsoon season tracking, decade analysis, first rain dates, rain impact on air quality and bird biodiversity.",
         "url": "https://earth-pulse.org/rain.html",
         "creator": {"@type": "Organization", "name": "Earth Pulse", "url": "https://earth-pulse.org"},
         "spatialCoverage": {"@type": "Place", "name": "Baner, Pune, Maharashtra, India", "geo": {"@type": "GeoCoordinates", "latitude": 18.5526, "longitude": 73.7819}},
         "temporalCoverage": "1980-01-01/..",
-        "measurementTechnique": "ERA5 reanalysis via Open-Meteo (1980–2021); Open-Meteo ECMWF (Jan 2022–Sep 2025); Weather Union ZWL008983 (Oct 2025+)",
-        "variableMeasured": ["Precipitation (mm)", "Monsoon arrival date", "Annual rainfall total", "Rainfall intensity"]
+        "measurementTechnique": "ERA5 reanalysis via Open-Meteo (1980–2021); Open-Meteo ECMWF (Jan 2022–Sep 2025); Weather Union ZWL008983 ground-truth sensor (Oct 2025+)",
+        "variableMeasured": ["Precipitation (mm)", "Monsoon arrival date", "Annual rainfall total", "Rainfall intensity", "Rain accumulation"]
       },
       {
         "@type": "FAQPage",
         "mainEntity": [
-          {"@type":"Question","name":"When does the monsoon arrive in Baner, Pune?","acceptedAnswer":{"@type":"Answer","text":"Based on 45 years of ERA5 data and Earth Pulse sensors since 2022, the first significant monsoon rain in Baner typically arrives between June 5–15. The 1980–2025 average first-rain date is around June 10. El Niño years (1987, 1997, 2002, 2015, 2023) show consistently delayed onset."}},
-          {"@type":"Question","name":"How much rain does Baner get annually?","acceptedAnswer":{"@type":"Answer","text":"ERA5 reanalysis data shows Baner's annual rainfall has averaged 650–800mm over 1980–2021. The monsoon season (June–September) accounts for over 85% of annual precipitation. The 2000s and 2010s showed higher inter-annual variability than the 1980s and 1990s."}},
-          {"@type":"Question","name":"Is Pune monsoon getting weaker or stronger?","acceptedAnswer":{"@type":"Answer","text":"Earth Pulse ERA5 analysis shows no consistent long-term trend in total monsoon rainfall for Baner, but significant increase in year-to-year variability. The 2010s had both the driest and some of the wettest monsoon seasons on record. Climate projections suggest more intense but fewer rain events going forward."}},
+          {"@type":"Question","name":"How much rain has Baner Pune received today?","acceptedAnswer":{"@type":"Answer","text":"Earth Pulse monitors rainfall in Baner, Pune in real time using a Weather Union ZWL008983 ground-truth sensor (since Oct 2025). Today's total is displayed live at the top of this page, updated hourly from the sensor's rain accumulation data."}},
+          {"@type":"Question","name":"When does the monsoon arrive in Baner, Pune?","acceptedAnswer":{"@type":"Answer","text":"Based on 45 years of ERA5 data and Earth Pulse sensors since 2022, the first significant monsoon rain in Baner typically arrives between June 5–15. The 1980–2025 average first-rain date is around June 10. El Niño years (1987, 1997, 2002, 2015, 2023) show consistently delayed onset, arriving 5–10 days later than average."}},
+          {"@type":"Question","name":"How much rain does Baner Pune get annually?","acceptedAnswer":{"@type":"Answer","text":"ERA5 reanalysis data shows Baner's annual rainfall has averaged 650–800mm over 1980–2021. The monsoon season (June–September) accounts for over 85% of annual precipitation. The monsoon is the dominant driver of the local ecology."}},
+          {"@type":"Question","name":"Is the Pune monsoon getting weaker or stronger?","acceptedAnswer":{"@type":"Answer","text":"45 years of ERA5 analysis shows no consistent long-term trend in total monsoon rainfall for Baner, but a significant increase in year-to-year variability. The 2010s had both the driest and some of the wettest monsoon seasons on record. Climate projections suggest more intense but fewer rain events going forward."}},
           {"@type":"Question","name":"Which decade had the most monsoon rainfall in Baner?","acceptedAnswer":{"@type":"Answer","text":"Based on ERA5 reanalysis for Baner, the 2000s decade had the highest average monsoon rainfall, driven by strong La Niña events in 2000 and 2010. The 1980s had the most consistent moderate rainfall. The 2010s showed the highest variability."}},
           {"@type":"Question","name":"Does rain improve air quality in Pune?","acceptedAnswer":{"@type":"Answer","text":"Yes — Earth Pulse data shows EU AQI drops by 15–30% within 1 hour of significant rainfall. Heavy monsoon rain produces the largest AQI improvements as PM2.5 and PM10 particles bind to raindrops and settle."}},
-          {"@type":"Question","name":"How do birds in Baner respond to rain?","acceptedAnswer":{"@type":"Answer","text":"Bird acoustic detections drop significantly during rain as calls are masked by rainfall noise. The hour after rain sees a surge in detections — the post-monsoon dawn chorus is one of the most biodiverse soundscapes recorded at Baner Hill."}}
+          {"@type":"Question","name":"How do birds in Baner respond to rain?","acceptedAnswer":{"@type":"Answer","text":"Bird acoustic detections drop significantly during rain as calls are masked by rainfall noise. The hour after rain sees a surge in detections — the post-monsoon dawn chorus is one of the most biodiverse soundscapes recorded at Baner Hill."}},
+          {"@type":"Question","name":"What is ERA5 rainfall data?","acceptedAnswer":{"@type":"Answer","text":"ERA5 is ECMWF's fifth-generation global climate reanalysis — a model reconstructing the atmosphere since 1940 using billions of historical observations at 9km resolution. Earth Pulse uses ERA5 for the 1980–2021 baseline. Since Oct 2025, rainfall is measured by a ground-truth Weather Union sensor at Baner."}}
         ]
       },
       {
@@ -73,7 +86,6 @@
     /* ══════════════════════════════════════════════
        RAIN PAGE — OCEAN/MONSOON EDITORIAL AESTHETIC
        ══════════════════════════════════════════════ */
-
     :root {
       --rain-deep:   #0d2137;
       --rain-mid:    #1E3A52;
@@ -96,13 +108,8 @@
     .r-g2 { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
     .r-g3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:1rem; }
     .r-g4 { display:grid; grid-template-columns:repeat(4,1fr); gap:1rem; }
-    .r-g5 { display:grid; grid-template-columns:repeat(5,1fr); gap:1rem; }
-    @media(max-width:900px){ .r-g5{grid-template-columns:repeat(3,1fr);} }
     @media(max-width:800px){ .r-g2,.r-g3,.r-g4{grid-template-columns:1fr 1fr;} }
-    @media(max-width:500px){
-      .r-g2,.r-g3,.r-g4,.r-g5{grid-template-columns:1fr;}
-      .r-page{padding:0 1rem 3rem;}
-    }
+    @media(max-width:500px){ .r-g2,.r-g3,.r-g4{grid-template-columns:1fr;} .r-page{padding:0 1rem 3rem;} }
 
     /* ── Section ── */
     .r-sec { margin:3rem 0; }
@@ -118,6 +125,12 @@
     .era5-badge {
       display:inline-flex; align-items:center; gap:4px;
       background:rgba(191,155,123,0.15); color:#92400e;
+      font-family:var(--mono); font-size:0.62rem; font-weight:600;
+      padding:2px 8px; border-radius:20px; text-transform:uppercase; letter-spacing:0.05em;
+    }
+    .wu-badge {
+      display:inline-flex; align-items:center; gap:4px;
+      background:rgba(74,127,165,0.12); color:var(--rain-blue);
       font-family:var(--mono); font-size:0.62rem; font-weight:600;
       padding:2px 8px; border-radius:20px; text-transform:uppercase; letter-spacing:0.05em;
     }
@@ -140,12 +153,7 @@
     .ocean .r-val { color:var(--rain-light); }
 
     /* ── Hero strip ── */
-    .hero-strip {
-      display:grid;
-      grid-template-columns:repeat(5,1fr);
-      gap:0.85rem;
-      margin-bottom:2rem;
-    }
+    .hero-strip { display:grid; grid-template-columns:repeat(5,1fr); gap:0.85rem; margin-bottom:2rem; }
     @media(max-width:900px){ .hero-strip{grid-template-columns:repeat(3,1fr);} }
     @media(max-width:500px){ .hero-strip{grid-template-columns:1fr 1fr;} }
     .hs { background:#fff; border:1px solid var(--border,#e5e0d8); border-radius:12px; padding:1rem 1.15rem; }
@@ -157,6 +165,11 @@
     .hs-val.blue { color:var(--rain-blue); }
     .hs-sub { font-size:0.7rem; color:var(--text-muted); margin-top:3px; }
     .hs.a .hs-sub { color:rgba(168,200,224,0.5); }
+
+    /* ── Data source chip ── */
+    .ds-chip { font-size:0.58rem; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; padding:1px 5px; border-radius:3px; margin-top:4px; display:inline-block; }
+    .ds-wu  { background:rgba(74,127,165,0.15); color:var(--rain-blue); }
+    .ds-om  { background:rgba(191,155,123,0.2); color:#92400e; }
 
     /* ── Insight boxes ── */
     .r-insight { background:var(--ep-green); border-radius:12px; padding:1.1rem 1.4rem; display:flex; gap:0.75rem; align-items:flex-start; margin:1rem 0; }
@@ -171,17 +184,12 @@
     .r-insight.blue .ri-text strong { color:var(--rain-blue); }
 
     /* ── Today card ── */
-    .today-card {
-      background:var(--rain-deep);
-      border-radius:14px;
-      padding:1.5rem 1.75rem;
-      display:flex; align-items:center; gap:1.5rem;
-      flex-wrap:wrap; margin-bottom:1rem;
-    }
+    .today-card { background:var(--rain-deep); border-radius:14px; padding:1.5rem 1.75rem; display:flex; align-items:center; gap:1.5rem; flex-wrap:wrap; margin-bottom:1rem; }
     .tc-icon { font-size:3rem; flex-shrink:0; }
     .tc-main { flex:1; min-width:120px; }
     .tc-mm   { font-family:var(--serif); font-size:2.8rem; color:var(--ep-cream); line-height:1; }
     .tc-lbl  { font-size:0.85rem; color:var(--rain-light); opacity:0.8; margin-top:4px; }
+    .tc-src  { font-size:0.65rem; color:rgba(168,200,224,0.5); margin-top:3px; font-family:var(--mono); }
     .rain-tag { background:rgba(255,255,255,0.1); border-radius:2rem; padding:5px 14px; font-size:0.82rem; font-weight:600; color:var(--ep-cream); white-space:nowrap; align-self:flex-start; }
     .rain-tag.heavy { background:rgba(124,58,237,0.35); }
     .rain-tag.mod   { background:rgba(74,127,165,0.45); }
@@ -208,18 +216,13 @@
     .yr-val  { font-family:var(--mono); font-size:0.74rem; color:var(--rain-blue); font-weight:600; width:60px; text-align:right; }
     .yr-val.cur { color:var(--rain-tan); }
 
-    /* ── ════ RAINFALL HEATMAP CALENDAR ════ ── */
+    /* ── Heatmap ── */
     .heatmap-wrap { overflow-x:auto; padding-bottom:6px; }
     .heatmap-wrap::-webkit-scrollbar { height:4px; }
     .heatmap-wrap::-webkit-scrollbar-thumb { background:rgba(74,127,165,0.3); border-radius:2px; }
     .heatmap-grid { display:flex; gap:3px; align-items:flex-end; min-width:600px; }
     .hm-col { display:flex; flex-direction:column; gap:2px; align-items:center; }
-    .hm-cell {
-      width:16px; height:40px; border-radius:3px;
-      cursor:default;
-      transition:transform 0.15s, opacity 0.15s;
-      position:relative;
-    }
+    .hm-cell { width:16px; border-radius:3px; cursor:default; transition:transform 0.15s,opacity 0.15s; }
     .hm-cell:hover { transform:scaleY(1.08); z-index:2; opacity:0.85; }
     .hm-yr { font-family:var(--mono); font-size:0.55rem; color:var(--text-muted); margin-top:3px; writing-mode:vertical-rl; text-orientation:mixed; transform:rotate(180deg); }
     .hm-legend { display:flex; align-items:center; gap:8px; margin-top:10px; flex-wrap:wrap; }
@@ -230,15 +233,8 @@
     .decade-grid { display:grid; grid-template-columns:repeat(5,1fr); gap:1rem; }
     @media(max-width:900px){ .decade-grid{grid-template-columns:repeat(3,1fr);} }
     @media(max-width:500px){ .decade-grid{grid-template-columns:1fr 1fr;} }
-    .dc-card {
-      background:#fff;
-      border:1px solid var(--border,#e5e0d8);
-      border-radius:12px;
-      padding:1.1rem 1.15rem;
-      border-top:4px solid var(--rain-blue);
-      position:relative;
-    }
-    .dc-card.hottest { border-top-color:#7c3aed; }
+    .dc-card { background:#fff; border:1px solid var(--border,#e5e0d8); border-radius:12px; padding:1.1rem 1.15rem; border-top:4px solid var(--rain-blue); }
+    .dc-card.wettest { border-top-color:#2563eb; }
     .dc-card.driest  { border-top-color:#f59e0b; }
     .dc-label { font-family:var(--serif); font-size:1.3rem; color:var(--ep-green); display:block; margin-bottom:8px; }
     .dc-row { display:flex; justify-content:space-between; align-items:center; font-size:0.78rem; color:var(--text-muted); padding:3px 0; border-bottom:1px solid rgba(0,0,0,0.05); }
@@ -255,7 +251,7 @@
     .int-fill{ height:100%; border-radius:5px; }
     .int-cnt { font-family:var(--mono); font-size:0.72rem; color:var(--text-muted); text-align:right; }
 
-    /* ── Rain events list ── */
+    /* ── Rain events ── */
     .events-filter { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:1rem; }
     .ef-btn { font-family:var(--sans); font-size:0.75rem; font-weight:600; padding:5px 13px; border-radius:20px; border:1px solid var(--border,#e5e0d8); background:#fff; color:var(--text-muted); cursor:pointer; transition:all 0.15s; }
     .ef-btn.active { background:var(--rain-blue); color:#fff; border-color:var(--rain-blue); }
@@ -337,20 +333,6 @@
     .aqi-imp-val{ font-family:var(--serif); font-size:2rem; color:#B8E4CB; line-height:1; margin-bottom:3px; }
     .aqi-imp-lbl{ font-size:0.71rem; color:rgba(242,240,230,0.7); }
 
-    /* ── Month year grid (this month comparison) ── */
-    .mo-yr-grid { display:grid; grid-template-columns:repeat(5,1fr); gap:0.85rem; }
-    @media(max-width:800px){ .mo-yr-grid{grid-template-columns:1fr 1fr 1fr;} }
-    @media(max-width:500px){ .mo-yr-grid{grid-template-columns:1fr 1fr;} }
-    .mo-card { background:#fff; border:1px solid var(--border,#e5e0d8); border-radius:12px; padding:1rem 1.1rem; }
-    .mo-card.cur { border-color:rgba(74,127,165,0.4); background:rgba(74,127,165,0.04); }
-    .mo-yr   { font-size:0.7rem; color:var(--text-muted); margin-bottom:4px; }
-    .mo-mm   { font-family:var(--serif); font-size:1.7rem; color:var(--rain-blue); line-height:1; }
-    .mo-unit { font-size:0.72rem; color:var(--text-muted); }
-    .mo-days { font-size:0.74rem; color:var(--text-muted); margin-top:3px; }
-    .mo-bar  { margin-top:7px; height:4px; background:rgba(0,0,0,0.06); border-radius:2px; overflow:hidden; }
-    .mo-bar-f{ height:100%; background:var(--rain-blue); border-radius:2px; }
-    .mo-era  { border-left:3px solid rgba(191,155,123,0.5); }
-
     /* ── Temp impact ── */
     .impact-cols { display:flex; gap:1rem; align-items:flex-end; margin-bottom:0.75rem; flex-wrap:wrap; }
     .impact-col  { flex:1; text-align:center; min-width:80px; }
@@ -360,6 +342,34 @@
     .ic-wet  { color:var(--rain-blue); }
     .ic-unit { font-size:0.67rem; color:var(--text-muted); }
     .ic-arrow{ font-size:1.2rem; color:var(--ep-green); align-self:center; flex-shrink:0; }
+
+    /* ── COMPARISON WIDGET ── */
+    .cmp-widget { background:rgba(74,127,165,0.05); border:1px solid rgba(74,127,165,0.2); border-radius:14px; padding:1.5rem; }
+    .cmp-controls { display:grid; grid-template-columns:1fr auto 1fr auto; gap:0.75rem; align-items:end; margin-bottom:1.25rem; }
+    @media(max-width:600px){ .cmp-controls{grid-template-columns:1fr 1fr; grid-template-rows:auto auto;} .cmp-vs{grid-column:1/-1;text-align:center;} .cmp-run{grid-column:1/-1;} }
+    .cmp-field label { font-size:0.68rem; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--text-muted); display:block; margin-bottom:5px; }
+    .cmp-row { display:flex; gap:0.5rem; }
+    .cmp-sel { font-family:var(--sans); font-size:0.9rem; padding:0.45rem 0.65rem; border:1px solid var(--border,#e5e0d8); border-radius:8px; background:#fff; color:var(--ep-green); flex:1; }
+    .cmp-vs { font-family:var(--serif); font-size:1.2rem; color:var(--text-muted); padding-bottom:0.45rem; text-align:center; }
+    .cmp-run { background:var(--rain-blue); color:#fff; border:none; padding:0.5rem 1.25rem; border-radius:8px; font-size:0.85rem; font-weight:600; cursor:pointer; font-family:var(--sans); transition:opacity 0.15s; white-space:nowrap; }
+    .cmp-run:hover { opacity:0.85; }
+    .cmp-results { display:none; }
+    .cmp-results.show { display:block; }
+    .cmp-result-grid { display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-bottom:1rem; }
+    .cmp-col { border-radius:12px; padding:1.1rem; }
+    .cmp-col.a { background:rgba(74,127,165,0.08); border:1px solid rgba(74,127,165,0.25); }
+    .cmp-col.b { background:rgba(191,155,123,0.08); border:1px solid rgba(191,155,123,0.25); }
+    .cmp-col-title { font-size:0.72rem; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; margin-bottom:0.75rem; }
+    .cmp-col.a .cmp-col-title { color:var(--rain-blue); }
+    .cmp-col.b .cmp-col-title { color:#92400e; }
+    .cmp-stat { display:flex; justify-content:space-between; font-size:0.82rem; padding:4px 0; border-bottom:1px solid rgba(0,0,0,0.05); }
+    .cmp-stat:last-child { border-bottom:none; }
+    .cmp-stat-lbl { color:var(--text-muted); }
+    .cmp-stat-val { font-weight:600; color:var(--ep-green); }
+    .cmp-delta { background:var(--ep-green); border-radius:10px; padding:1rem 1.25rem; }
+    .cmp-delta-text { font-size:0.9rem; color:rgba(242,240,230,0.9); line-height:1.7; }
+    .cmp-loading { text-align:center; padding:1.5rem; color:var(--text-muted); font-size:0.85rem; }
+    .cmp-err { color:#dc2626; font-size:0.83rem; padding:0.75rem 0; }
 
     /* ── Fact callout ── */
     .r-fact { background:rgba(74,127,165,0.06); border:1px solid rgba(74,127,165,0.18); border-left:4px solid var(--rain-blue); border-radius:12px; padding:1rem 1.25rem; font-size:0.87rem; color:var(--ep-green); line-height:1.7; }
@@ -383,7 +393,7 @@
     .src-note { font-size:0.71rem; color:var(--text-muted); background:rgba(74,127,165,0.05); border:1px solid rgba(74,127,165,0.14); border-radius:8px; padding:0.6rem 0.9rem; margin-top:1rem; line-height:1.6; }
     .src-note a { color:var(--rain-tan); }
 
-    /* ── Share toast ── */
+    /* ── Toast ── */
     .s-toast { position:fixed; bottom:2rem; left:50%; transform:translateX(-50%); background:var(--ep-green); color:var(--ep-cream); padding:0.6rem 1.4rem; border-radius:2rem; font-size:0.85rem; z-index:9999; opacity:0; transition:opacity 0.3s; pointer-events:none; }
     .s-toast.show { opacity:1; }
 
@@ -395,12 +405,17 @@
     .faq-a { font-size:0.83rem; color:#555; line-height:1.75; margin-top:9px; display:none; }
     .faq-a.show { display:block; }
 
-    /* Chart canvases */
+    /* ── Chart wraps ── */
     .chart-wrap canvas { max-height:240px; }
 
     /* ── Skeleton ── */
     .sk { background:linear-gradient(90deg,rgba(0,0,0,0.06) 25%,rgba(0,0,0,0.03) 50%,rgba(0,0,0,0.06) 75%); background-size:200% 100%; animation:sk 1.4s infinite; border-radius:8px; }
     @keyframes sk { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+
+    /* ── Cache indicator ── */
+    .cache-dot { display:inline-block; width:6px; height:6px; border-radius:50%; margin-right:4px; vertical-align:middle; }
+    .cache-dot.live { background:#22c55e; }
+    .cache-dot.cached { background:#f59e0b; }
   </style>
 </head>
 
@@ -411,9 +426,9 @@
 <div class="ep-hero" style="padding-bottom:1.5rem;">
   <div class="ep-hero-tag">&#127783;&#65039; Monsoon &amp; Rain · Baner, Pune · Sahyadri Foothills · 45 Years of Data</div>
   <h1>The Monsoon &amp; Baner</h1>
-  <p class="ep-hero-sub">The most complete rainfall record ever assembled for this corner of the Western Ghats — 45 years of ERA5 reanalysis from 1980, merged with live hyperlocal sensors since 2022. Every drop measured, every decade compared.</p>
+  <p class="ep-hero-sub">The most complete rainfall record ever assembled for this corner of the Western Ghats — 45 years of ERA5 reanalysis from 1980, merged with a live Weather Union ground-truth sensor since Oct 2025. Every drop measured, every decade compared.</p>
   <p class="ep-hero-meta">
-    ERA5 Reanalysis 1980–2021 (Copernicus/ECMWF) &nbsp;·&nbsp; Open-Meteo ECMWF (2022–Sep 2025) &nbsp;·&nbsp; Weather Union ZWL008983 (Oct 2025+) &nbsp;·&nbsp;
+    ERA5 Reanalysis 1980–2021 &nbsp;·&nbsp; Open-Meteo (2022–Sep 2025) &nbsp;·&nbsp; Weather Union ZWL008983 (Oct 2025+ · ground truth) &nbsp;·&nbsp;
     <a href="climate.html" style="color:var(--ep-tan);">&#8592; Climate overview</a> &nbsp;·&nbsp;
     <a href="history.html" style="color:var(--ep-tan);">&#128202; 45-year history</a>
   </p>
@@ -424,9 +439,10 @@
   <!-- ═══ HERO STAT STRIP ═══ -->
   <div class="hero-strip">
     <div class="hs a">
-      <div class="hs-lbl">&#127783; Today</div>
+      <div class="hs-lbl">&#127783; Today so far</div>
       <div class="hs-val" id="hs-today">—</div>
-      <div class="hs-sub">mm recorded today</div>
+      <div class="hs-sub" id="hs-today-sub">mm recorded today</div>
+      <div class="ds-chip ds-wu" id="hs-today-src" style="display:none;">&#9679; WU sensor</div>
     </div>
     <div class="hs">
       <div class="hs-lbl">&#128197; This month</div>
@@ -441,12 +457,12 @@
     <div class="hs">
       <div class="hs-lbl">&#9928; Rainy days</div>
       <div class="hs-val blue" id="hs-rdays">—</div>
-      <div class="hs-sub">days with rain this year</div>
+      <div class="hs-sub">days ≥1mm this year</div>
     </div>
     <div class="hs">
       <div class="hs-lbl">&#127775; All-time record day</div>
       <div class="hs-val blue" id="hs-peak">—</div>
-      <div class="hs-sub" id="hs-peak-date">loading…</div>
+      <div class="hs-sub" id="hs-peak-date">sensor era 2022+</div>
     </div>
   </div>
 
@@ -455,12 +471,14 @@
     <div class="r-sec-hd">
       <h2 class="r-sec-title">&#127783; Today's rain</h2>
       <span class="r-sec-sub">Current precipitation · 7-day ECMWF forecast</span>
+      <span class="wu-badge">&#9679; WU ground sensor</span>
     </div>
     <div class="today-card">
       <div class="tc-icon" id="today-icon">&#8987;</div>
       <div class="tc-main">
         <div class="tc-mm" id="today-mm">— mm</div>
         <div class="tc-lbl" id="today-lbl">Loading…</div>
+        <div class="tc-src" id="today-src"></div>
       </div>
       <div class="rain-tag" id="today-tag">—</div>
     </div>
@@ -482,7 +500,7 @@
     </div>
   </div>
 
-  <!-- ═══ 2. THIS DAY ACROSS ALL YEARS (sensor + ERA5) ═══ -->
+  <!-- ═══ 2. THIS DAY ACROSS ALL YEARS ═══ -->
   <div class="r-sec">
     <div class="r-sec-hd">
       <h2 class="r-sec-title">This day across all years</h2>
@@ -495,15 +513,36 @@
         <div class="yr-rows" id="this-day-sensor"></div>
       </div>
       <div class="r-card hist">
-        <div class="r-label" style="margin-bottom:0.75rem;">ERA5 reanalysis — this date, every decade</div>
-        <div id="this-day-era5-content">
-          <div class="sk" style="height:100px;"></div>
-        </div>
+        <div class="r-label" style="margin-bottom:0.75rem;">ERA5 reanalysis — this date, sample years</div>
+        <div id="this-day-era5-content"><div class="sk" style="height:100px;"></div></div>
       </div>
     </div>
     <div class="r-insight" id="day-insight" style="display:none;">
       <div class="ri-icon">&#128197;</div>
       <div class="ri-text" id="day-insight-text"></div>
+    </div>
+  </div>
+
+  <!-- ═══ 2b. THIS WEEK ACROSS ALL YEARS ═══ -->
+  <div class="r-sec">
+    <div class="r-sec-hd">
+      <h2 class="r-sec-title">This week across all years</h2>
+      <span class="r-sec-sub" id="week-lbl">—</span>
+      <span class="era5-badge">ERA5 · 1980–2021</span>
+    </div>
+    <div class="r-g2">
+      <div class="r-card">
+        <div class="r-label" style="margin-bottom:0.75rem;">Sensor era (2022–present)</div>
+        <div class="yr-rows" id="this-week-sensor"><div class="sk" style="height:120px;"></div></div>
+      </div>
+      <div class="r-card hist">
+        <div class="r-label" style="margin-bottom:0.75rem;">ERA5 reanalysis — same week, sample years</div>
+        <div id="this-week-era5"><div class="sk" style="height:120px;"></div></div>
+      </div>
+    </div>
+    <div class="r-insight" id="week-insight" style="display:none;">
+      <div class="ri-icon">&#128197;</div>
+      <div class="ri-text" id="week-insight-text"></div>
     </div>
   </div>
 
@@ -514,17 +553,15 @@
       <span class="r-sec-sub" id="month-lbl">—</span>
       <span class="era5-badge">ERA5 · 1980–2021</span>
     </div>
-    <!-- Sensor era mini cards -->
-    <div class="mo-yr-grid" id="month-sensor-grid" style="margin-bottom:1.5rem;">
+    <div id="month-sensor-grid" style="display:grid;grid-template-columns:repeat(5,1fr);gap:0.85rem;margin-bottom:1.5rem;">
       <div class="sk" style="height:110px;border-radius:12px;"></div>
       <div class="sk" style="height:110px;border-radius:12px;"></div>
       <div class="sk" style="height:110px;border-radius:12px;"></div>
     </div>
-    <!-- ERA5 full chart -->
     <div class="r-card hist">
       <div class="r-label" style="margin-bottom:0.75rem;">ERA5 reanalysis — <span id="era5-month-name">this month</span> rainfall, every year 1980–2021</div>
       <div class="chart-wrap"><canvas id="era5MonthChart" height="180"></canvas></div>
-      <div style="font-size:0.71rem;color:var(--text-muted);margin-top:6px;">ERA5 reanalysis 1980–2021 (blue) + Earth Pulse sensors 2022–present (tan). Dashed = 1981–2010 baseline.</div>
+      <div style="font-size:0.71rem;color:var(--text-muted);margin-top:6px;">ERA5 1980–2021 (blue) + sensor era 2022+ (tan). Dashed = 1981–2010 baseline.</div>
     </div>
     <div class="r-insight" id="month-insight" style="display:none;margin-top:1rem;">
       <div class="ri-icon">&#128197;</div>
@@ -532,7 +569,7 @@
     </div>
   </div>
 
-  <!-- ═══ 4. 45-YEAR RAINFALL HEATMAP ═══ -->
+  <!-- ═══ 4. 45-YEAR HEATMAP ═══ -->
   <div class="r-sec">
     <div class="r-sec-hd">
       <h2 class="r-sec-title">45 monsoon seasons at a glance</h2>
@@ -540,9 +577,7 @@
       <span class="era5-badge">ERA5 · 1980–2025</span>
     </div>
     <div class="r-card" style="overflow:hidden;">
-      <div class="heatmap-wrap" id="heatmap-wrap">
-        <div class="sk" style="height:80px;min-width:600px;"></div>
-      </div>
+      <div class="heatmap-wrap" id="heatmap-wrap"><div class="sk" style="height:80px;min-width:600px;"></div></div>
       <div class="hm-legend" id="hm-legend" style="margin-top:10px;"></div>
     </div>
     <div class="r-insight tan" id="heatmap-insight" style="display:none;margin-top:1rem;">
@@ -575,7 +610,69 @@
     </div>
   </div>
 
-  <!-- ═══ 6. MONSOON TRACKER ═══ -->
+  <!-- ═══ 6. COMPARE ANY TWO PERIODS ═══ -->
+  <div class="r-sec">
+    <div class="r-sec-hd">
+      <h2 class="r-sec-title">&#128269; Compare any two periods</h2>
+      <span class="r-sec-sub">Compare rainfall for any month across any two years — ERA5 1980–2021 + sensor 2022+</span>
+    </div>
+    <div class="cmp-widget">
+      <div class="cmp-controls">
+        <div class="cmp-field">
+          <label>Period A</label>
+          <div class="cmp-row">
+            <select class="cmp-sel" id="cmp-month-a" aria-label="Month A"></select>
+            <select class="cmp-sel" id="cmp-year-a" aria-label="Year A"></select>
+          </div>
+        </div>
+        <div class="cmp-vs">vs</div>
+        <div class="cmp-field">
+          <label>Period B</label>
+          <div class="cmp-row">
+            <select class="cmp-sel" id="cmp-month-b" aria-label="Month B"></select>
+            <select class="cmp-sel" id="cmp-year-b" aria-label="Year B"></select>
+          </div>
+        </div>
+        <button class="cmp-run" onclick="runComparison()">Compare &#8594;</button>
+      </div>
+      <div class="cmp-results" id="cmp-results">
+        <div class="cmp-loading" id="cmp-loading" style="display:none;">Fetching data…</div>
+        <div class="cmp-err" id="cmp-err" style="display:none;"></div>
+        <div id="cmp-output" style="display:none;">
+          <div class="cmp-result-grid">
+            <div class="cmp-col a">
+              <div class="cmp-col-title" id="cmp-title-a">—</div>
+              <div class="cmp-stat"><span class="cmp-stat-lbl">Total rain</span><span class="cmp-stat-val" id="cmp-total-a">—</span></div>
+              <div class="cmp-stat"><span class="cmp-stat-lbl">Rainy days</span><span class="cmp-stat-val" id="cmp-days-a">—</span></div>
+              <div class="cmp-stat"><span class="cmp-stat-lbl">Peak day</span><span class="cmp-stat-val" id="cmp-peak-a">—</span></div>
+              <div class="cmp-stat"><span class="cmp-stat-lbl">Avg/rainy day</span><span class="cmp-stat-val" id="cmp-avg-a">—</span></div>
+              <div class="cmp-stat"><span class="cmp-stat-lbl">Data source</span><span class="cmp-stat-val" id="cmp-src-a">—</span></div>
+            </div>
+            <div class="cmp-col b">
+              <div class="cmp-col-title" id="cmp-title-b">—</div>
+              <div class="cmp-stat"><span class="cmp-stat-lbl">Total rain</span><span class="cmp-stat-val" id="cmp-total-b">—</span></div>
+              <div class="cmp-stat"><span class="cmp-stat-lbl">Rainy days</span><span class="cmp-stat-val" id="cmp-days-b">—</span></div>
+              <div class="cmp-stat"><span class="cmp-stat-lbl">Peak day</span><span class="cmp-stat-val" id="cmp-peak-b">—</span></div>
+              <div class="cmp-stat"><span class="cmp-stat-lbl">Avg/rainy day</span><span class="cmp-stat-val" id="cmp-avg-b">—</span></div>
+              <div class="cmp-stat"><span class="cmp-stat-lbl">Data source</span><span class="cmp-stat-val" id="cmp-src-b">—</span></div>
+            </div>
+          </div>
+          <div class="cmp-delta">
+            <div class="cmp-delta-text" id="cmp-delta-text">—</div>
+          </div>
+          <div class="r-card" style="margin-top:1rem;">
+            <div class="r-label" style="margin-bottom:0.5rem;">Daily rainfall comparison</div>
+            <div class="chart-wrap"><canvas id="cmpChart" height="180"></canvas></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="r-fact" style="margin-top:1rem;">
+      <strong>Try these comparisons:</strong> June 1987 vs June 1988 (El Niño vs La Niña) · July 2000 vs July 2019 · May 2015 vs May 2010 · Any monsoon month across three decades.
+    </div>
+  </div>
+
+  <!-- ═══ 7. MONSOON TRACKER ═══ -->
   <div class="r-sec">
     <div class="r-sec-hd">
       <h2 class="r-sec-title">Monsoon tracker</h2>
@@ -591,48 +688,44 @@
     </div>
   </div>
 
-  <!-- ═══ 7. FIRST RAIN OF THE YEAR ═══ -->
+  <!-- ═══ 8. FIRST RAIN ═══ -->
   <div class="r-sec">
     <div class="r-sec-hd">
       <h2 class="r-sec-title">When the first rain came</h2>
-      <span class="r-sec-sub">The exact day the monsoon first touched Baner — every year on record</span>
+      <span class="r-sec-sub">The exact day the monsoon first touched Baner — sensor era 2022+</span>
     </div>
     <div class="r-g2">
       <div class="r-card">
-        <div class="fr-wrap" id="fr-timeline">
-          <div class="sk" style="height:160px;"></div>
-        </div>
+        <div class="fr-wrap" id="fr-timeline"><div class="sk" style="height:160px;"></div></div>
       </div>
       <div class="r-card" style="display:flex;flex-direction:column;justify-content:center;gap:0.75rem;">
         <div class="r-label">What the data tells us</div>
-        <div id="fr-insight-box" style="font-size:0.87rem;color:var(--ep-green);line-height:1.8;">
-          <div class="sk" style="height:80px;"></div>
-        </div>
+        <div id="fr-insight-box" style="font-size:0.87rem;color:var(--ep-green);line-height:1.8;"><div class="sk" style="height:80px;"></div></div>
         <div class="r-fact" id="fr-fact" style="display:none;">
-          <strong>IMD vs hyperlocal:</strong> Baner's sensors often detect the first drops 1–2 days ahead of official IMD onset declarations for Pune city. The ERA5 record shows that El Niño years (1987, 1997, 2002, 2015, 2023) consistently have delayed onset — arriving 5–10 days later than average.
+          <strong>IMD vs hyperlocal:</strong> Baner's ground sensor often detects the first drops 1–2 days ahead of official IMD onset declarations for Pune city. The ERA5 record shows that El Niño years (1987, 1997, 2002, 2015, 2023) consistently have delayed onset — arriving 5–10 days later than average.
         </div>
       </div>
     </div>
   </div>
 
-  <!-- ═══ 8. YEAR-BY-YEAR CHART (ERA5 + sensor) ═══ -->
+  <!-- ═══ 9. YEAR-BY-YEAR CHART ═══ -->
   <div class="r-sec">
     <div class="r-sec-hd">
       <h2 class="r-sec-title">Year-by-year rainfall since 1980</h2>
-      <span class="r-sec-sub">Monthly rainfall overlaid — all 45 years on one chart</span>
+      <span class="r-sec-sub">Monthly rainfall averages by decade — ERA5 1980–2021 + live sensor</span>
       <span class="era5-badge">ERA5 · 1980–2025</span>
     </div>
     <div class="r-card">
       <div class="chart-wrap"><canvas id="yearlyChart" height="220"></canvas></div>
-      <div style="font-size:0.69rem;color:var(--text-muted);text-align:right;margin-top:4px;">Monthly total rainfall (mm) · Baner, Pune · ERA5 1980–2021 + Earth Pulse sensors 2022+</div>
+      <div style="font-size:0.69rem;color:var(--text-muted);text-align:right;margin-top:4px;">Monthly total rainfall (mm) · Baner, Pune · ERA5 decade averages + live sensor</div>
     </div>
   </div>
 
-  <!-- ═══ 9. RAIN PATTERN ═══ -->
+  <!-- ═══ 10. RAIN PATTERN ═══ -->
   <div class="r-sec">
     <div class="r-sec-hd">
       <h2 class="r-sec-title">The pattern of rain</h2>
-      <span class="r-sec-sub">Not just totals — frequency, gaps, and reliability</span>
+      <span class="r-sec-sub">Not just totals — frequency, gaps, and reliability · <span id="cy-label">2026</span></span>
     </div>
     <div class="r-g3" id="pattern-grid">
       <div class="sk" style="height:90px;border-radius:12px;"></div>
@@ -641,15 +734,13 @@
     </div>
   </div>
 
-  <!-- ═══ 10. INTENSITY BREAKDOWN ═══ -->
+  <!-- ═══ 11. INTENSITY BREAKDOWN ═══ -->
   <div class="r-sec">
     <div class="r-sec-hd">
       <h2 class="r-sec-title">Rain intensity breakdown</h2>
       <span class="r-sec-sub">Drizzle vs downpour — this year classified by IMD categories</span>
     </div>
-    <div class="r-card" id="intensity-bars">
-      <div class="sk" style="height:120px;"></div>
-    </div>
+    <div class="r-card" id="intensity-bars"><div class="sk" style="height:120px;"></div></div>
     <div class="r-insight" id="intensity-insight" style="display:none;">
       <div class="ri-icon">&#127783;</div>
       <div class="ri-text" id="intensity-insight-text"></div>
@@ -659,11 +750,11 @@
     </div>
   </div>
 
-  <!-- ═══ 11. BIGGEST RAIN DAYS — with decade filter ═══ -->
+  <!-- ═══ 12. BIGGEST RAIN DAYS ═══ -->
   <div class="r-sec">
     <div class="r-sec-hd">
       <h2 class="r-sec-title">Biggest rain days on record</h2>
-      <span class="r-sec-sub">Ranked by daily total — sensor era (2022+). Filter by year or decade.</span>
+      <span class="r-sec-sub">Ranked by daily total — sensor era (2022+). Filter by year.</span>
     </div>
     <div class="events-filter" id="events-filter">
       <button class="ef-btn active" onclick="filterEvents('all',this)">All time</button>
@@ -680,11 +771,11 @@
     </div>
   </div>
 
-  <!-- ═══ 12. MONSOON PHASES ═══ -->
+  <!-- ═══ 13. MONSOON PHASES ═══ -->
   <div class="r-sec">
     <div class="r-sec-hd">
       <h2 class="r-sec-title">How the monsoon behaves</h2>
-      <span class="r-sec-sub">Early onset · roaring peak · slow withdrawal — averaged across all years</span>
+      <span class="r-sec-sub">Early onset · roaring peak · slow withdrawal — averaged across all sensor years</span>
     </div>
     <div class="r-g3" id="phase-cards">
       <div class="sk" style="height:130px;border-radius:12px;"></div>
@@ -692,16 +783,16 @@
       <div class="sk" style="height:130px;border-radius:12px;"></div>
     </div>
     <div class="r-card" style="margin-top:1rem;">
-      <div class="r-label" style="margin-bottom:0.5rem;">Average monthly rainfall profile (all years)</div>
+      <div class="r-label" style="margin-bottom:0.5rem;">Average monthly rainfall profile (sensor era)</div>
       <div class="chart-wrap"><canvas id="behaviourChart" height="180"></canvas></div>
     </div>
   </div>
 
-  <!-- ═══ 13. RAIN & BIRDS ═══ -->
+  <!-- ═══ 14. RAIN & BIRDS ═══ -->
   <div class="r-sec">
     <div class="r-sec-hd">
       <h2 class="r-sec-title">&#128038; Rain &amp; the birds of Baner</h2>
-      <span class="r-sec-sub">How bird activity shifts before, during, and after a shower — from acoustic detections</span>
+      <span class="r-sec-sub">How bird activity shifts before, during, and after a shower — acoustic detections</span>
     </div>
     <div class="bird-cols">
       <div class="bc" style="position:relative;">
@@ -731,7 +822,7 @@
     </div>
   </div>
 
-  <!-- ═══ 14. TEMPERATURE DROP AFTER RAIN ═══ -->
+  <!-- ═══ 15. TEMPERATURE DROP ═══ -->
   <div class="r-sec">
     <div class="r-sec-hd">
       <h2 class="r-sec-title">&#127777; Temperature drop after rain</h2>
@@ -747,7 +838,7 @@
     </div>
   </div>
 
-  <!-- ═══ 15. RAIN + AQI ═══ -->
+  <!-- ═══ 16. RAIN + AQI ═══ -->
   <div class="r-sec">
     <div class="r-sec-hd">
       <h2 class="r-sec-title">&#129527; Rain cleans the air</h2>
@@ -757,7 +848,7 @@
       <div class="aqi-col"><div class="aqi-lbl">1 hr before</div><div class="aqi-val aqi-before" id="aqi-before">—</div><div class="aqi-note">avg EU AQI</div></div>
       <div class="aqi-col"><div class="aqi-lbl">During rain</div><div class="aqi-val aqi-during" id="aqi-during">—</div><div class="aqi-note">avg EU AQI</div></div>
       <div class="aqi-col"><div class="aqi-lbl">1 hr after</div><div class="aqi-val aqi-after" id="aqi-after">—</div><div class="aqi-note">avg EU AQI</div></div>
-      <div class="aqi-improve"><div class="aqi-imp-val" id="aqi-pct">—</div><div class="aqi-imp-lbl" id="aqi-lbl">improvement after rain</div></div>
+      <div class="aqi-improve"><div class="aqi-imp-val" id="aqi-pct">—</div><div class="aqi-imp-lbl" id="aqi-imp-lbl">improvement after rain</div></div>
     </div>
     <div class="r-insight" id="aqi-insight" style="display:none;margin-top:1rem;">
       <div class="ri-icon">&#127807;</div>
@@ -768,7 +859,7 @@
     </div>
   </div>
 
-  <!-- ═══ 16. SHAREABLE SUMMARY ═══ -->
+  <!-- ═══ 17. SUMMARY SHARE ═══ -->
   <div class="summary-card" id="summary-card">
     <div class="sc-lbl">&#10024; What this monsoon means</div>
     <div class="sc-title" id="sc-title">Computing the picture…</div>
@@ -785,12 +876,12 @@
   <div class="src-note" style="margin-top:1.5rem;">
     <strong>Data sources:</strong>
     ERA5 reanalysis via <a href="https://archive-api.open-meteo.com" target="_blank" rel="noopener">Open-Meteo Historical Archive</a> (1980–2021, Copernicus/ECMWF, non-commercial use) ·
-    Open-Meteo ECMWF (Jan 2022–Sep 2025) ·
-    Weather Union ZWL008983 (Oct 2025+, 2.0km from Baner Hill) ·
+    Open-Meteo ECMWF (Jan 2022–Sep 2025, grid model) ·
+    Weather Union ZWL008983 ground-truth sensor (Oct 2025+, 2.0km from Baner Hill — <strong>daily-accumulation delta method</strong>) ·
     Bird data: BirdNET acoustic AI (Cornell Lab, 24/7, two microphone nodes) ·
-    ENSO events: NOAA ONI index · IMD intensity categories used for rainfall classification.
-    <br>
-    <strong>Related:</strong>
+    ENSO events: NOAA ONI index · IMD intensity categories.
+    <br><strong>Precipitation note (Jun 2026):</strong> The combined_readings VIEW was corrected Jun 16 2026 to use Weather Union rain_accumulation deltas (ground truth) instead of Open-Meteo grid model values. Pre-Oct 2025 rain uses Open-Meteo.
+    <br><strong>Related:</strong>
     <a href="history.html">45-Year Climate History</a> &nbsp;·&nbsp;
     <a href="temperature.html">Temperature</a> &nbsp;·&nbsp;
     <a href="aqi.html">Air Quality</a> &nbsp;·&nbsp;
@@ -814,154 +905,291 @@
 
 <script>
 /* ══════════════════════════════════════════════════════════════
-   EARTH PULSE — rain.html
-   var-only JS · no const/let · no ?. · no ?? · no arrow fns
-   Combines: combined_readings (sensor 2022+) + historical_climate (ERA5 1980-2021)
+   EARTH PULSE — rain.html (rebuilt Jun 17 2026)
+   Architecture:
+   - combined_readings VIEW (corrected Jun 16 2026):
+       precipitation = WU rain_accumulation DELTA (Oct 2025+)
+       fallback = Open-Meteo for pre-Oct 2025 rows
+   - rain_accumulation column = WU raw daily cumulative
+   - weather_source = 'weather_union' | 'open_meteo'
+   - historical_climate = ERA5 1980-2021 (read-only)
+   - Rainy day threshold: >= 1mm per day (not 0.5mm)
+   Cache strategy:
+   - Today/live data: 30-min TTL (sessionStorage)
+   - Monthly totals: 6-hr TTL (sessionStorage)
+   - ERA5 historical: 24-hr TTL (localStorage)
+   - All cache keys namespaced EP_R_ + version
    ══════════════════════════════════════════════════════════════ */
 
-var SB  = 'https://krmczyqwblsoekceanlj.supabase.co';
-var KEY = 'sb_publishable_DrHFT5J0vmrkYraUXIlpQQ_gsk1rdq6';
-var H   = { 'apikey': KEY, 'Authorization': 'Bearer ' + KEY };
+var SB   = 'https://krmczyqwblsoekceanlj.supabase.co';
+var KEY  = 'sb_publishable_DrHFT5J0vmrkYraUXIlpQQ_gsk1rdq6';
+var H    = {'apikey':KEY,'Authorization':'Bearer '+KEY};
+var CV   = 'v2'; /* v2: Jun 18 2026 — bust stale caches from v1 deploy */
 
 var MO_LONG  = ['January','February','March','April','May','June','July','August','September','October','November','December'];
 var MO_SHORT = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 var DAY_NM   = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-var ALL_YRS  = [2022,2023,2024,2025,2026];
+var SENSOR_YRS = [2022,2023,2024,2025,2026];
 
 /* ENSO reference years from NOAA ONI */
 var ELNINO_YRS = [1982,1983,1987,1992,1994,1997,2002,2009,2015,2019,2023];
 var LANINA_YRS = [1988,1998,1999,2000,2010,2011,2020,2021];
 
+/* ── IST helpers ── */
 function istNow() { var n=new Date(); return new Date(n.getTime()+n.getTimezoneOffset()*60000+5.5*3600000); }
-function p2(n){ return n<10?'0'+n:''+n; }
-function ge(id){ return document.getElementById(id); }
-function sbGet(path){ return fetch(SB+path,{headers:H}).then(function(r){return r.json();}); }
-function n1(v){ return v!=null&&!isNaN(v)?parseFloat(v).toFixed(1):'—'; }
-function n0(v){ return v!=null&&!isNaN(v)?Math.round(v)+'':'—'; }
-function arrAvg(a){ if(!a||!a.length)return null; var s=0; for(var i=0;i<a.length;i++)s+=a[i]; return Math.round(s/a.length*10)/10; }
+function p2(n)    { return n<10?'0'+n:''+n; }
+function ge(id)   { return document.getElementById(id); }
+function n1(v)    { return v!=null&&!isNaN(v)?parseFloat(v).toFixed(1):'—'; }
+function n0(v)    { return v!=null&&!isNaN(v)?Math.round(v)+'':'—'; }
 
-function mmFmt(mm){ return (Math.round(mm*10)/10)+''; }
-function rainIcon(mm){
-  if(mm<=0)   return '&#9728;&#65039;';
-  if(mm<2.5)  return '&#127746;&#65039;';
-  if(mm<10)   return '&#127783;&#65039;';
-  if(mm<35)   return '&#9928;&#65039;';
-  return '&#127754;';
+/* IST date string YYYY-MM-DD */
+function istDateStr(d) { return d.getUTCFullYear()+'-'+p2(d.getUTCMonth()+1)+'-'+p2(d.getUTCDate()); }
+
+/* Supabase fetch */
+function sbGet(path) {
+  return fetch(SB+path,{headers:H}).then(function(r){return r.json();});
 }
-function rainTag(mm){ if(mm<=0)return'No rain'; if(mm<2.5)return'Light drizzle'; if(mm<10)return'Moderate rain'; if(mm<35)return'Heavy rain'; return '&#9888; Very heavy rain'; }
-function rainTagCls(mm){ if(mm<=0)return''; if(mm<10)return'light'; if(mm<35)return'mod'; return 'heavy'; }
 
-var IST = istNow();
-var CY  = IST.getUTCFullYear();
-var CM  = IST.getUTCMonth()+1;
-var CD  = IST.getUTCDate();
-
-/* ── Supabase paginated fetch ── */
+/* Paginated fetch — max pages safety valve at 10 */
 function sbAll(path, cb) {
-  var all=[], off=0;
+  var all=[], off=0, pages=0;
   function next(){
-    fetch(SB+path+'&limit=1000&offset='+off, {headers:H})
+    fetch(SB+path+'&limit=1000&offset='+off,{headers:H})
       .then(function(r){return r.json();})
       .then(function(rows){
         if(!Array.isArray(rows)||!rows.length){cb(null,all);return;}
         all=all.concat(rows);
-        if(rows.length<1000){cb(null,all);return;}
+        pages++;
+        if(rows.length<1000||pages>=10){cb(null,all);return;}
         off+=1000; next();
       }).catch(function(e){cb(e,[]);});
   }
   next();
 }
 
-/* ── Build day maps ── */
-function toDayMap(rows, field) {
-  field = field || 'precipitation';
+/* ── Cache layer ── */
+function cGet(key, maxAgeMs) {
+  try {
+    var store = maxAgeMs > 3600000 ? localStorage : sessionStorage;
+    var raw = store.getItem('EP_R_'+CV+'_'+key);
+    if(!raw) return null;
+    var obj = JSON.parse(raw);
+    if(Date.now() - obj.t > maxAgeMs) return null;
+    return obj.d;
+  } catch(e) { return null; }
+}
+function cSet(key, data, useLocal) {
+  try {
+    var store = useLocal ? localStorage : sessionStorage;
+    store.setItem('EP_R_'+CV+'_'+key, JSON.stringify({t:Date.now(),d:data}));
+  } catch(e) {} /* quota errors: silent */
+}
+
+/* TTL constants */
+var TTL_LIVE    = 30*60*1000;    /* 30 min — today/live */
+var TTL_MONTHLY = 6*60*60*1000;  /* 6 hrs  — monthly totals */
+var TTL_ERA5    = 24*60*60*1000; /* 24 hrs  — ERA5 historical */
+
+/* ── Day map: sum precipitation per calendar date ── */
+function toDayMap(rows) {
   var dm = {};
   for(var i=0;i<rows.length;i++){
     var dk = rows[i].recorded_at.substring(0,10);
     if(!dm[dk]) dm[dk]=0;
-    dm[dk]+=parseFloat(rows[i][field])||0;
+    dm[dk]+=parseFloat(rows[i].precipitation)||0;
   }
   return dm;
 }
 
-/* All rain events data — loaded once, filtered on demand */
-var ALL_EVENTS_DATA = [];
+/* ── Rain UI helpers ── */
+function rainIcon(mm){
+  if(!mm||mm<=0)   return '&#9728;&#65039;';
+  if(mm<2.5)  return '&#127746;&#65039;';
+  if(mm<10)   return '&#127783;&#65039;';
+  if(mm<35)   return '&#9928;&#65039;';
+  return '&#127754;';
+}
+function rainTag(mm){
+  if(!mm||mm<=0) return 'No rain';
+  if(mm<2.5)  return 'Light drizzle';
+  if(mm<10)   return 'Moderate rain';
+  if(mm<35)   return 'Heavy rain';
+  return '&#9888; Very heavy rain';
+}
+function rainTagCls(mm){
+  if(!mm||mm<=0) return '';
+  if(mm<10)   return 'light';
+  if(mm<35)   return 'mod';
+  return 'heavy';
+}
+
+/* ── Current IST time ── */
+var IST = istNow();
+var CY  = IST.getUTCFullYear();
+var CM  = IST.getUTCMonth()+1;
+var CD  = IST.getUTCDate();
+
+/* ════════════════════════════════════════
+   DYNAMIC META TAGS — updated after data loads
+   ════════════════════════════════════════ */
+function updateMeta(todayMM, monthMM, yearMM) {
+  var todayStr = todayMM > 0 ? todayMM+' mm today · ' : 'No rain today · ';
+  var desc = todayStr + MO_LONG[CM-1]+' total '+monthMM+' mm · '+CY+' cumulative '+yearMM+' mm — '+
+    'Earth Pulse monsoon tracker for Baner, Pune. 45 years of rainfall data, live Weather Union sensor, '+
+    'ERA5 reanalysis 1980–2021, decade comparisons, ENSO impact analysis.';
+  var title = 'Rain Today Baner Pune: '+todayMM+' mm · '+MO_LONG[CM-1]+' '+CY+' · 45-Year Record | Earth Pulse';
+  document.title = title;
+  var pg = ge('pg-title'); if(pg) pg.textContent = title;
+  var pgd = ge('pg-desc'); if(pgd) pgd.setAttribute('content', desc);
+  var ogd = ge('og-desc'); if(ogd) ogd.setAttribute('content', desc);
+  var ogt = ge('og-title'); if(ogt) ogt.setAttribute('content', title);
+  var twd = ge('tw-desc'); if(twd) twd.setAttribute('content', desc);
+  var twt = ge('tw-title'); if(twt) twt.setAttribute('content', title);
+}
 
 /* ════════════════════════════════════════
    HERO STATS
+   Uses: WU rain_accumulation for today (most accurate)
+   Falls back to SUM(precipitation) if no WU data today
    ════════════════════════════════════════ */
 function loadHeroStats() {
   ge('hs-yr-lbl').textContent = CY;
+  ge('cy-label').textContent  = CY;
 
-  /* Today */
-  var dS = CY+'-'+p2(CM)+'-'+p2(CD)+'T00:00:00%2B05%3A30';
-  var dE = CY+'-'+p2(CM)+'-'+p2(CD)+'T23:59:59%2B05%3A30';
-  sbGet('/rest/v1/combined_readings?select=precipitation&recorded_at=gte.'+dS+'&recorded_at=lte.'+dE+'&limit=30')
+  var cached = cGet('hero_'+CY+'_'+CM+'_'+CD, TTL_LIVE);
+  if(cached) { renderHero(cached); return; }
+
+  var todayISO = CY+'-'+p2(CM)+'-'+p2(CD);
+  var todayFrom = todayISO+'T00:00:00%2B05%3A30';
+  var todayTo   = todayISO+'T23:59:59%2B05%3A30';
+
+  /* Try WU rain_accumulation first — MAX value today = total accumulated */
+  sbGet('/rest/v1/combined_readings?select=rain_accumulation,weather_source,precipitation&recorded_at=gte.'+
+        todayFrom+'&recorded_at=lte.'+todayTo+'&order=recorded_at.desc&limit=50')
     .then(function(rows){
-      var t=0; if(Array.isArray(rows))rows.forEach(function(r){t+=parseFloat(r.precipitation)||0;});
-      ge('hs-today').textContent=Math.round(t*10)/10+' mm';
+      var todayMM = 0, usedWU = false;
+      if(Array.isArray(rows) && rows.length) {
+        /* Find max rain_accumulation (= total today from WU) */
+        var maxAcc = 0, hasWU = false;
+        for(var i=0;i<rows.length;i++){
+          if(rows[i].weather_source === 'weather_union' && rows[i].rain_accumulation != null){
+            hasWU = true;
+            var acc = parseFloat(rows[i].rain_accumulation)||0;
+            if(acc > maxAcc) maxAcc = acc;
+          }
+        }
+        if(hasWU) {
+          todayMM = Math.round(maxAcc*10)/10;
+          usedWU = true;
+        } else {
+          /* Fallback: SUM of precipitation column */
+          var s=0; rows.forEach(function(r){s+=parseFloat(r.precipitation)||0;});
+          todayMM = Math.round(s*10)/10;
+        }
+      }
+      ge('hs-today').textContent = todayMM+' mm';
+      ge('hs-today-sub').textContent = usedWU ? 'WU accumulation today' : 'mm recorded today';
+      if(usedWU) { ge('hs-today-src').style.display='inline-block'; }
+
+      /* This month */
+      var nM=CM===12?1:CM+1, nY=CM===12?CY+1:CY;
+      sbAll('/rest/v1/combined_readings?select=recorded_at,precipitation&recorded_at=gte.'+
+            CY+'-'+p2(CM)+'-01T00:00:00%2B05%3A30&recorded_at=lt.'+
+            nY+'-'+p2(nM)+'-01T00:00:00%2B05%3A30&precipitation=gt.0', function(e,rows2){
+        var mTotal=0; (rows2||[]).forEach(function(r){mTotal+=parseFloat(r.precipitation)||0;});
+        mTotal=Math.round(mTotal);
+        ge('hs-month').textContent=mTotal+' mm';
+
+        /* Year total + rainy days */
+        sbAll('/rest/v1/combined_readings?select=recorded_at,precipitation&recorded_at=gte.'+
+              CY+'-01-01T00:00:00%2B05%3A30&precipitation=gt.0', function(e2,rows3){
+          var yt=0, dm={};
+          (rows3||[]).forEach(function(r){
+            var p=parseFloat(r.precipitation)||0; yt+=p;
+            var dk=r.recorded_at.substring(0,10); if(!dm[dk])dm[dk]=0; dm[dk]+=p;
+          });
+          var yearMM=Math.round(yt);
+          ge('hs-year').textContent=yearMM+' mm';
+          /* Rainy days: >= 1mm per day */
+          var rdays=Object.keys(dm).filter(function(dk){return dm[dk]>=1;}).length;
+          ge('hs-rdays').textContent=rdays;
+
+          cSet('hero_'+CY+'_'+CM+'_'+CD, {today:todayMM,month:mTotal,year:yearMM,rdays:rdays,usedWU:usedWU}, false);
+          updateMeta(todayMM, mTotal, yearMM);
+        });
+      });
     }).catch(function(){});
 
-  /* This month */
-  var nM=CM===12?1:CM+1, nY=CM===12?CY+1:CY;
-  var mS=CY+'-'+p2(CM)+'-01T00:00:00%2B05%3A30';
-  var mE=nY+'-'+p2(nM)+'-01T00:00:00%2B05%3A30';
-  sbGet('/rest/v1/combined_readings?select=precipitation&recorded_at=gte.'+mS+'&recorded_at=lt.'+mE+'&limit=800')
-    .then(function(rows){
-      var t=0; if(Array.isArray(rows))rows.forEach(function(r){t+=parseFloat(r.precipitation)||0;});
-      ge('hs-month').textContent=Math.round(t)+' mm';
-    }).catch(function(){});
-
-  /* Year total + rainy days */
-  sbAll('/rest/v1/combined_readings?select=recorded_at,precipitation&recorded_at=gte.'+CY+'-01-01T00:00:00%2B05%3A30&precipitation=gt.0', function(e,rows){
-    var yt=0,dm={};
-    rows.forEach(function(r){
-      var p=parseFloat(r.precipitation)||0; yt+=p;
-      var dk=r.recorded_at.substring(0,10); if(!dm[dk])dm[dk]=0; dm[dk]+=p;
+  /* All-time biggest day */
+  var peakCached = cGet('peak_day', TTL_ERA5);
+  if(peakCached) { ge('hs-peak').textContent=peakCached.mm+' mm'; ge('hs-peak-date').textContent=peakCached.date; }
+  else {
+    sbAll('/rest/v1/combined_readings?select=recorded_at,precipitation&precipitation=gt.0', function(e,rows){
+      var dm=toDayMap(rows);
+      var best=null, bestMM=0;
+      Object.keys(dm).forEach(function(dk){ if(dm[dk]>bestMM){bestMM=dm[dk];best=dk;} });
+      if(best){
+        var mm=Math.round(bestMM); var d=new Date(best+'T00:00:00');
+        var ds=d.getDate()+' '+MO_SHORT[d.getMonth()]+' '+d.getFullYear();
+        ge('hs-peak').textContent=mm+' mm';
+        ge('hs-peak-date').textContent=ds;
+        cSet('peak_day',{mm:mm,date:ds},true);
+      }
     });
-    ge('hs-year').textContent=Math.round(yt)+' mm';
-    ge('hs-rdays').textContent=Object.keys(dm).filter(function(dk){return dm[dk]>=0.5;}).length;
-  });
-
-  /* All-time biggest day — from sensor era */
-  sbAll('/rest/v1/combined_readings?select=recorded_at,precipitation&precipitation=gt.0', function(e,rows){
-    var dm=toDayMap(rows);
-    var best=null,bestMM=0;
-    Object.keys(dm).forEach(function(dk){ if(dm[dk]>bestMM){bestMM=dm[dk];best=dk;} });
-    if(best){
-      ge('hs-peak').textContent=Math.round(bestMM)+' mm';
-      var d=new Date(best+'T00:00:00');
-      ge('hs-peak-date').textContent=d.getDate()+' '+MO_SHORT[d.getMonth()]+' '+d.getFullYear();
-    }
-  });
+  }
+}
+function renderHero(cached){
+  ge('hs-today').textContent=(cached.today||0)+' mm';
+  ge('hs-today-sub').textContent=cached.usedWU?'WU accumulation today':'mm recorded today';
+  if(cached.usedWU) ge('hs-today-src').style.display='inline-block';
+  ge('hs-month').textContent=(cached.month||0)+' mm';
+  ge('hs-year').textContent=(cached.year||0)+' mm';
+  if(cached.rdays!=null) ge('hs-rdays').textContent=cached.rdays;
+  updateMeta(cached.today||0, cached.month||0, cached.year||0);
 }
 
 /* ════════════════════════════════════════
    1. TODAY + FORECAST
+   Uses: WU rain_accumulation (max today = total)
    ════════════════════════════════════════ */
 function loadToday() {
-  var dS=CY+'-'+p2(CM)+'-'+p2(CD)+'T00:00:00%2B05%3A30';
-  var dE=CY+'-'+p2(CM)+'-'+p2(CD)+'T23:59:59%2B05%3A30';
-  sbGet('/rest/v1/combined_readings?select=precipitation&recorded_at=gte.'+dS+'&recorded_at=lte.'+dE+'&limit=30')
+  var todayISO = CY+'-'+p2(CM)+'-'+p2(CD);
+  sbGet('/rest/v1/combined_readings?select=rain_accumulation,weather_source,precipitation&recorded_at=gte.'+
+        todayISO+'T00:00:00%2B05%3A30&recorded_at=lte.'+
+        todayISO+'T23:59:59%2B05%3A30&order=recorded_at.desc&limit=50')
     .then(function(rows){
-      var t=0; if(Array.isArray(rows))rows.forEach(function(r){t+=parseFloat(r.precipitation)||0;});
-      t=Math.round(t*10)/10;
+      var t=0, usedWU=false, srcLabel='';
+      if(Array.isArray(rows)&&rows.length){
+        var maxAcc=0,hasWU=false;
+        for(var i=0;i<rows.length;i++){
+          if(rows[i].weather_source==='weather_union'&&rows[i].rain_accumulation!=null){
+            hasWU=true;
+            var acc=parseFloat(rows[i].rain_accumulation)||0;
+            if(acc>maxAcc)maxAcc=acc;
+          }
+        }
+        if(hasWU){ t=Math.round(maxAcc*10)/10; usedWU=true; srcLabel='Weather Union ZWL008983 · rain accumulation (ground truth)'; }
+        else{ var s=0; rows.forEach(function(r){s+=parseFloat(r.precipitation)||0;}); t=Math.round(s*10)/10; srcLabel='Open-Meteo grid model (WU sensor not yet available for this date)'; }
+      }
       ge('today-icon').innerHTML=rainIcon(t);
       ge('today-mm').textContent=t+' mm';
       ge('today-lbl').textContent='Total rainfall recorded today in Baner, Pune';
+      ge('today-src').textContent=srcLabel;
       var tag=ge('today-tag'); tag.innerHTML=rainTag(t); tag.className='rain-tag '+rainTagCls(t);
       var txt=ge('today-insight-text');
-      if(t>35) txt.innerHTML='Heavy rain today. Expect <strong>significant AQI improvement</strong> and a post-rain surge in bird calls. Baner Hill trails will be slippery — best avoided.';
-      else if(t>10) txt.innerHTML='Good rain today. The air will be noticeably cleaner within an hour. The hills look their most vivid green after a shower like this.';
-      else if(t>0) txt.innerHTML='Light rain today — enough to cool the air briefly. Even a small shower activates bird calls on the hill.';
-      else txt.innerHTML='No rain recorded today. '+(CM>=6&&CM<=9?'The monsoon is quiet — check the 7-day forecast below.':'A dry day in Baner.');
+      if(t>=35) txt.innerHTML='Heavy rain today. Expect a <strong>significant AQI improvement</strong> and a post-rain surge in bird calls on Baner Hill. Trails will be slippery.';
+      else if(t>=10) txt.innerHTML='Good rain today. The air will be noticeably cleaner within an hour. Vegetation on Baner Hill will be at its deepest green.';
+      else if(t>=1) txt.innerHTML='Light rain today — enough to cool the air and activate bird calls on the hill. Check the forecast for more.';
+      else if(t>0) txt.innerHTML='Trace rainfall recorded today (less than 1mm). Not a meaningful rain event.';
+      else txt.innerHTML=(CM>=6&&CM<=9?'The monsoon is quiet today — check the 7-day forecast below for the next shower.':'A dry day in Baner. '+MO_LONG[CM-1]+' is outside the main monsoon window.');
       ge('today-insight').style.display='flex';
-    }).catch(function(){ge('today-mm').textContent='—';});
+    }).catch(function(){ge('today-mm').textContent='—'; ge('today-lbl').textContent='Could not load today\'s data';});
 
+  /* 7-day ECMWF forecast */
   fetch('https://api.open-meteo.com/v1/forecast?latitude=18.5526&longitude=73.7819&daily=precipitation_sum,weathercode&timezone=Asia%2FKolkata&forecast_days=7')
     .then(function(r){return r.json();})
     .then(function(fd){
-      if(!fd.daily||!fd.daily.time)return;
+      if(!fd.daily||!fd.daily.time) return;
       var todayStr=CY+'-'+p2(CM)+'-'+p2(CD);
       var html='';
       fd.daily.time.forEach(function(dt,i){
@@ -970,8 +1198,8 @@ function loadToday() {
         html+='<div class="fc-pill'+(isT?' today-fc':'')+'">'+
           '<div class="fc-pill-day">'+(isT?'Today':DAY_NM[d.getDay()])+'</div>'+
           '<div class="fc-pill-icon">'+rainIcon(mm)+'</div>'+
-          '<div class="fc-pill-mm">'+mmFmt(mm)+' mm</div>'+
-          '<div class="fc-pill-sub">'+(mm>0?rainTag(mm):'Dry')+'</div>'+
+          '<div class="fc-pill-mm">'+(Math.round(mm*10)/10)+' mm</div>'+
+          '<div class="fc-pill-sub">'+(mm>=1?rainTag(mm):'Dry')+'</div>'+
           '</div>';
       });
       ge('fc-strip').innerHTML=html;
@@ -979,322 +1207,388 @@ function loadToday() {
 }
 
 /* ════════════════════════════════════════
-   2. THIS DAY ACROSS ALL YEARS (sensor + ERA5)
+   2. THIS DAY ACROSS ALL YEARS
    ════════════════════════════════════════ */
 function loadThisDay() {
   ge('today-date-label').textContent = CD+' '+MO_LONG[CM-1]+' across all years';
   var done=0, sensorData={};
 
-  /* Sensor era */
-  ALL_YRS.forEach(function(yr){
+  SENSOR_YRS.forEach(function(yr){
     var dS=yr+'-'+p2(CM)+'-'+p2(CD)+'T00:00:00%2B05%3A30';
     var dE=yr+'-'+p2(CM)+'-'+p2(CD)+'T23:59:59%2B05%3A30';
-    sbGet('/rest/v1/combined_readings?select=precipitation&recorded_at=gte.'+dS+'&recorded_at=lte.'+dE+'&limit=30')
+    sbGet('/rest/v1/combined_readings?select=rain_accumulation,weather_source,precipitation&recorded_at=gte.'+dS+'&recorded_at=lte.'+dE+'&order=recorded_at.desc&limit=30')
       .then(function(rows){
-        var t=0; if(Array.isArray(rows))rows.forEach(function(r){t+=parseFloat(r.precipitation)||0;});
-        sensorData[yr]=Math.round(t*10)/10;
-        done++;
-        if(done===ALL_YRS.length) renderThisDaySensor(sensorData);
-      }).catch(function(){done++;if(done===ALL_YRS.length)renderThisDaySensor(sensorData);});
+        var t=0;
+        if(Array.isArray(rows)&&rows.length){
+          var maxAcc=0,hasWU=false;
+          for(var i=0;i<rows.length;i++){
+            if(rows[i].weather_source==='weather_union'&&rows[i].rain_accumulation!=null){hasWU=true;var acc=parseFloat(rows[i].rain_accumulation)||0;if(acc>maxAcc)maxAcc=acc;}
+          }
+          if(hasWU) t=Math.round(maxAcc*10)/10;
+          else{ var s=0; rows.forEach(function(r){s+=parseFloat(r.precipitation)||0;}); t=Math.round(s*10)/10; }
+        }
+        sensorData[yr]=t; done++;
+        if(done===SENSOR_YRS.length) renderThisDaySensor(sensorData);
+      }).catch(function(){sensorData[yr]=0;done++;if(done===SENSOR_YRS.length)renderThisDaySensor(sensorData);});
   });
 
-  /* ERA5 — sample decades: pick 1980,1985,1990,1995,2000,2005,2010,2015,2020 */
-  var era5Years=[1980,1985,1990,1995,2000,2005,2010,2015,2020];
+  /* ERA5 sample decades */
+  var era5Yrs=[1980,1985,1990,1995,2000,2005,2010,2015,2020];
   var era5Data={}, era5Done=0;
-  era5Years.forEach(function(yr){
+  era5Yrs.forEach(function(yr){
     var dS=yr+'-'+p2(CM)+'-'+p2(CD)+'T00:00:00%2B05%3A30';
     var dE=yr+'-'+p2(CM)+'-'+p2(CD)+'T23:59:59%2B05%3A30';
     sbGet('/rest/v1/historical_climate?select=precipitation&recorded_at=gte.'+dS+'&recorded_at=lte.'+dE+'&limit=30')
       .then(function(rows){
         var t=0; if(Array.isArray(rows))rows.forEach(function(r){t+=parseFloat(r.precipitation)||0;});
-        era5Data[yr]=Math.round(t*10)/10;
-        era5Done++;
-        if(era5Done===era5Years.length) renderThisDayERA5(era5Data);
-      }).catch(function(){era5Done++;if(era5Done===era5Years.length)renderThisDayERA5(era5Data);});
+        era5Data[yr]=Math.round(t*10)/10; era5Done++;
+        if(era5Done===era5Yrs.length) renderThisDayERA5(era5Data);
+      }).catch(function(){era5Done++;if(era5Done===era5Yrs.length)renderThisDayERA5(era5Data);});
   });
 }
-function renderThisDaySensor(data) {
-  var maxMM=Math.max.apply(null,Object.values(data).concat([0.1]));
+function renderThisDaySensor(data){
+  var maxMM=0; SENSOR_YRS.forEach(function(yr){if((data[yr]||0)>maxMM)maxMM=data[yr];});
+  if(maxMM<0.01)maxMM=0.01;
   var html=''; var allVals=[];
-  ALL_YRS.forEach(function(yr){
-    var mm=data[yr]!==undefined?data[yr]:null;
-    if(mm===null)return;
-    allVals.push(mm);
-    var barW=maxMM>0?Math.round(mm/maxMM*100):0;
+  SENSOR_YRS.forEach(function(yr){
+    var mm=data[yr]||0; allVals.push(mm);
+    var barW=Math.round(mm/maxMM*100);
     var isCur=yr===CY;
     html+='<div class="yr-row">'+
       '<span class="yr-lbl">'+yr+'</span>'+
       '<div class="yr-bg"><div class="yr-fill'+(isCur?' cur':'')+'" style="width:'+barW+'%"></div></div>'+
-      '<span class="yr-val'+(isCur?' cur':'')+'">'+mm+' mm</span>'+
-      '</div>';
+      '<span class="yr-val'+(isCur?' cur':'')+'">'+mm+' mm</span></div>';
   });
   ge('this-day-sensor').innerHTML=html||'<span style="font-size:0.82rem;color:var(--text-muted);">No data for this date yet</span>';
-  /* Insight */
-  var cur=data[CY], prevVals=allVals.slice(0,-1);
+  var cur=data[CY]||0, prevVals=allVals.slice(0,-1);
   var avg=prevVals.length?Math.round(prevVals.reduce(function(a,b){return a+b;},0)/prevVals.length*10)/10:null;
-  if(cur!==undefined&&avg!==null){
+  if(avg!==null){
     var delta=Math.round((cur-avg)*10)/10;
-    var txt=delta>1?'Today is <strong>'+Math.abs(delta)+' mm above</strong> the sensor-era average for this date ('+avg+' mm).':
-            delta<-1?'Today is <strong>'+Math.abs(delta)+' mm below</strong> average for this date ('+avg+' mm average).':
+    var txt=delta>1?'Today is <strong>'+Math.abs(delta)+'mm above</strong> the sensor-era average for this date ('+avg+' mm).':
+            delta<-1?'Today is <strong>'+Math.abs(delta)+'mm below</strong> average for this date ('+avg+' mm avg).':
             'Today is close to the sensor-era average for this date ('+avg+' mm avg).';
-    ge('day-insight-text').innerHTML=txt;
-    ge('day-insight').style.display='flex';
+    ge('day-insight-text').innerHTML=txt; ge('day-insight').style.display='flex';
   }
 }
-function renderThisDayERA5(data) {
+function renderThisDayERA5(data){
   var yrs=Object.keys(data).map(Number).sort();
-  var maxMM=Math.max.apply(null,Object.values(data).concat([0.1]));
+  var maxMM=0; yrs.forEach(function(yr){if(data[yr]>maxMM)maxMM=data[yr];}); if(maxMM<0.01)maxMM=0.01;
   var html='<div class="yr-rows">';
   yrs.forEach(function(yr){
-    var mm=data[yr]; var barW=maxMM>0?Math.round(mm/maxMM*100):0;
-    html+='<div class="yr-row">'+
-      '<span class="yr-lbl" style="width:44px;">'+yr+'</span>'+
+    var mm=data[yr]; var barW=Math.round(mm/maxMM*100);
+    html+='<div class="yr-row"><span class="yr-lbl" style="width:44px;">'+yr+'</span>'+
       '<div class="yr-bg"><div class="yr-fill era" style="width:'+barW+'%"></div></div>'+
-      '<span class="yr-val" style="color:#92400e;">'+mm+' mm</span>'+
-      '</div>';
+      '<span class="yr-val" style="color:#92400e;">'+mm+' mm</span></div>';
   });
-  html+='</div><div style="font-size:0.69rem;color:var(--text-muted);margin-top:8px;">Sample years shown. ERA5 reanalysis model data.</div>';
+  html+='</div><div style="font-size:0.69rem;color:var(--text-muted);margin-top:8px;">Sample years. ERA5 reanalysis model data.</div>';
   ge('this-day-era5-content').innerHTML=html;
 }
 
 /* ════════════════════════════════════════
-   3. THIS MONTH ACROSS ALL YEARS (sensor + ERA5)
+   2b. THIS WEEK ACROSS ALL YEARS
+   Week = Mon–Sun window containing today
+   Queries sensor era + ERA5 sample years
+   ════════════════════════════════════════ */
+function getWeekBounds(year) {
+  /* Get Mon-Sun bounds for the ISO week containing today's date, transposed to `year` */
+  var today = new Date(Date.UTC(CY, CM-1, CD));
+  var dayOfWeek = today.getUTCDay(); /* 0=Sun,1=Mon...6=Sat */
+  var diffToMon = dayOfWeek===0 ? -6 : 1 - dayOfWeek;
+  var mon = new Date(today.getTime() + diffToMon * 86400000);
+  var sun = new Date(mon.getTime() + 6 * 86400000);
+  /* Transpose to target year — same month/day range */
+  var fromM = mon.getUTCMonth()+1, fromD = mon.getUTCDate();
+  var toM   = sun.getUTCMonth()+1,  toD  = sun.getUTCDate();
+  var fromStr = year+'-'+p2(fromM)+'-'+p2(fromD)+'T00:00:00%2B05%3A30';
+  /* toStr = day after Sunday to use < */
+  var sunPlus1 = new Date(Date.UTC(year, toM-1, toD+1));
+  var toStr = sunPlus1.getUTCFullYear()+'-'+p2(sunPlus1.getUTCMonth()+1)+'-'+p2(sunPlus1.getUTCDate())+'T00:00:00%2B05%3A30';
+  return { from: fromStr, to: toStr,
+    label: fromD+' '+MO_SHORT[fromM-1]+' – '+toD+' '+MO_SHORT[toM-1] };
+}
+
+function loadThisWeek() {
+  var bounds = getWeekBounds(CY);
+  ge('week-lbl').textContent = bounds.label + ' across all years';
+
+  /* Sensor era */
+  var sDone=0, sData={};
+  SENSOR_YRS.forEach(function(yr){
+    var wb = getWeekBounds(yr);
+    sbGet('/rest/v1/combined_readings?select=precipitation&recorded_at=gte.'+wb.from+'&recorded_at=lt.'+wb.to+'&limit=300')
+      .then(function(rows){
+        var t=0; (Array.isArray(rows)?rows:[]).forEach(function(r){t+=parseFloat(r.precipitation)||0;});
+        sData[yr]=Math.round(t*10)/10;
+        sDone++; if(sDone===SENSOR_YRS.length) renderThisWeekSensor(sData);
+      }).catch(function(){sData[yr]=0;sDone++;if(sDone===SENSOR_YRS.length)renderThisWeekSensor(sData);});
+  });
+
+  /* ERA5 sample years */
+  var era5Yrs=[1980,1985,1990,1995,2000,2005,2010,2015,2020];
+  var eDone=0, eData={};
+  era5Yrs.forEach(function(yr){
+    var wb=getWeekBounds(yr);
+    sbGet('/rest/v1/historical_climate?select=precipitation&recorded_at=gte.'+wb.from+'&recorded_at=lt.'+wb.to+'&limit=300')
+      .then(function(rows){
+        var t=0; (Array.isArray(rows)?rows:[]).forEach(function(r){t+=parseFloat(r.precipitation)||0;});
+        eData[yr]=Math.round(t*10)/10;
+        eDone++; if(eDone===era5Yrs.length) renderThisWeekERA5(eData);
+      }).catch(function(){eDone++;if(eDone===era5Yrs.length)renderThisWeekERA5(eData);});
+  });
+}
+function renderThisWeekSensor(data){
+  var maxMM=0; SENSOR_YRS.forEach(function(yr){if((data[yr]||0)>maxMM)maxMM=data[yr];}); if(maxMM<0.01)maxMM=0.01;
+  var html='', allVals=[];
+  SENSOR_YRS.forEach(function(yr){
+    var mm=data[yr]||0; allVals.push(mm);
+    var barW=Math.round(mm/maxMM*100); var isCur=yr===CY;
+    html+='<div class="yr-row"><span class="yr-lbl">'+yr+'</span>'+
+      '<div class="yr-bg"><div class="yr-fill'+(isCur?' cur':'')+'" style="width:'+barW+'%"></div></div>'+
+      '<span class="yr-val'+(isCur?' cur':'')+'">'+mm+' mm</span></div>';
+  });
+  ge('this-week-sensor').innerHTML=html||'<span style="font-size:0.82rem;color:var(--text-muted);">No data</span>';
+  var cur=data[CY]||0, prevVals=allVals.slice(0,-1);
+  var avg=prevVals.length?Math.round(prevVals.reduce(function(a,b){return a+b;},0)/prevVals.length*10)/10:null;
+  if(avg!==null){
+    var delta=Math.round((cur-avg)*10)/10;
+    var txt=delta>1?'This week is <strong>'+Math.abs(delta)+'mm above</strong> the sensor-era average for this week ('+avg+' mm).':
+            delta<-1?'This week is <strong>'+Math.abs(delta)+'mm below</strong> average for this week ('+avg+' mm avg).':
+            'This week is close to the sensor-era average ('+avg+' mm avg).';
+    ge('week-insight-text').innerHTML=txt; ge('week-insight').style.display='flex';
+  }
+}
+function renderThisWeekERA5(data){
+  var yrs=Object.keys(data).map(Number).sort();
+  var maxMM=0; yrs.forEach(function(yr){if(data[yr]>maxMM)maxMM=data[yr];}); if(maxMM<0.01)maxMM=0.01;
+  var html='<div class="yr-rows">';
+  yrs.forEach(function(yr){
+    var mm=data[yr]||0; var barW=Math.round(mm/maxMM*100);
+    html+='<div class="yr-row"><span class="yr-lbl" style="width:44px;">'+yr+'</span>'+
+      '<div class="yr-bg"><div class="yr-fill era" style="width:'+barW+'%"></div></div>'+
+      '<span class="yr-val" style="color:#92400e;">'+mm+' mm</span></div>';
+  });
+  html+='</div><div style="font-size:0.69rem;color:var(--text-muted);margin-top:8px;">Sample years. ERA5 reanalysis model data.</div>';
+  ge('this-week-era5').innerHTML=html;
+}
+
+/* ════════════════════════════════════════
+   3. THIS MONTH ACROSS ALL YEARS
    ════════════════════════════════════════ */
 function loadThisMonth() {
   ge('month-lbl').textContent=MO_LONG[CM-1]+' — all years compared';
   ge('era5-month-name').textContent=MO_LONG[CM-1];
 
-  /* Sensor era mini-cards */
   var sensorDone=0, sensorMonthData={};
-  ALL_YRS.forEach(function(yr){
+  SENSOR_YRS.forEach(function(yr){
+    var cacheKey='sensor_month_'+yr+'_'+CM;
+    var cached=cGet(cacheKey, yr<CY?TTL_ERA5:TTL_MONTHLY);
+    if(cached){ sensorMonthData[yr]=cached; sensorDone++; if(sensorDone===SENSOR_YRS.length) renderSensorMonthCards(sensorMonthData); return; }
     var nM=CM===12?1:CM+1, nY=CM===12?yr+1:yr;
-    var from=yr+'-'+p2(CM)+'-01T00:00:00%2B05%3A30';
-    var to  =nY+'-'+p2(nM)+'-01T00:00:00%2B05%3A30';
-    sbGet('/rest/v1/combined_readings?select=recorded_at,precipitation&recorded_at=gte.'+from+'&recorded_at=lt.'+to+'&limit=800')
-      .then(function(rows){
-        var t=0,dm={};
-        if(Array.isArray(rows))rows.forEach(function(r){
-          var p=parseFloat(r.precipitation)||0; t+=p;
-          if(p>0.1){var dk=r.recorded_at.substring(0,10);dm[dk]=true;}
-        });
-        sensorMonthData[yr]={mm:Math.round(t*10)/10, rdays:Object.keys(dm).length};
-        sensorDone++;
-        if(sensorDone===ALL_YRS.length) renderSensorMonthCards(sensorMonthData);
-      }).catch(function(){sensorDone++;if(sensorDone===ALL_YRS.length)renderSensorMonthCards(sensorMonthData);});
+    sbAll('/rest/v1/combined_readings?select=recorded_at,precipitation&recorded_at=gte.'+yr+'-'+p2(CM)+'-01T00:00:00%2B05%3A30&recorded_at=lt.'+nY+'-'+p2(nM)+'-01T00:00:00%2B05%3A30&precipitation=gt.0', function(e,rows){
+      var t=0,dm={};
+      (rows||[]).forEach(function(r){
+        var p=parseFloat(r.precipitation)||0; t+=p;
+        if(p>=1){var dk=r.recorded_at.substring(0,10);dm[dk]=true;}
+      });
+      var obj={mm:Math.round(t*10)/10,rdays:Object.keys(dm).length};
+      sensorMonthData[yr]=obj;
+      cSet(cacheKey,obj,yr<CY);
+      sensorDone++; if(sensorDone===SENSOR_YRS.length) renderSensorMonthCards(sensorMonthData);
+    });
   });
 
-  /* ERA5 — all years 1980-2021 for this month */
-  var era5Years=[]; for(var yr=1980;yr<=2021;yr++)era5Years.push(yr);
-  var era5MonthData={}, batchDone=0;
-  var batchSize=5, batchIdx=0;
+  /* ERA5 all years for this month — cached aggressively */
+  var era5MonthCacheKey='era5_month_'+CM;
+  var era5Cached=cGet(era5MonthCacheKey, TTL_ERA5);
+  if(era5Cached){ renderERA5MonthChart(era5Cached); return; }
+
+  var era5Yrs=[]; for(var yr=1980;yr<=2021;yr++)era5Yrs.push(yr);
+  var era5MonthData={}, batchIdx=0, batchSz=5;
   function nextBatch(){
-    var batch=era5Years.slice(batchIdx,batchIdx+batchSize);
-    if(!batch.length){renderERA5MonthChart(era5MonthData);return;}
+    var batch=era5Yrs.slice(batchIdx,batchIdx+batchSz);
+    if(!batch.length){ cSet(era5MonthCacheKey,era5MonthData,true); renderERA5MonthChart(era5MonthData); return; }
     var bd=0;
     batch.forEach(function(yr){
       var nM=CM===12?1:CM+1, nY=CM===12?yr+1:yr;
-      var from=yr+'-'+p2(CM)+'-01T00:00:00%2B05%3A30';
-      var to  =nY+'-'+p2(nM)+'-01T00:00:00%2B05%3A30';
-      sbGet('/rest/v1/historical_climate?select=precipitation&recorded_at=gte.'+from+'&recorded_at=lt.'+to+'&limit=800')
+      sbGet('/rest/v1/historical_climate?select=precipitation&recorded_at=gte.'+yr+'-'+p2(CM)+'-01T00:00:00%2B05%3A30&recorded_at=lt.'+nY+'-'+p2(nM)+'-01T00:00:00%2B05%3A30&limit=800')
         .then(function(rows){
-          var t=0; if(Array.isArray(rows))rows.forEach(function(r){t+=parseFloat(r.precipitation)||0;});
+          var t=0; (Array.isArray(rows)?rows:[]).forEach(function(r){t+=parseFloat(r.precipitation)||0;});
           era5MonthData[yr]=Math.round(t);
-          bd++; if(bd===batch.length){batchIdx+=batchSize; setTimeout(nextBatch,200);}
-        }).catch(function(){bd++;if(bd===batch.length){batchIdx+=batchSize;setTimeout(nextBatch,200);}});
+          bd++; if(bd===batch.length){batchIdx+=batchSz;setTimeout(nextBatch,250);}
+        }).catch(function(){bd++;if(bd===batch.length){batchIdx+=batchSz;setTimeout(nextBatch,250);}});
     });
   }
   nextBatch();
 }
 function renderSensorMonthCards(data){
-  var maxMM=Math.max.apply(null,Object.values(data).map(function(d){return d.mm;}).concat([0.1]));
+  var maxMM=0; SENSOR_YRS.forEach(function(yr){if(data[yr]&&data[yr].mm>maxMM)maxMM=data[yr].mm;});
+  if(maxMM<0.01)maxMM=0.01;
   var html='';
-  ALL_YRS.forEach(function(yr){
+  SENSOR_YRS.forEach(function(yr){
     var d=data[yr]; if(!d)return;
-    var barW=maxMM>0?Math.round(d.mm/maxMM*100):0;
+    var barW=Math.round(d.mm/maxMM*100);
     var isCur=yr===CY;
-    html+='<div class="mo-card'+(isCur?' cur':'')+'">'+
-      '<div class="mo-yr">'+yr+(isCur?' &#8592; now':'')+'</div>'+
-      '<div><span class="mo-mm">'+d.mm+'</span><span class="mo-unit"> mm</span></div>'+
-      '<div class="mo-days">&#127783; '+d.rdays+' rainy days</div>'+
-      '<div class="mo-bar"><div class="mo-bar-f" style="width:'+barW+'%"></div></div>'+
+    html+='<div style="background:#fff;border:1px solid '+(isCur?'rgba(74,127,165,0.4)':'var(--border,#e5e0d8)')+';'+(isCur?'background:rgba(74,127,165,0.04);':'')+' border-radius:12px;padding:1rem 1.1rem;">'+
+      '<div style="font-size:0.7rem;color:var(--text-muted);margin-bottom:4px;">'+yr+(isCur?' &#8592; now':'')+'</div>'+
+      '<div><span style="font-family:var(--serif);font-size:1.7rem;color:var(--rain-blue);">'+d.mm+'</span><span style="font-size:0.72rem;color:var(--text-muted);"> mm</span></div>'+
+      '<div style="font-size:0.74rem;color:var(--text-muted);margin-top:3px;">&#127783; '+d.rdays+' rainy days</div>'+
+      '<div style="margin-top:7px;height:4px;background:rgba(0,0,0,0.06);border-radius:2px;overflow:hidden;"><div style="height:100%;width:'+barW+'%;background:var(--rain-blue);border-radius:2px;"></div></div>'+
       '</div>';
   });
   ge('month-sensor-grid').innerHTML=html;
+  ge('month-sensor-grid').style.gridTemplateColumns='repeat('+SENSOR_YRS.length+',1fr)';
 }
 function renderERA5MonthChart(era5Data){
   var yrs=Object.keys(era5Data).map(Number).sort();
   if(!yrs.length)return;
   var vals=yrs.map(function(yr){return era5Data[yr];});
   var baseYrs=yrs.filter(function(yr){return yr>=1981&&yr<=2010;});
-  var baseAvg=baseYrs.length?Math.round(baseYrs.reduce(function(s,yr){return s+era5Data[yr];},0)/baseYrs.length):null;
-  /* Compile insight */
-  var allVals=vals.concat([]);
-  var overallAvg=Math.round(allVals.reduce(function(a,b){return a+b;},0)/allVals.length);
-  var wettest=null,wettestYr=0,driest=9999,driestYr=0;
+  var baseAvg=baseYrs.length?Math.round(baseYrs.reduce(function(s,yr){return s+(era5Data[yr]||0);},0)/baseYrs.length):null;
+  var overallAvg=Math.round(vals.reduce(function(a,b){return a+b;},0)/vals.length);
+  var wettest=null,wettestYr=0;
+  var driest=Infinity,driestYr=0;
   yrs.forEach(function(yr){
     if(era5Data[yr]>wettest){wettest=era5Data[yr];wettestYr=yr;}
     if(era5Data[yr]<driest){driest=era5Data[yr];driestYr=yr;}
   });
   var txt=MO_LONG[CM-1]+' 45-year ERA5 average: <strong>'+overallAvg+' mm</strong>. '+
-    'Wettest '+MO_LONG[CM-1]+': <strong>'+wettestYr+' ('+wettest+' mm)</strong>. '+
+    'Wettest '+MO_LONG[CM-1]+' on ERA5 record: <strong>'+wettestYr+' ('+wettest+' mm)</strong>. '+
     'Driest: <strong>'+driestYr+' ('+driest+' mm)</strong>. '+
     (ELNINO_YRS.indexOf(wettestYr)>-1?wettestYr+' was an El Niño year.':'')+
     (LANINA_YRS.indexOf(wettestYr)>-1?wettestYr+' was a La Niña year — enhanced monsoon.':'');
   ge('month-insight-text').innerHTML=txt;
   ge('month-insight').style.display='flex';
-
-  if(!document.getElementById('era5MonthChart'))return;
-  new Chart(ge('era5MonthChart'),{
+  if(!ge('era5MonthChart'))return;
+  if(ge('era5MonthChart')._chart) ge('era5MonthChart')._chart.destroy();
+  var ch=new Chart(ge('era5MonthChart'),{
     type:'bar',
-    data:{
-      labels:yrs.map(String),
-      datasets:[
-        {label:'ERA5 (1980–2021)', data:vals, backgroundColor:yrs.map(function(yr){return yr>2021?'rgba(191,155,123,0.75)':'rgba(74,127,165,0.55)';}), borderRadius:2},
-        {label:'1981–2010 baseline', data:yrs.map(function(){return baseAvg;}), type:'line', borderColor:'rgba(239,68,68,0.5)', borderDash:[4,3], borderWidth:1.5, pointRadius:0}
-      ]
-    },
+    data:{labels:yrs.map(String),datasets:[
+      {label:'ERA5 (1980–2021)',data:vals,backgroundColor:'rgba(74,127,165,0.55)',borderRadius:2},
+      {label:'1981–2010 baseline',data:yrs.map(function(){return baseAvg;}),type:'line',borderColor:'rgba(239,68,68,0.5)',borderDash:[4,3],borderWidth:1.5,pointRadius:0}
+    ]},
     options:{responsive:true,plugins:{legend:{labels:{font:{family:'DM Sans',size:10},boxWidth:10}}},scales:{
       x:{grid:{display:false},ticks:{maxTicksLimit:12,font:{size:9},color:'#6b6b6b'}},
       y:{grid:{color:'rgba(0,0,0,0.05)'},ticks:{font:{size:10},color:'#6b6b6b',callback:function(v){return v+' mm';}}}
     }}
   });
+  ge('era5MonthChart')._chart=ch;
 }
 
 /* ════════════════════════════════════════
-   4. 45-YEAR RAINFALL HEATMAP (JJAS monsoon totals)
+   4. HEATMAP
    ════════════════════════════════════════ */
 function loadHeatmap() {
-  /* Fetch ERA5 JJAS totals per year */
+  var cacheKey='heatmap_totals';
+  var cached=cGet(cacheKey, TTL_ERA5);
+  if(cached){ renderHeatmap(cached.totals, cached.yrs); return; }
+
   var era5Yrs=[]; for(var yr=1980;yr<=2021;yr++)era5Yrs.push(yr);
-  var monsoonTotals={}, done=0;
-
-  /* also fetch sensor era */
-  var allYrsForHeatmap=era5Yrs.concat([2022,2023,2024,2025,2026]);
-
-  function fetchOne(yr, table) {
-    var from=yr+'-06-01T00:00:00%2B05%3A30';
-    var to  =yr+'-10-01T00:00:00%2B05%3A30';
-    var path='/rest/v1/'+table+'?select=precipitation&recorded_at=gte.'+from+'&recorded_at=lt.'+to+'&limit=3000';
-    return sbGet(path).then(function(rows){
-      var t=0; if(Array.isArray(rows))rows.forEach(function(r){t+=parseFloat(r.precipitation)||0;});
-      monsoonTotals[yr]=Math.round(t);
-    });
-  }
-
-  var tasks=[];
-  era5Yrs.forEach(function(yr){ tasks.push({yr:yr,tbl:'historical_climate'}); });
-  [2022,2023,2024,2025,2026].forEach(function(yr){ tasks.push({yr:yr,tbl:'combined_readings'}); });
-
-  var batchSz=6, bIdx=0;
+  var allYrs=era5Yrs.concat([2022,2023,2024,2025,2026]);
+  var monsoonTotals={}, tasks=[];
+  era5Yrs.forEach(function(yr){tasks.push({yr:yr,tbl:'historical_climate'});});
+  [2022,2023,2024,2025,2026].forEach(function(yr){tasks.push({yr:yr,tbl:'combined_readings'});});
+  var bIdx=0, bSz=6;
   function nextBatch(){
-    var batch=tasks.slice(bIdx,bIdx+batchSz);
-    if(!batch.length){renderHeatmap(monsoonTotals,allYrsForHeatmap);return;}
+    var batch=tasks.slice(bIdx,bIdx+bSz);
+    if(!batch.length){
+      cSet(cacheKey,{totals:monsoonTotals,yrs:allYrs},true);
+      renderHeatmap(monsoonTotals,allYrs); return;
+    }
     var bd=0;
     batch.forEach(function(t){
-      fetchOne(t.yr,t.tbl).then(function(){bd++;if(bd===batch.length){bIdx+=batchSz;setTimeout(nextBatch,250);}})
-        .catch(function(){bd++;if(bd===batch.length){bIdx+=batchSz;setTimeout(nextBatch,250);}});
+      sbGet('/rest/v1/'+t.tbl+'?select=precipitation&recorded_at=gte.'+t.yr+'-06-01T00:00:00%2B05%3A30&recorded_at=lt.'+t.yr+'-10-01T00:00:00%2B05%3A30&limit=3000')
+        .then(function(rows){
+          var total=0; (Array.isArray(rows)?rows:[]).forEach(function(r){total+=parseFloat(r.precipitation)||0;});
+          monsoonTotals[t.yr]=Math.round(total);
+          bd++;if(bd===batch.length){bIdx+=bSz;setTimeout(nextBatch,300);}
+        }).catch(function(){bd++;if(bd===batch.length){bIdx+=bSz;setTimeout(nextBatch,300);}});
     });
   }
   nextBatch();
 }
-function renderHeatmap(totals, yrs) {
+function renderHeatmap(totals,yrs){
   var vals=yrs.map(function(yr){return totals[yr]||0;}).filter(function(v){return v>0;});
   if(!vals.length)return;
   var minV=Math.min.apply(null,vals), maxV=Math.max.apply(null,vals);
-
-  /* Colour scale: light blue → deep navy */
-  function hmColor(mm) {
+  function hmColor(mm){
     if(!mm||mm<50)return 'rgba(74,127,165,0.12)';
     var ratio=(mm-minV)/(maxV-minV+1);
-    /* interpolate from #A8C8E0 (light) to #0d2137 (deep) */
     var r=Math.round(168*(1-ratio)+13*ratio);
     var g=Math.round(200*(1-ratio)+33*ratio);
     var b=Math.round(224*(1-ratio)+55*ratio);
     return 'rgb('+r+','+g+','+b+')';
   }
-
   var grid='<div class="heatmap-grid">';
   yrs.forEach(function(yr){
     var mm=totals[yr]||0;
-    var isElNino=ELNINO_YRS.indexOf(yr)>-1;
-    var isLaNina=LANINA_YRS.indexOf(yr)>-1;
-    var label=yr+': '+mm+' mm JJAS'+(isElNino?' [El Niño]':isLaNina?' [La Niña]':'');
-    var border=isElNino?'2px solid rgba(239,68,68,0.6)':isLaNina?'2px solid rgba(59,130,246,0.6)':'none';
-    /* Height proportional to rainfall */
+    var isEN=ELNINO_YRS.indexOf(yr)>-1, isLN=LANINA_YRS.indexOf(yr)>-1;
+    var label=yr+': '+mm+' mm JJAS'+(isEN?' [El Niño]':isLN?' [La Niña]':'');
+    var border=isEN?'2px solid rgba(239,68,68,0.6)':isLN?'2px solid rgba(59,130,246,0.6)':'none';
     var pct=maxV>0?Math.round(mm/maxV*100):10;
-    grid+='<div class="hm-col">'+
-      '<div class="hm-cell" title="'+label+'" style="background:'+hmColor(mm)+';height:'+(20+pct*0.6)+'px;border:'+border+'"></div>'+
-      '<div class="hm-yr">'+yr+'</div>'+
-      '</div>';
+    grid+='<div class="hm-col"><div class="hm-cell" title="'+label+'" style="background:'+hmColor(mm)+';height:'+(20+pct*0.6)+'px;border:'+border+';"></div><div class="hm-yr">'+yr+'</div></div>';
   });
   grid+='</div>';
   ge('heatmap-wrap').innerHTML=grid;
-
-  /* Legend */
-  var legend='<div class="hm-legend-item"><div class="hm-legend-swatch" style="background:rgba(74,127,165,0.15)"></div>&lt;200mm</div>'+
+  ge('hm-legend').innerHTML=
+    '<div class="hm-legend-item"><div class="hm-legend-swatch" style="background:rgba(74,127,165,0.15)"></div>&lt;200mm</div>'+
     '<div class="hm-legend-item"><div class="hm-legend-swatch" style="background:rgba(74,127,165,0.45)"></div>200–400mm</div>'+
     '<div class="hm-legend-item"><div class="hm-legend-swatch" style="background:rgba(74,127,165,0.7)"></div>400–600mm</div>'+
     '<div class="hm-legend-item"><div class="hm-legend-swatch" style="background:rgb(13,33,55)"></div>&gt;600mm</div>'+
     '<div class="hm-legend-item"><div class="hm-legend-swatch" style="border:2px solid rgba(239,68,68,0.6);background:transparent;"></div>El Niño</div>'+
     '<div class="hm-legend-item"><div class="hm-legend-swatch" style="border:2px solid rgba(59,130,246,0.6);background:transparent;"></div>La Niña</div>';
-  ge('hm-legend').innerHTML=legend;
-
-  /* Insight */
   var wettest=yrs.reduce(function(a,yr){return (totals[yr]||0)>(totals[a]||0)?yr:a;},yrs[0]);
-  var driest=yrs.reduce(function(a,yr){return (totals[yr]||99999)<(totals[a]||99999)?yr:a;},yrs[0]);
-  var elninoAvg=ELNINO_YRS.reduce(function(s,yr){return s+(totals[yr]||0);},0)/ELNINO_YRS.length;
-  var laninaAvg=LANINA_YRS.reduce(function(s,yr){return s+(totals[yr]||0);},0)/LANINA_YRS.length;
+  var driest=yrs.reduce(function(a,yr){
+    var v=totals[yr]||0; var av=totals[a]||0;
+    return v>0&&(v<av||av===0)?yr:a;
+  },yrs[0]);
+  var elNinoAvg=ELNINO_YRS.reduce(function(s,yr){return s+(totals[yr]||0);},0)/ELNINO_YRS.length;
+  var laNinaAvg=LANINA_YRS.reduce(function(s,yr){return s+(totals[yr]||0);},0)/LANINA_YRS.length;
   var neutralYrs=yrs.filter(function(yr){return ELNINO_YRS.indexOf(yr)<0&&LANINA_YRS.indexOf(yr)<0;});
   var neutralAvg=neutralYrs.reduce(function(s,yr){return s+(totals[yr]||0);},0)/(neutralYrs.length||1);
-
   ge('heatmap-insight-text').innerHTML=
     'Wettest monsoon in 45 years: <strong>'+wettest+' ('+totals[wettest]+' mm)</strong>. '+
-    'Driest: <strong>'+driest+' ('+totals[driest]+' mm)</strong>. '+
-    'El Niño years average <strong>'+Math.round(elninoAvg)+' mm</strong> vs <strong>'+Math.round(laninaAvg)+' mm</strong> in La Niña years — a difference of '+Math.abs(Math.round(laninaAvg-elninoAvg))+' mm. '+
-    'Neutral ENSO years average '+Math.round(neutralAvg)+' mm.';
+    'Driest: <strong>'+driest+' ('+(totals[driest]||0)+' mm)</strong>. '+
+    'El Niño years average <strong>'+Math.round(elNinoAvg)+' mm</strong> vs <strong>'+Math.round(laNinaAvg)+' mm</strong> in La Niña years. '+
+    'Neutral ENSO years: '+Math.round(neutralAvg)+' mm.';
   ge('heatmap-insight').style.display='flex';
 }
 
 /* ════════════════════════════════════════
-   5. DECADE ANALYSIS (ERA5)
+   5. DECADE ANALYSIS
    ════════════════════════════════════════ */
 function loadDecadeAnalysis() {
+  var cacheKey='decade_analysis';
+  var cached=cGet(cacheKey, TTL_ERA5);
+  if(cached){ paintDecades(cached); return; }
+
   var decades=[1980,1990,2000,2010];
-  var decadeData={};
-  var done=0;
+  var decadeData={}, done=0;
   decades.forEach(function(d){
-    var from=d+'-01-01T00:00:00%2B05%3A30';
-    var to  =(d+10)+'-01-01T00:00:00%2B05%3A30';
-    sbAll('/rest/v1/historical_climate?select=recorded_at,precipitation&recorded_at=gte.'+from+'&recorded_at=lt.'+to, function(e,rows){
-      if(e||!rows.length){done++;if(done===decades.length)renderDecades(decadeData);return;}
-      /* Annual JJAS totals for this decade */
+    sbAll('/rest/v1/historical_climate?select=recorded_at,precipitation&recorded_at=gte.'+d+'-01-01T00:00:00%2B05%3A30&recorded_at=lt.'+(d+10)+'-01-01T00:00:00%2B05%3A30', function(e,rows){
+      if(!rows||!rows.length){done++;if(done===decades.length)renderDecades(decadeData);return;}
       var byYr={};
       rows.forEach(function(r){
         var yr=parseInt(r.recorded_at.substring(0,4));
         var mo=parseInt(r.recorded_at.substring(5,7));
-        if(mo<6||mo>9)return; /* JJAS only */
+        if(mo<6||mo>9)return;
         if(!byYr[yr])byYr[yr]=0;
         byYr[yr]+=parseFloat(r.precipitation)||0;
       });
       var yrVals=Object.values(byYr).map(Math.round);
       var avg=yrVals.length?Math.round(yrVals.reduce(function(a,b){return a+b;},0)/yrVals.length):0;
-      var wettest=yrVals.length?Math.max.apply(null,yrVals):0;
-      var driest=yrVals.length?Math.min.apply(null,yrVals):0;
-      var wettestYr=Object.keys(byYr).reduce(function(a,yr){return byYr[yr]>byYr[a]?yr:a;},Object.keys(byYr)[0]);
-      var driestYr=Object.keys(byYr).reduce(function(a,yr){return byYr[yr]<byYr[a]?yr:a;},Object.keys(byYr)[0]);
-      /* ENSO composition */
+      var wettestYr=Object.keys(byYr).reduce(function(a,yr){return byYr[yr]>byYr[a]?yr:a;},Object.keys(byYr)[0]||''+d);
+      var driestYr=Object.keys(byYr).reduce(function(a,yr){return byYr[yr]<byYr[a]?yr:a;},Object.keys(byYr)[0]||''+d);
       var enCount=Object.keys(byYr).filter(function(yr){return ELNINO_YRS.indexOf(parseInt(yr))>-1;}).length;
-      decadeData[d]={avg:avg,wettest:wettest,driest:driest,wettestYr:wettestYr,driestYr:driestYr,enCount:enCount,n:yrVals.length};
-      done++;
-      if(done===decades.length)renderDecades(decadeData);
+      decadeData[d]={avg:avg,wettest:Math.round(byYr[wettestYr]||0),driest:Math.round(byYr[driestYr]||0),wettestYr:wettestYr,driestYr:driestYr,enCount:enCount,n:yrVals.length};
+      done++;if(done===decades.length)renderDecades(decadeData);
     });
   });
 }
-function renderDecades(data) {
-  /* Also compute 2020s from sensor data */
+function renderDecades(data){
+  /* Fetch 2020s from sensor */
   sbAll('/rest/v1/combined_readings?select=recorded_at,precipitation&recorded_at=gte.2020-01-01T00:00:00%2B05%3A30', function(e,rows){
     var byYr={};
-    rows.forEach(function(r){
+    (rows||[]).forEach(function(r){
       var yr=parseInt(r.recorded_at.substring(0,4));
       var mo=parseInt(r.recorded_at.substring(5,7));
       if(mo<6||mo>9)return;
@@ -1303,26 +1597,27 @@ function renderDecades(data) {
     });
     var yrVals=Object.values(byYr).map(Math.round);
     var avg=yrVals.length?Math.round(yrVals.reduce(function(a,b){return a+b;},0)/yrVals.length):0;
-    var wettest=yrVals.length?Math.max.apply(null,yrVals):0, driest=yrVals.length?Math.min.apply(null,yrVals):0;
-    var wettestYr=yrVals.length?Object.keys(byYr).reduce(function(a,yr){return byYr[yr]>byYr[a]?yr:a;},Object.keys(byYr)[0]):CY;
-    data[2020]={avg:avg,wettest:wettest,driest:driest,wettestYr:wettestYr,driestYr:CY,n:yrVals.length};
+    var wettestYr=yrVals.length?Object.keys(byYr).reduce(function(a,yr){return byYr[yr]>byYr[a]?yr:a;},Object.keys(byYr)[0]):'—';
+    var driestYr=yrVals.length?Object.keys(byYr).reduce(function(a,yr){return byYr[yr]<byYr[a]?yr:a;},Object.keys(byYr)[0]):'—';
+    data[2020]={avg:avg,wettest:yrVals.length?Math.max.apply(null,yrVals):0,driest:yrVals.length?Math.min.apply(null,yrVals):0,wettestYr:wettestYr,driestYr:driestYr,n:yrVals.length,enCount:0};
+    var cacheKey='decade_analysis';
+    cSet(cacheKey,data,true);
     paintDecades(data);
   });
 }
-function paintDecades(data) {
+function paintDecades(data){
   var decades=[1980,1990,2000,2010,2020];
+  var labels=['1980s','1990s','2000s','2010s','2020s (so far)'];
   var avgs=decades.map(function(d){return data[d]?data[d].avg:0;});
   var maxAvg=Math.max.apply(null,avgs);
   var minAvg=Math.min.apply(null,avgs.filter(function(v){return v>0;}));
   var overallAvg=Math.round(avgs.filter(function(v){return v>0;}).reduce(function(a,b){return a+b;},0)/avgs.filter(function(v){return v>0;}).length);
-
-  var labels=['1980s','1990s','2000s','2010s','2020s (so far)'];
   var html='';
   decades.forEach(function(d,i){
     var dd=data[d];
     if(!dd){html+='<div class="dc-card"><span class="dc-label">'+labels[i]+'</span><div class="dc-row"><span>No data</span></div></div>';return;}
     var isWettest=dd.avg===maxAvg, isDriest=dd.avg===minAvg;
-    html+='<div class="dc-card'+(isWettest?' hottest':isDriest?' driest':'')+'">'+
+    html+='<div class="dc-card'+(isWettest?' wettest':isDriest?' driest':'')+'">'+
       '<span class="dc-label">'+labels[i]+'</span>'+
       '<div class="dc-row"><span>Avg JJAS</span><strong>'+dd.avg+' mm</strong></div>'+
       '<div class="dc-row"><span>Wettest yr</span><strong>'+dd.wettestYr+' ('+dd.wettest+' mm)</strong></div>'+
@@ -1332,207 +1627,394 @@ function paintDecades(data) {
       '</div>';
   });
   ge('decade-grid').innerHTML=html;
-
-  /* Decade bar chart */
-  if(!document.getElementById('decadeChart'))return;
-  new Chart(ge('decadeChart'),{
+  if(!ge('decadeChart'))return;
+  if(ge('decadeChart')._chart) ge('decadeChart')._chart.destroy();
+  var ch=new Chart(ge('decadeChart'),{
     type:'bar',
-    data:{
-      labels:labels,
-      datasets:[
-        {label:'Avg JJAS rainfall (mm)',data:avgs,backgroundColor:avgs.map(function(v){
-          if(v===maxAvg)return'rgba(37,99,235,0.7)';
-          if(v===minAvg)return'rgba(245,158,11,0.6)';
-          return 'rgba(74,127,165,0.55)';
-        }),borderRadius:6},
-        {label:'45-yr average ('+overallAvg+' mm)',data:decades.map(function(){return overallAvg;}),type:'line',borderColor:'rgba(239,68,68,0.5)',borderDash:[4,3],borderWidth:2,pointRadius:0}
-      ]
-    },
+    data:{labels:labels,datasets:[
+      {label:'Avg JJAS rainfall (mm)',data:avgs,backgroundColor:avgs.map(function(v){return v===maxAvg?'rgba(37,99,235,0.7)':v===minAvg?'rgba(245,158,11,0.6)':'rgba(74,127,165,0.55)';}),borderRadius:6},
+      {label:'45-yr average ('+overallAvg+' mm)',data:decades.map(function(){return overallAvg;}),type:'line',borderColor:'rgba(239,68,68,0.5)',borderDash:[4,3],borderWidth:2,pointRadius:0}
+    ]},
     options:{responsive:true,plugins:{legend:{labels:{font:{family:'DM Sans',size:10},boxWidth:10}}},scales:{
       x:{grid:{display:false},ticks:{font:{size:10},color:'#6b6b6b'}},
       y:{grid:{color:'rgba(0,0,0,0.05)'},ticks:{font:{size:10},color:'#6b6b6b',callback:function(v){return v+' mm';}}}
     }}
   });
-
-  /* Insight */
+  ge('decadeChart')._chart=ch;
   var wDec=decades[avgs.indexOf(maxAvg)], dDec=decades[avgs.indexOf(minAvg)];
-  var trend=avgs[avgs.length-1]-avgs[0];
   ge('decade-insight-text').innerHTML=
-    'The <strong>'+wDec+'s had the highest average monsoon rainfall</strong> for Baner ('+maxAvg+' mm/year JJAS). '+
-    'The <strong>'+dDec+'s were the driest decade</strong> ('+minAvg+' mm/year). '+
-    (trend>20?'The 2020s are trending <strong>wetter</strong> than the 1980s baseline — a possible La Niña influence.':
-     trend<-20?'The 2020s are trending <strong>drier</strong> than the 1980s — consistent with El Niño dominance recently.':
-     'No strong long-term wetting or drying trend is apparent across decades — inter-annual ENSO variability dominates.')+
-    ' The difference between the wettest and driest decade is <strong>'+Math.abs(maxAvg-minAvg)+' mm/year</strong>.';
+    'The <strong>'+wDec+'s had the highest average monsoon rainfall</strong> ('+maxAvg+' mm/yr JJAS). '+
+    'The <strong>'+dDec+'s were the driest decade</strong> ('+minAvg+' mm/yr). '+
+    'The spread between the wettest and driest decade is <strong>'+Math.abs(maxAvg-minAvg)+' mm/yr</strong> — larger than many expected for a relatively small geographic area.';
   ge('decade-insight').style.display='flex';
 }
 
 /* ════════════════════════════════════════
-   6. MONSOON TRACKER (2022-present sensor)
+   6. COMPARISON WIDGET
+   Handles ERA5 (1980-2021) and sensor (2022+)
+   Uses sessionStorage caching per period
    ════════════════════════════════════════ */
-function loadMonsoonTracker() {
+function buildComparisonSelects() {
+  var mo='', yr='';
+  MO_LONG.forEach(function(m,i){
+    mo+='<option value="'+(i+1)+'">'+m+'</option>';
+  });
+  /* Years: ERA5 1980-2021 + sensor 2022-CY */
+  for(var y=1980;y<=CY;y++){
+    yr+='<option value="'+y+'"'+(y===CY?' selected':'')+'>'+y+'</option>';
+  }
+  /* Default: Month A = May, Year A = 1990; Month B = same month, Year B = CY-1 */
+  ge('cmp-month-a').innerHTML=mo;
+  ge('cmp-month-b').innerHTML=mo;
+  ge('cmp-year-a').innerHTML=yr;
+  ge('cmp-year-b').innerHTML=yr;
+  ge('cmp-month-a').value=5;  /* May */
+  ge('cmp-month-b').value=5;
+  ge('cmp-year-a').value=2000;
+  ge('cmp-year-b').value=2015;
+}
+
+var CMP_CHART = null;
+
+function runComparison() {
+  var mA=parseInt(ge('cmp-month-a').value), yA=parseInt(ge('cmp-year-a').value);
+  var mB=parseInt(ge('cmp-month-b').value), yB=parseInt(ge('cmp-year-b').value);
+  if(mA===mB&&yA===yB){ ge('cmp-err').textContent='Please choose two different periods to compare.'; ge('cmp-err').style.display='block'; return; }
+  ge('cmp-err').style.display='none';
+  ge('cmp-results').classList.add('show');
+  ge('cmp-loading').style.display='block';
+  ge('cmp-output').style.display='none';
+
+  var done=0;
+  var resA=null, resB=null;
+  function finish(){ done++; if(done===2) showCompareResult(resA,resB,mA,yA,mB,yB); }
+
+  fetchPeriodData(mA,yA,function(data){resA=data;finish();});
+  fetchPeriodData(mB,yB,function(data){resB=data;finish();});
+}
+
+function fetchPeriodData(mo, yr, cb) {
+  var cacheKey='cmp_'+yr+'_'+mo;
+  /* Completed past years: 24hr cache. Current year: 6hr cache */
+  var ttl=(yr<CY)?TTL_ERA5:TTL_MONTHLY;
+  var cached=cGet(cacheKey, ttl);
+  if(cached){ cb(cached); return; }
+
+  var table=(yr<=2021)?'historical_climate':'combined_readings';
+  var nM=mo===12?1:mo+1, nY=mo===12?yr+1:yr;
+  var from=yr+'-'+p2(mo)+'-01T00:00:00%2B05%3A30';
+  var to  =nY+'-'+p2(nM)+'-01T00:00:00%2B05%3A30';
+
+  sbAll('/rest/v1/'+table+'?select=recorded_at,precipitation&recorded_at=gte.'+from+'&recorded_at=lt.'+to, function(e,rows){
+    if(e||!rows||!rows.length){cb({total:0,rdays:0,peakMM:0,peakDate:'—',avgRainy:0,src:table,daily:{}}); return;}
+    var dm=toDayMap(rows);
+    var total=0,rdays=0,peakMM=0,peakDate='—';
+    Object.keys(dm).forEach(function(dk){
+      var v=dm[dk];
+      total+=v;
+      if(v>=1){rdays++;}
+      if(v>peakMM){peakMM=v;peakDate=dk;}
+    });
+    total=Math.round(total*10)/10;
+    peakMM=Math.round(peakMM*10)/10;
+    var avgRainy=rdays>0?Math.round(total/rdays*10)/10:0;
+    var srcLabel=yr<=2021?'ERA5 reanalysis':yr<=2025?'Open-Meteo / WU sensor':'WU sensor';
+    var result={total:total,rdays:rdays,peakMM:peakMM,peakDate:peakDate,avgRainy:avgRainy,src:srcLabel,daily:dm};
+    cSet(cacheKey,result,yr<CY);
+    cb(result);
+  });
+}
+
+function showCompareResult(a,b,mA,yA,mB,yB){
+  ge('cmp-loading').style.display='none';
+  ge('cmp-output').style.display='block';
+
+  var nameA=MO_LONG[mA-1]+' '+yA, nameB=MO_LONG[mB-1]+' '+yB;
+  ge('cmp-title-a').textContent=nameA;
+  ge('cmp-title-b').textContent=nameB;
+
+  function fmtPeak(peakDate,mm){
+    if(peakDate==='—') return '—';
+    var d=new Date(peakDate+'T00:00:00');
+    return d.getDate()+' '+MO_SHORT[d.getMonth()]+': '+mm+' mm';
+  }
+
+  ge('cmp-total-a').textContent=a.total+' mm';
+  ge('cmp-days-a').textContent=a.rdays+' days';
+  ge('cmp-peak-a').textContent=fmtPeak(a.peakDate,a.peakMM);
+  ge('cmp-avg-a').textContent=a.avgRainy+' mm';
+  ge('cmp-src-a').textContent=a.src;
+
+  ge('cmp-total-b').textContent=b.total+' mm';
+  ge('cmp-days-b').textContent=b.rdays+' days';
+  ge('cmp-peak-b').textContent=fmtPeak(b.peakDate,b.peakMM);
+  ge('cmp-avg-b').textContent=b.avgRainy+' mm';
+  ge('cmp-src-b').textContent=b.src;
+
+  var diff=Math.round((a.total-b.total)*10)/10;
+  var pct=b.total>0?Math.round(Math.abs(diff)/b.total*100):0;
+  var winner=diff>=0?nameA:nameB;
+  var loser=diff>=0?nameB:nameA;
+  var deltaText=winner+' was <strong>'+Math.abs(diff)+' mm wetter</strong> ('+pct+'% more rain) than '+loser+'. ';
+
+  /* ENSO context */
+  var ensoA=ELNINO_YRS.indexOf(yA)>-1?'El Niño ':LANINA_YRS.indexOf(yA)>-1?'La Niña ':'';
+  var ensoB=ELNINO_YRS.indexOf(yB)>-1?'El Niño ':LANINA_YRS.indexOf(yB)>-1?'La Niña ':'';
+  if(ensoA) deltaText+=yA+' was an <strong>'+ensoA+'year</strong>. ';
+  if(ensoB) deltaText+=yB+' was an <strong>'+ensoB+'year</strong>. ';
+  if(!ensoA&&!ensoB) deltaText+='Neither year had a significant ENSO signal. ';
+  deltaText+='Rainy days: '+a.rdays+' vs '+b.rdays+'. Peak day: '+a.peakMM+' mm vs '+b.peakMM+' mm.';
+  ge('cmp-delta-text').innerHTML=deltaText;
+
+  /* Chart: daily comparison */
+  if(CMP_CHART) { CMP_CHART.destroy(); CMP_CHART=null; }
+  var allDates=[];
+  function daysInMonth(y,m){ return new Date(m===12?y+1:y,m===12?0:m,0).getDate(); }
+  var daysA=daysInMonth(yA,mA), daysB=daysInMonth(yB,mB);
+  var maxDays=Math.max(daysA,daysB);
+  for(var d=1;d<=maxDays;d++) allDates.push(d);
+  function buildDailySeries(dm, yr, mo, days){
+    return Array.apply(null,Array(days)).map(function(_,i){
+      var dk=yr+'-'+p2(mo)+'-'+p2(i+1);
+      return Math.round((dm[dk]||0)*10)/10;
+    });
+  }
+  var dsA=buildDailySeries(a.daily,yA,mA,daysA);
+  var dsB=buildDailySeries(b.daily,yB,mB,daysB);
+  var ctx=ge('cmpChart');
+  if(ctx){
+    CMP_CHART=new Chart(ctx,{
+      type:'bar',
+      data:{
+        labels:allDates.map(function(d){return d+'';}),
+        datasets:[
+          {label:nameA,data:dsA,backgroundColor:'rgba(74,127,165,0.6)',borderRadius:2},
+          {label:nameB,data:dsB,backgroundColor:'rgba(191,155,123,0.6)',borderRadius:2}
+        ]
+      },
+      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{font:{family:'DM Sans',size:10},boxWidth:10}}},scales:{
+        x:{grid:{display:false},ticks:{font:{size:9},color:'#6b6b6b'}},
+        y:{beginAtZero:true,grid:{color:'rgba(0,0,0,0.05)'},ticks:{font:{size:10},color:'#6b6b6b',callback:function(v){return v+' mm';}}}
+      }}
+    });
+  }
+}
+
+/* ════════════════════════════════════════
+   7. MONSOON TRACKER
+   ════════════════════════════════════════ */
+function loadMonsoonTracker(){
   var done=0, totals={};
-  ALL_YRS.forEach(function(yr){
-    sbGet('/rest/v1/combined_readings?select=precipitation&recorded_at=gte.'+yr+'-06-01T00:00:00%2B05%3A30&recorded_at=lt.'+yr+'-10-01T00:00:00%2B05%3A30&limit=3000')
-      .then(function(rows){
-        var t=0; if(Array.isArray(rows))rows.forEach(function(r){t+=parseFloat(r.precipitation)||0;});
-        totals[yr]=Math.round(t);
-        done++; if(done===ALL_YRS.length)renderTracker(totals);
-      }).catch(function(){done++;if(done===ALL_YRS.length)renderTracker(totals);});
+  SENSOR_YRS.forEach(function(yr){
+    var cacheKey='tracker_'+yr;
+    var ttl=yr<CY?TTL_ERA5:TTL_MONTHLY;
+    var cached=cGet(cacheKey,ttl);
+    if(cached){totals[yr]=cached;done++;if(done===SENSOR_YRS.length)renderTracker(totals);return;}
+    sbAll('/rest/v1/combined_readings?select=precipitation&recorded_at=gte.'+yr+'-06-01T00:00:00%2B05%3A30&recorded_at=lt.'+yr+'-10-01T00:00:00%2B05%3A30&precipitation=gt.0', function(e,rows){
+      var t=0; (Array.isArray(rows)?rows:[]).forEach(function(r){t+=parseFloat(r.precipitation)||0;});
+      var mm=Math.round(t);
+      totals[yr]=mm; cSet(cacheKey,mm,yr<CY);
+      done++;if(done===SENSOR_YRS.length)renderTracker(totals);
+    });
   });
 }
 function renderTracker(totals){
   var maxMM=Math.max.apply(null,Object.values(totals).concat([1]));
   var colors={2022:'#3A6680',2023:'#4A7FA5',2024:'#5E9EC0',2025:'#7FB8D8',2026:'var(--rain-tan)'};
   var html='';
-  ALL_YRS.slice().reverse().forEach(function(yr){
+  SENSOR_YRS.slice().reverse().forEach(function(yr){
     var mm=totals[yr]||0;
     var barW=Math.round(mm/maxMM*96);
     html+='<div class="tr-row">'+
       '<div class="tr-yr" style="'+(yr===CY?'color:var(--rain-tan);':'')+'">'+yr+'</div>'+
       '<div class="tr-bg"><div class="tr-fill" style="width:'+barW+'%;background:'+(colors[yr]||'#4A7FA5')+'"></div></div>'+
-      '<div class="tr-mm">'+mm+' mm</div>'+
-      '</div>';
+      '<div class="tr-mm">'+mm+' mm</div></div>';
   });
   ge('tracker-rows').innerHTML=html;
   var cur=totals[CY], prev=totals[CY-1];
   if(cur!==undefined&&prev){
     var pct=prev>0?Math.round((cur-prev)/prev*100):0;
     var note=ge('tracker-note');
-    note.innerHTML='<strong>'+CY+' monsoon:</strong> '+cur+' mm so far &nbsp;·&nbsp; '+(pct>=0?'+'+pct:pct)+'% vs '+( CY-1);
+    note.innerHTML='<strong>'+CY+' monsoon season (JJAS):</strong> '+cur+' mm &nbsp;·&nbsp; '+(pct>=0?'+'+pct:pct)+'% vs '+(CY-1)+' monsoon ('+prev+' mm).';
     note.style.display='block';
   }
 }
 
 /* ════════════════════════════════════════
-   7. FIRST RAIN
+   8. FIRST RAIN
    ════════════════════════════════════════ */
-function loadFirstRain() {
+function loadFirstRain(){
   var done=0, results={};
-  ALL_YRS.forEach(function(yr){
-    sbGet('/rest/v1/combined_readings?select=recorded_at,precipitation&recorded_at=gte.'+yr+'-06-01T00:00:00%2B05%3A30&recorded_at=lt.'+yr+'-09-01T00:00:00%2B05%3A30&precipitation=gt.0.5&order=recorded_at.asc&limit=5')
+  SENSOR_YRS.forEach(function(yr){
+    sbGet('/rest/v1/combined_readings?select=recorded_at,precipitation&recorded_at=gte.'+yr+'-06-01T00:00:00%2B05%3A30&recorded_at=lt.'+yr+'-09-01T00:00:00%2B05%3A30&precipitation=gte.1&order=recorded_at.asc&limit=5')
       .then(function(rows){
         if(Array.isArray(rows)&&rows.length) results[yr]=new Date(rows[0].recorded_at);
         else results[yr]=null;
-        done++; if(done===ALL_YRS.length)renderFirstRain(results);
-      }).catch(function(){done++;if(done===ALL_YRS.length)renderFirstRain(results);});
+        done++;if(done===SENSOR_YRS.length)renderFirstRain(results);
+      }).catch(function(){done++;if(done===SENSOR_YRS.length)renderFirstRain(results);});
   });
 }
 function renderFirstRain(results){
   function doy(d){return Math.floor((d-new Date(d.getFullYear(),0,0))/86400000);}
-  var validDays=ALL_YRS.filter(function(yr){return results[yr];}).map(function(yr){return doy(results[yr]);});
+  var validDays=SENSOR_YRS.filter(function(yr){return results[yr];}).map(function(yr){return doy(results[yr]);});
   var avgDOY=validDays.length?Math.round(validDays.reduce(function(a,b){return a+b;},0)/validDays.length):null;
   var html='';
-  ALL_YRS.forEach(function(yr){
+  SENSOR_YRS.forEach(function(yr){
     var d=results[yr], isCur=yr===CY;
     var dStr=d?(d.getDate()+' '+MO_LONG[d.getMonth()]):'Not yet';
     var note='';
-    if(d&&avgDOY){var diff=avgDOY-doy(d);if(Math.abs(diff)>2)note=diff>0?(Math.abs(diff)+' days earlier than avg'):(Math.abs(diff)+' days later than avg');else note='On average schedule';}
-    html+='<div class="fr-item">'+
-      '<div class="fr-dot'+(isCur?' cur':'')+'"></div>'+
+    if(d&&avgDOY){var diff=avgDOY-doy(d);if(Math.abs(diff)>2)note=diff>0?(Math.abs(diff)+' days earlier than avg'):(Math.abs(diff)+' days later than avg');else note='On schedule';}
+    html+='<div class="fr-item"><div class="fr-dot'+(isCur?' cur':'')+'"></div>'+
       '<div class="fr-yr">'+yr+'</div>'+
-      '<div><div class="fr-date">'+dStr+'</div>'+(note?'<div class="fr-note">'+note+'</div>':'')+'</div>'+
-      '</div>';
+      '<div><div class="fr-date">'+dStr+'</div>'+(note?'<div class="fr-note">'+note+'</div>':'')+'</div></div>';
   });
   ge('fr-timeline').innerHTML=html;
   var cur=results[CY];
   if(cur){
     var dStr=cur.getDate()+' '+MO_LONG[cur.getMonth()]+' '+CY;
-    ge('fr-insight-box').innerHTML='First significant rain of <strong>'+CY+'</strong>: <strong>'+dStr+'</strong>. '+(avgDOY?'Historical average onset: <strong>'+(function(){var t=new Date(CY,0,avgDOY);return t.getDate()+' '+MO_LONG[t.getMonth()];}())+'</strong>.':'');
+    ge('fr-insight-box').innerHTML='First significant rain of <strong>'+CY+'</strong> (≥1mm): <strong>'+dStr+'</strong>. '+(avgDOY?'Sensor-era average onset: <strong>'+(function(){var t=new Date(CY,0,avgDOY);return t.getDate()+' '+MO_LONG[t.getMonth()];}())+'</strong>.':'');
   } else {
-    ge('fr-insight-box').innerHTML='Waiting for the <strong>'+CY+'</strong> monsoon — the first significant rain has not yet been recorded. Check the 7-day forecast above.';
+    ge('fr-insight-box').innerHTML='Waiting for the <strong>'+CY+'</strong> monsoon — no day with ≥1mm has been recorded since June 1. Check the 7-day forecast above.';
   }
   ge('fr-fact').style.display='block';
 }
 
 /* ════════════════════════════════════════
-   8. YEAR-BY-YEAR CHART (ERA5 1980-2021 + sensor 2022+)
-   Fetches ERA5 monthly totals per year, renders overlaid lines
-   Strategy: fetch JJAS months only for ERA5 to reduce data volume
+   9. YEAR-BY-YEAR CHART (decade averages)
    ════════════════════════════════════════ */
-function loadYearlyChart() {
-  /* For the all-years chart, show annual JJAS total per year as bars */
-  /* ERA5 already partially loaded in heatmap — reuse monsoonTotals if available */
-  /* Instead: fetch decade-aggregated monthly averages and show as area chart */
+function loadYearlyChart(){
+  var cacheKey='yearly_chart';
+  var cached=cGet(cacheKey, TTL_ERA5);
+  if(cached){ renderYearlyChart(cached.moAvgs, cached.curData); return; }
+
   var decades=[1980,1990,2000,2010];
   var moAvgs={}, decDone=0;
   decades.forEach(function(d){
-    var moData={};
-    var moDone=0;
+    var moData={}, moDone=0;
     for(var m=1;m<=12;m++){
       (function(mo){
-        var from=d+'-'+p2(mo)+'-01T00:00:00%2B05%3A30';
-        var to  =(mo===12?(d+1):d)+'-'+p2(mo===12?1:mo+1)+'-01T00:00:00%2B05%3A30';
-        /* ERA5 */
-        sbGet('/rest/v1/historical_climate?select=precipitation&recorded_at=gte.'+d+'-'+p2(mo)+'-01T00:00:00%2B05%3A30&recorded_at=lt.'+(mo===12?(d+1):d)+'-'+p2(mo===12?1:mo+1)+'-01T00:00:00%2B05%3A30&limit=3000')
+        var nM=mo===12?1:mo+1, nY=(mo===12)?(d+1):d;
+        sbGet('/rest/v1/historical_climate?select=precipitation&recorded_at=gte.'+d+'-'+p2(mo)+'-01T00:00:00%2B05%3A30&recorded_at=lt.'+nY+'-'+p2(nM)+'-01T00:00:00%2B05%3A30&limit=3000')
           .then(function(rows){
-            var t=0; if(Array.isArray(rows))rows.forEach(function(r){t+=parseFloat(r.precipitation)||0;});
-            moData[mo]=Math.round(t/10); /* avg per year in decade */
-            moDone++;if(moDone===12){moAvgs[d]=moData;decDone++;if(decDone===decades.length)renderYearlyChart(moAvgs);}
-          }).catch(function(){moDone++;if(moDone===12){moAvgs[d]=moData;decDone++;if(decDone===decades.length)renderYearlyChart(moAvgs);}});
+            var t=0; (Array.isArray(rows)?rows:[]).forEach(function(r){t+=parseFloat(r.precipitation)||0;});
+            moData[mo]=Math.round(t/10);
+            moDone++;if(moDone===12){moAvgs[d]=moData;decDone++;if(decDone===decades.length)fetchCurYearForChart(moAvgs);}
+          }).catch(function(){moDone++;if(moDone===12){moAvgs[d]=moData;decDone++;if(decDone===decades.length)fetchCurYearForChart(moAvgs);}});
       })(m);
     }
   });
 }
-function renderYearlyChart(moAvgs){
-  var decadeLabels=['1980s avg','1990s avg','2000s avg','2010s avg'];
+function fetchCurYearForChart(moAvgs){
+  var curData={}, curDone=0;
+  for(var m=1;m<=12;m++){
+    (function(mo){
+      var nM=mo===12?1:mo+1, nY=mo===12?CY+1:CY;
+      sbGet('/rest/v1/combined_readings?select=precipitation&recorded_at=gte.'+CY+'-'+p2(mo)+'-01T00:00:00%2B05%3A30&recorded_at=lt.'+nY+'-'+p2(nM)+'-01T00:00:00%2B05%3A30&limit=800')
+        .then(function(rows){
+          var t=0; (Array.isArray(rows)?rows:[]).forEach(function(r){t+=parseFloat(r.precipitation)||0;});
+          curData[mo]=Math.round(t);
+          curDone++;if(curDone===12){cSet('yearly_chart',{moAvgs:moAvgs,curData:curData},true);renderYearlyChart(moAvgs,curData);}
+        }).catch(function(){curDone++;if(curDone===12)renderYearlyChart(moAvgs,curData);});
+    })(m);
+  }
+}
+function renderYearlyChart(moAvgs, curData){
   var COLORS=['rgba(58,102,128,0.55)','rgba(74,127,165,0.65)','rgba(94,158,192,0.7)','rgba(127,184,216,0.75)'];
   var BORDERS=['#3A6680','#4A7FA5','#5E9EC0','#7FB8D8'];
   var datasets=[];
   [1980,1990,2000,2010].forEach(function(d,i){
     if(!moAvgs[d])return;
     datasets.push({
-      label:decadeLabels[i],
+      label:d+'s avg',
       data:MO_SHORT.map(function(m,mi){return moAvgs[d][mi+1]||0;}),
       borderColor:BORDERS[i],backgroundColor:COLORS[i],
       borderWidth:1.5,tension:0.4,fill:false,pointRadius:2
     });
   });
-  /* Add current year sensor data */
-  var curDone=0, curData={};
-  for(var m=1;m<=12;m++){
-    (function(mo){
-      var nM=mo===12?1:mo+1, nY=mo===12?CY+1:CY;
-      sbGet('/rest/v1/combined_readings?select=precipitation&recorded_at=gte.'+CY+'-'+p2(mo)+'-01T00:00:00%2B05%3A30&recorded_at=lt.'+nY+'-'+p2(nM)+'-01T00:00:00%2B05%3A30&limit=800')
-        .then(function(rows){
-          var t=0; if(Array.isArray(rows))rows.forEach(function(r){t+=parseFloat(r.precipitation)||0;});
-          curData[mo]=Math.round(t);
-          curDone++;if(curDone===12){
-            datasets.push({label:CY+' (live)',data:MO_SHORT.map(function(m,mi){return curData[mi+1]||0;}),borderColor:'var(--rain-tan)',backgroundColor:'rgba(191,155,123,0.15)',borderWidth:3,tension:0.4,fill:false,pointRadius:4,pointBackgroundColor:'var(--rain-tan)'});
-            if(document.getElementById('yearlyChart')){
-              new Chart(ge('yearlyChart'),{type:'line',data:{labels:MO_SHORT,datasets:datasets},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',labels:{font:{size:10},boxWidth:12}}},scales:{y:{beginAtZero:true,grid:{color:'rgba(0,0,0,0.05)'},ticks:{font:{size:10},color:'#6b6b6b',callback:function(v){return v+' mm';}}},x:{grid:{display:false},ticks:{font:{size:11},color:'#6b6b6b'}}}}});
-            }
-          }
-        }).catch(function(){curDone++;});
-    })(m);
+  if(curData){
+    datasets.push({
+      label:CY+' (live)',
+      data:MO_SHORT.map(function(m,mi){return curData[mi+1]||0;}),
+      borderColor:'var(--rain-tan)',backgroundColor:'rgba(191,155,123,0.15)',
+      borderWidth:3,tension:0.4,fill:false,pointRadius:4,pointBackgroundColor:'var(--rain-tan)'
+    });
   }
+  var ctx=ge('yearlyChart'); if(!ctx)return;
+  if(ctx._chart)ctx._chart.destroy();
+  ctx._chart=new Chart(ctx,{type:'line',data:{labels:MO_SHORT,datasets:datasets},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',labels:{font:{size:10},boxWidth:12}}},scales:{y:{beginAtZero:true,grid:{color:'rgba(0,0,0,0.05)'},ticks:{font:{size:10},color:'#6b6b6b',callback:function(v){return v+' mm';}}},x:{grid:{display:false},ticks:{font:{size:11},color:'#6b6b6b'}}}}});
 }
 
 /* ════════════════════════════════════════
-   9. RAIN PATTERN
+   10. RAIN PATTERN
    ════════════════════════════════════════ */
-function loadRainPattern() {
+function loadRainPattern(){
+  var cacheKey='pattern_'+CY+'_'+CM+'_'+CD;
+  var cached=cGet(cacheKey, TTL_MONTHLY);
+  if(cached){ge('pattern-grid').innerHTML=cached;return;}
+  /* Fetch ALL rows for the year — no precipitation filter — so zero-rain days
+     are represented by their absence in the day map (correct for dry spell calc) */
   sbAll('/rest/v1/combined_readings?select=recorded_at,precipitation&recorded_at=gte.'+CY+'-01-01T00:00:00%2B05%3A30', function(e,all){
-    if(!all.length)return;
-    var dm=toDayMap(all);
-    var days=Object.keys(dm).sort();
-    var rainyDays=days.filter(function(dk){return dm[dk]>=0.5;}).length;
-    var longest=0,cur=0;
-    days.forEach(function(dk){if(dm[dk]<0.5){cur++;if(cur>longest)longest=cur;}else{cur=0;}});
-    var avgRainy=rainyDays>0?Math.round(days.filter(function(dk){return dm[dk]>=0.5;}).reduce(function(s,dk){return s+dm[dk];},0)/rainyDays*10)/10:0;
-    ge('pattern-grid').innerHTML=
-      '<div class="r-card" style="border-left:4px solid var(--rain-blue);"><div class="r-label">Rainy days '+CY+'</div><div class="r-val blue">'+rainyDays+'</div><div class="r-unit">days with &ge;0.5mm rain</div></div>'+
-      '<div class="r-card" style="border-left:4px solid var(--rain-tan);"><div class="r-label">Longest dry spell</div><div class="r-val">'+longest+'</div><div class="r-unit">consecutive dry days</div></div>'+
-      '<div class="r-card" style="border-left:4px solid #22c55e;"><div class="r-label">Avg on rainy days</div><div class="r-val blue">'+avgRainy+'</div><div class="r-unit">mm per rainy day this year</div></div>';
+    /* Build a day map of actual rain totals per date */
+    var dm={};
+    if(Array.isArray(all)){
+      all.forEach(function(r){
+        var dk=r.recorded_at.substring(0,10);
+        if(!dm[dk])dm[dk]=0;
+        dm[dk]+=parseFloat(r.precipitation)||0;
+      });
+    }
+    /* Walk every calendar day from Jan 1 to TODAY (not just days with data) */
+    var todayISO=CY+'-'+p2(CM)+'-'+p2(CD);
+    var rainyDays=0, longest=0, curDry=0;
+    var rainyVals=[];
+    var cursor=new Date(CY+'-01-01T00:00:00Z');
+    var end=new Date(todayISO+'T00:00:00Z');
+    while(cursor<=end){
+      var dk=cursor.getUTCFullYear()+'-'+p2(cursor.getUTCMonth()+1)+'-'+p2(cursor.getUTCDate());
+      var dayMM=dm[dk]||0;
+      if(dayMM>=1){
+        rainyDays++;
+        rainyVals.push(dayMM);
+        if(curDry>longest)longest=curDry;
+        curDry=0;
+      } else {
+        curDry++;
+      }
+      cursor=new Date(cursor.getTime()+86400000);
+    }
+    /* Check if current dry run is the longest (ongoing dry spell) */
+    if(curDry>longest)longest=curDry;
+    var avgRainy=rainyVals.length?Math.round(rainyVals.reduce(function(a,b){return a+b;},0)/rainyVals.length*10)/10:0;
+    var html=
+      '<div class="r-card" style="border-left:4px solid var(--rain-blue);">'+
+        '<div class="r-label">Rainy days '+CY+'</div>'+
+        '<div class="r-val blue">'+rainyDays+'</div>'+
+        '<div class="r-unit">days with ≥1mm rain</div>'+
+      '</div>'+
+      '<div class="r-card" style="border-left:4px solid var(--rain-tan);">'+
+        '<div class="r-label">Longest dry spell</div>'+
+        '<div class="r-val">'+longest+'</div>'+
+        '<div class="r-unit">consecutive dry days in '+CY+'</div>'+
+      '</div>'+
+      '<div class="r-card" style="border-left:4px solid #22c55e;">'+
+        '<div class="r-label">Avg on rainy days</div>'+
+        '<div class="r-val blue">'+avgRainy+'</div>'+
+        '<div class="r-unit">mm per rainy day</div>'+
+      '</div>';
+    ge('pattern-grid').innerHTML=html;
+    cSet(cacheKey,html,false);
   });
 }
 
 /* ════════════════════════════════════════
-   10. INTENSITY BREAKDOWN
+   11. INTENSITY BREAKDOWN
    ════════════════════════════════════════ */
-function loadIntensity() {
+function loadIntensity(){
+  var cacheKey='intensity_'+CY+'_'+CM+'_'+CD;
+  var cached=cGet(cacheKey, TTL_MONTHLY);
+  if(cached){ge('intensity-bars').innerHTML=cached.html;if(cached.showInsight){ge('intensity-insight-text').innerHTML=cached.insightText;ge('intensity-insight').style.display='flex';}return;}
   sbAll('/rest/v1/combined_readings?select=recorded_at,precipitation&recorded_at=gte.'+CY+'-01-01T00:00:00%2B05%3A30', function(e,all){
-    if(!all.length)return;
+    if(!all||!all.length)return;
     var dm=toDayMap(all);
     var cats=[
       {label:'No rain',        color:'#9CA3AF',min:0,   max:0.1  },
@@ -1552,34 +2034,38 @@ function loadIntensity() {
       html+='<div class="int-row">'+
         '<div class="int-lbl"><div class="int-dot" style="background:'+cat.color+'"></div>'+cat.label+'</div>'+
         '<div class="int-bg"><div class="int-fill" style="width:'+pct+'%;background:'+cat.color+'"></div></div>'+
-        '<div class="int-cnt">'+counts[i]+' days</div>'+
-        '</div>';
+        '<div class="int-cnt">'+counts[i]+' days</div></div>';
     });
     ge('intensity-bars').innerHTML=html;
-    var heavyTotal=counts[3]+counts[4];
-    if(heavyTotal>5){
-      ge('intensity-insight-text').innerHTML=CY+' has been a <strong>high-impact monsoon year</strong> for Baner — '+heavyTotal+' days of heavy or very heavy rain. Hill vegetation will be at peak NDVI.';
+    var heavyTotal=counts[3]+counts[4], showInsight=heavyTotal>3, insightText='';
+    if(showInsight){
+      insightText=CY+' has included <strong>'+heavyTotal+' days of heavy or very heavy rain</strong>. Hill vegetation will be at peak NDVI. These events drive most of the annual runoff.';
+      ge('intensity-insight-text').innerHTML=insightText;
       ge('intensity-insight').style.display='flex';
     }
+    cSet(cacheKey,{html:html,showInsight:showInsight,insightText:insightText},false);
   });
 }
 
 /* ════════════════════════════════════════
-   11. BIGGEST RAIN EVENTS (with filter)
+   12. BIGGEST RAIN EVENTS
    ════════════════════════════════════════ */
-function loadRainEvents() {
+var ALL_EVENTS_DATA=[];
+function loadRainEvents(){
+  var cacheKey='events_'+CY+'_'+CM+'_'+CD;
+  var cached=cGet(cacheKey, TTL_MONTHLY);
+  if(cached){ALL_EVENTS_DATA=cached;renderEvents('all');return;}
   sbAll('/rest/v1/combined_readings?select=recorded_at,precipitation&precipitation=gt.0', function(e,rows){
     var dm=toDayMap(rows);
     ALL_EVENTS_DATA=Object.keys(dm).map(function(dk){return{date:dk,mm:Math.round(dm[dk]*10)/10};});
     ALL_EVENTS_DATA.sort(function(a,b){return b.mm-a.mm;});
+    cSet(cacheKey,ALL_EVENTS_DATA,false);
     renderEvents('all');
   });
 }
-function renderEvents(filter) {
+function renderEvents(filter){
   var data=ALL_EVENTS_DATA;
-  if(filter!=='all'){
-    data=data.filter(function(e){return e.date.substring(0,4)===filter;});
-  }
+  if(filter!=='all') data=data.filter(function(e){return e.date.substring(0,4)===filter;});
   var top=data.slice(0,10);
   var maxMM=top.length?top[0].mm:1;
   var html='';
@@ -1588,102 +2074,151 @@ function renderEvents(filter) {
     var d=new Date(ev.date+'T00:00:00');
     var dStr=d.getDate()+' '+MO_LONG[d.getMonth()]+' '+d.getFullYear();
     var barW=Math.round(ev.mm/maxMM*100);
-    var cat=ev.mm>=64.5?'&#9889; Extremely heavy':ev.mm>=15.6?'&#9928; Heavy rain':ev.mm>=2.5?'&#127783; Moderate':'&#127746; Light';
+    var cat=ev.mm>=64.5?'&#9889; Very heavy':ev.mm>=15.6?'&#9928; Heavy':ev.mm>=2.5?'&#127783; Moderate':'&#127746; Light';
     html+='<div class="ev-item">'+
       '<div class="ev-rank">'+(i+1)+'</div>'+
-      '<div class="ev-info">'+
-        '<div class="ev-date">'+dStr+'</div>'+
-        '<div class="ev-mm">'+ev.mm+' mm</div>'+
-        '<div class="ev-cat">'+cat+' · IMD</div>'+
-      '</div>'+
+      '<div class="ev-info"><div class="ev-date">'+dStr+'</div><div class="ev-mm">'+ev.mm+' mm</div><div class="ev-cat">'+cat+' · IMD</div></div>'+
       '<div class="ev-bar-wrap"><div class="ev-bar" style="width:'+barW+'%"></div></div>'+
       '</div>';
   });
   ge('events-list').innerHTML=html;
 }
-function filterEvents(filter, btn) {
+function filterEvents(filter,btn){
   document.querySelectorAll('.ef-btn').forEach(function(b){b.classList.remove('active');});
   btn.classList.add('active');
   renderEvents(filter);
 }
 
 /* ════════════════════════════════════════
-   12. MONSOON PHASES
+   13. MONSOON PHASES
    ════════════════════════════════════════ */
-function loadBehaviour() {
+function loadBehaviour(){
+  var cacheKey='behaviour';
+  var cached=cGet(cacheKey, TTL_ERA5);
+  if(cached){renderBehaviourFromData(cached);return;}
   var moTotals=new Array(12).fill(0), moCounts=new Array(12).fill(0);
-  var done=0, total=ALL_YRS.length*12;
-  ALL_YRS.forEach(function(yr){
+  var done=0, total=SENSOR_YRS.length*12;
+  SENSOR_YRS.forEach(function(yr){
     for(var m=1;m<=12;m++){
       (function(mo){
         var nM=mo===12?1:mo+1, nY=mo===12?yr+1:yr;
         sbGet('/rest/v1/combined_readings?select=precipitation&recorded_at=gte.'+yr+'-'+p2(mo)+'-01T00:00:00%2B05%3A30&recorded_at=lt.'+nY+'-'+p2(nM)+'-01T00:00:00%2B05%3A30&limit=800')
           .then(function(rows){
-            var t=0; if(Array.isArray(rows))rows.forEach(function(r){t+=parseFloat(r.precipitation)||0;});
+            var t=0; (Array.isArray(rows)?rows:[]).forEach(function(r){t+=parseFloat(r.precipitation)||0;});
             moTotals[mo-1]+=Math.round(t); moCounts[mo-1]++;
-            done++; if(done===total) renderBehaviour(moTotals,moCounts);
-          }).catch(function(){done++;if(done===total)renderBehaviour(moTotals,moCounts);});
+            done++;if(done===total){cSet(cacheKey,{totals:moTotals,counts:moCounts},true);renderBehaviourFromData({totals:moTotals,counts:moCounts});}
+          }).catch(function(){done++;if(done===total)renderBehaviourFromData({totals:moTotals,counts:moCounts});});
       })(m);
     }
   });
 }
-function renderBehaviour(moTotals,moCounts){
-  var avgs=moTotals.map(function(t,i){return moCounts[i]>0?Math.round(t/moCounts[i]):0;});
+function renderBehaviourFromData(data){
+  var avgs=data.totals.map(function(t,i){return data.counts[i]>0?Math.round(t/data.counts[i]):0;});
   var early=avgs[5], peak=Math.round((avgs[6]+avgs[7])/2), late=avgs[8];
   ge('phase-cards').innerHTML=
     '<div class="phase-card p-early"><div class="ph-lbl">Early Monsoon</div><div class="ph-mo">June · onset &amp; build-up</div><div class="ph-mm">'+early+'<span style="font-size:1rem;"> mm</span></div><div class="ph-note">avg monthly total</div></div>'+
     '<div class="phase-card p-peak"><div class="ph-lbl">Peak Monsoon</div><div class="ph-mo">July–August · full force</div><div class="ph-mm">'+peak+'<span style="font-size:1rem;color:rgba(168,200,224,0.7);"> mm</span></div><div class="ph-note">avg monthly total</div></div>'+
     '<div class="phase-card p-late"><div class="ph-lbl">Withdrawal</div><div class="ph-mo">September · tapering off</div><div class="ph-mm">'+late+'<span style="font-size:1rem;"> mm</span></div><div class="ph-note">avg monthly total</div></div>';
-  if(!document.getElementById('behaviourChart'))return;
-  new Chart(ge('behaviourChart'),{type:'bar',data:{labels:MO_SHORT,datasets:[{label:'Avg monthly rainfall (mm) · sensor era',data:avgs,backgroundColor:avgs.map(function(v,i){if(i===5)return'rgba(74,127,165,0.65)';if(i===6||i===7)return'rgba(13,33,55,0.85)';if(i===8)return'rgba(74,127,165,0.7)';return'rgba(200,220,235,0.45)';}),borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{font:{size:10}}}},scales:{y:{beginAtZero:true,grid:{color:'rgba(0,0,0,0.05)'},ticks:{font:{size:10},color:'#6b6b6b',callback:function(v){return v+' mm';}}},x:{grid:{display:false},ticks:{font:{size:11},color:'#6b6b6b'}}}}});
+  var ctx=ge('behaviourChart'); if(!ctx)return;
+  if(ctx._chart)ctx._chart.destroy();
+  ctx._chart=new Chart(ctx,{type:'bar',data:{labels:MO_SHORT,datasets:[{label:'Avg monthly rainfall (mm)',data:avgs,backgroundColor:avgs.map(function(v,i){if(i===5)return'rgba(74,127,165,0.65)';if(i===6||i===7)return'rgba(13,33,55,0.85)';if(i===8)return'rgba(74,127,165,0.7)';return'rgba(200,220,235,0.45)';}),borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{font:{size:10}}}},scales:{y:{beginAtZero:true,grid:{color:'rgba(0,0,0,0.05)'},ticks:{font:{size:10},color:'#6b6b6b',callback:function(v){return v+' mm';}}},x:{grid:{display:false},ticks:{font:{size:11},color:'#6b6b6b'}}}}});
 }
 
 /* ════════════════════════════════════════
-   13. BIRD IMPACT
+   14. BIRD IMPACT
+   Uses a 90-day rolling window to find rain events with bird data.
+   bird_detections is paginated (can exceed 10k rows).
+   Shows honest "—" with explanation if no rain events found in window.
    ════════════════════════════════════════ */
-function loadBirdImpact() {
-  var since=(CY-1)+'-'+p2(CM)+'-'+p2(CD)+'T00:00:00Z';
-  var bDone=0,rDone=0;
-  var birdRows=[],rainRows=[];
-  sbGet('/rest/v1/bird_detections?select=detected_at&detected_at=gte.'+since+'&limit=10000')
-    .then(function(rows){birdRows=rows||[];bDone=1;if(rDone)processBirds(birdRows,rainRows);}).catch(function(){bDone=1;if(rDone)processBirds([],[]);});
-  sbGet('/rest/v1/combined_readings?select=recorded_at,precipitation&recorded_at=gte.'+since+'&limit=10000')
-    .then(function(rows){rainRows=rows||[];rDone=1;if(bDone)processBirds(birdRows,rainRows);}).catch(function(){rDone=1;if(bDone)processBirds([],[]);});
+function loadBirdImpact(){
+  /* 365-day rolling window — captures previous monsoon season for pre-monsoon months */
+  var windowMs = 365 * 24 * 3600 * 1000;
+  var windowStart = new Date(Date.now() - windowMs);
+  var sinceISO = windowStart.getUTCFullYear()+'-'+p2(windowStart.getUTCMonth()+1)+'-'+p2(windowStart.getUTCDate())+'T00:00:00Z';
+
+  var bDone=0, rDone=0, birdRows=[], rainRows=[];
+
+  /* Paginate bird detections — can easily exceed 10k */
+  sbAll('/rest/v1/bird_detections?select=detected_at&detected_at=gte.'+sinceISO, function(e,rows){
+    birdRows=rows||[]; bDone=1;
+    if(rDone) processBirds(birdRows, rainRows);
+  });
+
+  /* Rain data — hourly rows, 90 days max = ~2160 rows, no pagination needed but use sbAll for safety */
+  sbAll('/rest/v1/combined_readings?select=recorded_at,precipitation&recorded_at=gte.'+sinceISO, function(e,rows){
+    rainRows=rows||[]; rDone=1;
+    if(bDone) processBirds(birdRows, rainRows);
+  });
 }
-function processBirds(birdRows,rainRows) {
+function processBirds(birdRows, rainRows){
+  /* Aggregate to hourly buckets */
   var rainByHr={}, birdByHr={};
-  if(Array.isArray(rainRows))rainRows.forEach(function(r){var h=r.recorded_at.substring(0,13);rainByHr[h]=(rainByHr[h]||0)+(parseFloat(r.precipitation)||0);});
-  if(Array.isArray(birdRows))birdRows.forEach(function(b){var h=b.detected_at.substring(0,13);birdByHr[h]=(birdByHr[h]||0)+1;});
+  if(Array.isArray(rainRows)) rainRows.forEach(function(r){
+    var h=r.recorded_at.substring(0,13);
+    rainByHr[h]=(rainByHr[h]||0)+(parseFloat(r.precipitation)||0);
+  });
+  if(Array.isArray(birdRows)) birdRows.forEach(function(b){
+    var h=b.detected_at.substring(0,13);
+    birdByHr[h]=(birdByHr[h]||0)+1;
+  });
+
   var hrs=Object.keys(rainByHr).sort();
-  var bef=[],dur=[],aft=[];
+  var bef=[], dur=[], aft=[], rainEventCount=0;
   var i=0;
   while(i<hrs.length){
     if((rainByHr[hrs[i]]||0)>=0.5){
+      rainEventCount++;
       var eS=i;
-      while(i<hrs.length&&(rainByHr[hrs[i]]||0)>=0.5)i++;
+      while(i<hrs.length && (rainByHr[hrs[i]]||0)>=0.5) i++;
       var eE=i-1;
-      if(eS>0)bef.push(birdByHr[hrs[eS-1]]||0);
-      for(var j=eS;j<=eE;j++)dur.push(birdByHr[hrs[j]]||0);
-      if(eE+1<hrs.length)aft.push(birdByHr[hrs[eE+1]]||0);
-    }else{i++;}
+      /* Only include before/after if we have bird data in the surrounding window */
+      if(eS>0) bef.push(birdByHr[hrs[eS-1]]||0);
+      for(var j=eS;j<=eE;j++) dur.push(birdByHr[hrs[j]]||0);
+      if(eE+1<hrs.length) aft.push(birdByHr[hrs[eE+1]]||0);
+    } else { i++; }
   }
-  function avg(a){if(!a.length)return null;return Math.round(a.reduce(function(s,v){return s+v;},0)/a.length*10)/10;}
-  var bA=avg(bef),dA=avg(dur),aA=avg(aft);
+
+  function avg(a){ if(!a.length) return null; return Math.round(a.reduce(function(s,v){return s+v;},0)/a.length*10)/10; }
+  var bA=avg(bef), dA=avg(dur), aA=avg(aft);
+
+  /* If no rain events found in window, show honest state — not zeros */
+  if(rainEventCount===0){
+    ge('birds-before').textContent='—';
+    ge('birds-during').textContent='—';
+    ge('birds-after').textContent='—';
+    ge('birds-insight-text').innerHTML='No significant rain events in the last 12 months — not enough data to compute the before/during/after pattern. This section will fill as the monsoon arrives and rain events are recorded by the ground sensor.';
+    ge('birds-insight').style.display='flex';
+    return;
+  }
+
   ge('birds-before').textContent=bA!==null?bA:'—';
   ge('birds-during').textContent=dA!==null?dA:'—';
   ge('birds-after').textContent=aA!==null?aA:'—';
-  if(bA!==null&&dA!==null&&aA!==null){
+
+  if(bA!==null && dA!==null && aA!==null){
     var drop=bA>0?Math.round((bA-dA)/bA*100):0;
     var surge=dA>0?Math.round((aA-dA)/dA*100):0;
-    ge('birds-insight-text').innerHTML='Bird detections drop by <strong>'+Math.max(0,drop)+'%</strong> during rain. In the hour after, detections surge by <strong>'+Math.max(0,surge)+'%</strong> above the rain lull — the post-rain burst is real and measurable.';
+    var note='Based on <strong>'+rainEventCount+' rain hour'+(rainEventCount>1?'s':'')+
+      '</strong> and <strong>'+birdRows.length+' bird detections</strong> over the last 12 months. ';
+    if(drop>0||surge>0){
+      note+='Bird detections drop by <strong>'+Math.max(0,drop)+'%</strong> during rain. '+
+        'In the hour after, detections surge by <strong>'+Math.max(0,surge)+'%</strong> above the rain period — the post-rain burst is real and measurable.';
+    } else {
+      note+='Insufficient contrast between rain and non-rain hours to compute a reliable drop/surge figure yet. Data will improve as the monsoon season accumulates more rain events.';
+    }
+    ge('birds-insight-text').innerHTML=note;
+    ge('birds-insight').style.display='flex';
+  } else {
+    /* Data present but one phase is missing (e.g. no before-rain hour available) */
+    ge('birds-insight-text').innerHTML='Partial data across '+rainEventCount+' rain event'+(rainEventCount>1?'s':'')+' — not all three phases (before/during/after) have matching bird detection windows yet.';
     ge('birds-insight').style.display='flex';
   }
 }
 
 /* ════════════════════════════════════════
-   14. TEMP IMPACT
+   15. TEMPERATURE DROP
    ════════════════════════════════════════ */
-function loadTempImpact() {
+function loadTempImpact(){
   var since=(CY-1)+'-'+p2(CM)+'-'+p2(CD)+'T00:00:00Z';
   sbGet('/rest/v1/combined_readings?select=recorded_at,temperature,precipitation&recorded_at=gte.'+since+'&limit=10000')
     .then(function(rows){
@@ -1705,15 +2240,17 @@ function loadTempImpact() {
         ge('temp-before').textContent=bef+'°';
         ge('temp-after').textContent=aft+'°';
         var drop=Math.round((bef-aft)*10)/10;
-        ge('temp-note').innerHTML=drop>0?'Rain cools Baner by an average of <strong>\u2212'+drop+'°C</strong> within 2 hours. Peak monsoon downpours can drop evening temperatures by 5–6°C.':'Temperature change after rain is minimal (\u00b1'+Math.abs(drop)+'°C) — high pre-existing monsoon humidity limits evaporative cooling.';
+        ge('temp-note').innerHTML=drop>0?'Rain cools Baner by an average of <strong>\u2212'+drop+'\u00b0C</strong> within 2 hours. Peak monsoon downpours can drop evening temperatures by 5\u20136\u00b0C.':'Temperature change after rain is minimal (\u00b1'+Math.abs(drop)+'\u00b0C) — monsoon humidity limits evaporative cooling.';
+      } else {
+        ge('temp-note').textContent='Insufficient rain events with temperature data for this period.';
       }
     }).catch(function(){});
 }
 
 /* ════════════════════════════════════════
-   15. AQI + RAIN
+   16. AQI + RAIN
    ════════════════════════════════════════ */
-function loadAQIRain() {
+function loadAQIRain(){
   var since=(CY-1)+'-'+p2(CM)+'-'+p2(CD)+'T00:00:00Z';
   sbGet('/rest/v1/combined_readings?select=recorded_at,precipitation,aqi&recorded_at=gte.'+since+'&aqi=not.is.null&limit=10000')
     .then(function(rows){
@@ -1740,9 +2277,9 @@ function loadAQIRain() {
       if(bA!==null&&aA!==null&&bA>0){
         var imp=Math.round((bA-aA)/bA*100);
         ge('aqi-pct').textContent=(imp>0?imp:0)+'%';
-        ge('aqi-lbl').textContent='EU AQI improvement within 1 hour of rain';
+        ge('aqi-imp-lbl').textContent='EU AQI improvement within 1 hr of rain';
         if(imp>0){
-          ge('aqi-insight-text').innerHTML='Rain is a powerful natural air purifier. EU AQI drops by <strong>'+imp+'%</strong> within 1 hour of a shower — PM2.5 and PM10 bind to raindrops and settle to the ground.';
+          ge('aqi-insight-text').innerHTML='Rain is a powerful natural air purifier in Baner. EU AQI drops by <strong>'+imp+'%</strong> within 1 hour of a shower — PM2.5 and PM10 bind to raindrops and settle.';
           ge('aqi-insight').style.display='flex';
         }
       }
@@ -1752,13 +2289,14 @@ function loadAQIRain() {
 /* ════════════════════════════════════════
    SUMMARY CARD
    ════════════════════════════════════════ */
-function buildSummary() {
-  sbAll('/rest/v1/combined_readings?select=recorded_at,precipitation&recorded_at=gte.'+CY+'-01-01T00:00:00%2B05%3A30&precipitation=gt.0', function(e,rows){
+function buildSummary(){
+  sbAll('/rest/v1/combined_readings?select=recorded_at,precipitation&recorded_at=gte.'+CY+'-01-01T00:00:00%2B05%3A30&precipitation=gte.1', function(e,rows){
     var dm=toDayMap(rows);
     var total=Math.round(Object.values(dm).reduce(function(s,v){return s+v;},0));
-    var rdays=Object.keys(dm).filter(function(dk){return dm[dk]>=0.5;}).length;
-    var title=total>0?CY+' so far: '+total+' mm across '+rdays+' rainy days':'Watching the sky · '+MO_LONG[CM-1]+' '+CY;
-    var body='Baner has received '+total+' mm of rain across '+rdays+' rainy days so far in '+CY+'. Earth Pulse tracks every drop — from the first monsoon shower in June to the last withdrawing rains in September, compared against 45 years of continuous data from the Sahyadri foothills.';
+    var rdays=Object.keys(dm).filter(function(dk){return dm[dk]>=1;}).length;
+    var inMonsoon=CM>=6&&CM<=9;
+    var title=total>0?(inMonsoon?CY+' monsoon: '+total+' mm across '+rdays+' rain days so far':CY+' rain: '+total+' mm across '+rdays+' rainy days'):'Watching the sky · '+MO_LONG[CM-1]+' '+CY;
+    var body='Earth Pulse has recorded '+total+' mm of rainfall across '+rdays+' rain days in Baner, Pune so far in '+CY+'. Every drop is ground-truth verified by the Weather Union ZWL008983 sensor, compared against 45 years of ERA5 reanalysis data from the Sahyadri foothills.';
     ge('sc-title').textContent=title;
     ge('sc-text').textContent=body;
     var url='https://earth-pulse.org/rain.html';
@@ -1771,19 +2309,28 @@ function buildSummary() {
 
 function copyLink(){
   var url='https://earth-pulse.org/rain.html';
-  if(navigator.clipboard){navigator.clipboard.writeText(url).then(function(){var t=ge('share-toast');t.className='s-toast show';setTimeout(function(){t.className='s-toast';},2200);});}
+  if(navigator.clipboard){
+    navigator.clipboard.writeText(url).then(function(){
+      var t=ge('share-toast');t.className='s-toast show';
+      setTimeout(function(){t.className='s-toast';},2200);
+    });
+  }
 }
 
-/* FAQ */
+/* ════════════════════════════════════════
+   FAQ
+   ════════════════════════════════════════ */
 function buildFAQ(){
   var faqs=[
-    ['When does the monsoon arrive in Baner, Pune?','Based on 45 years of ERA5 data and Earth Pulse sensors since 2022, the first significant monsoon rain in Baner typically arrives between June 5–15. El Niño years (1987, 1997, 2002, 2015, 2023) show consistently delayed onset — arriving 5–10 days later than average.'],
-    ['How much rain does Baner get annually?','ERA5 reanalysis data shows Baner\'s annual rainfall has averaged 650–800mm over 1980–2021. The monsoon season (June–September) accounts for over 85% of annual precipitation.'],
-    ['Is the Pune monsoon getting weaker or stronger?','45 years of ERA5 analysis shows no consistent long-term trend in total monsoon rainfall for Baner, but significant increase in year-to-year variability. Climate projections suggest more intense but fewer rain events going forward.'],
-    ['Which decade had the most monsoon rainfall in Baner?','Based on ERA5 reanalysis, the 2000s had the highest average monsoon rainfall for Baner, driven partly by La Niña events. The decade comparison section above shows the full breakdown with wettest and driest years for each decade.'],
-    ['Does rain improve air quality in Pune?','Yes — Earth Pulse data shows EU AQI drops by 15–30% within 1 hour of significant rainfall. Heavy monsoon rain produces the largest AQI improvements as PM2.5 and PM10 bind to raindrops and settle to the ground.'],
-    ['How do birds in Baner respond to rain?','Bird acoustic detections drop significantly during rain as calls are masked by rainfall noise. The hour after rain sees a measurable surge in detections — the post-monsoon dawn chorus at Baner Hill is one of the most biodiverse soundscapes recorded by Earth Pulse.'],
-    ['What is ERA5 data and how is it used here?','ERA5 is ECMWF\'s fifth-generation global climate reanalysis — a model reconstructing the atmosphere from 1940 using billions of historical observations at 9km resolution. Earth Pulse imported ERA5 rainfall data for Baner coordinates (18.5526°N, 73.7819°E) for 1980–2021, providing the 45-year baseline for all historical comparisons on this page.'],
+    ['How much rain has Baner Pune received today?','Earth Pulse measures real-time rainfall using a Weather Union ZWL008983 ground-truth sensor (active since Oct 2025). Today\'s total is shown live at the top of this page, derived from the sensor\'s rain accumulation field — a daily cumulative counter that is more accurate than hourly model estimates.'],
+    ['When does the monsoon arrive in Baner, Pune?','Based on 45 years of ERA5 data and Earth Pulse sensors since 2022, the first significant monsoon rain in Baner typically arrives between June 5–15. El Niño years (1987, 1997, 2002, 2015, 2023) show consistently delayed onset, arriving 5–10 days later than average.'],
+    ['How much rain does Baner Pune get annually?','ERA5 reanalysis data shows Baner\'s annual rainfall has averaged 650–800mm over 1980–2021. The monsoon season (June–September) accounts for over 85% of annual precipitation. The monsoon is the dominant driver of the local ecology, bird migration, and vegetation.'],
+    ['Is the Pune monsoon getting weaker or stronger?','45 years of ERA5 analysis shows no consistent long-term trend in total monsoon rainfall for Baner, but a significant increase in year-to-year variability. The 2010s had both the driest and some of the wettest monsoon seasons on record. Climate projections suggest more intense but fewer rain events going forward.'],
+    ['Which decade had the most monsoon rainfall in Baner?','Based on ERA5 reanalysis for Baner, the 2000s decade had the highest average monsoon rainfall. The decade comparison section shows the full breakdown with wettest and driest years for each decade from the 1980s to the present.'],
+    ['Does rain improve air quality in Pune?','Yes — Earth Pulse data shows EU AQI drops by 15–30% within 1 hour of significant rainfall. Heavy monsoon rain produces the largest AQI improvements as PM2.5 and PM10 particles bind to raindrops and settle to the ground.'],
+    ['How do birds in Baner respond to rain?','Bird acoustic detections drop significantly during rain as calls are masked by rainfall noise. The hour after rain sees a measurable surge in detections — the post-monsoon chorus at Baner Hill is one of the most biodiverse soundscapes recorded by Earth Pulse microphones.'],
+    ['What is ERA5 rainfall data and why does Earth Pulse use it?','ERA5 is ECMWF\'s fifth-generation global climate reanalysis — a model reconstructing the atmosphere since 1940 using billions of historical observations at 9km resolution. Earth Pulse uses ERA5 for the 1980–2021 baseline to give historical context to live sensor readings. Since Oct 2025, ground-truth rainfall comes from the Weather Union station, not the ERA5 model.'],
+    ['How can I compare rainfall between two years in Baner?','Use the "Compare any two periods" widget on this page. Select any month and year from 1980 to present for Period A and Period B. ERA5 data covers 1980–2021; sensor data covers 2022 onwards. The widget shows total rainfall, rainy days, peak day, and a day-by-day chart for both periods.'],
   ];
   var html='';
   faqs.forEach(function(faq){
@@ -1798,35 +2345,48 @@ function toggleFAQ(btn){btn.classList.toggle('open');btn.nextElementSibling.clas
 
 /* ════════════════════════════════════════
    INIT — staggered for perceived performance
+   Caching means repeat visitors get instant loads
+   while Supabase only serves fresh data for live stats
    ════════════════════════════════════════ */
 (function(){
   buildFAQ();
+  buildComparisonSelects();
+
+  /* Wave 1 — above fold, live data only */
   loadHeroStats();
   loadToday();
-  loadThisDay();
-  loadThisMonth();
 
+  /* Wave 2 — current-context sections */
   setTimeout(function(){
+    loadThisDay();
+    loadThisWeek();
+    loadThisMonth();
     loadMonsoonTracker();
     loadFirstRain();
+  }, 150);
+
+  /* Wave 3 — pattern + events (depend on year scan) */
+  setTimeout(function(){
     loadRainPattern();
     loadIntensity();
-  }, 200);
-
-  setTimeout(function(){
     loadRainEvents();
     loadBehaviour();
-    loadHeatmap();
-  }, 600);
+  }, 500);
 
+  /* Wave 4 — heavy ERA5 historical (all cached after first load) */
   setTimeout(function(){
+    loadHeatmap();
     loadDecadeAnalysis();
+    loadYearlyChart();
+  }, 900);
+
+  /* Wave 5 — cross-domain analysis (birds, AQI, temp) */
+  setTimeout(function(){
     loadBirdImpact();
     loadTempImpact();
     loadAQIRain();
     buildSummary();
-    loadYearlyChart();
-  }, 1200);
+  }, 1400);
 })();
 </script>
 </body>
