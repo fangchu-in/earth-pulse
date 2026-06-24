@@ -4,33 +4,113 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Search — Earth Pulse, Baner, Pune</title>
-  <meta name="description" content="Search the Earth Pulse dataset — bird species, climate records, hill photos, and more from Baner, Pune.">
+  <meta name="description" content="Search 120+ bird species, 4 years of climate records, hill photos and more from Baner, Pune's citizen science observatory.">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://earth-pulse.org/search.html">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Search — Earth Pulse, Baner, Pune">
+  <meta property="og:description" content="Search 120+ bird species, 4 years of climate records, hill photos and more from Baner, Pune's citizen science observatory.">
   <meta property="og:image" content="https://earth-pulse.org/earth-pulse-logo-og.png">
+  <meta property="og:url" content="https://earth-pulse.org/search.html">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Search — Earth Pulse, Baner, Pune">
+  <meta name="twitter:description" content="Search 120+ bird species, 4 years of climate records, hill photos and more.">
   <meta name="twitter:image" content="https://earth-pulse.org/earth-pulse-logo-og.png">
-<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-<link rel="manifest" href="/site.webmanifest">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="manifest" href="/site.webmanifest">
   <link rel="stylesheet" href="styles.css">
+
+  <!-- JSON-LD: WebSite with SearchAction (AI SEO + Google Sitelinks Search Box) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "Earth Pulse",
+    "url": "https://earth-pulse.org",
+    "description": "Independent citizen science environmental observatory monitoring bird biodiversity, air quality, and climate from Baner, Pune — eastern edge of the Western Ghats.",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": {
+        "@type": "EntryPoint",
+        "urlTemplate": "https://earth-pulse.org/search.html?q={search_term_string}"
+      },
+      "query-input": "required name=search_term_string"
+    }
+  }
+  </script>
+  <!-- JSON-LD: WebPage -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "Search Earth Pulse",
+    "description": "Search bird species detected by BirdNET acoustic AI, 4+ years of climate data, and hill photos from Baner, Pune.",
+    "url": "https://earth-pulse.org/search.html",
+    "isPartOf": { "@type": "WebSite", "name": "Earth Pulse", "url": "https://earth-pulse.org" },
+    "breadcrumb": {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://earth-pulse.org/" },
+        { "@type": "ListItem", "position": 2, "name": "Search", "item": "https://earth-pulse.org/search.html" }
+      ]
+    },
+    "speakable": {
+      "@type": "SpeakableSpecification",
+      "cssSelector": [".ep-hero h1", ".ep-hero-sub", ".fun-fact-text"]
+    }
+  }
+  </script>
+  <!-- JSON-LD: FAQPage for AI crawlers -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "What bird species have been detected in Baner, Pune?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Over 120 bird species have been detected using BirdNET acoustic AI from two monitoring nodes in Baner, Pune, on the eastern edge of the Western Ghats (Sahyadri). Species include Eurasian Kestrel, Indian Peafowl, Black Kite, and many more." }
+      },
+      {
+        "@type": "Question",
+        "name": "How can I search the Earth Pulse dataset?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Use the search page at earth-pulse.org/search.html to find bird species by common or scientific name, explore climate records by keyword (AQI, temperature, monsoon, Diwali pollution), or discover site pages. Results link directly to species profiles, climate charts, and analysis tools." }
+      },
+      {
+        "@type": "Question",
+        "name": "What climate data is available from Baner, Pune?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Earth Pulse has 4+ years of hourly climate readings (since January 2022) including AQI, temperature, humidity, wind, and solar radiation. ERA5 reanalysis data extends back to 1980, giving 45+ years of rainfall and temperature history for comparison." }
+      }
+    ]
+  }
+  </script>
+
   <style>
-    /* Search bar */
+    /* ── Search bar ─────────────────────────────────────────── */
     .search-bar-wrap {
-      max-width:700px; margin:0 auto; padding:0 2rem;
+      max-width:700px; margin:0 auto; padding:0 1.5rem;
       position:sticky; top:62px; z-index:89;
       background:var(--ep-cream); padding-top:1.25rem; padding-bottom:1.25rem;
       border-bottom:1px solid var(--border);
     }
+    @media(max-width:600px){ .search-bar-wrap { padding:0 1rem; padding-top:1rem; padding-bottom:1rem; } }
     .search-bar {
       display:flex; gap:0.5rem;
       background:white; border:2px solid var(--ep-green);
       border-radius:var(--radius-xl); padding:0.4rem 0.4rem 0.4rem 1.25rem;
       box-shadow:0 4px 20px rgba(33,67,50,0.1);
+      transition:border-color 0.15s, box-shadow 0.15s;
+    }
+    .search-bar:focus-within {
+      border-color:var(--ep-green-mid);
+      box-shadow:0 4px 24px rgba(33,67,50,0.18);
     }
     .search-bar input {
       flex:1; border:none; outline:none; font-family:var(--sans);
       font-size:1rem; background:transparent; color:var(--text-primary);
+      min-width:0;
     }
     .search-bar input::placeholder { color:var(--text-muted); }
     .search-bar button {
@@ -40,24 +120,74 @@
       cursor:pointer; transition:background 0.15s; white-space:nowrap;
     }
     .search-bar button:hover { background:var(--ep-green-mid); }
+    @media(max-width:400px){ .search-bar button { padding:0.5rem 1rem; font-size:0.82rem; } }
 
-    /* Filter tabs */
-    .search-tabs { display:flex; gap:0.4rem; flex-wrap:wrap; margin-top:0.85rem; }
+    /* ── Filter tabs ────────────────────────────────────────── */
+    .search-tabs {
+      display:flex; gap:0.4rem; flex-wrap:nowrap; margin-top:0.85rem;
+      overflow-x:auto; -webkit-overflow-scrolling:touch;
+      scrollbar-width:none;
+    }
+    .search-tabs::-webkit-scrollbar { display:none; }
     .search-tab {
       padding:0.28rem 0.85rem; border-radius:2rem;
       border:1px solid var(--border-strong); background:transparent;
       font-family:var(--sans); font-size:0.78rem; cursor:pointer;
-      color:var(--text-secondary); transition:all 0.15s;
+      color:var(--text-secondary); transition:all 0.15s; white-space:nowrap;
+      flex-shrink:0;
     }
     .search-tab:hover { border-color:var(--ep-tan); color:var(--ep-green); }
     .search-tab.active { background:var(--ep-green); color:var(--ep-cream); border-color:var(--ep-green); }
 
-    /* Results */
-    .results-wrap { max-width:700px; margin:0 auto; padding:1.5rem 2rem; }
-    .results-count { font-family:var(--mono); font-size:0.8rem; color:var(--text-muted); margin-bottom:1.25rem; }
+    /* ── Fun facts ticker ───────────────────────────────────── */
+    .fun-facts-bar {
+      max-width:700px; margin:0 auto; padding:0.8rem 1.5rem;
+      overflow:hidden; position:relative;
+    }
+    .fun-fact-inner {
+      display:flex; align-items:center; gap:0.6rem;
+      animation:funFactFade 0.4s ease-out;
+    }
+    @keyframes funFactFade {
+      from { opacity:0; transform:translateY(6px); }
+      to   { opacity:1; transform:translateY(0); }
+    }
+    .fun-fact-emoji { font-size:1.3rem; flex-shrink:0; }
+    .fun-fact-text {
+      font-family:var(--sans); font-size:0.82rem; color:var(--text-secondary);
+      line-height:1.45;
+    }
+    .fun-fact-text strong { color:var(--ep-green); font-weight:600; }
+    .fun-fact-nav {
+      display:flex; gap:0.25rem; margin-left:auto; flex-shrink:0;
+    }
+    .fun-fact-dot {
+      width:6px; height:6px; border-radius:50%; background:var(--border-strong);
+      cursor:pointer; transition:background 0.15s;
+    }
+    .fun-fact-dot.active { background:var(--ep-green); }
+
+    /* ── Stats strip ────────────────────────────────────────── */
+    .search-stats {
+      max-width:700px; margin:0 auto; padding:0 1.5rem;
+      display:flex; gap:0.6rem; flex-wrap:wrap;
+    }
+    .search-stat-pill {
+      display:inline-flex; align-items:center; gap:0.35rem;
+      padding:0.25rem 0.7rem; border-radius:2rem;
+      background:var(--ep-cream-dark); border:1px solid var(--border);
+      font-family:var(--mono); font-size:0.72rem; color:var(--text-muted);
+    }
+    .search-stat-pill strong { color:var(--ep-green); font-weight:700; }
+
+    /* ── Results ─────────────────────────────────────────────── */
+    .results-wrap { max-width:700px; margin:0 auto; padding:1.5rem 1.5rem 3rem; }
+    .results-count {
+      font-family:var(--mono); font-size:0.8rem; color:var(--text-muted); margin-bottom:1.25rem;
+    }
     .results-count strong { color:var(--ep-green); }
 
-    /* Result card */
+    /* ── Result card ─────────────────────────────────────────── */
     .result-card {
       background:var(--bg-card); border:1px solid var(--border);
       border-radius:var(--radius-lg); padding:1.1rem 1.25rem;
@@ -65,34 +195,82 @@
       display:flex; gap:1rem; align-items:flex-start;
       transition:box-shadow 0.15s, transform 0.15s;
     }
-    .result-card:hover { box-shadow:0 4px 20px rgba(33,67,50,0.1); transform:translateY(-2px); }
-    .result-icon { width:42px; height:42px; border-radius:var(--radius-sm); flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:1.4rem; }
+    .result-card:hover {
+      box-shadow:0 4px 20px rgba(33,67,50,0.1);
+      transform:translateY(-2px);
+    }
+    .result-card:focus-visible {
+      outline:2px solid var(--ep-green);
+      outline-offset:2px;
+    }
+    .result-icon {
+      width:42px; height:42px; border-radius:var(--radius-sm); flex-shrink:0;
+      display:flex; align-items:center; justify-content:center; font-size:1.4rem;
+    }
     .result-icon.bird    { background:rgba(33,67,50,0.08); }
     .result-icon.climate { background:rgba(191,155,123,0.15); }
     .result-icon.hill    { background:rgba(33,67,50,0.06); }
     .result-icon.page    { background:rgba(59,130,246,0.08); }
+    .result-body { min-width:0; flex:1; }
     .result-title { font-weight:600; font-size:0.95rem; color:var(--ep-green); margin-bottom:2px; }
     .result-sub   { font-size:0.8rem; color:var(--text-muted); line-height:1.5; }
     .result-meta  { font-size:0.72rem; font-family:var(--mono); color:var(--ep-tan); margin-top:4px; }
-    .result-type  { display:inline-block; font-size:0.65rem; font-weight:600; text-transform:uppercase; letter-spacing:0.07em; padding:1px 7px; border-radius:10px; margin-left:6px; }
+    .result-type  {
+      display:inline-block; font-size:0.65rem; font-weight:600;
+      text-transform:uppercase; letter-spacing:0.07em;
+      padding:1px 7px; border-radius:10px; margin-left:6px; vertical-align:middle;
+    }
     .type-bird    { background:rgba(33,67,50,0.1); color:var(--ep-green); }
     .type-climate { background:rgba(191,155,123,0.18); color:#7c4a1a; }
     .type-page    { background:rgba(59,130,246,0.1); color:#1e3a5f; }
+    .type-new     { background:#fef08a; color:#713f12; }
 
-    /* Suggestions */
+    /* ── Result thumbnail ────────────────────────────────────── */
+    .result-thumb {
+      width:42px; height:42px; border-radius:var(--radius-sm);
+      object-fit:cover; flex-shrink:0;
+    }
+
+    /* ── Suggestions ─────────────────────────────────────────── */
     .suggestions { margin-bottom:2rem; }
-    .suggest-title { font-size:0.72rem; font-weight:600; text-transform:uppercase; letter-spacing:0.08em; color:var(--text-muted); margin-bottom:0.6rem; }
+    .suggest-title {
+      font-size:0.72rem; font-weight:600; text-transform:uppercase;
+      letter-spacing:0.08em; color:var(--text-muted); margin-bottom:0.6rem;
+    }
     .suggest-chips { display:flex; flex-wrap:wrap; gap:0.4rem; }
-    .suggest-chip { padding:0.3rem 0.85rem; border-radius:2rem; background:var(--ep-cream-dark); border:1px solid var(--border); font-size:0.8rem; cursor:pointer; color:var(--ep-green); transition:all 0.15s; }
+    .suggest-chip {
+      padding:0.3rem 0.85rem; border-radius:2rem;
+      background:var(--ep-cream-dark); border:1px solid var(--border);
+      font-size:0.8rem; cursor:pointer; color:var(--ep-green);
+      transition:all 0.15s;
+    }
     .suggest-chip:hover { background:var(--ep-green); color:var(--ep-cream); }
 
-    /* Empty / loading */
+    /* ── Empty / loading ─────────────────────────────────────── */
     .search-empty { text-align:center; padding:4rem 2rem; color:var(--text-muted); }
     .search-empty-icon { font-size:2.5rem; margin-bottom:0.75rem; }
     .search-loading { text-align:center; padding:3rem; color:var(--text-muted); font-size:0.9rem; }
 
-    /* Wikipedia thumbnail in bird results */
-    .result-thumb { width:42px; height:42px; border-radius:var(--radius-sm); object-fit:cover; flex-shrink:0; }
+    /* ── Data status badge ───────────────────────────────────── */
+    .data-status {
+      max-width:700px; margin:0 auto; padding:0.4rem 1.5rem 0;
+      font-family:var(--mono); font-size:0.68rem; color:var(--text-muted);
+      display:flex; align-items:center; gap:0.4rem;
+    }
+    .status-dot {
+      width:7px; height:7px; border-radius:50%; flex-shrink:0;
+    }
+    .status-dot.ok   { background:#22c55e; }
+    .status-dot.err  { background:#ef4444; }
+    .status-dot.load { background:#f59e0b; animation:pulse 1.2s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+    /* ── Reduced motion ──────────────────────────────────────── */
+    @media(prefers-reduced-motion:reduce){
+      .fun-fact-inner { animation:none; }
+      .result-card:hover { transform:none; }
+      .status-dot.load { animation:none; }
+    }
   </style>
 </head>
 <body>
@@ -105,38 +283,57 @@
   <p class="ep-hero-sub">Find bird species, explore climate records, discover hill photos and pages across the Earth Pulse dataset.</p>
 </div>
 
+<!-- FUN FACTS TICKER (populated from live data) -->
+<div class="fun-facts-bar" id="fun-facts-bar" style="display:none;" aria-live="polite">
+  <div class="fun-fact-inner" id="fun-fact-inner">
+    <span class="fun-fact-emoji" id="fun-fact-emoji"></span>
+    <span class="fun-fact-text" id="fun-fact-text"></span>
+    <span class="fun-fact-nav" id="fun-fact-nav"></span>
+  </div>
+</div>
+
+<!-- LIVE STATS STRIP (species count, detections, climate records) -->
+<div class="search-stats" id="search-stats" style="display:none;"></div>
+
+<!-- DATA STATUS -->
+<div class="data-status" id="data-status">
+  <span class="status-dot load" id="status-dot"></span>
+  <span id="status-text">Loading species index…</span>
+</div>
+
 <!-- SEARCH BAR (sticky) -->
 <div class="search-bar-wrap">
   <div class="search-bar">
-    <input type="text" id="search-input" placeholder="Search species, AQI, monsoon, Diwali…"
+    <input type="text" id="search-input"
+      placeholder="Search species, AQI, monsoon, Diwali…"
       autocomplete="off" autocorrect="off" spellcheck="false"
+      aria-label="Search the Earth Pulse dataset"
       oninput="onInput()" onkeydown="if(event.key==='Enter')doSearch()">
-    <button onclick="doSearch()">Search</button>
+    <button onclick="doSearch()" aria-label="Search">Search</button>
   </div>
-  <div class="search-tabs" id="search-tabs">
-    <button class="search-tab active" data-type="all"     onclick="setTab('all',this)">All</button>
-    <button class="search-tab"        data-type="birds"   onclick="setTab('birds',this)">Birds</button>
-    <button class="search-tab"        data-type="climate" onclick="setTab('climate',this)">Climate</button>
-    <button class="search-tab"        data-type="pages"   onclick="setTab('pages',this)">Pages</button>
+  <div class="search-tabs" id="search-tabs" role="tablist" aria-label="Filter results by type">
+    <button class="search-tab active" data-type="all"     onclick="setTab('all',this)" role="tab" aria-selected="true">All</button>
+    <button class="search-tab"        data-type="birds"   onclick="setTab('birds',this)" role="tab" aria-selected="false">Birds</button>
+    <button class="search-tab"        data-type="climate" onclick="setTab('climate',this)" role="tab" aria-selected="false">Climate</button>
+    <button class="search-tab"        data-type="pages"   onclick="setTab('pages',this)" role="tab" aria-selected="false">Pages</button>
   </div>
 </div>
 
 <!-- RESULTS -->
 <div class="results-wrap">
   <div id="results-area">
-    <!-- Default: suggestions -->
     <div class="suggestions" id="suggestions">
       <div class="suggest-title">Try searching for</div>
       <div class="suggest-chips">
-        <span class="suggest-chip" onclick="setQuery('Eurasian Kestrel')">Eurasian Kestrel</span>
-        <span class="suggest-chip" onclick="setQuery('monsoon')">monsoon</span>
-        <span class="suggest-chip" onclick="setQuery('Diwali')">Diwali pollution</span>
-        <span class="suggest-chip" onclick="setQuery('highest AQI')">highest AQI</span>
-        <span class="suggest-chip" onclick="setQuery('night heron')">Night Heron</span>
-        <span class="suggest-chip" onclick="setQuery('Tree Pipit')">Tree Pipit</span>
-        <span class="suggest-chip" onclick="setQuery('rainfall')">rainfall</span>
-        <span class="suggest-chip" onclick="setQuery('temperature')">temperature</span>
-        <span class="suggest-chip" onclick="setQuery('compare')">compare periods</span>
+        <span class="suggest-chip" onclick="setQuery('Eurasian Kestrel')" role="button" tabindex="0" onkeydown="if(event.key==='Enter')setQuery('Eurasian Kestrel')">Eurasian Kestrel</span>
+        <span class="suggest-chip" onclick="setQuery('monsoon')" role="button" tabindex="0" onkeydown="if(event.key==='Enter')setQuery('monsoon')">monsoon</span>
+        <span class="suggest-chip" onclick="setQuery('Diwali')" role="button" tabindex="0" onkeydown="if(event.key==='Enter')setQuery('Diwali pollution')">Diwali pollution</span>
+        <span class="suggest-chip" onclick="setQuery('highest AQI')" role="button" tabindex="0" onkeydown="if(event.key==='Enter')setQuery('highest AQI')">highest AQI</span>
+        <span class="suggest-chip" onclick="setQuery('night heron')" role="button" tabindex="0" onkeydown="if(event.key==='Enter')setQuery('night heron')">Night Heron</span>
+        <span class="suggest-chip" onclick="setQuery('Tree Pipit')" role="button" tabindex="0" onkeydown="if(event.key==='Enter')setQuery('Tree Pipit')">Tree Pipit</span>
+        <span class="suggest-chip" onclick="setQuery('rainfall')" role="button" tabindex="0" onkeydown="if(event.key==='Enter')setQuery('rainfall')">rainfall</span>
+        <span class="suggest-chip" onclick="setQuery('temperature')" role="button" tabindex="0" onkeydown="if(event.key==='Enter')setQuery('temperature')">temperature</span>
+        <span class="suggest-chip" onclick="setQuery('compare')" role="button" tabindex="0" onkeydown="if(event.key==='Enter')setQuery('compare')">compare periods</span>
       </div>
     </div>
     <div id="results-list"></div>
@@ -147,33 +344,318 @@
 <script src="analytics.js"></script>
 <script src="nav.js"></script>
 <script>
+/* ══════════════════════════════════════════════════════════════
+   EARTH PULSE — search.html
+   Rebuilt Jun 24 2026.
+   Fixes: paginated bird fetch (sbAll), fun facts from live data,
+   dynamic meta tags, JSON-LD, robust error handling.
+   ══════════════════════════════════════════════════════════════ */
+
 const SUPABASE_URL = 'https://krmczyqwblsoekceanlj.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_DrHFT5J0vmrkYraUXIlpQQ_gsk1rdq6';
-const HDR = { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` };
+const HDR = { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY };
 
 let activeTab = 'all';
 let debounceTimer = null;
-const photoCache = {};
 
-// Static page results — always available
-const PAGE_RESULTS = [
-  { title:'Home',           sub:'Live AQI, weather, birds detected today, monsoon countdown.',          url:'index.html',    icon:'🏡', tags:['home','live','aqi','weather','today'] },
-  { title:'Birds of Baner', sub:'All bird species detected by BirdNET acoustic AI from Baner, Pune.',  url:'birds.html',    icon:'🐦', tags:['birds','species','birdnet','detections','acoustic'] },
-  { title:'Climate Record', sub:'4 years of hourly AQI, temperature, humidity, wind and solar data.',  url:'climate.html',  icon:'🌡️', tags:['climate','aqi','temperature','humidity','wind','solar','pollution'] },
-  { title:'Baner Hill',     sub:'Time-lapse photo gallery of Baner Hill with climate annotations.',     url:'hill.html',     icon:'🏔️', tags:['hill','baner','photos','timelapse','sahyadri','gallery'] },
-  { title:'Species Index',  sub:'Full-profile pages for every bird detected — charts, timeline, facts.',url:'species.html',  icon:'🦜', tags:['species','profile','birds','charts','wikipedia'] },
-  { title:'Monsoon Tracker',sub:'Live monsoon countdown and historical rainfall patterns since 2022.',  url:'monsoon.html',  icon:'🌧️', tags:['monsoon','rain','rainfall','seasonal','flood','countdown'] },
-  { title:'Compare',        sub:'Compare any two time periods — Diwali vs normal, this year vs last.', url:'compare.html',  icon:'📊', tags:['compare','diwali','holi','festival','versus','pollution','periods'] },
-  { title:'About',          sub:'Project objectives, methodology, tech stack, and all-time records.',  url:'about.html',    icon:'📋', tags:['about','project','hardware','methodology','impact','raspberry','birdnet'] },
+/* ── Species index: fetched ONCE, paginated, cached for session ──────────── */
+let speciesIndex = null;   // Map<scientific, {common, scientific, count, bestConf, lastSeen, newThisYear}>
+let totalDetections = 0;
+let dataReady = false;
+
+/* ── Paginated fetch-all helper (sbAll pattern from handover) ────────────── */
+function sbAll(path) {
+  return new Promise(function(resolve, reject) {
+    var all = [], off = 0;
+    function next() {
+      fetch(SUPABASE_URL + '/rest/v1/' + path + (path.includes('?') ? '&' : '?') + 'limit=1000&offset=' + off, { headers: HDR })
+        .then(function(r) {
+          if (!r.ok) throw new Error('Supabase ' + r.status);
+          return r.json();
+        })
+        .then(function(rows) {
+          if (!Array.isArray(rows) || !rows.length) { resolve(all); return; }
+          all = all.concat(rows);
+          if (rows.length < 1000) { resolve(all); return; }
+          off += 1000;
+          next();
+        })
+        .catch(reject);
+    }
+    next();
+  });
+}
+
+/* ── Build species index from ALL bird detections ────────────────────────── */
+async function buildSpeciesIndex() {
+  var dot = document.getElementById('status-dot');
+  var txt = document.getElementById('status-text');
+  try {
+    var rows = await sbAll('bird_detections?select=species_common,species_scientific,confidence,detected_at,is_new_species_this_year&order=detected_at.desc');
+    totalDetections = rows.length;
+
+    var map = new Map();
+    for (var i = 0; i < rows.length; i++) {
+      var r = rows[i];
+      var sci = r.species_scientific;
+      if (!sci) continue;
+      var existing = map.get(sci);
+      if (!existing) {
+        map.set(sci, {
+          common: r.species_common || sci,
+          scientific: sci,
+          count: 1,
+          bestConf: r.confidence || 0,
+          lastSeen: r.detected_at,
+          newThisYear: r.is_new_species_this_year
+        });
+      } else {
+        existing.count++;
+        if (r.confidence > existing.bestConf) existing.bestConf = r.confidence;
+        if (r.detected_at > existing.lastSeen) existing.lastSeen = r.detected_at;
+        if (r.is_new_species_this_year) existing.newThisYear = true;
+      }
+    }
+    speciesIndex = map;
+    dataReady = true;
+
+    dot.className = 'status-dot ok';
+    txt.textContent = map.size + ' species · ' + totalDetections.toLocaleString('en-IN') + ' detections indexed';
+
+    // Update dynamic meta + stats + fun facts
+    updateDynamicMeta();
+    renderStats();
+    buildFunFacts(rows);
+
+    return map;
+  } catch (e) {
+    console.warn('Species index error:', e);
+    dot.className = 'status-dot err';
+    txt.textContent = 'Offline — searching cached pages only';
+    dataReady = false;
+    speciesIndex = new Map();
+    return speciesIndex;
+  }
+}
+
+/* ── Dynamic meta tags (SEO — rewritten after data loads) ────────────────── */
+function updateDynamicMeta() {
+  if (!speciesIndex) return;
+  var count = speciesIndex.size;
+  var title = 'Search ' + count + ' Bird Species & Climate Data — Earth Pulse, Baner, Pune';
+  var desc = 'Search ' + count + '+ bird species detected by BirdNET AI, ' +
+    totalDetections.toLocaleString('en-IN') + ' acoustic detections, 4+ years of AQI, ' +
+    'temperature, rainfall and climate records from Baner, Pune.';
+
+  document.title = title;
+  setMeta('description', desc);
+  setMeta('og:title', title);
+  setMeta('og:description', desc);
+  setMeta('twitter:title', title);
+  setMeta('twitter:description', desc);
+}
+function setMeta(name, content) {
+  var el = document.querySelector('meta[name="' + name + '"], meta[property="' + name + '"]');
+  if (el) el.setAttribute('content', content);
+}
+
+/* ── Stats strip ─────────────────────────────────────────────────────────── */
+function renderStats() {
+  if (!speciesIndex) return;
+  var el = document.getElementById('search-stats');
+  var pills = [
+    { icon: '🦜', label: 'Species', value: speciesIndex.size },
+    { icon: '🎙️', label: 'Detections', value: totalDetections.toLocaleString('en-IN') },
+    { icon: '🌡️', label: 'Climate since', value: 'Jan 2022' },
+    { icon: '📊', label: 'ERA5 since', value: '1980' },
+  ];
+  el.innerHTML = pills.map(function(p) {
+    return '<span class="search-stat-pill">' + p.icon + ' <strong>' + p.value + '</strong> ' + p.label + '</span>';
+  }).join('');
+  el.style.display = 'flex';
+}
+
+/* ── Fun facts — data-driven from live counts ────────────────────────────── */
+var funFacts = [];
+var currentFact = 0;
+var factTimer = null;
+
+function buildFunFacts(rows) {
+  if (!speciesIndex || speciesIndex.size === 0) return;
+  funFacts = [];
+
+  var species = Array.from(speciesIndex.values());
+  species.sort(function(a, b) { return b.count - a.count; });
+
+  // 1. Most detected species
+  var top = species[0];
+  if (top) funFacts.push({ emoji: '🏆', text: '<strong>' + top.common + '</strong> is the most detected bird with <strong>' + top.count.toLocaleString('en-IN') + '</strong> acoustic detections.' });
+
+  // 2. Total species count
+  funFacts.push({ emoji: '🌿', text: 'Baner\'s two AI microphones have identified <strong>' + speciesIndex.size + ' unique species</strong> — that\'s more than most European city parks.' });
+
+  // 3. Rarest bird (fewest detections, min 2)
+  var rare = species.filter(function(s) { return s.count >= 2; });
+  if (rare.length > 1) {
+    var rarest = rare[rare.length - 1];
+    funFacts.push({ emoji: '💎', text: '<strong>' + rarest.common + '</strong> is one of the rarest visitors — heard only <strong>' + rarest.count + ' times</strong>.' });
+  }
+
+  // 4. New species this year
+  var newSp = species.filter(function(s) { return s.newThisYear; });
+  if (newSp.length > 0) {
+    funFacts.push({ emoji: '⭐', text: '<strong>' + newSp.length + ' new species</strong> detected for the first time this year — the acoustic net keeps growing.' });
+  }
+
+  // 5. Highest confidence detection
+  var best = species.reduce(function(a, b) { return a.bestConf > b.bestConf ? a : b; });
+  if (best.bestConf > 0) {
+    funFacts.push({ emoji: '🎯', text: '<strong>' + best.common + '</strong> had the highest confidence detection at <strong>' + (best.bestConf * 100).toFixed(0) + '%</strong>.' });
+  }
+
+  // 6. Detection rate
+  if (totalDetections > 0) {
+    // Estimate days since first detection
+    var earliest = rows[rows.length - 1]?.detected_at;
+    if (earliest) {
+      var daysSince = Math.max(1, Math.round((Date.now() - new Date(earliest).getTime()) / 86400000));
+      var perDay = Math.round(totalDetections / daysSince);
+      funFacts.push({ emoji: '📡', text: 'The two BirdNET nodes detect an average of <strong>' + perDay + ' birds per day</strong> — that\'s one every <strong>' + Math.round(1440 / Math.max(1, perDay)) + ' minutes</strong>.' });
+    }
+  }
+
+  // 7. Most recently heard species
+  species.sort(function(a, b) { return b.lastSeen > a.lastSeen ? 1 : -1; });
+  var recent = species[0];
+  if (recent) {
+    var ago = timeSince(new Date(recent.lastSeen));
+    funFacts.push({ emoji: '👂', text: 'Last bird heard: <strong>' + recent.common + '</strong>, ' + ago + '.' });
+  }
+
+  // 8. Species that are heard only at night
+  // (We don't have hour data in the index, so use a generic owl fact)
+  funFacts.push({ emoji: '🦉', text: 'Search for "<strong>owl</strong>" or "<strong>nightjar</strong>" to find Baner\'s nocturnal species — some are only heard after midnight.' });
+
+  // 9. Western Ghats context
+  funFacts.push({ emoji: '🏔️', text: 'Baner sits on the <strong>eastern edge of the Western Ghats</strong>, a UNESCO World Heritage biodiversity hotspot — one of only 36 on Earth.' });
+
+  // 10. Citizen science
+  funFacts.push({ emoji: '🔬', text: 'All data is collected by <strong>two Raspberry Pi nodes</strong> running BirdNET AI 24/7 — real citizen science, no human in the loop.' });
+
+  // Shuffle and render
+  shuffleArray(funFacts);
+  if (funFacts.length > 0) {
+    document.getElementById('fun-facts-bar').style.display = 'block';
+    renderFact(0);
+    startFactRotation();
+  }
+}
+
+function renderFact(idx) {
+  currentFact = idx;
+  var fact = funFacts[idx];
+  document.getElementById('fun-fact-emoji').textContent = fact.emoji;
+  document.getElementById('fun-fact-text').innerHTML = fact.text;
+
+  // Re-trigger animation
+  var inner = document.getElementById('fun-fact-inner');
+  inner.style.animation = 'none';
+  inner.offsetHeight; // force reflow
+  inner.style.animation = '';
+
+  // Dots
+  var nav = document.getElementById('fun-fact-nav');
+  nav.innerHTML = '';
+  for (var i = 0; i < Math.min(funFacts.length, 10); i++) {
+    var dot = document.createElement('span');
+    dot.className = 'fun-fact-dot' + (i === idx ? ' active' : '');
+    dot.setAttribute('data-i', i);
+    dot.onclick = function() {
+      clearInterval(factTimer);
+      renderFact(parseInt(this.getAttribute('data-i')));
+      startFactRotation();
+    };
+    nav.appendChild(dot);
+  }
+}
+
+function startFactRotation() {
+  clearInterval(factTimer);
+  factTimer = setInterval(function() {
+    var next = (currentFact + 1) % funFacts.length;
+    renderFact(next);
+  }, 6000);
+}
+
+function shuffleArray(arr) {
+  for (var i = arr.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var t = arr[i]; arr[i] = arr[j]; arr[j] = t;
+  }
+}
+
+function timeSince(date) {
+  var s = Math.floor((Date.now() - date.getTime()) / 1000);
+  if (s < 60) return 'just now';
+  var m = Math.floor(s / 60);
+  if (m < 60) return m + ' min ago';
+  var h = Math.floor(m / 60);
+  if (h < 24) return h + 'h ago';
+  var d = Math.floor(h / 24);
+  if (d === 1) return 'yesterday';
+  return d + ' days ago';
+}
+
+/* ══════════════════════════════════════════════════════════════
+   SEARCH ENGINE
+   ══════════════════════════════════════════════════════════════ */
+
+/* ── Static page results — always available (zero-API-call fallback) ────── */
+var PAGE_RESULTS = [
+  { title:'Home',           sub:'Live AQI, weather, birds detected today, monsoon countdown.',          url:'index.html',    icon:'🏡', tags:['home','live','aqi','weather','today','dashboard'] },
+  { title:'Birds of Baner', sub:'All bird species detected by BirdNET acoustic AI from Baner, Pune.',  url:'birds.html',    icon:'🐦', tags:['birds','species','birdnet','detections','acoustic','list','all'] },
+  { title:'Climate Record', sub:'4 years of hourly AQI, temperature, humidity, wind and solar data.',  url:'climate.html',  icon:'🌡️', tags:['climate','aqi','temperature','humidity','wind','solar','pollution','data'] },
+  { title:'Baner Hill',     sub:'Time-lapse photo gallery of Baner Hill with climate annotations.',     url:'hill.html',     icon:'🏔️', tags:['hill','baner','photos','timelapse','sahyadri','gallery','vegetation'] },
+  { title:'Species Index',  sub:'Full-profile pages for every bird detected — charts, timeline, facts.',url:'species.html',  icon:'🦜', tags:['species','profile','birds','charts','wikipedia','individual'] },
+  { title:'Monsoon Tracker',sub:'Live monsoon countdown and historical rainfall patterns since 2022.',  url:'monsoon.html',  icon:'🌧️', tags:['monsoon','rain','rainfall','seasonal','flood','countdown','june','july'] },
+  { title:'Rainfall',       sub:'45-year rainfall record — WU sensor + ERA5 reanalysis since 1980.',    url:'rain.html',     icon:'🌦️', tags:['rain','rainfall','precipitation','record','history','dry','wet','era5','wu'] },
+  { title:'Temperature',    sub:'Temperature trends, heat records, and ERA5 history since 1980.',       url:'temperature.html', icon:'🌡️', tags:['temperature','temp','hot','cold','heatwave','cool','era5'] },
+  { title:'AQI Dashboard',  sub:'Air Quality Index — EU and India scales, PM2.5, ozone, NO₂.',         url:'aqi.html',      icon:'💨', tags:['aqi','air','quality','pm25','pm10','ozone','no2','pollution','smog'] },
+  { title:'Compare',        sub:'Compare any two time periods — Diwali vs normal, this year vs last.', url:'compare.html',  icon:'📊', tags:['compare','diwali','holi','festival','versus','pollution','periods','vs'] },
+  { title:'Trees of Baner', sub:'Community plant database — identify trees around Baner Hill.',         url:'trees.html',    icon:'🌳', tags:['trees','plants','identify','botanical','flora','green'] },
+  { title:'Identify a Plant',sub:'Upload a photo and AI identifies the plant species instantly.',       url:'identify.html', icon:'🌱', tags:['identify','plant','photo','ai','plantnet','camera'] },
+  { title:'History',        sub:'ERA5 climate reanalysis — Baner\'s weather from 1980 to 2021.',        url:'history.html',  icon:'📜', tags:['history','era5','reanalysis','1980','historical','decades'] },
+  { title:'About',          sub:'Project objectives, methodology, tech stack, and all-time records.',  url:'about.html',    icon:'📋', tags:['about','project','hardware','methodology','impact','raspberry','birdnet','citizen','science'] },
+  { title:'Blog',           sub:'Weekly and monthly auto-generated environmental narratives.',          url:'blog.html',     icon:'📝', tags:['blog','weekly','monthly','post','narrative','update'] },
+  { title:'Bird Insights',  sub:'Dawn, dusk, night and rain-correlated bird detection analysis.',       url:'bird-insights/index.html', icon:'🔍', tags:['insights','dawn','dusk','night','rain','analysis','correlation'] },
   { title:'Register',       sub:'Create a free account for full dataset access, CSV downloads, API.',  url:'register.html', icon:'🔑', tags:['register','login','account','data','csv','api','access'] },
-  { title:'Contact',        sub:'Research collaboration, data access requests, press enquiries.',      url:'contact.html',  icon:'✉️', tags:['contact','research','data','press','collaboration'] },
+  { title:'Contact',        sub:'Research collaboration, data access requests, press enquiries.',      url:'contact.html',  icon:'✉️', tags:['contact','research','data','press','collaboration','email'] },
 ];
 
+/* ── Climate keyword map ─────────────────────────────────────────────────── */
+var CLIMATE_TERMS = [
+  { terms:['aqi','air quality','pollution','pm2','pm10','ozone','no2','smog'], title:'AQI & Air Quality Records', sub:'EU and India AQI data since January 2022 — PM2.5, ozone, NO₂.', url:'aqi.html', score:70 },
+  { terms:['temperature','temp','hot','cold','heat','cool','heatwave'], title:'Temperature Records', sub:'Hourly temperature data — hottest and coolest days in Baner.', url:'temperature.html', score:70 },
+  { terms:['rain','rainfall','precipitation','monsoon','wet','dry'], title:'Rainfall Data', sub:'45-year precipitation record — monsoon seasons, WU sensor + ERA5 since 1980.', url:'rain.html', score:80 },
+  { terms:['diwali','holi','ganesh','festival','pollution spike','fireworks'], title:'Festival Pollution Analysis', sub:'AQI spikes around Diwali, Holi, and Ganesh Chaturthi in Baner.', url:'compare.html', score:90 },
+  { terms:['solar','radiation','sunshine','sun'], title:'Solar Radiation', sub:'Shortwave radiation data — useful for solar panel efficiency analysis.', url:'climate.html', score:65 },
+  { terms:['humidity','humid','muggy'], title:'Humidity Records', sub:'Relative humidity at 2m above ground, hourly since 2022.', url:'climate.html', score:65 },
+  { terms:['wind','breeze','gust','cyclone'], title:'Wind Data', sub:'Wind speed and direction from the Sahyadri foothills.', url:'climate.html', score:65 },
+  { terms:['compare','versus','vs','2023','2024','2025','2026'], title:'Period Comparison', sub:'Compare any two date ranges — AQI, temperature, rainfall, birds.', url:'compare.html', score:85 },
+  { terms:['soundscape','ndsi','biophony','anthrophony','noise'], title:'Soundscape Health', sub:'NDSI biodiversity index — natural vs anthropogenic sound ratio.', url:'index.html', score:75 },
+  { terms:['era5','reanalysis','1980','historical','decades','history'], title:'ERA5 Historical Climate', sub:'42 years of reanalysis data (1980–2021) for Baner — rainfall, temperature.', url:'history.html', score:80 },
+];
+
+/* ── Tab switching ────────────────────────────────────────────────────────── */
 function setTab(type, btn) {
-  document.querySelectorAll('.search-tab').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.search-tab').forEach(function(b) {
+    b.classList.remove('active');
+    b.setAttribute('aria-selected', 'false');
+  });
   btn.classList.add('active');
+  btn.setAttribute('aria-selected', 'true');
   activeTab = type;
-  const q = document.getElementById('search-input').value.trim();
+  var q = document.getElementById('search-input').value.trim();
   if (q.length >= 2) doSearch();
 }
 
@@ -184,177 +666,236 @@ function setQuery(q) {
 
 function onInput() {
   clearTimeout(debounceTimer);
-  const q = document.getElementById('search-input').value.trim();
+  var q = document.getElementById('search-input').value.trim();
   if (q.length < 2) {
     document.getElementById('results-list').innerHTML = '';
     document.getElementById('suggestions').style.display = 'block';
     return;
   }
-  debounceTimer = setTimeout(() => doSearch(), 350);
+  debounceTimer = setTimeout(doSearch, 300);
 }
 
+/* ── Main search orchestrator ────────────────────────────────────────────── */
 async function doSearch() {
-  const q = document.getElementById('search-input').value.trim();
+  var q = document.getElementById('search-input').value.trim();
   if (!q || q.length < 2) return;
-  document.getElementById('suggestions').style.display = 'none';
-  document.getElementById('results-list').innerHTML = `<div class="search-loading">Searching…</div>`;
 
-  // Update URL so searches are shareable
-  const url = new URL(window.location);
+  document.getElementById('suggestions').style.display = 'none';
+  document.getElementById('results-list').innerHTML = '<div class="search-loading">Searching…</div>';
+
+  // Shareable URL
+  var url = new URL(window.location);
   url.searchParams.set('q', q);
   window.history.replaceState({}, '', url);
 
-  const results = [];
+  // Wait for species index if still loading (with timeout)
+  if (!dataReady && speciesIndex === null) {
+    try {
+      await Promise.race([
+        new Promise(function(resolve) {
+          var check = setInterval(function() {
+            if (dataReady || speciesIndex !== null) { clearInterval(check); resolve(); }
+          }, 100);
+        }),
+        new Promise(function(_, reject) { setTimeout(function() { reject('timeout'); }, 5000); })
+      ]);
+    } catch(e) { /* proceed with what we have */ }
+  }
 
-  await Promise.all([
-    // Birds: search by common name or scientific name
-    (activeTab==='all'||activeTab==='birds') ? searchBirds(q, results) : Promise.resolve(),
-    // Climate: search by date keywords (month names, years, events)
-    (activeTab==='all'||activeTab==='climate') ? searchClimate(q, results) : Promise.resolve(),
-  ]);
+  var results = [];
 
-  // Pages: always search locally
-  if (activeTab==='all'||activeTab==='pages') searchPages(q, results);
+  // Birds — instant client-side search against pre-built index
+  if (activeTab === 'all' || activeTab === 'birds') searchBirds(q, results);
+
+  // Climate — keyword matching
+  if (activeTab === 'all' || activeTab === 'climate') searchClimate(q, results);
+
+  // Pages — always local
+  if (activeTab === 'all' || activeTab === 'pages') searchPages(q, results);
 
   renderResults(results, q);
 }
 
-async function searchBirds(q, results) {
-  try {
-    const lower = q.toLowerCase();
-    // Fetch all species (deduplicated) — small dataset, fast
-    const res = await fetch(
-      `${SUPABASE_URL}/rest/v1/bird_detections?select=species_common,species_scientific,confidence,detected_at,is_new_species_this_year&order=confidence.desc&limit=1000`,
-      {headers:HDR}
-    );
-    const rows = await res.json();
-    if (!Array.isArray(rows)) return;
+/* ── Bird search: instant, against pre-built index ───────────────────────── */
+function searchBirds(q, results) {
+  if (!speciesIndex || speciesIndex.size === 0) return;
+  var lower = q.toLowerCase();
+  var words = lower.split(/\s+/).filter(function(w) { return w.length >= 2; });
 
-    // Deduplicate by species
-    const map = new Map();
-    for (const r of rows) {
-      if (!map.has(r.species_scientific) || r.confidence > map.get(r.species_scientific).confidence)
-        map.set(r.species_scientific, r);
-    }
+  speciesIndex.forEach(function(sp) {
+    var common = sp.common.toLowerCase();
+    var sci = sp.scientific.toLowerCase();
+    var score = 0;
 
-    // Score and filter
-    for (const [sci, r] of map) {
-      const common = r.species_common.toLowerCase();
-      const sciLow = sci.toLowerCase();
-      let score = 0;
-      if (common === lower || sciLow === lower) score = 100;
-      else if (common.startsWith(lower) || sciLow.startsWith(lower)) score = 80;
-      else if (common.includes(lower) || sciLow.includes(lower)) score = 60;
-      if (score > 0) {
-        results.push({
-          type: 'bird', score,
-          title: r.species_common,
-          sub: `${sci} · detected ${rows.filter(x=>x.species_scientific===sci).length} times · best confidence ${(r.confidence*100).toFixed(0)}%`,
-          meta: `Last heard ${new Date(r.detected_at).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric',timeZone:'Asia/Kolkata'})}`,
-          url: `species.html?bird=${sci.replace(/ /g,'_')}`,
-          icon: '🦜',
-          sci,
-          newThisYear: r.is_new_species_this_year,
-        });
-      }
+    // Exact match
+    if (common === lower || sci === lower) score = 100;
+    // Starts with
+    else if (common.startsWith(lower) || sci.startsWith(lower)) score = 85;
+    // Contains full query
+    else if (common.includes(lower) || sci.includes(lower)) score = 70;
+    // Multi-word: all words present
+    else if (words.length > 1 && words.every(function(w) { return common.includes(w) || sci.includes(w); })) score = 65;
+    // Any word matches
+    else if (words.some(function(w) { return common.includes(w) || sci.includes(w); })) score = 50;
+
+    if (score > 0) {
+      results.push({
+        type: 'bird',
+        score: score,
+        title: sp.common,
+        sub: sp.scientific + ' · detected ' + sp.count.toLocaleString('en-IN') + ' times · best confidence ' + (sp.bestConf * 100).toFixed(0) + '%',
+        meta: 'Last heard ' + new Date(sp.lastSeen).toLocaleDateString('en-IN', { day:'numeric', month:'short', year:'numeric', timeZone:'Asia/Kolkata' }),
+        url: 'species.html?bird=' + sp.scientific.replace(/ /g, '_'),
+        icon: '🦜',
+        sci: sp.scientific,
+        newThisYear: sp.newThisYear,
+      });
     }
-  } catch(e) { console.warn('Bird search error:', e); }
+  });
 }
 
-async function searchClimate(q, results) {
-  // Map query terms to climate page sections/anchors
-  const lower = q.toLowerCase();
-  const climateTerms = [
-    { terms:['aqi','air quality','pollution','pm2','pm10','ozone','no2'], title:'AQI & Air Quality Records', sub:'EU and India AQI data since January 2022', url:'climate.html', score:70 },
-    { terms:['temperature','temp','hot','cold','heat','cool'], title:'Temperature Records', sub:'Hourly temperature data — hottest and coolest days in Baner', url:'climate.html', score:70 },
-    { terms:['rain','rainfall','precipitation','monsoon'], title:'Rainfall Data', sub:'Hourly precipitation — monsoon seasons, total annual rainfall', url:'monsoon.html', score:80 },
-    { terms:['diwali','holi','ganesh','festival','pollution spike'], title:'Festival Pollution Analysis', sub:'AQI spikes around Diwali, Holi, and Ganesh Chaturthi', url:'climate.html', score:90 },
-    { terms:['solar','radiation','sunshine','sun'], title:'Solar Radiation', sub:'Shortwave radiation data — useful for understanding solar panel efficiency', url:'climate.html', score:65 },
-    { terms:['humidity','humid'], title:'Humidity Records', sub:'Relative humidity at 2m above ground, hourly', url:'climate.html', score:65 },
-    { terms:['wind','breeze','gust'], title:'Wind Data', sub:'Wind speed and direction — from the Sahyadri foothills', url:'climate.html', score:65 },
-    { terms:['compare','versus','vs','2023','2024','2025'], title:'Period Comparison', sub:'Compare any two date ranges — AQI, temperature, rainfall, birds', url:'compare.html', score:85 },
-  ];
-
-  for (const ct of climateTerms) {
-    if (ct.terms.some(t => lower.includes(t) || t.includes(lower))) {
+/* ── Climate search ──────────────────────────────────────────────────────── */
+function searchClimate(q, results) {
+  var lower = q.toLowerCase();
+  for (var i = 0; i < CLIMATE_TERMS.length; i++) {
+    var ct = CLIMATE_TERMS[i];
+    if (ct.terms.some(function(t) { return lower.includes(t) || t.includes(lower); })) {
       results.push({ type:'climate', score:ct.score, title:ct.title, sub:ct.sub, url:ct.url, icon:'🌡️' });
     }
   }
 }
 
+/* ── Page search ─────────────────────────────────────────────────────────── */
 function searchPages(q, results) {
-  const lower = q.toLowerCase();
-  for (const p of PAGE_RESULTS) {
-    let score = 0;
-    if (p.title.toLowerCase().includes(lower)) score = 90;
-    else if (p.tags.some(t => t.includes(lower) || lower.includes(t))) score = 60;
-    else if (p.sub.toLowerCase().includes(lower)) score = 50;
-    if (score > 0) results.push({ type:'page', score, ...p });
+  var lower = q.toLowerCase();
+  var words = lower.split(/\s+/).filter(function(w) { return w.length >= 2; });
+
+  for (var i = 0; i < PAGE_RESULTS.length; i++) {
+    var p = PAGE_RESULTS[i];
+    var score = 0;
+    var titleLow = p.title.toLowerCase();
+    var subLow = p.sub.toLowerCase();
+
+    if (titleLow.includes(lower)) score = 90;
+    else if (p.tags.some(function(t) { return t === lower; })) score = 80;
+    else if (p.tags.some(function(t) { return t.includes(lower) || lower.includes(t); })) score = 60;
+    else if (subLow.includes(lower)) score = 50;
+    else if (words.length > 1 && words.every(function(w) {
+      return titleLow.includes(w) || subLow.includes(w) || p.tags.some(function(t) { return t.includes(w); });
+    })) score = 55;
+
+    if (score > 0) results.push({ type:'page', score:score, title:p.title, sub:p.sub, url:p.url, icon:p.icon });
   }
 }
 
-async function renderResults(results, q) {
-  const list = document.getElementById('results-list');
+/* ── Render results ──────────────────────────────────────────────────────── */
+function renderResults(results, q) {
+  var list = document.getElementById('results-list');
 
   // Deduplicate by URL
-  const seen = new Set();
-  const unique = results.filter(r => { if(seen.has(r.url)) return false; seen.add(r.url); return true; });
+  var seen = {};
+  var unique = [];
+  for (var i = 0; i < results.length; i++) {
+    if (!seen[results[i].url]) {
+      seen[results[i].url] = true;
+      unique.push(results[i]);
+    }
+  }
   // Sort by score desc
-  unique.sort((a,b) => b.score - a.score);
+  unique.sort(function(a, b) { return b.score - a.score; });
 
   if (!unique.length) {
-    list.innerHTML = `<div class="search-empty">
-      <div class="search-empty-icon">🔍</div>
-      <p>No results for "<strong>${q}</strong>"</p>
-      <p style="font-size:0.82rem;margin-top:0.5rem;">Try a bird species name, "monsoon", "Diwali", or "temperature".</p>
-    </div>`;
+    var safeQ = escapeHTML(q);
+    list.innerHTML = '<div class="search-empty">' +
+      '<div class="search-empty-icon">🔍</div>' +
+      '<p>No results for "<strong>' + safeQ + '</strong>"</p>' +
+      '<p style="font-size:0.82rem;margin-top:0.5rem;">Try a bird species name, "monsoon", "Diwali", or "temperature".</p>' +
+      (!dataReady ? '<p style="font-size:0.78rem;margin-top:0.75rem;color:var(--ep-tan);">Bird data is still loading — try again in a moment.</p>' : '') +
+      '</div>';
     return;
   }
 
-  const typeLabels = { bird:'Species', climate:'Climate', page:'Page' };
-  const typeClass  = { bird:'type-bird', climate:'type-climate', page:'type-page' };
+  var typeLabels = { bird:'Species', climate:'Climate', page:'Page' };
+  var typeClass  = { bird:'type-bird', climate:'type-climate', page:'type-page' };
 
-  list.innerHTML = `<p class="results-count">Found <strong>${unique.length}</strong> result${unique.length!==1?'s':''} for "<strong>${q}</strong>"</p>` +
-    unique.map(r => `
-      <a class="result-card" href="${r.url}">
-        <div class="result-icon ${r.type}">
-          ${r.sci ? `<div id="rthumb-${r.sci.replace(/ /g,'_')}" style="width:42px;height:42px;border-radius:var(--radius-sm);background:var(--ep-cream-dark);display:flex;align-items:center;justify-content:center;font-size:1.4rem;">${r.icon}</div>`
-                  : `<span>${r.icon}</span>`}
-        </div>
-        <div>
-          <div class="result-title">
-            ${r.title}
-            <span class="result-type ${typeClass[r.type]}">${typeLabels[r.type]}</span>
-            ${r.newThisYear ? '<span class="result-type" style="background:#fef08a;color:#713f12;">★ New this year</span>' : ''}
-          </div>
-          <div class="result-sub">${r.sub}</div>
-          ${r.meta ? `<div class="result-meta">${r.meta}</div>` : ''}
-        </div>
-      </a>`).join('');
+  var html = '<p class="results-count">Found <strong>' + unique.length + '</strong> result' + (unique.length !== 1 ? 's' : '') + ' for "<strong>' + escapeHTML(q) + '</strong>"</p>';
 
-  // Load Wikipedia thumbnails for bird results async
-  unique.filter(r=>r.sci).forEach(async r => {
-    const key = r.sci.replace(/ /g,'_');
-    const el = document.getElementById(`rthumb-${key}`);
-    if (!el) return;
-    try {
-      const slug = encodeURIComponent(r.sci.replace(/ /g,'_'));
-      const res  = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${slug}`,{headers:{'Accept':'application/json'}});
-      if (!res.ok) return;
-      const data = await res.json();
-      if (data.thumbnail?.source) {
-        el.outerHTML = `<img src="${data.thumbnail.source}" class="result-thumb" alt="${r.title}" loading="lazy">`;
-      }
-    } catch {}
+  for (var j = 0; j < unique.length; j++) {
+    var r = unique[j];
+    var iconHTML;
+    if (r.sci) {
+      var key = r.sci.replace(/ /g, '_');
+      iconHTML = '<div id="rthumb-' + key + '" style="width:42px;height:42px;border-radius:var(--radius-sm);background:var(--ep-cream-dark);display:flex;align-items:center;justify-content:center;font-size:1.4rem;">' + r.icon + '</div>';
+    } else {
+      iconHTML = '<span>' + r.icon + '</span>';
+    }
+
+    html += '<a class="result-card" href="' + r.url + '">' +
+      '<div class="result-icon ' + r.type + '">' + iconHTML + '</div>' +
+      '<div class="result-body">' +
+        '<div class="result-title">' + escapeHTML(r.title) +
+          ' <span class="result-type ' + typeClass[r.type] + '">' + typeLabels[r.type] + '</span>' +
+          (r.newThisYear ? ' <span class="result-type type-new">★ New this year</span>' : '') +
+        '</div>' +
+        '<div class="result-sub">' + escapeHTML(r.sub) + '</div>' +
+        (r.meta ? '<div class="result-meta">' + escapeHTML(r.meta) + '</div>' : '') +
+      '</div></a>';
+  }
+
+  list.innerHTML = html;
+
+  // Load Wikipedia thumbnails async (non-blocking, best effort)
+  unique.filter(function(r) { return r.sci; }).forEach(function(r) {
+    loadWikiThumb(r.sci, r.title);
   });
 }
 
-// ── Init: check URL for ?q= param (shareable searches) ───────────────────────
-const urlQ = new URLSearchParams(window.location.search).get('q');
-if (urlQ) {
-  document.getElementById('search-input').value = urlQ;
-  doSearch();
+/* ── Wikipedia thumbnail loader (best effort, never blocks) ──────────────── */
+function loadWikiThumb(sci, title) {
+  var key = sci.replace(/ /g, '_');
+  var el = document.getElementById('rthumb-' + key);
+  if (!el) return;
+
+  var slug = encodeURIComponent(sci.replace(/ /g, '_'));
+  fetch('https://en.wikipedia.org/api/rest_v1/page/summary/' + slug, { headers: { 'Accept': 'application/json' } })
+    .then(function(res) { return res.ok ? res.json() : null; })
+    .then(function(data) {
+      if (data && data.thumbnail && data.thumbnail.source) {
+        var img = document.createElement('img');
+        img.src = data.thumbnail.source;
+        img.className = 'result-thumb';
+        img.alt = title;
+        img.loading = 'lazy';
+        img.onerror = function() { /* keep emoji fallback */ };
+        img.onload = function() {
+          if (el && el.parentNode) el.parentNode.replaceChild(img, el);
+        };
+      }
+    })
+    .catch(function() { /* silent — emoji fallback stays */ });
 }
+
+/* ── Utility ─────────────────────────────────────────────────────────────── */
+function escapeHTML(str) {
+  var div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   INIT
+   ══════════════════════════════════════════════════════════════ */
+(function init() {
+  // Start building species index immediately (non-blocking)
+  buildSpeciesIndex();
+
+  // Check URL for ?q= param (shareable searches)
+  var urlQ = new URLSearchParams(window.location.search).get('q');
+  if (urlQ) {
+    document.getElementById('search-input').value = urlQ;
+    doSearch();
+  }
+})();
 </script>
 </body>
 </html>
