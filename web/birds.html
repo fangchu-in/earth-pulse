@@ -165,22 +165,19 @@
       margin-left:auto; white-space:nowrap; flex-shrink:0;
     }
 
-    /* ── Search input ── */
-    .bird-search-wrap {
-      max-width:1100px; margin:1.25rem auto 0; padding:0 2rem;
-    }
+    /* ── Search input (inline in filter bar) ── */
     .bird-search {
-      width:100%; padding:0.6rem 1rem 0.6rem 2.4rem;
-      border:1px solid var(--border-strong); border-radius:var(--radius-md);
-      background:var(--bg-card) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='none' viewBox='0 0 24 24'%3E%3Ccircle cx='11' cy='11' r='7' stroke='%23999' stroke-width='2'/%3E%3Cpath d='M16 16l4 4' stroke='%23999' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat 0.75rem center;
-      font-family:var(--sans); font-size:0.88rem; color:var(--ep-green);
-      transition:border-color 0.15s, box-shadow 0.15s;
+      width:140px; min-width:100px; padding:0.35rem 0.6rem 0.35rem 1.8rem;
+      border:1px solid var(--border-strong); border-radius:var(--radius-sm);
+      background:var(--ep-cream) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='none' viewBox='0 0 24 24'%3E%3Ccircle cx='11' cy='11' r='7' stroke='%23999' stroke-width='2'/%3E%3Cpath d='M16 16l4 4' stroke='%23999' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat 0.55rem center;
+      font-family:var(--sans); font-size:0.8rem; color:var(--ep-green);
+      transition:border-color 0.15s, width 0.2s;
+      flex-shrink:0;
     }
     .bird-search:focus {
-      outline:none; border-color:var(--ep-green);
-      box-shadow:0 0 0 3px rgba(33,67,50,0.08);
+      outline:none; border-color:var(--ep-green); width:200px;
     }
-    .bird-search::placeholder { color:var(--text-muted); }
+    .bird-search::placeholder { color:var(--text-muted); font-size:0.78rem; }
 
     /* ── Stats strip ── */
     .stats-strip {
@@ -569,10 +566,12 @@
       .pop-grid { grid-template-columns:1fr 1fr; }
       .birds-section, .explore-section, .pop-dashboard,
       .faq-section, .seo-context, .heatmap-section,
-      .fun-facts-section, .bird-search-wrap,
+      .fun-facts-section,
       .insight-banner, .diversity-strip { padding-left:1rem; padding-right:1rem; }
       .stats-strip { padding-left:1rem; padding-right:1rem; }
       .bird-filters { padding:0.65rem 1rem; }
+      .bird-search { width:110px; }
+      .bird-search:focus { width:150px; }
     }
     @media(max-width:420px) {
       .stats-strip { grid-template-columns:repeat(2, 1fr); }
@@ -601,13 +600,10 @@
   <p class="ep-hero-meta">Updated continuously · 228 species possible at these coordinates · BirdNET v2.4 · <span id="hero-species">—</span> species detected so far · Two sensor nodes: east balcony + south balcony (facing Baner Hill)</p>
 </div>
 
-<!-- SEARCH -->
-<div class="bird-search-wrap">
-  <input type="search" class="bird-search" id="bird-search" placeholder="Search species — e.g. &quot;koel&quot;, &quot;sunbird&quot;, &quot;warbler&quot;…" aria-label="Search bird species by name" autocomplete="off">
-</div>
-
 <!-- FILTERS -->
 <nav class="bird-filters" role="search" aria-label="Filter bird detections">
+  <input type="search" class="bird-search" id="bird-search" placeholder="Search species…" aria-label="Search bird species by name" autocomplete="off">
+  <div class="filter-sep" aria-hidden="true"></div>
   <select class="filter-select" id="sel-time" onchange="applyFilters()" aria-label="Filter by time period">
     <option value="all">All time</option>
     <option value="today">Today</option>
