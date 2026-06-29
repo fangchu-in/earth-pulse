@@ -663,6 +663,7 @@ function sp(id, btn) {
     logs:loadLogs, system:loadSystem, trees:loadTrees,
     photos:function(){loadPhotos(false);}, data:loadData,
     usage:loadUsage, users:loadUsers,
+    journal:function(){if(!_journalLoaded){_journalLoaded=true;loadJournal();}},
   };
   if (loaders[id]) loaders[id]();
   if (id==='email'&&!_emailInited){_emailInited=true;setTimeout(initEmailPanel,100);}
@@ -1397,13 +1398,6 @@ async function deletePhoto(id){
    HILL JOURNAL ADMIN
 ══════════════════════════════════════════════════════════════════ */
 var _journalLoaded = false;
-
-// Hook into sp() — load journal panel on first visit
-var _origSp = sp;
-function sp(id, btn) {
-  _origSp(id, btn);
-  if (id === 'journal' && !_journalLoaded) { _journalLoaded = true; loadJournal(); }
-}
 
 async function loadJournal() {
   await Promise.all([loadJournalWriters(), loadJournalEntries()]);

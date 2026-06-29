@@ -868,11 +868,20 @@ function switchPanel(id, btn) {
 ════════════════════════════════════════════════════════════════════ */
 function loadJournalPanel() {
   if (!_user) return;
-  var SB_URL = SB;
-  var H_auth = H;
+
+  // Admin always has full journal access — no DB check needed
+  var ADMIN_EMAIL = 'fangchu@gmail.com';
+  if (_user.email === ADMIN_EMAIL) {
+    ge('journal-checking').style.display = 'none';
+    ge('journal-allowed').style.display  = 'block';
+    ge('journal-role-label').textContent = 'Role: Super admin — full access';
+    ge('journal-publish-note').textContent = ' You can publish entries directly to the live site.';
+    loadMyJournalEntries();
+    return;
+  }
 
   // Check journal_authors table for this user
-  fetch(SB_URL + '/rest/v1/journal_authors?user_id=eq.' + _user.id + '&select=can_write,can_publish,display_name', { headers: H_auth })
+  fetch(SB + '/rest/v1/journal_authors?user_id=eq.' + _user.id + '&select=can_write,can_publish,display_name', { headers: H })
     .then(function(r) { return r.json(); })
     .then(function(rows) {
       ge('journal-checking').style.display = 'none';
