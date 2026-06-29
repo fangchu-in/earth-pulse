@@ -1,0 +1,1905 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Hill Journal — Editor · Earth Pulse</title>
+
+  <!-- Supabase — must load first so session is available immediately -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script>
+    /* Auth guard — redirect to register.html if not logged in */
+    var _SB_URL_j = 'https://krmczyqwblsoekceanlj.supabase.co';
+    var _SB_KEY_j = 'sb_publishable_DrHFT5J0vmrkYraUXIlpQQ_gsk1rdq6';
+    var _sbj = null;
+    var _userj = null;
+    try { _sbj = window.supabase.createClient(_SB_URL_j, _SB_KEY_j); } catch(e) {}
+    if (_sbj) {
+      _sbj.auth.getSession().then(function(d) {
+        if (!d.data || !d.data.session) {
+          window.location.href = 'register.html'; return;
+        }
+        _userj = d.data.session.user;
+        /* journal_authors check happens in DOMContentLoaded after page renders */
+      }).catch(function() { window.location.href = 'register.html'; });
+    }
+  </script>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;600&family=DM+Mono&display=swap" rel="stylesheet">
+
+  <!-- Quill WYSIWYG -->
+  <link href="https://cdn.quilljs.com/1.3.7/quill.snow.css" rel="stylesheet">
+  <script src="https://cdn.quilljs.com/1.3.7/quill.min.js"></script>
+
+  <style>
+    /* ── Design tokens ────────────────────────────────── */
+    :root {
+      --ep-green:      #214332;
+      --ep-tan:        #BF9B7B;
+      --ep-cream:      #F2F0E6;
+      --ep-cream-dark: #e8e5d8;
+      --ep-charcoal:   #2B2B2B;
+      --journal-ink:   #1A1A2E;
+      --journal-earth: #5C4033;
+      --journal-moss:  #3D5A40;
+      --serif:  'DM Serif Display', serif;
+      --sans:   'DM Sans', sans-serif;
+      --mono:   'DM Mono', monospace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--sans);
+      background: var(--ep-cream);
+      color: var(--ep-charcoal);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── Nav placeholder ──────────────────────────────── */
+    #ep-nav { min-height: 56px; background: var(--ep-green); }
+
+    /* ── Auth overlay ─────────────────────────────────── */
+    #auth-overlay {
+      position: fixed;
+      inset: 0;
+      background: var(--ep-cream);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .auth-box {
+      background: white;
+      border: 1px solid var(--ep-cream-dark);
+      border-radius: 8px;
+      padding: 40px;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 8px 32px rgba(33,67,50,0.12);
+    }
+    .auth-logo {
+      font-family: var(--serif);
+      color: var(--ep-green);
+      font-size: 1.5rem;
+      margin-bottom: 4px;
+    }
+    .auth-sub {
+      color: #777;
+      font-size: 0.85rem;
+      margin-bottom: 28px;
+    }
+    .auth-field {
+      margin-bottom: 16px;
+    }
+    .auth-field label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--ep-charcoal);
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .auth-field input {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid var(--ep-cream-dark);
+      border-radius: 4px;
+      font-family: var(--sans);
+      font-size: 0.95rem;
+      background: var(--ep-cream);
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    .auth-field input:focus { border-color: var(--ep-green); }
+    .btn-primary {
+      background: var(--ep-green);
+      color: white;
+      border: none;
+      padding: 11px 20px;
+      border-radius: 4px;
+      font-family: var(--sans);
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.15s;
+    }
+    .btn-primary:hover { opacity: 0.88; }
+    .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+    #auth-error {
+      color: #c00;
+      font-size: 0.85rem;
+      margin-top: 12px;
+      display: none;
+    }
+
+    /* ── App layout ───────────────────────────────────── */
+    #app {
+      display: none;
+      flex: 1;
+      display: none;
+    }
+    #app.visible {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+
+    /* ── Page header bar ──────────────────────────────── */
+    .admin-header {
+      background: var(--journal-moss);
+      color: white;
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 2px solid var(--ep-tan);
+    }
+    .admin-header-title {
+      font-family: var(--serif);
+      font-size: 1.1rem;
+      letter-spacing: 0.01em;
+    }
+    .admin-header-title span {
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      opacity: 0.7;
+      margin-left: 8px;
+    }
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    #user-label {
+      font-size: 0.8rem;
+      opacity: 0.8;
+      font-family: var(--mono);
+    }
+    .btn-ghost {
+      background: rgba(255,255,255,0.12);
+      color: white;
+      border: 1px solid rgba(255,255,255,0.25);
+      padding: 6px 14px;
+      border-radius: 4px;
+      font-family: var(--sans);
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .btn-ghost:hover { background: rgba(255,255,255,0.22); }
+
+    /* ── Two-panel layout ─────────────────────────────── */
+    .admin-body {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+      height: calc(100vh - 56px - 46px); /* nav + header */
+    }
+
+    /* ── Left sidebar ─────────────────────────────────── */
+    #sidebar {
+      width: 280px;
+      min-width: 240px;
+      background: white;
+      border-right: 1px solid var(--ep-cream-dark);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .sidebar-head {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--ep-cream-dark);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--ep-cream);
+    }
+    .sidebar-head h2 {
+      font-family: var(--sans);
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #888;
+    }
+    .btn-new {
+      background: var(--ep-tan);
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 4px;
+      font-family: var(--sans);
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.15s;
+    }
+    .btn-new:hover { opacity: 0.88; }
+    .entry-list {
+      overflow-y: auto;
+      flex: 1;
+    }
+    .entry-item {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--ep-cream-dark);
+      cursor: pointer;
+      transition: background 0.1s;
+      position: relative;
+    }
+    .entry-item:hover { background: var(--ep-cream); }
+    .entry-item.active { background: #e6f0eb; border-left: 3px solid var(--ep-green); }
+    .entry-item-top {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 4px;
+    }
+    .entry-num {
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      color: var(--ep-green);
+      font-weight: 600;
+    }
+    .badge {
+      font-size: 0.65rem;
+      padding: 2px 7px;
+      border-radius: 3px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .badge-draft    { background: #FFF3CD; color: #856404; }
+    .badge-published { background: #D1E7DD; color: #0A3622; }
+    .entry-title {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--ep-charcoal);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .entry-meta {
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      color: #999;
+    }
+    #sidebar-loading, #sidebar-empty {
+      padding: 24px 16px;
+      font-size: 0.85rem;
+      color: #999;
+      text-align: center;
+    }
+
+    /* ── Right panel ──────────────────────────────────── */
+    #editor-panel {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .panel-placeholder {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #bbb;
+      font-size: 0.95rem;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .panel-placeholder .icon { font-size: 2.5rem; }
+
+    /* ── Tabs ─────────────────────────────────────────── */
+    .tab-bar {
+      display: flex;
+      border-bottom: 1px solid var(--ep-cream-dark);
+      background: white;
+      padding: 0 20px;
+    }
+    .tab-btn {
+      padding: 12px 18px;
+      border: none;
+      background: none;
+      font-family: var(--sans);
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: #999;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -1px;
+      transition: color 0.15s;
+    }
+    .tab-btn.active {
+      color: var(--ep-green);
+      border-bottom-color: var(--ep-green);
+    }
+    .tab-btn:hover:not(.active) { color: var(--ep-charcoal); }
+
+    /* ── Tab content areas ────────────────────────────── */
+    .tab-content {
+      display: none;
+      flex: 1;
+      overflow-y: auto;
+      padding: 24px;
+    }
+    .tab-content.active { display: flex; flex-direction: column; }
+
+    /* ── Entry form ───────────────────────────────────── */
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+    .form-grid.three { grid-template-columns: 1fr 1fr 1fr; }
+    .form-col-full { grid-column: 1 / -1; }
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+    .field label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #777;
+    }
+    .field input,
+    .field select,
+    .field textarea {
+      padding: 8px 10px;
+      border: 1px solid var(--ep-cream-dark);
+      border-radius: 4px;
+      font-family: var(--sans);
+      font-size: 0.9rem;
+      background: var(--ep-cream);
+      color: var(--ep-charcoal);
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    .field input:focus,
+    .field select:focus,
+    .field textarea:focus { border-color: var(--ep-green); background: white; }
+    .field input[readonly] {
+      background: #f0f0ec;
+      color: #888;
+      font-family: var(--mono);
+      font-size: 0.8rem;
+    }
+    .field textarea { resize: vertical; min-height: 90px; line-height: 1.5; }
+    .field-note {
+      font-size: 0.72rem;
+      color: #aaa;
+      margin-top: 2px;
+    }
+    .slug-field input { font-family: var(--mono); font-size: 0.82rem; }
+
+    /* ── Quill overrides ─────────────────────────────── */
+    .quill-wrap {
+      margin-bottom: 20px;
+    }
+    .quill-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #777;
+      margin-bottom: 8px;
+    }
+    #quill-editor {
+      background: white;
+      border: 1px solid var(--ep-cream-dark);
+      border-radius: 0 0 4px 4px;
+    }
+    #quill-editor .ql-editor { min-height: 220px; font-family: var(--sans); font-size: 0.95rem; }
+    .ql-toolbar.ql-snow { border-color: var(--ep-cream-dark); border-radius: 4px 4px 0 0; }
+    .ql-container.ql-snow { border-color: var(--ep-cream-dark); }
+
+    /* ── Action bar ───────────────────────────────────── */
+    .action-bar {
+      padding: 14px 24px;
+      background: white;
+      border-top: 1px solid var(--ep-cream-dark);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .btn-save {
+      background: var(--ep-charcoal);
+      color: white;
+      border: none;
+      padding: 9px 18px;
+      border-radius: 4px;
+      font-family: var(--sans);
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.15s;
+    }
+    .btn-save:hover { opacity: 0.85; }
+    .btn-preview-entry {
+      background: white;
+      color: var(--ep-green);
+      border: 1.5px solid var(--ep-green);
+      padding: 9px 18px;
+      border-radius: 4px;
+      font-family: var(--sans);
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .btn-preview-entry:hover { background: #e6f0eb; }
+    .btn-publish {
+      background: var(--ep-green);
+      color: white;
+      border: none;
+      padding: 9px 18px;
+      border-radius: 4px;
+      font-family: var(--sans);
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.15s;
+      margin-left: auto;
+    }
+    .btn-publish:hover { opacity: 0.88; }
+    .btn-regenerate {
+      background: white;
+      color: var(--journal-earth);
+      border: 1.5px solid var(--journal-earth);
+      padding: 9px 18px;
+      border-radius: 4px;
+      font-family: var(--sans);
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .btn-regenerate:hover { background: #f9f0ec; }
+    #action-status {
+      font-size: 0.82rem;
+      color: #888;
+      font-family: var(--mono);
+      margin-left: 8px;
+    }
+    #action-status.ok  { color: #22863a; }
+    #action-status.err { color: #c00; }
+
+    /* ── Commit success box ───────────────────────────── */
+    #commit-box {
+      display: none;
+      background: #D1E7DD;
+      border: 1px solid #b8dac9;
+      border-radius: 6px;
+      padding: 14px 18px;
+      margin: 0 24px 16px;
+      font-size: 0.85rem;
+      color: #0A3622;
+    }
+    #commit-box a { color: var(--ep-green); font-weight: 600; }
+
+    /* ── Photos tab ───────────────────────────────────── */
+    .photos-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+    .photo-card {
+      background: white;
+      border: 1px solid var(--ep-cream-dark);
+      border-radius: 6px;
+      overflow: hidden;
+    }
+    .photo-thumb {
+      width: 100%;
+      height: 140px;
+      object-fit: cover;
+      display: block;
+      background: var(--ep-cream-dark);
+    }
+    .photo-info {
+      padding: 10px 12px;
+    }
+    .photo-flags {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 6px;
+    }
+    .photo-caption {
+      font-size: 0.8rem;
+      color: #555;
+      margin-bottom: 4px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .photo-order {
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      color: #aaa;
+    }
+    .btn-delete-photo {
+      margin-top: 8px;
+      width: 100%;
+      background: none;
+      color: #c00;
+      border: 1px solid #f5c6c6;
+      padding: 5px;
+      border-radius: 4px;
+      font-family: var(--sans);
+      font-size: 0.78rem;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .btn-delete-photo:hover { background: #fff5f5; }
+
+    .upload-form {
+      background: white;
+      border: 1px solid var(--ep-cream-dark);
+      border-radius: 6px;
+      padding: 20px;
+    }
+    .upload-form h3 {
+      font-family: var(--sans);
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #888;
+      margin-bottom: 16px;
+    }
+    .upload-form .form-grid { margin-bottom: 12px; }
+    .checkbox-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.88rem;
+      cursor: pointer;
+    }
+    .checkbox-row input[type=checkbox] { width: 16px; height: 16px; cursor: pointer; }
+    #upload-progress {
+      font-family: var(--mono);
+      font-size: 0.8rem;
+      color: #888;
+      margin-top: 10px;
+      display: none;
+    }
+    #upload-progress.ok  { color: #22863a; }
+    #upload-progress.err { color: #c00; }
+    .hero-warning {
+      display: none;
+      background: #FFF3CD;
+      border: 1px solid #ffd666;
+      border-radius: 4px;
+      padding: 8px 12px;
+      font-size: 0.8rem;
+      color: #856404;
+      margin-top: 8px;
+    }
+    .photos-empty {
+      color: #bbb;
+      font-size: 0.9rem;
+      text-align: center;
+      padding: 32px;
+    }
+
+    /* ── Links tab ────────────────────────────────────── */
+    .links-list {
+      margin-bottom: 24px;
+    }
+    .link-row {
+      background: white;
+      border: 1px solid var(--ep-cream-dark);
+      border-radius: 6px;
+      padding: 12px 16px;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+    .link-type-badge {
+      font-size: 0.7rem;
+      padding: 3px 8px;
+      border-radius: 3px;
+      background: var(--ep-cream-dark);
+      color: #555;
+      font-weight: 600;
+      text-transform: uppercase;
+      white-space: nowrap;
+      margin-top: 2px;
+    }
+    .link-details { flex: 1; }
+    .link-title {
+      font-weight: 600;
+      font-size: 0.9rem;
+      margin-bottom: 3px;
+    }
+    .link-url {
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      color: var(--ep-green);
+      text-decoration: none;
+      display: block;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .link-url:hover { text-decoration: underline; }
+    .link-note {
+      font-size: 0.8rem;
+      color: #888;
+      margin-top: 4px;
+    }
+    .btn-delete-link {
+      background: none;
+      color: #c00;
+      border: none;
+      cursor: pointer;
+      font-size: 1rem;
+      padding: 4px;
+      line-height: 1;
+    }
+    .add-link-form {
+      background: white;
+      border: 1px solid var(--ep-cream-dark);
+      border-radius: 6px;
+      padding: 20px;
+    }
+    .add-link-form h3 {
+      font-family: var(--sans);
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #888;
+      margin-bottom: 16px;
+    }
+    .links-empty {
+      color: #bbb;
+      font-size: 0.9rem;
+      padding: 16px 0;
+    }
+
+    /* ── Preview tab ──────────────────────────────────── */
+    #preview-frame-wrap {
+      flex: 1;
+      position: relative;
+      background: var(--ep-cream-dark);
+      display: flex;
+      flex-direction: column;
+    }
+    .preview-toolbar {
+      padding: 12px 20px;
+      background: white;
+      border-bottom: 1px solid var(--ep-cream-dark);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    #preview-iframe {
+      flex: 1;
+      border: none;
+      width: 100%;
+    }
+    #preview-status {
+      font-size: 0.82rem;
+      color: #888;
+      font-family: var(--mono);
+    }
+
+    /* ── Permissions tab ──────────────────────────────── */
+    .perms-header {
+      font-family: var(--sans);
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #888;
+      margin-bottom: 16px;
+    }
+    .perms-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      border: 1px solid var(--ep-cream-dark);
+      border-radius: 6px;
+      overflow: hidden;
+      margin-bottom: 24px;
+    }
+    .perms-table th {
+      background: var(--ep-cream);
+      padding: 10px 14px;
+      text-align: left;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #777;
+      border-bottom: 1px solid var(--ep-cream-dark);
+    }
+    .perms-table td {
+      padding: 10px 14px;
+      font-size: 0.88rem;
+      border-bottom: 1px solid var(--ep-cream-dark);
+      vertical-align: middle;
+    }
+    .perms-table tr:last-child td { border-bottom: none; }
+    .perms-table input[type=checkbox] { width: 16px; height: 16px; cursor: pointer; }
+    .perm-name { font-weight: 600; }
+    .perm-email { font-family: var(--mono); font-size: 0.78rem; color: #888; }
+    .btn-save-perm {
+      background: var(--ep-charcoal);
+      color: white;
+      border: none;
+      padding: 7px 14px;
+      border-radius: 4px;
+      font-family: var(--sans);
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .btn-save-perm:hover { opacity: 0.85; }
+    #perms-status {
+      font-size: 0.82rem;
+      font-family: var(--mono);
+      color: #888;
+      margin-left: 10px;
+    }
+    #perms-status.ok  { color: #22863a; }
+    #perms-status.err { color: #c00; }
+    .perms-loading { color: #bbb; font-size: 0.9rem; padding: 20px 0; }
+
+    /* ── Section divider ──────────────────────────────── */
+    .section-divider {
+      border: none;
+      border-top: 1px solid var(--ep-cream-dark);
+      margin: 20px 0;
+    }
+
+    /* ── Spinner ──────────────────────────────────────── */
+    .spinner {
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      border: 2px solid rgba(255,255,255,0.4);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      vertical-align: middle;
+      margin-right: 6px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── Scrollbar styling ────────────────────────────── */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #ccc; border-radius: 3px; }
+
+    /* ── Footer ───────────────────────────────────────── */
+    footer#ep-footer { background: var(--ep-green); color: white; padding: 20px; font-size: 0.8rem; text-align: center; }
+  </style>
+</head>
+<body>
+
+<!-- Nav -->
+<div id="ep-nav"></div>
+
+<!-- Access check overlay — shown during permission check, hidden after -->
+<div id="auth-overlay">
+  <div class="auth-box" id="auth-checking">
+    <div class="auth-logo">Hill Journal</div>
+    <div class="auth-sub" style="margin-top:8px">Checking access…</div>
+    <div style="margin-top:18px;display:flex;align-items:center;gap:8px;font-size:.88rem;color:#999">
+      <span class="spinner" style="border-color:rgba(33,67,50,.25);border-top-color:var(--ep-green)"></span>
+      Verifying your journal permissions
+    </div>
+  </div>
+  <div class="auth-box" id="auth-denied" style="display:none">
+    <div class="auth-logo">Access denied</div>
+    <p id="auth-denied-msg" style="font-size:.88rem;color:#666;margin:16px 0;line-height:1.6">
+      You don't have journal write permission.
+    </p>
+    <div style="display:flex;gap:10px;flex-wrap:wrap">
+      <a href="data.html" style="flex:1;text-align:center;padding:10px;background:var(--ep-green);color:white;border-radius:4px;text-decoration:none;font-size:.88rem;font-weight:600">← My dashboard</a>
+      <button onclick="doJournalLogout()" style="flex:1;padding:10px;background:white;color:#666;border:1px solid #ddd;border-radius:4px;font-size:.88rem;cursor:pointer">Sign out</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ MAIN APP -->
+<div id="app">
+
+  <!-- Admin header bar -->
+  <div class="admin-header">
+    <div class="admin-header-title">
+      Hill Journal Admin
+      <span>journal-admin.html · Session 6</span>
+    </div>
+    <div class="header-right">
+      <span id="user-label"></span>
+      <button class="btn-ghost" onclick="doJournalLogout()">Sign out</button>
+    </div>
+  </div>
+
+  <!-- Two-panel body -->
+  <div class="admin-body">
+
+    <!-- ─── LEFT SIDEBAR ─────────────────────────────── -->
+    <div id="sidebar">
+      <div class="sidebar-head">
+        <h2>Entries</h2>
+        <button class="btn-new" onclick="newEntry()">+ New Entry</button>
+      </div>
+      <div class="entry-list" id="entry-list">
+        <div id="sidebar-loading">Loading entries…</div>
+      </div>
+    </div>
+
+    <!-- ─── RIGHT PANEL ──────────────────────────────── -->
+    <div id="editor-panel">
+
+      <!-- Placeholder when nothing selected -->
+      <div class="panel-placeholder" id="panel-placeholder">
+        <div class="icon">📋</div>
+        <div>Select an entry to edit, or create a new one.</div>
+      </div>
+
+      <!-- Actual editor (hidden until entry selected) -->
+      <div id="editor-inner" style="display:none; flex:1; display:none; flex-direction:column;">
+
+        <!-- Commit success banner -->
+        <div id="commit-box"></div>
+
+        <!-- Tab bar -->
+        <div class="tab-bar">
+          <button class="tab-btn active" onclick="switchTab('edit',this)">✏️ Edit</button>
+          <button class="tab-btn" onclick="switchTab('preview',this)">👁 Preview</button>
+          <button class="tab-btn" onclick="switchTab('photos',this)">📷 Photos</button>
+          <button class="tab-btn" onclick="switchTab('links',this)">🔗 Links</button>
+        </div>
+
+        <!-- ── EDIT TAB ────────────────────────────────── -->
+        <div class="tab-content active" id="tab-edit">
+
+          <!-- Row 1: entry number + slug + status -->
+          <div class="form-grid three">
+            <div class="field">
+              <label>Entry #</label>
+              <input type="number" id="f-entry-number" min="1" placeholder="e.g. 2"
+                     oninput="autoSlug()">
+            </div>
+            <div class="field slug-field form-col-full" style="grid-column: 2 / -1;">
+              <label>Slug (auto-generated — editable)</label>
+              <input type="text" id="f-slug" placeholder="hill-journal-002-15-july-2026">
+              <div class="field-note">Format: hill-journal-NNN-DD-month-YYYY</div>
+            </div>
+          </div>
+
+          <!-- Row 2: dates + times -->
+          <div class="form-grid" style="grid-template-columns: 1fr 1fr 1fr 1fr;">
+            <div class="field">
+              <label>Session date</label>
+              <input type="date" id="f-session-date" oninput="autoSlug()">
+            </div>
+            <div class="field">
+              <label>Start time (IST)</label>
+              <input type="time" id="f-start-time">
+            </div>
+            <div class="field">
+              <label>End time (IST)</label>
+              <input type="time" id="f-end-time">
+            </div>
+            <div class="field">
+              <label>Attendees</label>
+              <input type="number" id="f-attendee-count" min="0" placeholder="0">
+            </div>
+          </div>
+
+          <!-- Row 3: location, author, coordinator -->
+          <div class="form-grid three">
+            <div class="field">
+              <label>Location tag</label>
+              <input type="text" id="f-location-tag" list="location-list"
+                     placeholder="North Slope, Summit…">
+              <datalist id="location-list">
+                <option value="North Slope">
+                <option value="Eastern Ridge">
+                <option value="Main Path">
+                <option value="Valley Pocket">
+                <option value="Summit">
+                <option value="Southern Face">
+              </datalist>
+            </div>
+            <div class="field">
+              <label>Author</label>
+              <input type="text" id="f-author" placeholder="Display name">
+            </div>
+            <div class="field">
+              <label>Coordinator</label>
+              <input type="text" id="f-coordinator" placeholder="Session coordinator">
+            </div>
+          </div>
+
+          <!-- Row 4: topics + finds -->
+          <div class="form-grid">
+            <div class="field">
+              <label>Topics discussed</label>
+              <textarea id="f-topics" rows="3" placeholder="What was discussed on the hill…"></textarea>
+            </div>
+            <div class="field">
+              <label>Interesting finds</label>
+              <textarea id="f-finds" rows="3" placeholder="Unusual species, observations…"></textarea>
+            </div>
+          </div>
+
+          <!-- Quill body -->
+          <div class="quill-wrap">
+            <div class="quill-label">Body (rich text)</div>
+            <div id="quill-editor"></div>
+          </div>
+
+          <!-- Hidden fields (not shown in form) -->
+          <input type="hidden" id="f-id">
+          <input type="hidden" id="f-status">
+
+        </div><!-- /tab-edit -->
+
+        <!-- ── PREVIEW TAB ─────────────────────────────── -->
+        <div class="tab-content" id="tab-preview">
+          <div class="preview-toolbar">
+            <button class="btn-preview-entry" onclick="loadPreview()">↺ Refresh preview</button>
+            <span id="preview-status"></span>
+          </div>
+          <div id="preview-frame-wrap" style="flex:1; display:flex;">
+            <iframe id="preview-iframe" sandbox="allow-same-origin allow-scripts"
+                    style="flex:1; border:none;" src="about:blank"></iframe>
+          </div>
+        </div>
+
+        <!-- ── PHOTOS TAB ─────────────────────────────── -->
+        <div class="tab-content" id="tab-photos">
+          <div class="photos-grid" id="photos-grid"></div>
+          <div class="upload-form">
+            <h3>Upload photo</h3>
+            <div class="form-grid">
+              <div class="field form-col-full">
+                <label>Image file (JPEG or PNG, max 20MB)</label>
+                <input type="file" id="photo-file" accept="image/jpeg,image/png">
+              </div>
+            </div>
+            <div class="form-grid">
+              <div class="field">
+                <label>Caption</label>
+                <input type="text" id="photo-caption" placeholder="What this photo shows…">
+              </div>
+              <div class="field">
+                <label>Photographer</label>
+                <input type="text" id="photo-photographer" placeholder="Name">
+              </div>
+            </div>
+            <div class="form-grid three">
+              <div class="field">
+                <label>Taken at (optional — EXIF overrides)</label>
+                <input type="datetime-local" id="photo-taken-at">
+              </div>
+              <div class="field">
+                <label>Display order</label>
+                <input type="number" id="photo-order" value="0" min="0">
+              </div>
+              <div class="field" style="justify-content:flex-end; gap:10px; padding-top:20px;">
+                <label class="checkbox-row">
+                  <input type="checkbox" id="photo-is-hero" onchange="heroCheck(this)">
+                  Hero photo (banner)
+                </label>
+                <label class="checkbox-row">
+                  <input type="checkbox" id="photo-is-thumbnail">
+                  Thumbnail (index card)
+                </label>
+              </div>
+            </div>
+            <div class="hero-warning" id="hero-warning">
+              ⚠️ Another hero photo exists. Uploading will replace it.
+            </div>
+            <button class="btn-primary" onclick="uploadPhoto()" style="margin-top:12px">
+              Upload photo
+            </button>
+            <div id="upload-progress"></div>
+          </div>
+        </div>
+
+        <!-- ── LINKS TAB ─────────────────────────────── -->
+        <div class="tab-content" id="tab-links">
+          <div class="links-list" id="links-list"></div>
+          <div class="add-link-form">
+            <h3>Add link</h3>
+            <div class="form-grid">
+              <div class="field">
+                <label>Type</label>
+                <select id="link-type">
+                  <option value="read">Read</option>
+                  <option value="video">Video</option>
+                  <option value="related">Related entry</option>
+                  <option value="species">Species</option>
+                  <option value="external">External</option>
+                </select>
+              </div>
+              <div class="field">
+                <label>Display order</label>
+                <input type="number" id="link-order" value="0" min="0">
+              </div>
+            </div>
+            <div class="form-grid">
+              <div class="field">
+                <label>Title</label>
+                <input type="text" id="link-title" placeholder="Link title">
+              </div>
+              <div class="field">
+                <label>URL</label>
+                <input type="url" id="link-url" placeholder="https://…">
+              </div>
+            </div>
+            <div class="field" style="margin-bottom:14px;">
+              <label>Note (optional)</label>
+              <input type="text" id="link-note" placeholder="Short description or context">
+            </div>
+            <button class="btn-primary" onclick="addLink()">Add link</button>
+            <span id="link-status" style="font-family:var(--mono);font-size:0.8rem;color:#888;margin-left:10px;"></span>
+          </div>
+        </div>
+
+
+        <!-- ── ACTION BAR (fixed bottom) ─────────────── -->
+        <div class="action-bar">
+          <button class="btn-save" onclick="saveDraft()">Save draft</button>
+          <button class="btn-preview-entry" onclick="saveThenPreview()">Preview in new tab</button>
+          <button class="btn-regenerate" id="btn-regen" onclick="regenerateEntry()" style="display:none">
+            Regenerate HTML
+          </button>
+          <span id="action-status"></span>
+          <button class="btn-publish" onclick="publishEntry()">🌿 Publish &amp; commit</button>
+        </div>
+
+      </div><!-- /editor-inner -->
+    </div><!-- /editor-panel -->
+
+  </div><!-- /admin-body -->
+</div><!-- /app -->
+
+<footer id="ep-footer">
+  Earth Pulse · earth-pulse.org · Baner, Pune
+</footer>
+
+<!-- Nav script -->
+<script src="/nav.js" defer></script>
+
+<script>
+'use strict';
+
+// ── Constants ──────────────────────────────────────────────────────────────
+const SB_URL         = 'https://krmczyqwblsoekceanlj.supabase.co';
+const SB_ANON        = 'sb_publishable_DrHFT5J0vmrkYraUXIlpQQ_gsk1rdq6';
+const JOURNAL_WORKER = 'https://earthpulse-journal.fangchu.workers.dev';
+const MEDIA_WORKER   = 'https://earthpulse-media.fangchu.workers.dev';
+const WORKER_SECRET  = '1f8d9b6c4a7e2d31b5c8f0a9e6d2473bc1a5f89d7e0c4b2a6f1d9e8c3b7a5f20';
+
+// ── State ──────────────────────────────────────────────────────────────────
+var SESSION_TOKEN = null;
+var SESSION_USER  = null;
+var _canPublish   = false;
+var currentEntry  = null;
+var quill         = null;
+
+// ── Month names for slug ───────────────────────────────────────────────────
+const MONTHS = ['january','february','march','april','may','june',
+                'july','august','september','october','november','december'];
+
+// ════════════════════════════════════════════════════════════════════════════
+// AUTH — uses Supabase JS session (same as data.html / admin.html)
+// ════════════════════════════════════════════════════════════════════════════
+
+function showDenied(msg) {
+  document.getElementById('auth-checking').style.display = 'none';
+  document.getElementById('auth-denied').style.display   = 'block';
+  if (msg) document.getElementById('auth-denied-msg').textContent = msg;
+}
+
+function doJournalLogout() {
+  if (typeof _sbj !== 'undefined' && _sbj) _sbj.auth.signOut().catch(function(){});
+  try {
+    Object.keys(localStorage).forEach(function(k) {
+      if (k.indexOf('sb-') === 0 || k.indexOf('supabase') !== -1) localStorage.removeItem(k);
+    });
+  } catch(e) {}
+  window.location.href = 'index.html';
+}
+
+async function bootJournalAdmin() {
+  // _userj and _sbj are set in <head> by the guard script
+  var attempts = 0;
+  while (typeof _userj === 'undefined' || !_userj) {
+    if (attempts++ > 30) { window.location.href = 'register.html'; return; }
+    await new Promise(function(r) { setTimeout(r, 150); });
+  }
+
+  // Get fresh session token
+  var sd = await _sbj.auth.getSession();
+  if (!sd.data || !sd.data.session) { window.location.href = 'register.html'; return; }
+  SESSION_TOKEN = sd.data.session.access_token;
+  SESSION_USER  = sd.data.session.user;
+
+  // Check journal_authors
+  var res = await fetch(SB_URL + '/rest/v1/journal_authors?user_id=eq.' + SESSION_USER.id
+    + '&select=can_write,can_publish,display_name', {
+    headers: { 'apikey': SB_ANON, 'Authorization': 'Bearer ' + SESSION_TOKEN }
+  });
+  var rows = await res.json();
+
+  if (!rows || !rows.length || (!rows[0].can_write && !rows[0].can_publish)) {
+    showDenied(!rows || !rows.length
+      ? 'Your account is not registered as a Hill Journal writer. Ask the admin to grant you access.'
+      : 'Your account does not have write permission for the Hill Journal.');
+    return;
+  }
+
+  var author = rows[0];
+  _canPublish = !!author.can_publish;
+
+  // Show app
+  document.getElementById('auth-overlay').style.display = 'none';
+  var app = document.getElementById('app');
+  app.style.display = 'flex';
+  app.classList.add('visible');
+  document.getElementById('user-label').textContent = author.display_name || SESSION_USER.email;
+
+  if (!_canPublish) {
+    var pb = document.querySelector('.btn-publish');
+    var rb = document.getElementById('btn-regen');
+    if (pb) pb.style.display = 'none';
+    if (rb) rb.style.display = 'none';
+  }
+
+  _sbj.auth.onAuthStateChange(function(ev) {
+    if (ev === 'SIGNED_OUT') window.location.href = 'register.html';
+  });
+
+  initQuill();
+  loadSidebar();
+}
+
+
+
+// ════════════════════════════════════════════════════════════════════════════
+// SUPABASE HELPERS
+// ════════════════════════════════════════════════════════════════════════════
+
+function sbHeaders(token) {
+  return {
+    'Content-Type': 'application/json',
+    'apikey': SB_ANON,
+    'Authorization': 'Bearer ' + (token || SESSION_TOKEN),
+    'Prefer': 'return=representation'
+  };
+}
+
+function sbGet(path, token) {
+  return fetch(SB_URL + '/rest/v1/' + path, { headers: sbHeaders(token) });
+}
+
+function sbPost(path, body) {
+  return fetch(SB_URL + '/rest/v1/' + path, {
+    method: 'POST',
+    headers: sbHeaders(),
+    body: JSON.stringify(body)
+  });
+}
+
+function sbPatch(path, body) {
+  return fetch(SB_URL + '/rest/v1/' + path, {
+    method: 'PATCH',
+    headers: sbHeaders(),
+    body: JSON.stringify(body)
+  });
+}
+
+function sbDelete(path) {
+  return fetch(SB_URL + '/rest/v1/' + path, {
+    method: 'DELETE',
+    headers: sbHeaders()
+  });
+}
+
+// Worker proxy call
+async function workerCall(worker, path, body, method) {
+  method = method || 'POST';
+  var res = await fetch(worker + path, {
+    method: method,
+    headers: {
+      'Content-Type': 'application/json',
+      'X-Worker-Secret': WORKER_SECRET,
+      'Authorization': 'Bearer ' + SESSION_TOKEN
+    },
+    body: method !== 'DELETE' ? JSON.stringify(body) : undefined
+  });
+  return res;
+}
+
+// ════════════════════════════════════════════════════════════════════════════
+// SIDEBAR — entry list
+// ════════════════════════════════════════════════════════════════════════════
+
+async function loadSidebar() {
+  const list = document.getElementById('entry-list');
+  list.innerHTML = '<div id="sidebar-loading">Loading entries…</div>';
+  try {
+    const res = await sbGet('field_notes?select=id,entry_number,slug,status,session_date,author,topics_discussed&order=session_date.desc&limit=200');
+    const rows = await res.json();
+    if (!rows || !rows.length) {
+      list.innerHTML = '<div id="sidebar-empty">No entries yet. Create one!</div>';
+      return;
+    }
+    list.innerHTML = '';
+    rows.forEach(row => {
+      const div = document.createElement('div');
+      div.className = 'entry-item';
+      div.dataset.id = row.id;
+      const badge = row.status === 'published'
+        ? '<span class="badge badge-published">Published</span>'
+        : '<span class="badge badge-draft">Draft</span>';
+      const title = row.topics_discussed
+        ? row.topics_discussed.replace(/<[^>]+>/g,'').substring(0,40)
+        : (row.slug || 'Untitled');
+      div.innerHTML = `
+        <div class="entry-item-top">
+          <span class="entry-num">#${String(row.entry_number || '?').padStart(3,'0')}</span>
+          ${badge}
+        </div>
+        <div class="entry-title">${title}</div>
+        <div class="entry-meta">${row.session_date || ''}</div>`;
+      div.addEventListener('click', () => loadEntry(row.id, div));
+      list.appendChild(div);
+    });
+  } catch (e) {
+    list.innerHTML = `<div id="sidebar-empty">Error: ${e.message}</div>`;
+  }
+}
+
+// ════════════════════════════════════════════════════════════════════════════
+// ENTRY LOAD / NEW
+// ════════════════════════════════════════════════════════════════════════════
+
+async function loadEntry(id, clickedEl) {
+  // Mark active in sidebar
+  document.querySelectorAll('.entry-item').forEach(el => el.classList.remove('active'));
+  if (clickedEl) clickedEl.classList.add('active');
+
+  showEditorPanel();
+  setStatus('Loading…', '');
+
+  try {
+    const res = await sbGet(`field_notes?id=eq.${id}&select=*`);
+    const rows = await res.json();
+    if (!rows || !rows.length) throw new Error('Entry not found.');
+    currentEntry = rows[0];
+    populateForm(currentEntry);
+    loadPhotos();
+    loadLinks();
+    setStatus('Loaded.', 'ok');
+    // Show regenerate button for published entries
+    const regenBtn = document.getElementById('btn-regen');
+    regenBtn.style.display = currentEntry.status === 'published' ? 'inline-flex' : 'none';
+    // Commit box
+    document.getElementById('commit-box').style.display = 'none';
+  } catch (e) {
+    setStatus('Error: ' + e.message, 'err');
+  }
+}
+
+function newEntry() {
+  document.querySelectorAll('.entry-item').forEach(el => el.classList.remove('active'));
+  currentEntry = null;
+  showEditorPanel();
+  clearForm();
+  // Pre-fill date to today IST
+  const now = new Date();
+  const ist = new Date(now.getTime() + (5.5 * 3600000));
+  document.getElementById('f-session-date').value = ist.toISOString().slice(0,10);
+  autoSlug();
+  loadPhotos();
+  loadLinks();
+  setStatus('New entry — fill in fields and save draft.', '');
+  document.getElementById('btn-regen').style.display = 'none';
+  document.getElementById('commit-box').style.display = 'none';
+}
+
+function showEditorPanel() {
+  document.getElementById('panel-placeholder').style.display = 'none';
+  const inner = document.getElementById('editor-inner');
+  inner.style.display = 'flex';
+  inner.classList.add('visible');
+  switchTab('edit', document.querySelector('.tab-btn'));
+}
+
+function populateForm(e) {
+  document.getElementById('f-id').value              = e.id || '';
+  document.getElementById('f-status').value          = e.status || 'draft';
+  document.getElementById('f-entry-number').value    = e.entry_number || '';
+  document.getElementById('f-slug').value            = e.slug || '';
+  document.getElementById('f-session-date').value   = e.session_date || '';
+  document.getElementById('f-start-time').value     = e.start_time || '';
+  document.getElementById('f-end-time').value       = e.end_time || '';
+  document.getElementById('f-location-tag').value   = e.location_tag || '';
+  document.getElementById('f-author').value         = e.author || '';
+  document.getElementById('f-coordinator').value    = e.coordinator || '';
+  document.getElementById('f-attendee-count').value = e.attendee_count || '';
+  document.getElementById('f-topics').value         = e.topics_discussed || '';
+  document.getElementById('f-finds').value          = e.interesting_finds || '';
+  if (quill) quill.root.innerHTML = e.body_html || '';
+}
+
+function clearForm() {
+  ['f-id','f-status','f-entry-number','f-slug','f-session-date',
+   'f-start-time','f-end-time','f-location-tag','f-author',
+   'f-coordinator','f-attendee-count','f-topics','f-finds'].forEach(id => {
+    document.getElementById(id).value = '';
+  });
+  if (quill) quill.root.innerHTML = '';
+}
+
+function getFormData() {
+  if (quill) {
+    // Sanitise body_html: strip script/iframe/on* attrs
+    let html = quill.root.innerHTML;
+    html = sanitiseHtml(html);
+    document.getElementById('f-body-html-hidden') && (document.getElementById('f-body-html-hidden').value = html);
+    return {
+      entry_number:     parseInt(document.getElementById('f-entry-number').value) || null,
+      slug:             document.getElementById('f-slug').value.trim() || null,
+      session_date:     document.getElementById('f-session-date').value || null,
+      start_time:       document.getElementById('f-start-time').value || null,
+      end_time:         document.getElementById('f-end-time').value || null,
+      location_tag:     document.getElementById('f-location-tag').value.trim() || null,
+      author:           document.getElementById('f-author').value.trim() || null,
+      coordinator:      document.getElementById('f-coordinator').value.trim() || null,
+      attendee_count:   parseInt(document.getElementById('f-attendee-count').value) || null,
+      topics_discussed: document.getElementById('f-topics').value.trim() || null,
+      interesting_finds:document.getElementById('f-finds').value.trim() || null,
+      body_html:        html || null,
+    };
+  }
+}
+
+// Spec rule 31: strip script/iframe/javascript/on* attrs
+function sanitiseHtml(html) {
+  // Simple client-side strip — Worker sanitises again server-side
+  return html
+    .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '')
+    .replace(/<iframe[^>]*>[\s\S]*?<\/iframe>/gi, '')
+    .replace(/\son\w+="[^"]*"/gi, '')
+    .replace(/\son\w+='[^']*'/gi, '')
+    .replace(/javascript:/gi, '#');
+}
+
+// ════════════════════════════════════════════════════════════════════════════
+// SLUG AUTO-GENERATION
+// ════════════════════════════════════════════════════════════════════════════
+
+function autoSlug() {
+  const num  = parseInt(document.getElementById('f-entry-number').value);
+  const date = document.getElementById('f-session-date').value; // YYYY-MM-DD
+  if (!num || !date) return;
+  const parts = date.split('-');
+  if (parts.length !== 3) return;
+  const dd    = String(parseInt(parts[2]));
+  const month = MONTHS[parseInt(parts[1]) - 1];
+  const yyyy  = parts[0];
+  const slug  = `hill-journal-${String(num).padStart(3,'0')}-${dd}-${month}-${yyyy}`;
+  const slugInput = document.getElementById('f-slug');
+  // Only auto-fill if user hasn't manually edited it beyond the auto-pattern
+  slugInput.value = slug;
+}
+
+// ════════════════════════════════════════════════════════════════════════════
+// SAVE DRAFT
+// ════════════════════════════════════════════════════════════════════════════
+
+async function saveDraft() {
+  setStatus('Saving…', '');
+  const data = getFormData();
+  if (!data.session_date) return setStatus('Session date is required.', 'err');
+  if (!data.slug) return setStatus('Slug is required.', 'err');
+  if (!data.entry_number) return setStatus('Entry number is required.', 'err');
+
+  try {
+    const existingId = document.getElementById('f-id').value;
+    let res;
+    if (existingId) {
+      // PATCH existing
+      res = await sbPatch(`field_notes?id=eq.${existingId}`, {
+        ...data,
+        updated_at: new Date().toISOString()
+      });
+    } else {
+      // INSERT new draft
+      res = await sbPost('field_notes', {
+        ...data,
+        status: 'draft',
+        created_by: SESSION_USER ? SESSION_USER.id : null
+      });
+    }
+
+    if (!res.ok) {
+      const e = await res.json();
+      throw new Error(e.message || e.error || res.statusText);
+    }
+
+    const rows = await res.json();
+    if (Array.isArray(rows) && rows.length) {
+      currentEntry = rows[0];
+      document.getElementById('f-id').value = currentEntry.id;
+      document.getElementById('f-status').value = currentEntry.status;
+    }
+
+    setStatus('Saved ✓', 'ok');
+    loadSidebar();
+  } catch (e) {
+    setStatus('Save error: ' + e.message, 'err');
+  }
+}
+
+// ════════════════════════════════════════════════════════════════════════════
+// PREVIEW
+// ════════════════════════════════════════════════════════════════════════════
+
+async function saveThenPreview() {
+  await saveDraft();
+  const id = document.getElementById('f-id').value;
+  if (!id) return setStatus('Save first.', 'err');
+  setStatus('Generating preview…', '');
+  try {
+    const res = await fetch(`${JOURNAL_WORKER}/preview-entry`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Worker-Secret': WORKER_SECRET
+      },
+      body: JSON.stringify({ field_note_id: id })
+    });
+    if (!res.ok) throw new Error(await res.text());
+    const html = await res.text();
+    const blob = new Blob([html], { type: 'text/html' });
+    const url  = URL.createObjectURL(blob);
+    window.open(url, '_blank');
+    setStatus('Preview opened ✓', 'ok');
+  } catch (e) {
+    setStatus('Preview error: ' + e.message, 'err');
+  }
+}
+
+async function loadPreview() {
+  const id = document.getElementById('f-id').value;
+  if (!id) { document.getElementById('preview-status').textContent = 'Save entry first.'; return; }
+  document.getElementById('preview-status').textContent = 'Loading preview…';
+  try {
+    const res = await fetch(`${JOURNAL_WORKER}/preview-entry`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Worker-Secret': WORKER_SECRET
+      },
+      body: JSON.stringify({ field_note_id: id })
+    });
+    if (!res.ok) throw new Error(await res.text());
+    const html = await res.text();
+    const iframe = document.getElementById('preview-iframe');
+    const doc = iframe.contentDocument || iframe.contentWindow.document;
+    doc.open(); doc.write(html); doc.close();
+    document.getElementById('preview-status').textContent = 'Preview loaded.';
+  } catch (e) {
+    document.getElementById('preview-status').textContent = 'Error: ' + e.message;
+  }
+}
+
+// ════════════════════════════════════════════════════════════════════════════
+// PUBLISH
+// ════════════════════════════════════════════════════════════════════════════
+
+async function publishEntry() {
+  const id = document.getElementById('f-id').value;
+  if (!id) return setStatus('Save draft first before publishing.', 'err');
+  const slug = document.getElementById('f-slug').value.trim();
+  if (!slug) return setStatus('Slug is required to publish.', 'err');
+
+  const confirmed = confirm(
+    'Publish this entry?\n\nThis will:\n• Assemble all sensor data\n• Generate the static HTML\n• Commit to GitHub (live in ~60 seconds)\n• Ping search engines\n\nContinue?'
+  );
+  if (!confirmed) return;
+
+  setStatus('Publishing…', '');
+  try {
+    const res = await fetch(`${JOURNAL_WORKER}/generate-entry`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Worker-Secret': WORKER_SECRET
+      },
+      body: JSON.stringify({ field_note_id: id })
+    });
+    const data = await res.json();
+    if (!res.ok || data.error) throw new Error(data.error || res.statusText);
+
+    setStatus('Published ✓', 'ok');
+    document.getElementById('f-status').value = 'published';
+    document.getElementById('btn-regen').style.display = 'inline-flex';
+
+    // Show commit success box
+    const box = document.getElementById('commit-box');
+    box.style.display = 'block';
+    box.innerHTML = `
+      ✅ <strong>Published!</strong>
+      Slug: <code style="font-family:var(--mono)">${data.slug}</code> ·
+      <a href="${data.url}" target="_blank">View live →</a> ·
+      <a href="https://github.com/fangchu-in/earth-pulse/commit/${data.commit}" target="_blank">
+        Commit ${(data.commit||'').slice(0,7)}
+      </a>`;
+    loadSidebar();
+  } catch (e) {
+    setStatus('Publish error: ' + e.message, 'err');
+  }
+}
+
+async function regenerateEntry() {
+  const id = document.getElementById('f-id').value;
+  if (!id) return setStatus('No entry loaded.', 'err');
+  const confirmed = confirm('Regenerate HTML from stored DB values?\n(No sensor re-fetch, no Gemini — re-renders only.)');
+  if (!confirmed) return;
+  setStatus('Regenerating…', '');
+  try {
+    const res = await fetch(`${JOURNAL_WORKER}/regenerate-entry`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Worker-Secret': WORKER_SECRET
+      },
+      body: JSON.stringify({ field_note_id: id })
+    });
+    const data = await res.json();
+    if (!res.ok || data.error) throw new Error(data.error || res.statusText);
+    setStatus('Regenerated ✓', 'ok');
+    const box = document.getElementById('commit-box');
+    box.style.display = 'block';
+    box.innerHTML = `✅ <strong>Regenerated.</strong> <a href="https://github.com/fangchu-in/earth-pulse/commit/${data.commit}" target="_blank">Commit ${(data.commit||'').slice(0,7)}</a>`;
+  } catch (e) {
+    setStatus('Error: ' + e.message, 'err');
+  }
+}
+
+// ════════════════════════════════════════════════════════════════════════════
+// PHOTOS TAB
+// ════════════════════════════════════════════════════════════════════════════
+
+async function loadPhotos() {
+  const id = document.getElementById('f-id').value;
+  const grid = document.getElementById('photos-grid');
+  if (!id) {
+    grid.innerHTML = '<div class="photos-empty">Save entry first to manage photos.</div>';
+    return;
+  }
+  grid.innerHTML = '<div class="photos-empty">Loading photos…</div>';
+  try {
+    const res = await sbGet(`field_note_photos?field_note_id=eq.${id}&order=display_order.asc&select=id,r2_url_web,r2_url_thumb,caption,photographer,is_hero,is_thumbnail,display_order`);
+    const photos = await res.json();
+    if (!photos || !photos.length) {
+      grid.innerHTML = '<div class="photos-empty">No photos yet. Upload one below.</div>';
+      // Reset hero warning
+      document.getElementById('hero-warning').style.display = 'none';
+      return;
+    }
+    const hasHero = photos.some(p => p.is_hero);
+    document.getElementById('hero-warning').style.display =
+      (hasHero && document.getElementById('photo-is-hero').checked) ? 'block' : 'none';
+
+    grid.innerHTML = '';
+    photos.forEach(p => {
+      const card = document.createElement('div');
+      card.className = 'photo-card';
+      const flags = [
+        p.is_hero ? '<span class="badge badge-published">Hero</span>' : '',
+        p.is_thumbnail ? '<span class="badge badge-draft">Thumb</span>' : ''
+      ].join('');
+      card.innerHTML = `
+        <img class="photo-thumb" src="${p.r2_url_thumb || p.r2_url_web}"
+             alt="${p.caption || ''}" onerror="this.style.display='none'">
+        <div class="photo-info">
+          <div class="photo-flags">${flags}</div>
+          <div class="photo-caption">${p.caption || '—'}</div>
+          <div class="photo-order">Order: ${p.display_order}</div>
+          <button class="btn-delete-photo" onclick="deletePhoto('${p.id}')">Delete</button>
+        </div>`;
+      grid.appendChild(card);
+    });
+  } catch (e) {
+    grid.innerHTML = `<div class="photos-empty">Error: ${e.message}</div>`;
+  }
+}
+
+function heroCheck(cb) {
+  // Show warning if hero already exists
+  const heroWarning = document.getElementById('hero-warning');
+  if (cb.checked) {
+    const grid = document.getElementById('photos-grid');
+    const hasHero = !!grid.querySelector('.badge-published');
+    heroWarning.style.display = hasHero ? 'block' : 'none';
+  } else {
+    heroWarning.style.display = 'none';
+  }
+}
+
+async function uploadPhoto() {
+  const id = document.getElementById('f-id').value;
+  if (!id) { alert('Save entry first.'); return; }
+  const file = document.getElementById('photo-file').files[0];
+  if (!file) { alert('Select a file.'); return; }
+
+  const prog = document.getElementById('upload-progress');
+  prog.style.display = 'block';
+  prog.className = '';
+  prog.textContent = 'Uploading…';
+
+  try {
+    const fd = new FormData();
+    fd.append('file', file);
+    fd.append('field_note_id', id);
+    fd.append('caption',      document.getElementById('photo-caption').value);
+    fd.append('photographer', document.getElementById('photo-photographer').value);
+    fd.append('is_hero',      document.getElementById('photo-is-hero').checked ? 'true' : 'false');
+    fd.append('is_thumbnail', document.getElementById('photo-is-thumbnail').checked ? 'true' : 'false');
+    fd.append('display_order',document.getElementById('photo-order').value || '0');
+    const takenAt = document.getElementById('photo-taken-at').value;
+    if (takenAt) fd.append('taken_at', new Date(takenAt).toISOString());
+
+    const res = await fetch(`${MEDIA_WORKER}/upload-photo`, {
+      method: 'POST',
+      headers: { 'X-Worker-Secret': WORKER_SECRET },
+      body: fd
+    });
+    const data = await res.json();
+    if (!res.ok || data.error) throw new Error(data.error || res.statusText);
+
+    prog.className = 'ok';
+    prog.textContent = `Uploaded ✓ — ${data.seo_filename || data.id}`;
+    // Clear form
+    document.getElementById('photo-file').value = '';
+    document.getElementById('photo-caption').value = '';
+    document.getElementById('photo-photographer').value = '';
+    document.getElementById('photo-taken-at').value = '';
+    document.getElementById('photo-is-hero').checked = false;
+    document.getElementById('photo-is-thumbnail').checked = false;
+    document.getElementById('photo-order').value = '0';
+    document.getElementById('hero-warning').style.display = 'none';
+    loadPhotos();
+  } catch (e) {
+    prog.className = 'err';
+    prog.textContent = 'Upload error: ' + e.message;
+  }
+}
+
+async function deletePhoto(photoId) {
+  if (!confirm('Delete this photo? This also removes the R2 files.')) return;
+  const prog = document.getElementById('upload-progress');
+  prog.style.display = 'block';
+  prog.className = '';
+  prog.textContent = 'Deleting…';
+  try {
+    const res = await fetch(`${MEDIA_WORKER}/delete-photo`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Worker-Secret': WORKER_SECRET
+      },
+      body: JSON.stringify({ photo_id: photoId })
+    });
+    const data = await res.json();
+    if (!res.ok || !data.deleted) throw new Error(data.error || res.statusText);
+    prog.className = 'ok';
+    prog.textContent = 'Deleted ✓';
+    loadPhotos();
+  } catch (e) {
+    prog.className = 'err';
+    prog.textContent = 'Delete error: ' + e.message;
+  }
+}
+
+// ════════════════════════════════════════════════════════════════════════════
+// LINKS TAB
+// ════════════════════════════════════════════════════════════════════════════
+
+async function loadLinks() {
+  const id = document.getElementById('f-id').value;
+  const list = document.getElementById('links-list');
+  if (!id) {
+    list.innerHTML = '<div class="links-empty">Save entry first to manage links.</div>';
+    return;
+  }
+  list.innerHTML = '<div class="links-empty">Loading links…</div>';
+  try {
+    const res = await sbGet(`field_note_links?field_note_id=eq.${id}&order=display_order.asc&select=id,type,title,url,note,display_order`);
+    const links = await res.json();
+    if (!links || !links.length) {
+      list.innerHTML = '<div class="links-empty">No links yet.</div>';
+      return;
+    }
+    list.innerHTML = '';
+    links.forEach(lk => {
+      const row = document.createElement('div');
+      row.className = 'link-row';
+      row.innerHTML = `
+        <span class="link-type-badge">${lk.type}</span>
+        <div class="link-details">
+          <div class="link-title">${lk.title || '—'}</div>
+          <a class="link-url" href="${lk.url}" target="_blank">${lk.url}</a>
+          ${lk.note ? `<div class="link-note">${lk.note}</div>` : ''}
+        </div>
+        <button class="btn-delete-link" onclick="deleteLink('${lk.id}')" title="Delete">✕</button>`;
+      list.appendChild(row);
+    });
+  } catch (e) {
+    list.innerHTML = `<div class="links-empty">Error: ${e.message}</div>`;
+  }
+}
+
+async function addLink() {
+  const id = document.getElementById('f-id').value;
+  if (!id) { alert('Save entry first.'); return; }
+  const title = document.getElementById('link-title').value.trim();
+  const url   = document.getElementById('link-url').value.trim();
+  if (!title || !url) { alert('Title and URL are required.'); return; }
+
+  const status = document.getElementById('link-status');
+  status.textContent = 'Saving…';
+  try {
+    const res = await sbPost('field_note_links', {
+      field_note_id: id,
+      type:          document.getElementById('link-type').value,
+      title,
+      url,
+      note:          document.getElementById('link-note').value.trim() || null,
+      display_order: parseInt(document.getElementById('link-order').value) || 0
+    });
+    if (!res.ok) throw new Error((await res.json()).message || res.statusText);
+    status.textContent = 'Added ✓';
+    // Clear
+    document.getElementById('link-title').value = '';
+    document.getElementById('link-url').value   = '';
+    document.getElementById('link-note').value  = '';
+    loadLinks();
+  } catch (e) {
+    status.textContent = 'Error: ' + e.message;
+  }
+}
+
+async function deleteLink(linkId) {
+  if (!confirm('Delete this link?')) return;
+  try {
+    const res = await sbDelete(`field_note_links?id=eq.${linkId}`);
+    if (!res.ok) throw new Error(res.statusText);
+    loadLinks();
+  } catch (e) {
+    alert('Delete error: ' + e.message);
+  }
+}
+
+
+// ════════════════════════════════════════════════════════════════════════════
+// TABS
+// ════════════════════════════════════════════════════════════════════════════
+
+function switchTab(name, clickedBtn) {
+  document.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); });
+  document.querySelectorAll('.tab-content').forEach(function(t) { t.classList.remove('active'); });
+  if (clickedBtn) {
+    clickedBtn.classList.add('active');
+  } else {
+    var btns = document.querySelectorAll('.tab-btn');
+    var tabNames = ['edit','preview','photos','links'];
+    var idx = tabNames.indexOf(name);
+    if (idx >= 0 && btns[idx]) btns[idx].classList.add('active');
+  }
+  var el = document.getElementById('tab-' + name);
+  if (el) el.classList.add('active');
+  if (name === 'photos')  loadPhotos();
+  if (name === 'links')   loadLinks();
+  if (name === 'preview') loadPreview();
+}
+
+// ════════════════════════════════════════════════════════════════════════════
+// QUILL INIT
+// ════════════════════════════════════════════════════════════════════════════
+
+function initQuill() {
+  if (quill) return;
+  quill = new Quill('#quill-editor', {
+    theme: 'snow',
+    modules: {
+      toolbar: [
+        [{ header: [2, 3, false] }],
+        ['bold', 'italic', 'underline'],
+        ['link', 'blockquote'],
+        [{ list: 'ordered' }, { list: 'bullet' }],
+        ['image'],
+        ['clean']
+      ]
+    }
+  });
+  // Image insert = URL prompt (spec: photos go via media Worker, not inline base64)
+  const toolbar = quill.getModule('toolbar');
+  toolbar.addHandler('image', function() {
+    var url = prompt('Enter image URL (use the R2 r2_url_web URL from the Photos tab):');
+    if (url) {
+      var range = quill.getSelection();
+      quill.insertEmbed(range ? range.index : 0, 'image', url);
+    }
+  });
+}
+
+// ════════════════════════════════════════════════════════════════════════════
+// HELPERS
+// ════════════════════════════════════════════════════════════════════════════
+
+function setStatus(msg, cls) {
+  const el = document.getElementById('action-status');
+  el.textContent = msg;
+  el.className = cls || '';
+  if (cls === 'ok') setTimeout(() => { if (el.textContent === msg) { el.textContent = ''; el.className = ''; } }, 4000);
+}
+
+// ════════════════════════════════════════════════════════════════════════════
+// BOOT
+// ════════════════════════════════════════════════════════════════════════════
+
+document.addEventListener('DOMContentLoaded', bootJournalAdmin);
+
+// Keyboard shortcut: Ctrl+S / Cmd+S → save draft
+document.addEventListener('keydown', function(e) {
+  if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+    e.preventDefault();
+    const id = document.getElementById('f-id');
+    if (id) saveDraft();
+  }
+});
+</script>
+
+<!-- Analytics — NO defer (spec requirement) -->
+<script src="/analytics.js"></script>
+</body>
+</html>

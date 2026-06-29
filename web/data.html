@@ -230,6 +230,8 @@
     <div class="sb-section">Data</div>
     <button class="sb-link" id="nav-download"  onclick="switchPanel('download',this)">📥 Download data</button>
     <button class="sb-link" id="nav-api"       onclick="switchPanel('api',this)">🔌 API access</button>
+    <div class="sb-section">Hill Journal</div>
+    <button class="sb-link" id="nav-journal" onclick="switchPanel('journal',this)">📓 Hill Journal</button>
     <div class="sb-section">Account</div>
     <a class="sb-link" href="profile.html">👤 My profile</a>
     <a class="sb-link" href="index.html">🏡 Back to site</a>
@@ -597,6 +599,69 @@ GET /bird_detections?confidence=gte.0.8&order=detected_at.desc&limit=500
       </div>
     </div>
 
+    <!-- ══ HILL JOURNAL ══ -->
+    <div class="panel" id="panel-journal">
+      <div class="panel-title">📓 Hill Journal</div>
+      <div class="panel-sub">Field sessions on Baner Hill. Write about what you observed, what was planted, what was heard.</div>
+      <div id="journal-access-block">
+
+        <!-- Shown while checking permissions -->
+        <div id="journal-checking" style="display:flex;align-items:center;gap:.6rem;font-size:.88rem;color:var(--text-muted);padding:1rem 0">
+          <span class="spin"></span> Checking journal access…
+        </div>
+
+        <!-- Shown if user has can_write permission -->
+        <div id="journal-allowed" style="display:none">
+          <div class="res-card" style="border-color:rgba(33,67,50,.25)">
+            <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:.85rem;flex-wrap:wrap">
+              <div style="font-size:1.6rem">📓</div>
+              <div>
+                <div style="font-weight:700;color:var(--ep-green);font-size:1rem">Journal access granted</div>
+                <div id="journal-role-label" style="font-size:.8rem;color:var(--text-muted);margin-top:2px"></div>
+              </div>
+              <a href="journal-admin.html" class="act-btn primary" id="journal-open-btn" style="margin-left:auto;text-decoration:none">
+                Open Journal Editor →
+              </a>
+            </div>
+            <p style="font-size:.85rem;color:var(--text-muted);line-height:1.65;margin:0">
+              The journal editor lets you write and save draft entries with rich text, photos, and links.
+              <span id="journal-publish-note"></span>
+            </p>
+          </div>
+
+          <!-- My draft entries -->
+          <div style="font-weight:600;color:var(--ep-green);margin-bottom:.75rem;font-size:.9rem">My draft entries</div>
+          <div id="journal-my-entries">
+            <div style="font-size:.85rem;color:var(--text-muted)">Loading your entries…</div>
+          </div>
+        </div>
+
+        <!-- Shown if user does NOT have permission -->
+        <div id="journal-denied" style="display:none">
+          <div class="res-card" style="border-color:rgba(220,38,38,.2);background:rgba(220,38,38,.02)">
+            <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:.75rem">
+              <div style="font-size:1.4rem">🔒</div>
+              <div style="font-weight:700;color:#b91c1c">Journal access not enabled</div>
+            </div>
+            <p style="font-size:.85rem;color:var(--text-muted);line-height:1.7;margin:0">
+              You don't have permission to write Hill Journal entries yet.
+              Journal writing is by invitation — if you've participated in a Baner Hill session,
+              contact the Earth Pulse team to request access.
+            </p>
+          </div>
+
+          <!-- Still show published entries as read -->
+          <div style="font-weight:600;color:var(--ep-green);margin-bottom:.75rem;margin-top:1.25rem;font-size:.9rem">
+            Published entries
+          </div>
+          <div id="journal-published-list">
+            <div style="font-size:.85rem;color:var(--text-muted)">Loading…</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
   </div><!-- /main -->
 </div><!-- /app -->
 
@@ -785,14 +850,123 @@ function doSignOut() {
 }
 
 /* ── Panel routing ── */
+var _journalChecked = false;
+
 function switchPanel(id, btn) {
   document.querySelectorAll('.panel').forEach(function(p) { p.classList.remove('on'); });
   document.querySelectorAll('.sb-link').forEach(function(b) { b.classList.remove('active'); });
   var el = ge('panel-' + id);
   if (el) el.classList.add('on');
   if (btn) btn.classList.add('active');
-  if (id === 'stats'  && !_statsLoaded)  { _statsLoaded  = true; loadStats(); }
-  if (id === 'digest' && !_digestLoaded) { _digestLoaded = true; loadDigest(); }
+  if (id === 'stats'   && !_statsLoaded)   { _statsLoaded   = true; loadStats(); }
+  if (id === 'digest'  && !_digestLoaded)  { _digestLoaded  = true; loadDigest(); }
+  if (id === 'journal' && !_journalChecked){ _journalChecked = true; loadJournalPanel(); }
+}
+
+/* ════════════════════════════════════════════════════════════════════
+   HILL JOURNAL — permission check + entry listing
+════════════════════════════════════════════════════════════════════ */
+function loadJournalPanel() {
+  if (!_user) return;
+  var SB_URL = SB;
+  var H_auth = H;
+
+  // Check journal_authors table for this user
+  fetch(SB_URL + '/rest/v1/journal_authors?user_id=eq.' + _user.id + '&select=can_write,can_publish,display_name', { headers: H_auth })
+    .then(function(r) { return r.json(); })
+    .then(function(rows) {
+      ge('journal-checking').style.display = 'none';
+
+      if (!rows || !rows.length || (!rows[0].can_write && !rows[0].can_publish)) {
+        // No access
+        ge('journal-denied').style.display = 'block';
+        loadPublishedJournalEntries();
+        return;
+      }
+
+      var author = rows[0];
+      ge('journal-allowed').style.display = 'block';
+
+      // Role label
+      if (author.can_publish) {
+        ge('journal-role-label').textContent = 'Role: Author with publish rights';
+        ge('journal-publish-note').textContent = ' You can publish entries directly to the live site.';
+      } else {
+        ge('journal-role-label').textContent = 'Role: Writer (drafts — admin approval to publish)';
+        ge('journal-publish-note').textContent = ' Your entries will be reviewed by the admin before going live.';
+      }
+
+      // Load this user's draft entries
+      loadMyJournalEntries();
+    })
+    .catch(function(e) {
+      ge('journal-checking').style.display = 'none';
+      ge('journal-denied').style.display = 'block';
+      ge('journal-denied').querySelector('p').textContent = 'Could not check journal access: ' + e.message;
+    });
+}
+
+function loadMyJournalEntries() {
+  // Fetch entries created by this user
+  fetch(SB + '/rest/v1/field_notes?created_by=eq.' + _user.id + '&select=id,entry_number,slug,status,session_date,author,topics_discussed&order=session_date.desc&limit=20', { headers: H })
+    .then(function(r) { return r.json(); })
+    .then(function(entries) {
+      var wrap = ge('journal-my-entries');
+      if (!entries || !entries.length) {
+        wrap.innerHTML = '<div style="font-size:.85rem;color:var(--text-muted);padding:.5rem 0">No entries yet. <a href="journal-admin.html" style="color:var(--ep-green)">Create your first entry →</a></div>';
+        return;
+      }
+      wrap.innerHTML = entries.map(function(e) {
+        var statusBadge = e.status === 'published'
+          ? '<span style="font-size:.65rem;background:rgba(22,163,74,.12);color:#15803d;padding:2px 8px;border-radius:10px;font-weight:600">Published</span>'
+          : '<span style="font-size:.65rem;background:rgba(234,179,8,.12);color:#78350f;padding:2px 8px;border-radius:10px;font-weight:600">Draft</span>';
+        var title = (e.topics_discussed || '').replace(/<[^>]+>/g,'').substring(0, 50) || e.slug || 'Untitled';
+        return '<div class="hist-item" style="cursor:default">'
+          + '<div class="hist-q">'
+          +   '<strong style="color:var(--ep-green);margin-right:6px">#' + String(e.entry_number || '?').padStart(3,'0') + '</strong>'
+          +   escHtml(title)
+          + '</div>'
+          + '<div style="display:flex;align-items:center;gap:8px">'
+          +   statusBadge
+          +   '<span style="font-family:var(--mono);font-size:.7rem;color:var(--text-muted)">' + (e.session_date || '') + '</span>'
+          +   '<a href="journal-admin.html" style="font-size:.75rem;color:var(--ep-green);text-decoration:none;border:1px solid rgba(33,67,50,.25);padding:2px 8px;border-radius:4px">Edit</a>'
+          + '</div>'
+          + '</div>';
+      }).join('');
+    })
+    .catch(function(e) {
+      ge('journal-my-entries').innerHTML = '<div style="font-size:.85rem;color:#dc2626">Error loading entries: ' + e.message + '</div>';
+    });
+}
+
+function loadPublishedJournalEntries() {
+  fetch(SB + '/rest/v1/field_notes?status=eq.published&select=entry_number,slug,session_date,author,topics_discussed&order=session_date.desc&limit=10', { headers: H })
+    .then(function(r) { return r.json(); })
+    .then(function(entries) {
+      var wrap = ge('journal-published-list');
+      if (!entries || !entries.length) {
+        wrap.innerHTML = '<div style="font-size:.85rem;color:var(--text-muted)">No published entries yet.</div>';
+        return;
+      }
+      wrap.innerHTML = entries.map(function(e) {
+        var title = (e.topics_discussed || '').replace(/<[^>]+>/g,'').substring(0, 60) || e.slug || 'Entry';
+        var year  = e.session_date ? e.session_date.substring(0, 4) : '2026';
+        var url   = '/journal/' + year + '/' + e.slug + '.html';
+        return '<div class="hist-item">'
+          + '<div class="hist-q">'
+          +   '<strong style="color:var(--ep-green);margin-right:6px">#' + String(e.entry_number || '?').padStart(3,'0') + '</strong>'
+          +   escHtml(title)
+          + '</div>'
+          + '<div style="display:flex;align-items:center;gap:8px">'
+          +   '<span style="font-family:var(--mono);font-size:.7rem;color:var(--text-muted)">' + (e.session_date || '') + '</span>'
+          +   '<a href="' + url + '" target="_blank" style="font-size:.75rem;color:var(--ep-green);text-decoration:none">Read →</a>'
+          + '</div>'
+          + '</div>';
+      }).join('');
+    })
+    .catch(function() {
+      ge('journal-published-list').innerHTML = '<div style="font-size:.85rem;color:var(--text-muted)">Could not load entries.</div>';
+    });
 }
 
 /* ════════════════════════════════════════════════════════════════════

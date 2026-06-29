@@ -263,12 +263,13 @@
 
 <!-- Mobile tab bar — visible on small screens instead of sidebar -->
 <div class="mob-tab-bar" id="mob-tabs">
-  <button class="on" onclick="sp('overview',this)">📊 Overview</button>
+  <button onclick="sp('overview',this)">📊 Overview</button>
   <button onclick="sp('sensors',this)">🔴 Sensors</button>
   <button onclick="sp('apis',this)">🔌 APIs</button>
   <button onclick="sp('logs',this)">📋 Logs</button>
   <button onclick="sp('trees',this)">🌿 Plants</button>
   <button onclick="sp('photos',this)">📷 Photos</button>
+  <button onclick="sp('journal',this)">📓 Journal</button>
   <button onclick="sp('email',this)">✉️ Email</button>
   <button onclick="sp('users',this)">👥 Users</button>
   <button onclick="sp('usage',this)">💰 Usage</button>
@@ -292,9 +293,10 @@
 
     <div class="admin-sep"></div>
     <div class="admin-cat">Content</div>
-    <button class="al" id="al-trees"  onclick="sp('trees',this)">🌿 Plant moderation</button>
-    <button class="al" id="al-photos" onclick="sp('photos',this)">📷 Photos</button>
-    <button class="al" id="al-data"   onclick="sp('data',this)">🗄 Data tables</button>
+    <button class="al" id="al-trees"   onclick="sp('trees',this)">🌿 Plant moderation</button>
+    <button class="al" id="al-photos"  onclick="sp('photos',this)">📷 Photos</button>
+    <button class="al" id="al-journal" onclick="sp('journal',this)">📓 Hill Journal</button>
+    <button class="al" id="al-data"    onclick="sp('data',this)">🗄 Data tables</button>
 
     <div class="admin-sep"></div>
     <div class="admin-cat">Communications</div>
@@ -518,6 +520,81 @@
         <div class="card" style="text-align:center"><div style="font-size:2rem;margin-bottom:.5rem">📧</div><div style="font-weight:600;color:var(--ep-green);margin-bottom:.4rem">Resend</div><p style="font-size:.82rem;color:var(--text-muted);margin-bottom:1rem">Email delivery, bounces, open rates.</p><a href="https://resend.com/dashboard" target="_blank" class="ext-btn">Open Resend →</a></div>
         <div class="card" style="text-align:center"><div style="font-size:2rem;margin-bottom:.5rem">🌿</div><div style="font-weight:600;color:var(--ep-green);margin-bottom:.4rem">PlantNet</div><p style="font-size:.82rem;color:var(--text-muted);margin-bottom:1rem">Daily plant identification quota.</p><a href="https://my.plantnet.org" target="_blank" class="ext-btn">Open PlantNet →</a></div>
       </div>
+    </div>
+
+    <!-- HILL JOURNAL -->
+    <div class="panel" id="panel-journal">
+      <div class="ptitle">📓 Hill Journal</div>
+      <div class="psub">
+        Manage journal writers, approve subscriber drafts, and oversee all entries.
+        <button class="refresh-btn" onclick="loadJournal()">↻ Refresh</button>
+        <a href="journal-admin.html" class="ext-btn sec" style="margin-left:.5rem;font-size:.78rem;padding:.35rem .85rem">Open Journal Editor →</a>
+      </div>
+
+      <!-- ── Writer access management ── -->
+      <div class="card" style="margin-bottom:1.25rem">
+        <div class="card-title">👥 Writer access</div>
+        <p style="font-size:.82rem;color:var(--text-muted);margin-bottom:1rem;line-height:1.65">
+          Grant or revoke journal write/publish permissions for any registered user.
+          <strong>can_write</strong> = can create and edit drafts.
+          <strong>can_publish</strong> = can commit to GitHub (live site).
+        </p>
+        <div id="journal-writers-list"><div class="ep-skeleton" style="height:80px;border-radius:var(--radius-md)"></div></div>
+
+        <!-- Add writer form -->
+        <div style="margin-top:1.25rem;padding-top:1.25rem;border-top:1px solid var(--border)">
+          <div style="font-weight:600;font-size:.85rem;color:var(--ep-green);margin-bottom:.75rem">Grant access to a user</div>
+          <p style="font-size:.78rem;color:var(--text-muted);margin-bottom:.75rem;line-height:1.6">
+            The user must already be registered (have a Supabase auth account).
+            Look up their UUID in Supabase → Authentication → Users.
+          </p>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:.75rem">
+            <div>
+              <div style="font-size:.72rem;color:var(--text-muted);margin-bottom:4px;text-transform:uppercase;letter-spacing:.06em;font-weight:600">User UUID</div>
+              <input type="text" id="jw-uid" placeholder="xxxxxxxx-xxxx-…"
+                style="width:100%;padding:.55rem .85rem;border:1.5px solid var(--border-strong);border-radius:var(--radius-sm);font-family:var(--mono);font-size:.8rem;color:var(--ep-green);box-sizing:border-box;outline:none">
+            </div>
+            <div>
+              <div style="font-size:.72rem;color:var(--text-muted);margin-bottom:4px;text-transform:uppercase;letter-spacing:.06em;font-weight:600">Display name</div>
+              <input type="text" id="jw-name" placeholder="Full name"
+                style="width:100%;padding:.55rem .85rem;border:1.5px solid var(--border-strong);border-radius:var(--radius-sm);font-family:var(--sans);font-size:.88rem;color:var(--ep-green);box-sizing:border-box;outline:none">
+            </div>
+          </div>
+          <div style="display:flex;gap:1.25rem;align-items:center;margin-bottom:.75rem;flex-wrap:wrap">
+            <label style="display:flex;align-items:center;gap:6px;font-size:.85rem;cursor:pointer">
+              <input type="checkbox" id="jw-write" checked style="accent-color:var(--ep-green);width:15px;height:15px"> can_write
+            </label>
+            <label style="display:flex;align-items:center;gap:6px;font-size:.85rem;cursor:pointer">
+              <input type="checkbox" id="jw-publish" style="accent-color:var(--ep-green);width:15px;height:15px"> can_publish
+            </label>
+            <button class="ext-btn" style="font-size:.82rem;padding:.42rem .95rem" onclick="addJournalWriter()">Grant access</button>
+            <span id="jw-status" style="font-family:var(--mono);font-size:.78rem;color:var(--text-muted)"></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── All entries with moderation ── -->
+      <div class="card">
+        <div class="card-title">📋 All entries</div>
+        <div class="tbl-wrap">
+          <table class="tbl">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Date</th>
+                <th>Title / Topics</th>
+                <th>Author</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="journal-entries-body">
+              <tr><td colspan="6" style="text-align:center;padding:2rem;color:var(--text-muted)">Loading…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
     </div>
 
   </div><!-- /admin-main -->
@@ -1315,6 +1392,187 @@ async function deletePhoto(id){
       if(btn){btn.disabled=false;btn.textContent='🗑 Delete';}
     }
   } catch(e){alert('Error: '+e.message);if(btn){btn.disabled=false;btn.textContent='🗑 Delete';}}
+}
+/* ══════════════════════════════════════════════════════════════════
+   HILL JOURNAL ADMIN
+══════════════════════════════════════════════════════════════════ */
+var _journalLoaded = false;
+
+// Hook into sp() — load journal panel on first visit
+var _origSp = sp;
+function sp(id, btn) {
+  _origSp(id, btn);
+  if (id === 'journal' && !_journalLoaded) { _journalLoaded = true; loadJournal(); }
+}
+
+async function loadJournal() {
+  await Promise.all([loadJournalWriters(), loadJournalEntries()]);
+}
+
+/* ── Writers list ── */
+async function loadJournalWriters() {
+  var wrap = ge('journal-writers-list');
+  if (!wrap) return;
+  wrap.innerHTML = '<div style="font-size:.85rem;color:var(--text-muted)">Loading writers…</div>';
+  try {
+    var rows = await sbGet('/journal_authors?select=id,user_id,display_name,bio,can_write,can_publish&order=created_at.asc');
+    if (!Array.isArray(rows) || !rows.length) {
+      wrap.innerHTML = '<p style="font-size:.85rem;color:var(--text-muted)">No writers registered yet.</p>';
+      return;
+    }
+    wrap.innerHTML = '<div class="tbl-wrap"><table class="tbl"><thead><tr>'
+      + '<th>Name</th><th>User ID</th><th>can_write</th><th>can_publish</th><th>Remove</th>'
+      + '</tr></thead><tbody>'
+      + rows.map(function(r) {
+          return '<tr data-aid="' + r.id + '">'
+            + '<td><strong>' + (r.display_name || '—') + '</strong></td>'
+            + '<td style="font-family:var(--mono);font-size:.72rem;color:var(--text-muted)">' + r.user_id.slice(0,16) + '…</td>'
+            + '<td><input type="checkbox"' + (r.can_write ? ' checked' : '') + ' onchange="updateJournalWriter(\'' + r.id + '\')" style="accent-color:var(--ep-green);width:15px;height:15px;cursor:pointer"></td>'
+            + '<td><input type="checkbox"' + (r.can_publish ? ' checked' : '') + ' onchange="updateJournalWriter(\'' + r.id + '\')" style="accent-color:var(--ep-green);width:15px;height:15px;cursor:pointer"></td>'
+            + '<td><button class="mod-btn mod-reject" onclick="removeJournalWriter(\'' + r.id + '\',\'' + (r.display_name||'') + '\')">Remove</button></td>'
+            + '</tr>';
+        }).join('')
+      + '</tbody></table></div>';
+  } catch(e) {
+    wrap.innerHTML = '<p style="color:#dc2626;font-size:.85rem">Error: ' + e.message + '</p>';
+  }
+}
+
+async function updateJournalWriter(authorId) {
+  var tr = document.querySelector('[data-aid="' + authorId + '"]');
+  if (!tr) return;
+  var boxes = tr.querySelectorAll('input[type=checkbox]');
+  var can_write   = boxes[0].checked;
+  var can_publish = boxes[1].checked;
+  try {
+    var r = await fetch(_SB_URL + '/rest/v1/journal_authors?id=eq.' + authorId, {
+      method: 'PATCH',
+      headers: { 'apikey': _SB_KEY, 'Authorization': 'Bearer ' + _SB_KEY,
+                 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
+      body: JSON.stringify({ can_write: can_write, can_publish: can_publish })
+    });
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+  } catch(e) {
+    alert('Save error: ' + e.message);
+  }
+}
+
+async function removeJournalWriter(authorId, name) {
+  if (!confirm('Remove journal access for ' + (name || authorId) + '?\nThis does not delete their entries.')) return;
+  try {
+    var r = await fetch(_SB_URL + '/rest/v1/journal_authors?id=eq.' + authorId, {
+      method: 'DELETE',
+      headers: { 'apikey': _SB_KEY, 'Authorization': 'Bearer ' + _SB_KEY, 'Prefer': 'return=minimal' }
+    });
+    if (r.ok || r.status === 204) loadJournalWriters();
+    else throw new Error('HTTP ' + r.status);
+  } catch(e) { alert('Error: ' + e.message); }
+}
+
+async function addJournalWriter() {
+  var uid   = (ge('jw-uid').value || '').trim();
+  var name  = (ge('jw-name').value || '').trim();
+  var write = ge('jw-write').checked;
+  var pub   = ge('jw-publish').checked;
+  var st    = ge('jw-status');
+  if (!uid || uid.length < 30) { st.textContent = 'Enter a valid UUID.'; return; }
+  if (!name) { st.textContent = 'Display name required.'; return; }
+  st.textContent = 'Saving…';
+  try {
+    var r = await fetch(_SB_URL + '/rest/v1/journal_authors', {
+      method: 'POST',
+      headers: { 'apikey': _SB_KEY, 'Authorization': 'Bearer ' + _SB_KEY,
+                 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
+      body: JSON.stringify({ user_id: uid, display_name: name, can_write: write, can_publish: pub })
+    });
+    if (!r.ok) {
+      var e = await r.json();
+      throw new Error(e.message || e.code || r.status);
+    }
+    st.textContent = '✅ Access granted';
+    ge('jw-uid').value = '';
+    ge('jw-name').value = '';
+    ge('jw-write').checked = true;
+    ge('jw-publish').checked = false;
+    loadJournalWriters();
+  } catch(e) {
+    st.textContent = 'Error: ' + e.message;
+  }
+}
+
+/* ── All entries table ── */
+async function loadJournalEntries() {
+  var tbody = ge('journal-entries-body');
+  if (!tbody) return;
+  tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:1.5rem;color:var(--text-muted)">Loading…</td></tr>';
+  try {
+    var rows = await sbGet('/field_notes?select=id,entry_number,slug,session_date,author,status,topics_discussed&order=session_date.desc&limit=50');
+    if (!Array.isArray(rows) || !rows.length) {
+      tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:1.5rem;color:var(--text-muted)">No entries yet.</td></tr>';
+      return;
+    }
+    tbody.innerHTML = rows.map(function(e) {
+      var statusBadge = e.status === 'published'
+        ? '<span style="font-size:.65rem;background:rgba(22,163,74,.12);color:#15803d;padding:2px 8px;border-radius:10px;font-weight:600">Published</span>'
+        : '<span style="font-size:.65rem;background:rgba(234,179,8,.12);color:#78350f;padding:2px 8px;border-radius:10px;font-weight:600">Draft</span>';
+      var title = (e.topics_discussed || '').replace(/<[^>]+>/g, '').substring(0, 45) || (e.slug || '—');
+      var year  = e.session_date ? e.session_date.substring(0, 4) : '2026';
+      var liveUrl = '/journal/' + year + '/' + (e.slug || '') + '.html';
+      return '<tr id="jrow-' + e.id + '">'
+        + '<td style="font-family:var(--mono);color:var(--ep-green);font-weight:700">#' + String(e.entry_number || '?').padStart(3, '0') + '</td>'
+        + '<td style="font-family:var(--mono);font-size:.78rem">' + (e.session_date || '—') + '</td>'
+        + '<td style="max-width:240px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + escHtml(title) + '</td>'
+        + '<td>' + (e.author || '—') + '</td>'
+        + '<td>' + statusBadge + '</td>'
+        + '<td style="white-space:nowrap">'
+        +   '<a href="journal-admin.html" class="ext-btn sec" style="font-size:.72rem;padding:.28rem .65rem;margin-right:4px">Edit</a>'
+        +   (e.status === 'published'
+              ? '<a href="' + liveUrl + '" target="_blank" class="ext-btn" style="font-size:.72rem;padding:.28rem .65rem;margin-right:4px">View live</a>'
+              : '<button class="ext-btn" style="font-size:.72rem;padding:.28rem .65rem;margin-right:4px" onclick="adminPublishEntry(\'' + e.id + '\')">Publish</button>')
+        +   '<button class="ext-btn danger" style="font-size:.72rem;padding:.28rem .65rem" onclick="adminDeleteEntry(\'' + e.id + '\',\'' + String(e.entry_number||'?') + '\')">Delete</button>'
+        + '</td>'
+        + '</tr>';
+    }).join('');
+  } catch(e) {
+    tbody.innerHTML = '<tr><td colspan="6" style="color:#dc2626;padding:1rem">Error: ' + e.message + '</td></tr>';
+  }
+}
+
+function escHtml(t) {
+  return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+async function adminPublishEntry(entryId) {
+  if (!confirm('Publish this entry? This will call /generate-entry — assembles sensor data, commits to GitHub, and pings search engines.')) return;
+  var WORKER_SECRET = '1f8d9b6c4a7e2d31b5c8f0a9e6d2473bc1a5f89d7e0c4b2a6f1d9e8c3b7a5f20';
+  try {
+    var res = await fetch('https://earthpulse-journal.fangchu.workers.dev/generate-entry', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-Worker-Secret': WORKER_SECRET },
+      body: JSON.stringify({ field_note_id: entryId })
+    });
+    var data = await res.json();
+    if (!res.ok || data.error) throw new Error(data.error || res.statusText);
+    alert('✅ Published!\nURL: ' + (data.url || '?') + '\nCommit: ' + (data.commit || '').slice(0, 7));
+    loadJournalEntries();
+  } catch(e) {
+    alert('Publish error: ' + e.message);
+  }
+}
+
+async function adminDeleteEntry(entryId, entryNum) {
+  if (!confirm('PERMANENTLY delete entry #' + entryNum + '?\n\nThis deletes the database row. The GitHub static HTML file will remain until the index is regenerated. This cannot be undone.')) return;
+  try {
+    var r = await fetch(_SB_URL + '/rest/v1/field_notes?id=eq.' + entryId, {
+      method: 'DELETE',
+      headers: { 'apikey': _SB_KEY, 'Authorization': 'Bearer ' + _SB_KEY, 'Prefer': 'return=minimal' }
+    });
+    if (r.ok || r.status === 204) {
+      var row = ge('jrow-' + entryId);
+      if (row) { row.style.opacity = '0'; row.style.transition = 'opacity .3s'; }
+      setTimeout(loadJournalEntries, 350);
+    } else throw new Error('HTTP ' + r.status);
+  } catch(e) { alert('Delete error: ' + e.message); }
 }
 </script>
 </body>
