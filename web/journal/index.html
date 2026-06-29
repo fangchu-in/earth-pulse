@@ -4,13 +4,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>The Hill Journal · Earth Pulse</title>
-  <meta name="description" content="A record of 0 sessions on Baner Hill, Pune — plantings, bird walks, surveys, and nature observations since 2026. Woven with live sensor data from Earth Pulse.">
+  <meta name="description" content="A record of 1 sessions on Baner Hill, Pune — plantings, bird walks, surveys, and nature observations since 2026. Woven with live sensor data from Earth Pulse.">
   <link rel="canonical" href="https://www.earth-pulse.org/journal/">
   <meta name="robots" content="index,follow">
 
   <meta property="og:type"        content="website">
   <meta property="og:title"       content="The Hill Journal · Earth Pulse">
-  <meta property="og:description" content="0 sessions documented on Baner Hill, Pune.">
+  <meta property="og:description" content="1 sessions documented on Baner Hill, Pune.">
   <meta property="og:url"         content="https://www.earth-pulse.org/journal/">
   <meta property="og:site_name"   content="Earth Pulse">
 
@@ -24,10 +24,17 @@
     "@context": "https://schema.org",
     "@type": "ItemList",
     "name": "The Hill Journal",
-    "description": "A citizen science field journal from Baner Hill, Pune. 0 sessions documented.",
+    "description": "A citizen science field journal from Baner Hill, Pune. 1 sessions documented.",
     "url": "https://www.earth-pulse.org/journal/",
-    "numberOfItems": 0,
-    "itemListElement": []
+    "numberOfItems": 1,
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "url": "https://www.earth-pulse.org/journal/2026/hill-journal-001-29-june-2026.html",
+        "name": "Hill Journal #001 · 29 June 2026"
+      }
+    ]
   },
   {
     "@context": "https://schema.org",
@@ -422,7 +429,7 @@
     <p class="hero-subtitle">A record of people, plants, and nature on Baner Hill since 2026</p>
     <div class="stats-strip">
       <div class="stat-item">
-        <span class="stat-value">0</span>
+        <span class="stat-value">1</span>
         <span class="stat-label">Sessions documented</span>
       </div>
       <div class="stat-item">
@@ -459,7 +466,7 @@
 
     <select class="filter-select" id="filter-year" aria-label="Filter by year">
       <option value="">All years</option>
-      
+      <option value="2026">2026</option>
     </select>
 
     <div class="filter-sep" aria-hidden="true"></div>
@@ -469,7 +476,7 @@
     <button class="filter-pill" data-filter-season="post-monsoon">Post-monsoon</button>
     <button class="filter-pill" data-filter-season="winter">Winter</button>
 
-    
+    <div class="filter-sep" aria-hidden="true"></div><button class="filter-pill" data-filter-location="north-slope">North Slope</button>
 
     <button class="filter-reset" id="filter-reset-btn" aria-label="Reset filters">Reset</button>
   </div>
@@ -478,9 +485,27 @@
 <!-- ENTRIES -->
 <section class="entries-section">
   <div class="entries-inner">
-    <p class="entries-count" id="entries-count">Showing <span>0</span> entries</p>
+    <p class="entries-count" id="entries-count">Showing <span>1</span> entry</p>
     <div class="entries-grid" id="entries-grid">
-      
+      <a href="/journal/2026/hill-journal-001-29-june-2026.html" class="entry-card"
+    data-year="2026"
+    data-season="monsoon"
+    data-location="north-slope"
+    data-aqi-label="good">
+  <img src="https://krmczyqwblsoekceanlj.supabase.co/storage/v1/object/public/timelapse/2026/06/2026-06-29_07-34.jpg" alt="Baner Hill on 29 June 2026" class="card-thumb" loading="lazy">
+  <div class="card-body">
+    <div class="card-top">
+      <span class="card-num">#001</span>
+      <span class="card-date">29 June 2026</span>
+      <span class="card-aqi-pill" style="background:#E8F5E9;color:#2D7A3A">16 Good</span>
+    </div>
+    <span class="card-location-pill">North Slope</span>
+    <p class="card-summary">Discover the vibrant urban nature of Pune's North Slope on Baner Hill during our June 29, 2026, journal entry, featuring a delightful first session with 6 atten…</p>
+    <div class="card-foot">
+      <span class="card-foot-item">6 people</span>
+    </div>
+  </div>
+</a>
     </div>
     <div class="entries-empty" id="entries-empty" role="status">
       <strong>No entries found</strong>
@@ -540,7 +565,7 @@
     // Update count label
     const countEl = document.getElementById('entries-count');
     if (countEl) {
-      const total = 0;
+      const total = 1;
       countEl.innerHTML = visible === total
         ? 'Showing <span>' + total + '</span> ' + (total === 1 ? 'entry' : 'entries')
         : 'Showing <span>' + visible + '</span> of ' + total + ' ' + (total === 1 ? 'entry' : 'entries');
