@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Hill Journal · Earth Pulse</title>
+  <meta name="description" content="A record of 0 sessions on Baner Hill, Pune — plantings, bird walks, surveys, and nature observations since 2026. Woven with live sensor data from Earth Pulse.">
+  <link rel="canonical" href="https://www.earth-pulse.org/journal/">
+  <meta name="robots" content="index,follow">
+
+  <meta property="og:type"        content="website">
+  <meta property="og:title"       content="The Hill Journal · Earth Pulse">
+  <meta property="og:description" content="0 sessions documented on Baner Hill, Pune.">
+  <meta property="og:url"         content="https://www.earth-pulse.org/journal/">
+  <meta property="og:site_name"   content="Earth Pulse">
+
+  <meta name="geo.region"      content="IN-MH">
+  <meta name="geo.placename"   content="Baner, Pune, Maharashtra, India">
+  <meta name="geo.position"    content="18.5526;73.7819">
+  <meta name="ICBM"            content="18.5526, 73.7819">
+
+  <script type="application/ld+json">[
+  {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "name": "The Hill Journal",
+    "description": "A citizen science field journal from Baner Hill, Pune. 0 sessions documented.",
+    "url": "https://www.earth-pulse.org/journal/",
+    "numberOfItems": 0,
+    "itemListElement": []
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Earth Pulse",
+        "item": "https://www.earth-pulse.org/"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "The Hill Journal",
+        "item": "https://www.earth-pulse.org/journal/"
+      }
+    ]
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "The Hill Journal — Earth Pulse",
+    "url": "https://www.earth-pulse.org/journal/",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": {
+        "@type": "EntryPoint",
+        "urlTemplate": "https://earthpulse-journal.fangchu.workers.dev/search?q={search_term_string}"
+      },
+      "query-input": "required name=search_term_string"
+    }
+  }
+]</script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --ep-green:      #214332;
+      --ep-tan:        #BF9B7B;
+      --ep-cream:      #F2F0E6;
+      --ep-cream-dark: #E8E5D8;
+      --ep-charcoal:   #2B2B2B;
+      --journal-ink:   #1A1A2E;
+      --journal-earth: #5C4033;
+      --journal-moss:  #3D5A40;
+      --serif:  'DM Serif Display', Georgia, serif;
+      --sans:   'DM Sans', system-ui, sans-serif;
+      --mono:   'DM Mono', 'Courier New', monospace;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: var(--sans); font-size: 16px; line-height: 1.65; color: var(--ep-charcoal); background: var(--ep-cream); }
+    img { display: block; max-width: 100%; height: auto; }
+    a { color: var(--ep-green); text-decoration: none; }
+    a:hover { color: var(--journal-earth); }
+    #site-nav { min-height: 56px; }
+
+    /* Hero */
+    .index-hero {
+      background: var(--ep-green);
+      color: #fff;
+      padding: 64px 24px 48px;
+    }
+    .hero-inner { max-width: 1100px; margin: 0 auto; }
+    .hero-eyebrow {
+      font-family: var(--mono);
+      font-size: 12px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--ep-tan);
+      margin-bottom: 16px;
+    }
+    .hero-title {
+      font-family: var(--serif);
+      font-size: clamp(36px, 6vw, 64px);
+      font-weight: 400;
+      line-height: 1.1;
+      margin-bottom: 16px;
+    }
+    .hero-subtitle {
+      font-size: 18px;
+      color: rgba(255,255,255,0.75);
+      max-width: 560px;
+      margin-bottom: 32px;
+    }
+    .stats-strip {
+      display: flex;
+      gap: 32px;
+      flex-wrap: wrap;
+    }
+    .stat-item {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .stat-value {
+      font-family: var(--mono);
+      font-size: 28px;
+      font-weight: 500;
+      color: #fff;
+    }
+    .stat-label {
+      font-size: 13px;
+      color: rgba(255,255,255,0.55);
+      letter-spacing: 0.04em;
+    }
+
+    /* Search */
+    .search-section {
+      background: #fff;
+      border-bottom: 1px solid var(--ep-cream-dark);
+      padding: 28px 24px;
+    }
+    .search-inner {
+      max-width: 720px;
+      margin: 0 auto;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    .search-input {
+      flex: 1;
+      font-family: var(--sans);
+      font-size: 15px;
+      color: var(--ep-charcoal);
+      border: 1.5px solid var(--ep-cream-dark);
+      border-radius: 6px;
+      padding: 10px 16px;
+      background: var(--ep-cream);
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    .search-input:focus { border-color: var(--ep-green); }
+    .search-btn {
+      font-family: var(--sans);
+      font-size: 14px;
+      font-weight: 500;
+      background: var(--ep-green);
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      padding: 10px 20px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background 0.15s;
+    }
+    .search-btn:hover { background: var(--journal-moss); }
+    .search-results {
+      max-width: 720px;
+      margin: 16px auto 0;
+      font-size: 14px;
+    }
+    .search-results--loading { color: #888; font-style: italic; }
+    .search-results--empty   { color: #888; }
+    .search-answer { line-height: 1.7; color: var(--ep-charcoal); margin-bottom: 12px; }
+    .search-entry-link {
+      display: block;
+      padding: 8px 0;
+      border-top: 1px solid var(--ep-cream-dark);
+      font-size: 13px;
+    }
+    .search-entry-link:hover { color: var(--journal-earth); }
+
+    /* Filter bar */
+    .filter-bar {
+      padding: 16px 24px;
+      background: var(--ep-cream);
+      border-bottom: 1px solid var(--ep-cream-dark);
+      overflow-x: auto;
+      white-space: nowrap;
+    }
+    .filter-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: nowrap;
+    }
+    .filter-label {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      color: #888;
+      text-transform: uppercase;
+      flex-shrink: 0;
+    }
+    .filter-select {
+      font-family: var(--sans);
+      font-size: 13px;
+      color: var(--ep-charcoal);
+      background: #fff;
+      border: 1.5px solid var(--ep-cream-dark);
+      border-radius: 20px;
+      padding: 5px 14px;
+      cursor: pointer;
+      outline: none;
+      flex-shrink: 0;
+      transition: border-color 0.15s;
+    }
+    .filter-select:focus { border-color: var(--ep-green); }
+    .filter-pill {
+      font-size: 12px;
+      padding: 5px 14px;
+      border-radius: 20px;
+      border: 1.5px solid var(--ep-cream-dark);
+      background: #fff;
+      color: var(--ep-charcoal);
+      cursor: pointer;
+      transition: all 0.15s;
+      flex-shrink: 0;
+    }
+    .filter-pill:hover, .filter-pill.active {
+      background: var(--ep-green);
+      color: #fff;
+      border-color: var(--ep-green);
+    }
+    .filter-reset {
+      font-family: var(--sans);
+      font-size: 12px;
+      color: #999;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 5px 8px;
+      flex-shrink: 0;
+      border-radius: 4px;
+      transition: color 0.15s;
+    }
+    .filter-reset:hover { color: var(--journal-earth); }
+    .filter-sep { width: 1px; height: 20px; background: var(--ep-cream-dark); flex-shrink: 0; }
+
+    /* Entry grid */
+    .entries-section { padding: 40px 24px 60px; }
+    .entries-inner { max-width: 1100px; margin: 0 auto; }
+    .entries-count {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: #999;
+      letter-spacing: 0.04em;
+      margin-bottom: 24px;
+    }
+    .entries-count span { color: var(--ep-green); font-weight: 500; }
+    .entries-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+    @media (max-width: 900px) { .entries-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 560px) { .entries-grid { grid-template-columns: 1fr; gap: 16px; } }
+
+    /* Entry card */
+    .entry-card {
+      display: flex;
+      flex-direction: column;
+      background: #fff;
+      border: 1.5px solid var(--ep-cream-dark);
+      border-radius: 6px;
+      overflow: hidden;
+      transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s;
+      text-decoration: none;
+      color: inherit;
+    }
+    .entry-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 24px rgba(33,67,50,0.12);
+      border-color: var(--ep-tan);
+    }
+    .entry-card.hidden { display: none; }
+
+    .card-thumb {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+      display: block;
+    }
+    .card-thumb--placeholder {
+      background:
+        radial-gradient(ellipse at 30% 60%, rgba(63,90,64,0.25) 0%, transparent 60%),
+        radial-gradient(ellipse at 70% 40%, rgba(33,67,50,0.35) 0%, transparent 50%),
+        var(--ep-green);
+    }
+    .card-body { padding: 16px; display: flex; flex-direction: column; gap: 8px; flex: 1; }
+    .card-top { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .card-num {
+      font-family: var(--serif);
+      font-size: 22px;
+      font-weight: 400;
+      color: var(--journal-ink);
+      line-height: 1;
+    }
+    .card-date {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: #888;
+    }
+    .card-aqi-pill {
+      font-family: var(--mono);
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-weight: 500;
+      margin-left: auto;
+    }
+    .card-location-pill {
+      display: inline-block;
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.05em;
+      color: var(--journal-moss);
+      background: rgba(61,90,64,0.08);
+      border-radius: 10px;
+      padding: 2px 10px;
+      align-self: flex-start;
+      text-transform: uppercase;
+    }
+    .card-summary {
+      font-size: 13px;
+      color: #555;
+      line-height: 1.55;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .card-foot {
+      margin-top: auto;
+      padding-top: 8px;
+      border-top: 1px solid var(--ep-cream-dark);
+      display: flex;
+      gap: 12px;
+    }
+    .card-foot-item {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: #aaa;
+    }
+
+    /* Empty state */
+    .entries-empty {
+      text-align: center;
+      padding: 80px 24px;
+      color: #aaa;
+      font-size: 15px;
+      display: none;
+    }
+    .entries-empty.visible { display: block; }
+    .entries-empty strong { color: #888; display: block; font-size: 18px; margin-bottom: 8px; }
+
+    /* Pagination */
+    .pagination { margin-top: 48px; display: flex; align-items: center; justify-content: center; gap: 12px; }
+    .pagination-btn {
+      font-family: var(--sans);
+      font-size: 14px;
+      padding: 8px 20px;
+      border-radius: 6px;
+      border: 1.5px solid var(--ep-cream-dark);
+      background: #fff;
+      color: var(--ep-charcoal);
+      text-decoration: none;
+      transition: all 0.15s;
+    }
+    .pagination-btn:hover { border-color: var(--ep-green); color: var(--ep-green); }
+    .pagination-btn.disabled { opacity: 0.35; pointer-events: none; }
+    .pagination-info { font-family: var(--mono); font-size: 13px; color: #aaa; }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 40px 24px;
+      border-top: 1px solid var(--ep-cream-dark);
+      font-size: 13px;
+      color: #aaa;
+    }
+    footer a { color: #888; }
+    footer a:hover { color: var(--ep-green); }
+  </style>
+</head>
+<body>
+
+<div id="site-nav"></div>
+
+<!-- HERO -->
+<header class="index-hero">
+  <div class="hero-inner">
+    <p class="hero-eyebrow">Earth Pulse · Baner Hill, Pune</p>
+    <h1 class="hero-title">The Hill Journal</h1>
+    <p class="hero-subtitle">A record of people, plants, and nature on Baner Hill since 2026</p>
+    <div class="stats-strip">
+      <div class="stat-item">
+        <span class="stat-value">0</span>
+        <span class="stat-label">Sessions documented</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-value">2</span>
+        <span class="stat-label">Trees recorded</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-value">1</span>
+        <span class="stat-label">Year documented</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- SEARCH (Session 7 wires this fully; placeholder renders now) -->
+<section class="search-section" id="search">
+  <div class="search-inner">
+    <input
+      type="text"
+      class="search-input"
+      id="journal-search-input"
+      placeholder='Ask anything — "When did we first plant Karvy?" or "Monsoon sessions 2026"'
+      aria-label="Search the journal"
+    >
+    <button class="search-btn" id="journal-search-btn">Search</button>
+  </div>
+  <div class="search-results" id="search-results" aria-live="polite"></div>
+</section>
+
+<!-- FILTER BAR -->
+<nav class="filter-bar" aria-label="Filter journal entries">
+  <div class="filter-inner">
+    <span class="filter-label">Filter</span>
+
+    <select class="filter-select" id="filter-year" aria-label="Filter by year">
+      <option value="">All years</option>
+      
+    </select>
+
+    <div class="filter-sep" aria-hidden="true"></div>
+
+    <button class="filter-pill" data-filter-season="pre-monsoon">Pre-monsoon</button>
+    <button class="filter-pill" data-filter-season="monsoon">Monsoon</button>
+    <button class="filter-pill" data-filter-season="post-monsoon">Post-monsoon</button>
+    <button class="filter-pill" data-filter-season="winter">Winter</button>
+
+    
+
+    <button class="filter-reset" id="filter-reset-btn" aria-label="Reset filters">Reset</button>
+  </div>
+</nav>
+
+<!-- ENTRIES -->
+<section class="entries-section">
+  <div class="entries-inner">
+    <p class="entries-count" id="entries-count">Showing <span>0</span> entries</p>
+    <div class="entries-grid" id="entries-grid">
+      
+    </div>
+    <div class="entries-empty" id="entries-empty" role="status">
+      <strong>No entries found</strong>
+      Try a different filter, or <button onclick="document.getElementById('filter-reset-btn').click()" style="background:none;border:none;color:var(--ep-green);cursor:pointer;font-size:inherit">reset all filters</button>.
+    </div>
+    
+  </div>
+</section>
+
+<footer id="site-footer">
+  <p><a href="/">Earth Pulse</a> · Baner Hill, Pune, Maharashtra, India</p>
+  <p style="margin-top:4px;font-size:12px;opacity:0.6">"Observing the Earth, over time."</p>
+  <p style="margin-top:12px;font-size:12px">
+    <a href="/journal/">The Hill Journal</a> ·
+    <a href="/aqi.html">AQI</a> ·
+    <a href="/birds.html">Birds</a> ·
+    <a href="/rain.html">Rain</a> ·
+    <a href="/hill.html">Hill</a> ·
+    <a href="/privacy.html">Privacy</a>
+  </p>
+</footer>
+
+<!-- nav.js — same as all EP pages -->
+<script src="/nav.js" defer></script>
+
+<script>
+// ── Client-side filtering ────────────────────────────────────────────────────
+(function () {
+  const grid    = document.getElementById('entries-grid');
+  const empty   = document.getElementById('entries-empty');
+  const counter = document.getElementById('entries-count')?.querySelector('span');
+  const cards   = Array.from(grid ? grid.querySelectorAll('.entry-card') : []);
+
+  let activeYear    = '';
+  let activeSeason  = '';
+  let activeLocation = '';
+
+  function applyFilters() {
+    let visible = 0;
+    cards.forEach(card => {
+      const yr  = card.dataset.year    || '';
+      const sea = card.dataset.season  || '';
+      const loc = card.dataset.location || '';
+
+      const show =
+        (!activeYear     || yr  === activeYear)    &&
+        (!activeSeason   || sea === activeSeason)  &&
+        (!activeLocation || loc === activeLocation);
+
+      card.classList.toggle('hidden', !show);
+      if (show) visible++;
+    });
+    if (counter) counter.textContent = visible;
+    if (empty) {
+      empty.classList.toggle('visible', visible === 0);
+    }
+    // Update count label
+    const countEl = document.getElementById('entries-count');
+    if (countEl) {
+      const total = 0;
+      countEl.innerHTML = visible === total
+        ? 'Showing <span>' + total + '</span> ' + (total === 1 ? 'entry' : 'entries')
+        : 'Showing <span>' + visible + '</span> of ' + total + ' ' + (total === 1 ? 'entry' : 'entries');
+    }
+  }
+
+  // Year dropdown
+  const yearSel = document.getElementById('filter-year');
+  if (yearSel) {
+    yearSel.addEventListener('change', function () {
+      activeYear = this.value;
+      applyFilters();
+    });
+  }
+
+  // Season pills
+  document.querySelectorAll('[data-filter-season]').forEach(btn => {
+    btn.addEventListener('click', function () {
+      const val = this.dataset.filterSeason;
+      if (activeSeason === val) {
+        activeSeason = '';
+        this.classList.remove('active');
+      } else {
+        document.querySelectorAll('[data-filter-season]').forEach(b => b.classList.remove('active'));
+        activeSeason = val;
+        this.classList.add('active');
+      }
+      applyFilters();
+    });
+  });
+
+  // Location pills
+  document.querySelectorAll('[data-filter-location]').forEach(btn => {
+    btn.addEventListener('click', function () {
+      const val = this.dataset.filterLocation;
+      if (activeLocation === val) {
+        activeLocation = '';
+        this.classList.remove('active');
+      } else {
+        document.querySelectorAll('[data-filter-location]').forEach(b => b.classList.remove('active'));
+        activeLocation = val;
+        this.classList.add('active');
+      }
+      applyFilters();
+    });
+  });
+
+  // Reset
+  const resetBtn = document.getElementById('filter-reset-btn');
+  if (resetBtn) {
+    resetBtn.addEventListener('click', function () {
+      activeYear = activeSeason = activeLocation = '';
+      if (yearSel) yearSel.value = '';
+      document.querySelectorAll('[data-filter-season],[data-filter-location]').forEach(b => b.classList.remove('active'));
+      applyFilters();
+    });
+  }
+
+  // ── Search (calls earthpulse-journal Worker /search — Session 7 wires full Gemini path)
+  const searchInput = document.getElementById('journal-search-input');
+  const searchBtn   = document.getElementById('journal-search-btn');
+  const searchRes   = document.getElementById('search-results');
+
+  if (searchInput && searchBtn && searchRes) {
+    async function runSearch() {
+      const q = searchInput.value.trim();
+      if (!q) return;
+      searchRes.className = 'search-results search-results--loading';
+      searchRes.textContent = 'Searching…';
+      try {
+        // Note: /search requires X-Worker-Secret header — this is a public page.
+        // Session 7 will add a public search endpoint. For now, stub message:
+        searchRes.className = 'search-results search-results--empty';
+        searchRes.textContent = 'Full-text search coming soon. For now, use the filters above.';
+      } catch {
+        searchRes.className = 'search-results search-results--empty';
+        searchRes.textContent = 'Search unavailable. Please try again.';
+      }
+    }
+    searchBtn.addEventListener('click', runSearch);
+    searchInput.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') runSearch();
+    });
+  }
+})();
+</script>
+
+</body>
+</html>
