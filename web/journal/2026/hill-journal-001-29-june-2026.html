@@ -29,7 +29,7 @@
   <meta name="ICBM"            content="18.5526, 73.7819">
 
   <!-- JSON-LD -->
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"Hill Journal #001 · North Slope · 29 June 2026","datePublished":"2026-06-29T04:13:17.761Z","dateModified":"2026-06-29T04:12:32.227227+00:00","author":{"@type":"Person","name":"Fangchu"},"image":"https://krmczyqwblsoekceanlj.supabase.co/storage/v1/object/public/timelapse/2026/06/2026-06-29_07-34.jpg","description":"Discover the vibrant urban nature of Pune's North Slope on Baner Hill during our June 29, 2026, journal entry, featuring a delightful first session with 6 attendees amidst good AQI and sightings of the Asian Koel, Ashy Prinia, and Large-billed Crow. Explore the accessible beauty of local birdlife and the serene atmosphere of this popular city green space.","url":"https://www.earth-pulse.org/journal/2026/hill-journal-001-29-june-2026.html","about":{"@type":"Place","name":"Baner Hill","geo":{"@type":"GeoCoordinates","latitude":18.5526,"longitude":73.7819}},"keywords":"North Slope, Baner Hill, Pune, 2026, June, Asian Koel, Ashy Prinia, Large-billed Crow, Indian Robin, Common Tailorbird","isPartOf":{"@type":"Blog","name":"The Hill Journal","url":"https://www.earth-pulse.org/journal/"}}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"Hill Journal #001 · North Slope · 29 June 2026","datePublished":"2026-06-29T04:13:17.538+00:00","dateModified":"2026-06-29T04:13:17.647355+00:00","author":{"@type":"Person","name":"Fangchu"},"image":"https://krmczyqwblsoekceanlj.supabase.co/storage/v1/object/public/timelapse/2026/06/2026-06-29_07-34.jpg","description":"Discover the vibrant urban nature of Pune's North Slope on Baner Hill during our June 29, 2026, journal entry, featuring a delightful first session with 6 attendees amidst good AQI and sightings of the Asian Koel, Ashy Prinia, and Large-billed Crow. Explore the accessible beauty of local birdlife and the serene atmosphere of this popular city green space.","url":"https://www.earth-pulse.org/journal/2026/hill-journal-001-29-june-2026.html","about":{"@type":"Place","name":"Baner Hill","geo":{"@type":"GeoCoordinates","latitude":18.5526,"longitude":73.7819}},"keywords":"North Slope, Baner Hill, Pune, 2026, June, Asian Koel, Ashy Prinia, Large-billed Crow, Indian Robin, Common Tailorbird","isPartOf":{"@type":"Blog","name":"The Hill Journal","url":"https://www.earth-pulse.org/journal/"}}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"Event","name":"Hill Journal Session #001","startDate":"2026-06-29T07:30:00+05:30","endDate":"2026-06-29T09:30:00+05:30","location":{"@type":"Place","name":"Baner Hill, Pune","geo":{"@type":"GeoCoordinates","latitude":18.5526,"longitude":73.7819}},"organizer":{"@type":"Person","name":"Fangchu"},"attendeeCount":6}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What happened on Baner Hill on 29 June 2026?","acceptedAnswer":{"@type":"Answer","text":"Discover the vibrant urban nature of Pune's North Slope on Baner Hill during our June 29, 2026, journal entry, featuring a delightful first session with 6 attendees amidst good AQI and sightings of the Asian Koel, Ashy Prinia, and Large-billed Crow. Explore the accessible beauty of local birdlife and the serene atmosphere of this popular city green space."}},{"@type":"Question","name":"What birds were seen on 29 June 2026 on Baner Hill?","acceptedAnswer":{"@type":"Answer","text":"Asian Koel, Ashy Prinia, Large-billed Crow"}},{"@type":"Question","name":"What was the air quality on 29 June 2026 on Baner Hill?","acceptedAnswer":{"@type":"Answer","text":"AQI 16 (Good). Cleaner than 64% of June mornings."}}]}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Earth Pulse","item":"https://www.earth-pulse.org/"},{"@type":"ListItem","position":2,"name":"The Hill Journal","item":"https://www.earth-pulse.org/journal/"},{"@type":"ListItem","position":3,"name":"Hill Journal #001 · North Slope · 29 June 2026","item":"https://www.earth-pulse.org/journal/2026/hill-journal-001-29-june-2026.html"}]}</script>
@@ -80,8 +80,8 @@
       letter-spacing: 0.05em;
     }
 
-    /* ── Site nav placeholder (nav.js injects itself) ──────────────────────── */
-    #site-nav { min-height: 56px; }
+    /* ── Site nav placeholder (nav.js injects itself into #ep-nav) ─────────── */
+    #ep-nav { min-height: 56px; }
 
     /* ── Container ─────────────────────────────────────────────────────────── */
     .container {
@@ -528,16 +528,16 @@
     .entry-nav-link--prev::before { content: '← '; }
     .entry-nav-link--next::after  { content: ' →'; }
 
-    /* ── Footer ────────────────────────────────────────────────────────────── */
-    #site-footer {
+    /* ── Footer fallback (nav.js replaces #ep-footer with its own footer) ───── */
+    #ep-footer {
       background: var(--ep-green);
       color: rgba(255,255,255,0.7);
       text-align: center;
       padding: 40px 24px;
       font-size: 14px;
     }
-    #site-footer a { color: var(--ep-tan); }
-    #site-footer p { margin-bottom: 6px; }
+    #ep-footer a { color: var(--ep-tan); }
+    #ep-footer p { margin-bottom: 6px; }
 
     /* ── Responsive ────────────────────────────────────────────────────────── */
     @media (max-width: 768px) {
@@ -574,7 +574,7 @@
 
     /* ── Print ─────────────────────────────────────────────────────────────── */
     @media print {
-      .hero-share, #site-nav, .entry-nav { display: none; }
+      .hero-share, .ep-nav, #ep-nav, .entry-nav { display: none; }
     }
 
     /* ── Reduced motion ────────────────────────────────────────────────────── */
@@ -587,8 +587,8 @@
 
 
 
-<!-- Nav: nav.js injects the global site navigation -->
-<div id="site-nav"></div>
+<!-- nav.js injects into id="ep-nav"; footer into id="ep-footer" -->
+<div id="ep-nav"></div>
 <script src="/nav.js" defer></script>
 
 <!-- SECTION 2: ENTRY HERO -->
@@ -1064,7 +1064,7 @@
 </nav>
 
 <!-- SECTION 13: FOOTER -->
-<footer id="site-footer">
+<footer id="ep-footer">
   <p><a href="/">Earth Pulse</a> · Baner Hill, Pune, Maharashtra, India</p>
   <p style="margin-top:4px;font-size:12px;opacity:0.6">"Observing the Earth, over time."</p>
   <p style="margin-top:12px;font-size:12px">
@@ -1076,6 +1076,8 @@
     <a href="/privacy.html">Privacy</a>
   </p>
 </footer>
+
+<script src="/analytics.js"></script>
 
 </body>
 </html>
