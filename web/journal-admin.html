@@ -1145,6 +1145,8 @@ function doJournalLogout() {
 }
 
 async function bootJournalAdmin() {
+  var ADMIN_EMAIL_J = 'fangchu@gmail.com';
+
   // _userj and _sbj are set in <head> by the guard script
   var attempts = 0;
   while (typeof _userj === 'undefined' || !_userj) {
@@ -1158,7 +1160,14 @@ async function bootJournalAdmin() {
   SESSION_TOKEN = sd.data.session.access_token;
   SESSION_USER  = sd.data.session.user;
 
-  // Check journal_authors
+  // Admin always has full access — no journal_authors row needed
+  if (SESSION_USER.email === ADMIN_EMAIL_J) {
+    _canPublish = true;
+    revealEditor('Vaibhav Dugar (Admin)');
+    return;
+  }
+
+  // Check journal_authors for everyone else
   var res = await fetch(SB_URL + '/rest/v1/journal_authors?user_id=eq.' + SESSION_USER.id
     + '&select=can_write,can_publish,display_name', {
     headers: { 'apikey': SB_ANON, 'Authorization': 'Bearer ' + SESSION_TOKEN }
@@ -1174,13 +1183,15 @@ async function bootJournalAdmin() {
 
   var author = rows[0];
   _canPublish = !!author.can_publish;
+  revealEditor(author.display_name || SESSION_USER.email);
+}
 
-  // Show app
+function revealEditor(displayName) {
   document.getElementById('auth-overlay').style.display = 'none';
   var app = document.getElementById('app');
   app.style.display = 'flex';
   app.classList.add('visible');
-  document.getElementById('user-label').textContent = author.display_name || SESSION_USER.email;
+  document.getElementById('user-label').textContent = displayName;
 
   if (!_canPublish) {
     var pb = document.querySelector('.btn-publish');
