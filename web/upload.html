@@ -61,11 +61,19 @@
           return;
         }
         // Confirmed — reveal the real page content and arm the upload functions.
+        // BUG FIX: style.display = '' only clears an INLINE override — it does
+        // NOT defeat the stylesheet rule "#up-page-content { display: none; }".
+        // With no inline style ever set, '' just falls back to the stylesheet
+        // rule, which still says none — so the page stayed invisible even
+        // after a successful admin check (the overlay correctly removed
+        // itself, which is why the page looked blank-but-correctly-colored
+        // rather than stuck on "Verifying access…"). Must set an explicit
+        // visible value instead.
         _upConfirmed = true;
         var ov = document.getElementById('up-auth-overlay');
         if (ov) ov.remove();
         var content = document.getElementById('up-page-content');
-        if (content) content.style.display = '';
+        if (content) content.style.display = 'block';
         var who = document.getElementById('up-admin-email');
         if (who) who.textContent = '👤 ' + (_upUser.email || 'Admin');
       }).catch(function(e) {
