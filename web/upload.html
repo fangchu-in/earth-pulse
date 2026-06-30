@@ -22,8 +22,11 @@
     function upRedirectDenied(msg) {
       var ov = document.getElementById('up-auth-overlay');
       if (!ov) return;
+      // Links to data.html, not admin.html — a non-admin clicking through
+      // admin.html would just get redirected again (admin.html's own guard
+      // sends non-super-admins to data.html), so send them there directly.
       ov.innerHTML = '<div class="box"><div class="icon">🔒</div>' + (msg || 'Access denied.') +
-        '<br><br><a href="admin.html" style="color:#BF9B7B;font-weight:600;text-decoration:none">← Back to admin</a></div>';
+        '<br><br><a href="data.html" style="color:#BF9B7B;font-weight:600;text-decoration:none">← Back to my dashboard</a></div>';
     }
 
     function upSignOut() {
