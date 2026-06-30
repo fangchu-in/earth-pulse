@@ -1087,9 +1087,12 @@ function runDynamicQuery(q) {
     });
   }
 
-  /* Bird count / top species */
+  /* Bird count / top species
+     FIX: previously sampled only the most recent 2,000 detections and
+     presented it as a complete leaderboard — with 55k+ total detections
+     this could misrank or omit species. Now pulls the full table. */
   if (hasBird && !envVars.length) {
-    return sbGet('/bird_detections?select=species_common,species_scientific,confidence,detected_at&limit=2000&order=detected_at.desc')
+    return sbGetAll('bird_detections', 'detected_at', 'select=species_common,species_scientific,confidence,detected_at')
       .then(function(birds) {
         if (!Array.isArray(birds)) return null;
         var map = {};
@@ -1289,18 +1292,28 @@ function dlQueryResult() {
 
 /* ════════════════════════════════════════════════════════════════════
    LIVE STATS
+   FIX: species count / hour heatmap / month bars previously sampled only
+   the most recent 3,000 bird_detections rows while labelling the result
+   "all time" — with 55k+ total detections this silently undercounted
+   species and skewed the heatmap toward recent weeks. Now paginates the
+   full table via sbGetAll so every detection since 2022 is counted.
 ════════════════════════════════════════════════════════════════════ */
 function loadStats() {
   var ist      = istNow();
   var todayStr = ist.getFullYear() + '-' + p2(ist.getMonth()+1) + '-' + p2(ist.getDate()) + 'T00:00:00%2B05%3A30';
 
+  ge('stats-mosaic').innerHTML = '<div style="grid-column:1/-1;font-size:.82rem;color:var(--text-muted);padding:.5rem 0">'
+    + '<span class="spin" style="display:inline-block;vertical-align:middle;margin-right:6px"></span>'
+    + 'Loading full dataset (all bird detections since 2022)…</div>';
+
   Promise.all([
-    sbGet('/bird_detections?select=species_scientific,confidence,detected_at&limit=3000&order=detected_at.desc'),
+    sbGetAll('bird_detections', 'detected_at', 'select=species_scientific,confidence,detected_at'),
     sbGet('/combined_readings?select=recorded_at,aqi,temperature,precipitation&order=recorded_at.desc&limit=1'),
     sbGet('/bird_detections?select=species_scientific&detected_at=gte.' + todayStr + '&limit=500'),
     sbGet('/soundscape_readings?select=recorded_at,ndsi&order=recorded_at.desc&limit=30'),
     sbCount('climate_readings'),
     sbCount('soundscape_readings'),
+    sbCount('bird_detections'),
   ]).then(function(results) {
     var birds    = Array.isArray(results[0]) ? results[0] : [];
     var latest   = Array.isArray(results[1]) ? results[1] : [];
@@ -1308,8 +1321,10 @@ function loadStats() {
     var ndsiRows = Array.isArray(results[3]) ? results[3] : [];
     var crCount  = results[4];
     var ssCount  = results[5];
+    var birdTotalCount = results[6];
 
     var spSet    = {};
+    var spCountMap = {}; // NEW: per-species detection counts, for rarest-species insight
     var todaySet = {};
     var bestConf = 0;
     var hourC    = new Array(24).fill(0);
@@ -1319,6 +1334,7 @@ function loadStats() {
     for (var i = 0; i < birds.length; i++) {
       var b = birds[i];
       spSet[b.species_scientific] = true;
+      spCountMap[b.species_scientific] = (spCountMap[b.species_scientific] || 0) + 1;
       if (b.confidence > bestConf) bestConf = b.confidence;
       var istMs = new Date(b.detected_at).getTime() + 5.5 * 3600000;
       var istHr = Math.floor(istMs / 3600000) % 24;
@@ -1338,15 +1354,24 @@ function loadStats() {
     var monNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
     var cl = latest[0] || {};
 
+    /* NEW INSIGHT: rarest species all-time (fewest detections, min 1) */
+    var rarestSci = null, rarestCount = Infinity;
+    var spKeys = Object.keys(spCountMap);
+    for (var sk = 0; sk < spKeys.length; sk++) {
+      if (spCountMap[spKeys[sk]] < rarestCount) { rarestCount = spCountMap[spKeys[sk]]; rarestSci = spKeys[sk]; }
+    }
+    var rarestLabel = rarestSci ? rarestSci.split(' ').slice(0,2).join(' ') : '—';
+
     ge('stats-mosaic').innerHTML = [
       { icon:'🐦', val:spCount,                              label:'Total species detected',  sub:'all time · BirdNET AI' },
-      { icon:'🔊', val:birds.length.toLocaleString('en-IN'),  label:'Detections in sample',   sub:'last 3,000 records' },
+      { icon:'🔊', val:(birdTotalCount||birds.length).toLocaleString('en-IN'), label:'Total detections', sub:'every record since 2022' },
       { icon:'📊', val:crCount.toLocaleString('en-IN'),       label:'Climate readings',        sub:'hourly since Jan 2022' },
       { icon:'🌅', val:p2(peakHr)+':00',                     label:'Peak bird hour (IST)',    sub:'when they sing loudest' },
       { icon:'📅', val:monNames[peakMonI],                    label:'Most species month',     sub:maxMonSp + ' unique species' },
       { icon:'🎯', val:Math.round(bestConf*100)+'%',          label:'Best confidence ever',   sub:'clearest call recorded' },
       { icon:'🐣', val:todayCount,                            label:'Species today',           sub:'since midnight IST' },
       { icon:'🍃', val:cl.aqi||'—',                          label:'Current EU AQI',          sub:(cl.temperature||'—')+'°C live' },
+      { icon:'🔍', val:rarestCount===Infinity?'—':rarestCount, label:'Rarest species (detections)', sub:rarestLabel },
     ].map(function(s) {
       return '<div class="sm-card"><div class="sm-icon">'+s.icon+'</div><div class="sm-val">'+s.val+'</div><div class="sm-label">'+s.label+'</div><div class="sm-sub">'+s.sub+'</div></div>';
     }).join('');
