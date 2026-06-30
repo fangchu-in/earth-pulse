@@ -1,7 +1,79 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<script src="upload-guard.js"></script>
+  <!-- Supabase JS — loaded first so the auth check below can run immediately -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script>
+    // ── Auth guard (inline, no separate upload-guard.js file) ────────────────
+    // Real super-admin check: is_super_admin in journal_authors, the SAME
+    // pattern as admin.html/data.html/journal-admin.html/register.html — not
+    // a hand-parsed localStorage scan, not a hardcoded email string. Anyone
+    // with is_super_admin=true can access this page; promoting a future
+    // person is one SQL UPDATE (or a toggle in admin.html → Hill Journal →
+    // Writer access), no code change needed.
+    var _UP_SB_URL = 'https://krmczyqwblsoekceanlj.supabase.co';
+    var _UP_SB_KEY = 'sb_publishable_DrHFT5J0vmrkYraUXIlpQQ_gsk1rdq6';
+    var _upSb = null;
+    var _upUser = null;
+    var _upConfirmed = false; // becomes true ONLY after a verified is_super_admin check
+
+    try { _upSb = window.supabase.createClient(_UP_SB_URL, _UP_SB_KEY); } catch(e) {}
+
+    function upRedirectDenied(msg) {
+      var ov = document.getElementById('up-auth-overlay');
+      if (!ov) return;
+      ov.innerHTML = '<div class="box"><div class="icon">🔒</div>' + (msg || 'Access denied.') +
+        '<br><br><a href="admin.html" style="color:#BF9B7B;font-weight:600;text-decoration:none">← Back to admin</a></div>';
+    }
+
+    function upSignOut() {
+      if (_upSb) _upSb.auth.signOut().catch(function(){});
+      // Matches the corrected pattern used across admin.html/data.html/
+      // journal-admin.html — Supabase's real session key starts with "sb-"
+      // but doesn't contain the literal word "supabase".
+      try {
+        Object.keys(localStorage).forEach(function(k) {
+          if (k.indexOf('sb-') === 0 || k.indexOf('supabase') !== -1) localStorage.removeItem(k);
+        });
+      } catch(e) {}
+      window.location.href = 'index.html';
+    }
+
+    function upVerifyAccess() {
+      if (!_upSb) { upRedirectDenied('Service unavailable — please refresh.'); return; }
+      _upSb.auth.getSession().then(function(d) {
+        if (!d.data || !d.data.session) {
+          window.location.href = 'register.html?redirect=upload.html';
+          return;
+        }
+        _upUser = d.data.session.user;
+        var token = d.data.session.access_token;
+        // Must use the real session token, not the static anon key — RLS on
+        // journal_authors only recognises auth.uid() from a genuine user JWT.
+        return fetch(_UP_SB_URL + '/rest/v1/journal_authors?user_id=eq.' + _upUser.id + '&select=is_super_admin', {
+          headers: { 'apikey': _UP_SB_KEY, 'Authorization': 'Bearer ' + token }
+        }).then(function(r) { return r.json(); });
+      }).then(function(rows) {
+        if (!_upUser) return; // already redirected (no session)
+        var isAdmin = !!(rows && rows.length && rows[0].is_super_admin);
+        if (!isAdmin) {
+          upRedirectDenied('This page is for Earth Pulse admins only.<br>Ask the admin if you believe you should have access.');
+          return;
+        }
+        // Confirmed — reveal the real page content and arm the upload functions.
+        _upConfirmed = true;
+        var ov = document.getElementById('up-auth-overlay');
+        if (ov) ov.remove();
+        var content = document.getElementById('up-page-content');
+        if (content) content.style.display = '';
+        var who = document.getElementById('up-admin-email');
+        if (who) who.textContent = '👤 ' + (_upUser.email || 'Admin');
+      }).catch(function(e) {
+        upRedirectDenied('Could not verify access: ' + e.message);
+      });
+    }
+  </script>
+
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Upload Hill Photo — Earth Pulse</title>
@@ -14,6 +86,20 @@
 <link rel="manifest" href="/site.webmanifest">
   <link rel="stylesheet" href="styles.css">
   <style>
+    /* Auth overlay — shown immediately while verifying admin access; the
+       real page content stays hidden until upVerifyAccess() confirms
+       is_super_admin and removes this. */
+    #up-auth-overlay {
+      position: fixed; inset: 0; background: #0f1923; z-index: 99999;
+      display: flex; align-items: center; justify-content: center;
+    }
+    #up-auth-overlay .box {
+      color: rgba(242,240,230,.65); font-family: system-ui, sans-serif;
+      font-size: .9rem; text-align: center; padding: 0 1.5rem;
+    }
+    #up-auth-overlay .icon { font-size: 1.8rem; margin-bottom: .75rem; }
+    #up-page-content { display: none; }
+
     body { max-width:640px; margin:0 auto; padding:2rem 1.5rem 4rem; }
 
     .page-logo { display:flex; align-items:center; gap:10px; margin-bottom:2rem; }
@@ -68,9 +154,39 @@
     .upload-btn:disabled { opacity:0.5; cursor:not-allowed; }
 
     .back-link { display:block; text-align:center; margin-top:1.5rem; color:var(--ep-green); font-size:0.88rem; text-decoration:none; font-weight:500; }
+
+    /* Admin context bar — small, mobile-friendly, matches admin.html's tone */
+    .admin-bar {
+      max-width: 640px; margin: 0 auto 1.5rem; padding: .6rem 1rem;
+      background: rgba(33,67,50,.06); border-radius: var(--radius-sm);
+      display: flex; align-items: center; justify-content: space-between;
+      gap: .75rem; flex-wrap: wrap; font-size: .8rem; color: var(--text-muted);
+    }
+    .admin-bar a { color: var(--ep-green); text-decoration: none; font-weight: 600; }
+    .admin-bar a:hover { text-decoration: underline; }
+
+    @media (max-width: 480px) {
+      body { padding: 1.25rem 1rem 3rem; }
+      .preview-grid { grid-template-columns: repeat(2,1fr); }
+    }
   </style>
 </head>
 <body>
+
+<div id="up-auth-overlay">
+  <div class="box"><div class="icon">🔐</div>Verifying access…</div>
+</div>
+
+<div id="up-page-content">
+
+<div class="admin-bar">
+  <span id="up-admin-email">👤 Logged in as admin</span>
+  <span style="display:flex;gap:1rem;align-items:center">
+    <a href="admin.html">← Back to admin console</a>
+    <a href="#" onclick="upSignOut();return false" style="color:var(--text-muted);font-weight:400">Sign out</a>
+  </span>
+</div>
+
 
 <div class="page-logo">
   <img src="earth-pulse-logo.png" alt="Earth Pulse">
@@ -110,6 +226,8 @@
 </button>
 
 <a href="hill.html" class="back-link">← View the full hill gallery</a>
+
+</div><!-- /up-page-content -->
 
 <script>
 const SUPABASE_URL = 'https://krmczyqwblsoekceanlj.supabase.co';
@@ -323,6 +441,14 @@ async function uploadOne(item, setMsg, setBar) {
 
 // ── Main upload ───────────────────────────────────────────────────────────────
 async function startUpload() {
+  // Hard gate — even if the visual overlay were somehow bypassed, the actual
+  // write operations (Storage upload, timelapse_frames insert) refuse to run
+  // without a verified is_super_admin session confirmed by upVerifyAccess().
+  if (!_upConfirmed) {
+    alert('Access not verified. Please refresh the page and sign in as an admin.');
+    return;
+  }
+
   const toUpload = files.filter(Boolean);
   if (!toUpload.length) return;
 
@@ -368,6 +494,13 @@ async function startUpload() {
   document.getElementById('preview-grid').innerHTML = '';
   document.getElementById('preview-grid').style.display = 'none';
   fi.value = '';
+}
+
+// Run the access check once the DOM (and Supabase SDK) are ready.
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', upVerifyAccess);
+} else {
+  upVerifyAccess();
 }
 </script>
 <script src="analytics.js"></script>

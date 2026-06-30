@@ -698,7 +698,12 @@ function sp(id, btn) {
     logs:loadLogs, system:loadSystem, trees:loadTrees,
     photos:function(){loadPhotos(false);}, data:loadData,
     usage:loadUsage, users:loadUsers,
-    journal:function(){if(!_journalLoaded){_journalLoaded=true;loadJournal();}},
+    // FIX: this previously only fetched once per page session (a leftover
+    // _journalLoaded guard not used by any other panel). After editing
+    // permissions and switching tabs away and back, the table kept showing
+    // stale pre-edit data. Now matches every other panel: fresh fetch on
+    // every visit, exactly what the manual "↻ Refresh" button already did.
+    journal:loadJournal,
   };
   if (loaders[id]) loaders[id]();
   if (id==='email'&&!_emailInited){_emailInited=true;setTimeout(initEmailPanel,100);}
