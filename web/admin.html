@@ -13,14 +13,14 @@
   <script>
     var _SB_URL = 'https://krmczyqwblsoekceanlj.supabase.co';
     var _SB_KEY = 'sb_publishable_DrHFT5J0vmrkYraUXIlpQQ_gsk1rdq6';
-    var ADMIN_EMAIL = 'fangchu@gmail.com';
-    var _sb = null; var _user = null;
+    var _sb = null; var _user = null; var _isSuperAdmin = false;
     try { _sb = window.supabase.createClient(_SB_URL, _SB_KEY); } catch(e) {}
+    // Early redirect-if-not-logged-in only — the real super-admin check
+    // (is_super_admin in journal_authors) happens once, in DOMContentLoaded
+    // below, so we don't run the same Supabase round trip twice on every load.
     if (_sb) {
       _sb.auth.getSession().then(function(d) {
-        if (!d.data||!d.data.session) { window.location.href='register.html'; return; }
-        if (d.data.session.user.email !== ADMIN_EMAIL) { window.location.href='data.html'; return; }
-        _user = d.data.session.user;
+        if (!d.data || !d.data.session) { window.location.href='register.html?redirect=admin.html'; }
       });
     }
   </script>
@@ -595,13 +595,14 @@
                 <th>Registered user</th>
                 <th style="text-align:center;white-space:nowrap">✍️ Write</th>
                 <th style="text-align:center;white-space:nowrap">🌿 Publish</th>
+                <th style="text-align:center;white-space:nowrap">👑 Super Admin</th>
                 <th>Display name</th>
                 <th style="white-space:nowrap">Last sign-in</th>
                 <th style="text-align:center">Status</th>
               </tr>
             </thead>
             <tbody id="jw-tbody">
-              <tr><td colspan="6" style="text-align:center;padding:2rem;color:var(--text-muted)">Loading registered users…</td></tr>
+              <tr><td colspan="7" style="text-align:center;padding:2rem;color:var(--text-muted)">Loading registered users…</td></tr>
             </tbody>
           </table>
         </div>
@@ -651,7 +652,6 @@ var _SB_KEY    = 'sb_publishable_DrHFT5J0vmrkYraUXIlpQQ_gsk1rdq6';
 var AI_WORKER  = 'https://earthpulse-ai.fangchu.workers.dev';
 var EMAIL_WRKR = 'https://earthpulse-email.fangchu.workers.dev';
 var ADMIN_SEC  = 'earthpulse-admin';
-var ADMIN_EMAIL= 'fangchu@gmail.com';
 
 function ge(id){ return document.getElementById(id); }
 
@@ -707,10 +707,21 @@ function sp(id, btn) {
 window.addEventListener('DOMContentLoaded', function() {
   if (!_sb) return;
   _sb.auth.getSession().then(function(d) {
-    if (!d.data||!d.data.session){window.location.href='register.html';return;}
-    if (d.data.session.user.email!==ADMIN_EMAIL){window.location.href='data.html';return;}
+    if (!d.data||!d.data.session){window.location.href='register.html?redirect=admin.html';return;}
     _user = d.data.session.user;
+    // Real role check: is_super_admin column in journal_authors. Anyone can be
+    // promoted via SQL (UPDATE journal_authors SET is_super_admin=true WHERE
+    // user_id=...) — no code change needed to add a second admin in future.
+    return fetch(_SB_URL + '/rest/v1/journal_authors?user_id=eq.' + _user.id + '&select=is_super_admin', {
+      headers: { 'apikey': _SB_KEY, 'Authorization': 'Bearer ' + d.data.session.access_token }
+    }).then(function(r) { return r.json(); });
+  }).then(function(rows) {
+    if (!_user) return; // already redirected (no session)
+    _isSuperAdmin = !!(rows && rows.length && rows[0].is_super_admin);
+    if (!_isSuperAdmin) { window.location.href='data.html'; return; }
     loadOverview();
+  }).catch(function() {
+    if (_user) window.location.href='data.html';
   });
 });
 
@@ -1175,12 +1186,12 @@ async function testResendConn() {
       var sr=await fetch(EMAIL_WRKR+'/send',{
         method:'POST',
         headers:{'Content-Type':'application/json','Authorization':'Bearer '+ADMIN_SEC},
-        body:JSON.stringify({to:ADMIN_EMAIL,subject:'[EP Diagnostics] Connection test',
+        body:JSON.stringify({to:(_user && _user.email),subject:'[EP Diagnostics] Connection test',
           html:'<p>Email Worker is working correctly. FROM: vaibhav@ektitli.org</p>'})
       });
       var sd=await sr.json();
       r.innerHTML=sr.ok
-        ?'✅ Worker online · ✅ Test email sent to '+ADMIN_EMAIL+' · ID: '+(sd.id||sd.data?.id||'ok')
+        ?'✅ Worker online · ✅ Test email sent to '+(_user && _user.email)+' · ID: '+(sd.id||sd.data?.id||'ok')
         :'✅ Worker online · ❌ Send failed: '+(sd.error||JSON.stringify(sd));
     } else {
       r.innerHTML='❌ Worker HTTP '+res.status+' — check Cloudflare dashboard.';
@@ -1197,16 +1208,16 @@ async function sendTestEmail() {
   var subject=ge('em-subject').value,html=ge('em-body').innerHTML;
   if(!subject){alert('Add a subject first.');return;}
   var s=ge('send-status');
-  s.textContent='Sending test to '+ADMIN_EMAIL+'…';
+  s.textContent='Sending test to '+(_user && _user.email)+'…';
   try {
     var res=await fetch(EMAIL_WRKR+'/send',{
       method:'POST',
       headers:{'Content-Type':'application/json','Authorization':'Bearer '+ADMIN_SEC},
-      body:JSON.stringify({to:ADMIN_EMAIL,subject:'[TEST] '+subject,html:html})
+      body:JSON.stringify({to:(_user && _user.email),subject:'[TEST] '+subject,html:html})
     });
     var d=await res.json();
     if(!res.ok)throw new Error(d.error||'Worker error '+res.status+' — '+JSON.stringify(d));
-    s.innerHTML='✅ Test sent to '+ADMIN_EMAIL+'! Resend ID: '+(d.id||d.data?.id||'ok');
+    s.innerHTML='✅ Test sent to '+(_user && _user.email)+'! Resend ID: '+(d.id||d.data?.id||'ok');
   } catch(e){s.innerHTML='❌ '+e.message;}
 }
 
@@ -1507,14 +1518,14 @@ async function fetchWithWorker(method, path, body) {
 async function loadJournalWriters() {
   var tbody = ge('jw-tbody');
   if (!tbody) return;
-  tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:1.5rem;color:var(--text-muted)">Loading registered users…</td></tr>';
+  tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:1.5rem;color:var(--text-muted)">Loading registered users…</td></tr>';
   ge('jw-global-status').textContent = '';
 
   try {
     var data = await fetchWithWorker('GET', '/journal/users');
     renderWriterTable((data && data.users) || []);
   } catch(e) {
-    tbody.innerHTML = '<tr><td colspan="6" style="color:#dc2626;padding:1rem">Error loading registered users: ' + e.message
+    tbody.innerHTML = '<tr><td colspan="7" style="color:#dc2626;padding:1rem">Error loading registered users: ' + e.message
       + '<br><span style="font-size:.75rem;color:var(--text-muted)">Make sure the updated worker-journal.js (with /journal/users) is deployed.</span></td></tr>';
   }
 }
@@ -1532,7 +1543,7 @@ function relativeTime(iso) {
 function renderWriterTable(users) {
   var tbody = ge('jw-tbody');
   if (!users || !users.length) {
-    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:1.5rem;color:var(--text-muted)">No registered users found.</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:1.5rem;color:var(--text-muted)">No registered users found.</td></tr>';
     return;
   }
 
@@ -1551,9 +1562,11 @@ function renderWriterTable(users) {
         + 'placeholder="Display name">'
       : '<span style="color:var(--text-muted);font-size:.8rem">—</span>';
 
-    var statusCell = hasAccess
-      ? '<span style="font-size:.68rem;background:rgba(22,163,74,.12);color:#15803d;padding:2px 8px;border-radius:10px;font-weight:600">Writer</span>'
-      : '<span style="font-size:.68rem;background:rgba(33,67,50,.07);color:var(--text-muted);padding:2px 8px;border-radius:10px">Registered</span>';
+    var statusCell = u.is_super_admin
+      ? '<span style="font-size:.68rem;background:rgba(124,58,237,.12);color:#6d28d9;padding:2px 8px;border-radius:10px;font-weight:600">Super Admin</span>'
+      : hasAccess
+        ? '<span style="font-size:.68rem;background:rgba(22,163,74,.12);color:#15803d;padding:2px 8px;border-radius:10px;font-weight:600">Writer</span>'
+        : '<span style="font-size:.68rem;background:rgba(33,67,50,.07);color:var(--text-muted);padding:2px 8px;border-radius:10px">Registered</span>';
 
     var writeCell, publishCell;
     if (hasAccess) {
@@ -1570,10 +1583,20 @@ function renderWriterTable(users) {
         + 'onclick="grantWriterAccess(\'' + rowId + '\',\'' + escHtml(u.email) + '\',true,true,this)">Grant + publish</button>';
     }
 
+    // Super admin toggle — only available once they already have a journal_authors
+    // row (hasAccess). Granting super-admin to someone with no row yet would
+    // need their UUID resolved first via Grant write/publish above.
+    var superCell = hasAccess
+      ? '<input type="checkbox" ' + (u.is_super_admin ? 'checked' : '') + ' '
+        + 'onchange="toggleSuperAdmin(\'' + u.author_id + '\',this.checked,\'' + escHtml(u.email) + '\',this)" '
+        + 'style="accent-color:#7c3aed;width:16px;height:16px;cursor:pointer" title="Toggle full admin.html access">'
+      : '<span style="color:var(--text-muted);font-size:.75rem">grant write first</span>';
+
     return '<tr id="jw-row-' + rowId + '">'
       + '<td style="font-family:var(--mono);font-size:.79rem">' + dot + escHtml(u.email) + '</td>'
       + '<td style="text-align:center">' + writeCell   + '</td>'
       + '<td style="text-align:center">' + publishCell + '</td>'
+      + '<td style="text-align:center">' + superCell   + '</td>'
       + '<td>' + nameCell + '</td>'
       + '<td style="font-size:.78rem;color:var(--text-muted);white-space:nowrap">' + relativeTime(u.last_sign_in) + '</td>'
       + '<td style="text-align:center">' + statusCell + '</td>'
@@ -1618,6 +1641,35 @@ async function toggleWriterPerm(authorId, field, value, email) {
     status.style.color = '#dc2626';
     status.textContent = '❌ Save error: ' + e.message;
     setTimeout(loadJournalWriters, 500); // reload to reset checkbox to true state
+  }
+}
+
+// Super admin = full admin.html access (monitoring, plant moderation, email
+// sender, writer management, everything on this page). Confirm before
+// granting OR revoking, since this is the highest privilege level in the app.
+async function toggleSuperAdmin(authorId, value, email, checkbox) {
+  var verb = value ? 'Grant' : 'Revoke';
+  var msg  = value
+    ? 'Grant FULL ADMIN ACCESS to ' + email + '?\n\nThey will be able to see and use everything on this admin.html page — monitoring, plant moderation, email sender, and managing other writers\' access.'
+    : 'Revoke admin access from ' + email + '?\n\nThey will be downgraded to a regular journal writer (their can_write/can_publish settings stay as-is).';
+
+  if (!confirm(msg)) {
+    if (checkbox) checkbox.checked = !value; // revert the visual toggle
+    return;
+  }
+
+  var status = ge('jw-global-status');
+  status.style.color = 'var(--text-muted)';
+  status.textContent = verb + 'ing admin access for ' + email + '…';
+  try {
+    await fetchWithWorker('POST', '/journal/update-access', { author_id: authorId, is_super_admin: value });
+    status.style.color = '#16a34a';
+    status.textContent = '✅ ' + email + ' — admin access ' + (value ? 'granted' : 'revoked');
+    setTimeout(loadJournalWriters, 600);
+  } catch(e) {
+    status.style.color = '#dc2626';
+    status.textContent = '❌ Save error: ' + e.message;
+    setTimeout(loadJournalWriters, 500);
   }
 }
 

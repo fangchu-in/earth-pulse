@@ -35,27 +35,43 @@
 
     // Resolve where to send the user after auth: ?redirect=<page> if present
     // (e.g. register.html?redirect=journal-admin.html when bounced from a
-    // protected page), otherwise fall back to the role-based default.
-    // Admins ALWAYS go to admin.html unless they explicitly came from a
-    // specific protected page (so journal-admin.html, etc. still honour
-    // ?redirect for admins too — an admin visiting journal-admin.html while
-    // logged out should land back on journal-admin.html, not admin.html).
-    function resolveDestination(email) {
+    // protected page) takes priority over everything — if someone was trying
+    // to reach a specific page, send them back there regardless of role.
+    // Otherwise: real is_super_admin lookup in journal_authors decides
+    // admin.html vs data.html — no hardcoded email anywhere.
+    //
+    // userId + accessToken are needed for the DB lookup; pass null for either
+    // if unavailable (e.g. brand-new registration with no journal_authors row
+    // yet) and this safely falls back to data.html.
+    async function resolveDestination(userId, accessToken) {
       var params = new URLSearchParams(window.location.search);
       var redirect = params.get('redirect');
       if (redirect) {
         // Only allow same-site relative paths — never an absolute/external URL
         if (/^[a-zA-Z0-9_\-]+\.html$/.test(redirect)) return redirect;
       }
-      return email === 'fangchu@gmail.com' ? 'admin.html' : 'data.html';
+
+      if (!userId || !accessToken) return 'data.html';
+
+      try {
+        var res = await fetch(SB_URL + '/rest/v1/journal_authors?user_id=eq.' + userId + '&select=is_super_admin', {
+          headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + accessToken }
+        });
+        var rows = await res.json();
+        var isSuperAdmin = !!(rows && rows.length && rows[0].is_super_admin);
+        return isSuperAdmin ? 'admin.html' : 'data.html';
+      } catch (e) {
+        return 'data.html'; // fail safe — never block login over a lookup error
+      }
     }
 
     // If already logged in, redirect immediately
     if (_supabase) {
       _supabase.auth.getSession().then(function(d) {
         if (!d.data || !d.data.session) return;
-        var email = d.data.session.user.email;
-        window.location.href = resolveDestination(email);
+        return resolveDestination(d.data.session.user.id, d.data.session.access_token);
+      }).then(function(dest) {
+        if (dest) window.location.href = dest;
       }).catch(function(){});
     }
   </script>
@@ -286,7 +302,8 @@ async function doRegister() {
     // If a session was created, redirect. Otherwise show success panel.
     if (result.data && result.data.session) {
       sessionStorage.setItem('ep_new_user', '1');
-      window.location.href = resolveDestination(email);
+      var dest = await resolveDestination(result.data.session.user.id, result.data.session.access_token);
+      window.location.href = dest;
     } else {
       // Email confirmation is ON — show success state, let user click through
       ge('panel-register').style.display = 'none';
@@ -333,7 +350,8 @@ async function doLogin() {
     }
 
     var userEmail = result.data.user.email;
-    window.location.href = resolveDestination(userEmail);
+    var dest = await resolveDestination(result.data.user.id, result.data.session.access_token);
+    window.location.href = dest;
 
   } catch(err) {
     showMsg('Unexpected error: ' + err.message);
@@ -353,9 +371,19 @@ async function doMagicLink() {
   btn.disabled = true; btn.textContent = 'Sending…';
 
   try {
+    // Magic link completes auth on a fresh page load with no access token
+    // available yet at send-time, so we can't look up is_super_admin here.
+    // Send them back to register.html (preserving any ?redirect= the user
+    // originally had) — its own "already logged in" check at the top of this
+    // file does the real async lookup once the session actually exists.
+    var params = new URLSearchParams(window.location.search);
+    var existingRedirect = params.get('redirect');
+    var magicTarget = 'https://earth-pulse.org/register.html'
+      + (existingRedirect ? '?redirect=' + encodeURIComponent(existingRedirect) : '');
+
     var result = await _supabase.auth.signInWithOtp({
       email: email,
-      options: { emailRedirectTo: 'https://earth-pulse.org/' + resolveDestination(email) }
+      options: { emailRedirectTo: magicTarget }
     });
     if (result.error) throw result.error;
     ge('magic-msg').style.display = 'block';

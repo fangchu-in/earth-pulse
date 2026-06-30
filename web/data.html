@@ -869,35 +869,31 @@ function switchPanel(id, btn) {
 function loadJournalPanel() {
   if (!_user) return;
 
-  // Admin always has full journal access — no DB check needed
-  var ADMIN_EMAIL = 'fangchu@gmail.com';
-  if (_user.email === ADMIN_EMAIL) {
-    ge('journal-checking').style.display = 'none';
-    ge('journal-allowed').style.display  = 'block';
-    ge('journal-role-label').textContent = 'Role: Super admin — full access';
-    ge('journal-publish-note').textContent = ' You can publish entries directly to the live site.';
-    loadMyJournalEntries();
-    return;
-  }
-
-  // Check journal_authors table for this user
-  fetch(SB + '/rest/v1/journal_authors?user_id=eq.' + _user.id + '&select=can_write,can_publish,display_name', { headers: H })
+  // Check journal_authors table for this user — is_super_admin gives full
+  // access (same as can_write+can_publish), regular writers get can_write/
+  // can_publish only. Both checked in one query, no hardcoded email needed.
+  fetch(SB + '/rest/v1/journal_authors?user_id=eq.' + _user.id + '&select=can_write,can_publish,display_name,is_super_admin', { headers: H })
     .then(function(r) { return r.json(); })
     .then(function(rows) {
       ge('journal-checking').style.display = 'none';
 
-      if (!rows || !rows.length || (!rows[0].can_write && !rows[0].can_publish)) {
+      var author = (rows && rows.length) ? rows[0] : null;
+      var hasAccess = author && (author.can_write || author.can_publish || author.is_super_admin);
+
+      if (!hasAccess) {
         // No access
         ge('journal-denied').style.display = 'block';
         loadPublishedJournalEntries();
         return;
       }
 
-      var author = rows[0];
       ge('journal-allowed').style.display = 'block';
 
       // Role label
-      if (author.can_publish) {
+      if (author.is_super_admin) {
+        ge('journal-role-label').textContent = 'Role: Super admin — full access';
+        ge('journal-publish-note').textContent = ' You can publish entries directly to the live site.';
+      } else if (author.can_publish) {
         ge('journal-role-label').textContent = 'Role: Author with publish rights';
         ge('journal-publish-note').textContent = ' You can publish entries directly to the live site.';
       } else {

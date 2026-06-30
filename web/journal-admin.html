@@ -1148,12 +1148,10 @@ function doJournalLogout() {
 }
 
 async function bootJournalAdmin() {
-  var ADMIN_EMAIL_J = 'fangchu@gmail.com';
-
   // _userj and _sbj are set in <head> by the guard script
   var attempts = 0;
   while (typeof _userj === 'undefined' || !_userj) {
-    if (attempts++ > 30) { window.location.href = 'register.html'; return; }
+    if (attempts++ > 30) { window.location.href = 'register.html?redirect=journal-admin.html'; return; }
     await new Promise(function(r) { setTimeout(r, 150); });
   }
 
@@ -1163,30 +1161,27 @@ async function bootJournalAdmin() {
   SESSION_TOKEN = sd.data.session.access_token;
   SESSION_USER  = sd.data.session.user;
 
-  // Admin always has full access — no journal_authors row needed
-  if (SESSION_USER.email === ADMIN_EMAIL_J) {
-    _canPublish = true;
-    revealEditor('Vaibhav Dugar (Admin)');
-    return;
-  }
-
-  // Check journal_authors for everyone else
+  // Single query covers everyone — is_super_admin gives full access the same
+  // way can_write+can_publish does for a regular writer. No hardcoded email.
   var res = await fetch(SB_URL + '/rest/v1/journal_authors?user_id=eq.' + SESSION_USER.id
-    + '&select=can_write,can_publish,display_name', {
+    + '&select=can_write,can_publish,display_name,is_super_admin', {
     headers: { 'apikey': SB_ANON, 'Authorization': 'Bearer ' + SESSION_TOKEN }
   });
   var rows = await res.json();
+  var author = (rows && rows.length) ? rows[0] : null;
+  var hasAccess = author && (author.can_write || author.can_publish || author.is_super_admin);
 
-  if (!rows || !rows.length || (!rows[0].can_write && !rows[0].can_publish)) {
-    showDenied(!rows || !rows.length
+  if (!hasAccess) {
+    showDenied(!author
       ? 'Your account is not registered as a Hill Journal writer. Ask the admin to grant you access.'
       : 'Your account does not have write permission for the Hill Journal.');
     return;
   }
 
-  var author = rows[0];
-  _canPublish = !!author.can_publish;
-  revealEditor(author.display_name || SESSION_USER.email);
+  _canPublish = !!(author.can_publish || author.is_super_admin);
+  var label = author.display_name || SESSION_USER.email;
+  if (author.is_super_admin) label += ' (Admin)';
+  revealEditor(label);
 }
 
 function revealEditor(displayName) {
