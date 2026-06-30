@@ -18,13 +18,16 @@
     if (_sbj) {
       _sbj.auth.getSession().then(function(d) {
         if (!d.data || !d.data.session) {
-          window.location.href = 'register.html'; return;
+          window.location.href = 'register.html?redirect=journal-admin.html'; return;
         }
         _userj = d.data.session.user;
         /* journal_authors check happens in DOMContentLoaded after page renders */
-      }).catch(function() { window.location.href = 'register.html'; });
+      }).catch(function() { window.location.href = 'register.html?redirect=journal-admin.html'; });
     }
   </script>
+
+  <!-- Shared site stylesheet — required for nav.js to render the nav bar correctly -->
+  <link rel="stylesheet" href="styles.css">
 
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1156,7 +1159,7 @@ async function bootJournalAdmin() {
 
   // Get fresh session token
   var sd = await _sbj.auth.getSession();
-  if (!sd.data || !sd.data.session) { window.location.href = 'register.html'; return; }
+  if (!sd.data || !sd.data.session) { window.location.href = 'register.html?redirect=journal-admin.html'; return; }
   SESSION_TOKEN = sd.data.session.access_token;
   SESSION_USER  = sd.data.session.user;
 

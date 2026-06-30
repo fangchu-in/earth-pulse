@@ -33,12 +33,29 @@
       console.error('Supabase init failed:', e);
     }
 
+    // Resolve where to send the user after auth: ?redirect=<page> if present
+    // (e.g. register.html?redirect=journal-admin.html when bounced from a
+    // protected page), otherwise fall back to the role-based default.
+    // Admins ALWAYS go to admin.html unless they explicitly came from a
+    // specific protected page (so journal-admin.html, etc. still honour
+    // ?redirect for admins too — an admin visiting journal-admin.html while
+    // logged out should land back on journal-admin.html, not admin.html).
+    function resolveDestination(email) {
+      var params = new URLSearchParams(window.location.search);
+      var redirect = params.get('redirect');
+      if (redirect) {
+        // Only allow same-site relative paths — never an absolute/external URL
+        if (/^[a-zA-Z0-9_\-]+\.html$/.test(redirect)) return redirect;
+      }
+      return email === 'fangchu@gmail.com' ? 'admin.html' : 'data.html';
+    }
+
     // If already logged in, redirect immediately
     if (_supabase) {
       _supabase.auth.getSession().then(function(d) {
         if (!d.data || !d.data.session) return;
         var email = d.data.session.user.email;
-        window.location.href = email === 'fangchu@gmail.com' ? 'admin.html' : 'data.html';
+        window.location.href = resolveDestination(email);
       }).catch(function(){});
     }
   </script>
@@ -269,7 +286,7 @@ async function doRegister() {
     // If a session was created, redirect. Otherwise show success panel.
     if (result.data && result.data.session) {
       sessionStorage.setItem('ep_new_user', '1');
-      window.location.href = 'data.html';
+      window.location.href = resolveDestination(email);
     } else {
       // Email confirmation is ON — show success state, let user click through
       ge('panel-register').style.display = 'none';
@@ -316,7 +333,7 @@ async function doLogin() {
     }
 
     var userEmail = result.data.user.email;
-    window.location.href = userEmail === 'fangchu@gmail.com' ? 'admin.html' : 'data.html';
+    window.location.href = resolveDestination(userEmail);
 
   } catch(err) {
     showMsg('Unexpected error: ' + err.message);
@@ -338,7 +355,7 @@ async function doMagicLink() {
   try {
     var result = await _supabase.auth.signInWithOtp({
       email: email,
-      options: { emailRedirectTo: email === 'fangchu@gmail.com' ? 'https://earth-pulse.org/admin.html' : 'https://earth-pulse.org/data.html' }
+      options: { emailRedirectTo: 'https://earth-pulse.org/' + resolveDestination(email) }
     });
     if (result.error) throw result.error;
     ge('magic-msg').style.display = 'block';
