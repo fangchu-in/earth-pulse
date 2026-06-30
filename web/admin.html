@@ -1289,9 +1289,18 @@ async function loadRegisteredUsers() {
 
     tbody.innerHTML = users.map(function(u) {
       var regDate = u.created_at ? new Date(u.created_at).toLocaleDateString('en-IN', {day:'numeric',month:'short',year:'numeric'}) : '—';
-      var journalBadge = u.author_id != null
-        ? '<span style="font-size:.68rem;background:rgba(22,163,74,.12);color:#15803d;padding:2px 8px;border-radius:10px;font-weight:600">' + (u.can_publish ? 'Writer + Publisher' : 'Writer') + '</span>'
-        : '<span style="font-size:.68rem;background:rgba(33,67,50,.07);color:var(--text-muted);padding:2px 8px;border-radius:10px">No access</span>';
+      // FIX: previously checked only u.author_id != null (row exists), which
+      // showed "Writer" for anyone with a journal_authors row even if their
+      // can_write/can_publish were both false (e.g. revoked but row kept).
+      // This was the cause of the count mismatch vs Hill Journal's table —
+      // both panels had this same bug; now both check the real booleans.
+      var journalBadge = u.is_super_admin
+        ? '<span style="font-size:.68rem;background:rgba(124,58,237,.12);color:#6d28d9;padding:2px 8px;border-radius:10px;font-weight:600">Super Admin</span>'
+        : u.can_publish
+          ? '<span style="font-size:.68rem;background:rgba(22,163,74,.12);color:#15803d;padding:2px 8px;border-radius:10px;font-weight:600">Writer + Publisher</span>'
+          : u.can_write
+            ? '<span style="font-size:.68rem;background:rgba(22,163,74,.12);color:#15803d;padding:2px 8px;border-radius:10px;font-weight:600">Writer</span>'
+            : '<span style="font-size:.68rem;background:rgba(33,67,50,.07);color:var(--text-muted);padding:2px 8px;border-radius:10px">No access</span>';
       return '<tr>'
         + '<td style="font-family:var(--mono);font-size:.79rem">' + escHtml(u.email) + '</td>'
         + '<td style="font-size:.78rem;color:var(--text-muted);white-space:nowrap">' + regDate + '</td>'
@@ -1572,11 +1581,16 @@ function renderWriterTable(users) {
         + 'placeholder="Display name">'
       : '<span style="color:var(--text-muted);font-size:.8rem">—</span>';
 
+    // FIX: previously showed "Writer" for anyone with hasAccess (a
+    // journal_authors row exists), even if can_write/can_publish were both
+    // false — same bug as the People panel, now both check real booleans.
     var statusCell = u.is_super_admin
       ? '<span style="font-size:.68rem;background:rgba(124,58,237,.12);color:#6d28d9;padding:2px 8px;border-radius:10px;font-weight:600">Super Admin</span>'
-      : hasAccess
+      : (u.can_write || u.can_publish)
         ? '<span style="font-size:.68rem;background:rgba(22,163,74,.12);color:#15803d;padding:2px 8px;border-radius:10px;font-weight:600">Writer</span>'
-        : '<span style="font-size:.68rem;background:rgba(33,67,50,.07);color:var(--text-muted);padding:2px 8px;border-radius:10px">Registered</span>';
+        : hasAccess
+          ? '<span style="font-size:.68rem;background:rgba(33,67,50,.07);color:var(--text-muted);padding:2px 8px;border-radius:10px">No active access</span>'
+          : '<span style="font-size:.68rem;background:rgba(33,67,50,.07);color:var(--text-muted);padding:2px 8px;border-radius:10px">Registered</span>';
 
     var writeCell, publishCell;
     if (hasAccess) {
