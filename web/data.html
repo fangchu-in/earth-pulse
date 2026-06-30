@@ -926,8 +926,19 @@ function loadJournalPanel() {
 }
 
 function loadMyJournalEntries() {
-  // Fetch entries created by this user
-  fetch(SB + '/rest/v1/field_notes?created_by=eq.' + _user.id + '&select=id,entry_number,slug,status,session_date,author,topics_discussed&order=session_date.desc&limit=20', { headers: H })
+  // Fetch entries created by this user.
+  // FIX: must use the real session access_token, not the static anon key in
+  // H — field_notes' RLS policies require auth.uid() = created_by, which
+  // only resolves correctly when the request carries the user's own JWT.
+  // Same bug class already fixed in loadJournalPanel() above; this is the
+  // sibling function that does the actual list-fetch and was missed in
+  // that earlier pass.
+  _sb.auth.getSession().then(function(d) {
+    var token = (d.data && d.data.session) ? d.data.session.access_token : _SB_KEY;
+    return fetch(_SB_URL + '/rest/v1/field_notes?created_by=eq.' + _user.id + '&select=id,entry_number,slug,status,session_date,author,topics_discussed&order=session_date.desc&limit=20', {
+      headers: { 'apikey': _SB_KEY, 'Authorization': 'Bearer ' + token }
+    });
+  })
     .then(function(r) { return r.json(); })
     .then(function(entries) {
       var wrap = ge('journal-my-entries');
