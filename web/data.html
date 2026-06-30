@@ -872,7 +872,21 @@ function loadJournalPanel() {
   // Check journal_authors table for this user — is_super_admin gives full
   // access (same as can_write+can_publish), regular writers get can_write/
   // can_publish only. Both checked in one query, no hardcoded email needed.
-  fetch(SB + '/rest/v1/journal_authors?user_id=eq.' + _user.id + '&select=can_write,can_publish,display_name,is_super_admin', { headers: H })
+  //
+  // IMPORTANT: must use the user's real session access_token here, not the
+  // static anon key in H — journal_authors has an RLS policy scoped to the
+  // 'authenticated' role checking auth.uid(), which only applies when the
+  // request carries the user's own JWT. The generic H object (built from
+  // the static publishable key) has no session context, so RLS would
+  // silently return zero rows even for an authorized user. journal-admin.html,
+  // register.html, and admin.html already do this correctly — this brings
+  // data.html in line with them.
+  _sb.auth.getSession().then(function(d) {
+    var token = (d.data && d.data.session) ? d.data.session.access_token : _SB_KEY;
+    return fetch(_SB_URL + '/rest/v1/journal_authors?user_id=eq.' + _user.id + '&select=can_write,can_publish,display_name,is_super_admin', {
+      headers: { 'apikey': _SB_KEY, 'Authorization': 'Bearer ' + token }
+    });
+  })
     .then(function(r) { return r.json(); })
     .then(function(rows) {
       ge('journal-checking').style.display = 'none';

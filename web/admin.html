@@ -727,7 +727,12 @@ window.addEventListener('DOMContentLoaded', function() {
 
 function doSignOut() {
   if (_sb) _sb.auth.signOut().catch(function(){});
-  try{Object.keys(localStorage).forEach(function(k){if(k.indexOf('supabase')!==-1)localStorage.removeItem(k);});}catch(e){}
+  // FIX: Supabase's actual session storage key is like "sb-<project-ref>-auth-token"
+  // — it starts with "sb-" but does NOT contain the literal substring "supabase".
+  // The old check (indexOf('supabase') !== -1) never matched it, so the real
+  // persisted session survived sign-out and the head guard's getSession() call
+  // would find it again on next visit, silently logging the admin back in.
+  try{Object.keys(localStorage).forEach(function(k){if(k.indexOf('sb-')===0||k.indexOf('supabase')!==-1)localStorage.removeItem(k);});}catch(e){}
   window.location.href='index.html';
 }
 
