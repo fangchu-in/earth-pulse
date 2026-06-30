@@ -301,7 +301,7 @@
     <div class="admin-sep"></div>
     <div class="admin-cat">Communications</div>
     <button class="al" id="al-email" onclick="sp('email',this)">✉️ Email sender</button>
-    <button class="al" id="al-users" onclick="sp('users',this)">👥 Subscribers</button>
+    <button class="al" id="al-users" onclick="sp('users',this)">👥 People</button>
 
     <div class="admin-sep"></div>
     <div class="admin-cat">Reports</div>
@@ -328,6 +328,13 @@
       </div>
       <div class="card"><div class="card-title">Data freshness</div><div id="ov-fresh">Loading…</div></div>
       <div class="card"><div class="card-title">Node status</div><div id="ov-nodes">Loading…</div></div>
+      <div class="card">
+        <div class="card-title">Quick actions</div>
+        <div style="display:flex;gap:.75rem;flex-wrap:wrap">
+          <a href="https://earth-pulse.org/upload" target="_blank" class="ext-btn">📷 Upload Hill photos</a>
+          <a href="journal-admin.html" class="ext-btn sec">📓 Open Journal Editor</a>
+        </div>
+      </div>
     </div>
 
     <!-- LIVE SENSORS -->
@@ -382,7 +389,9 @@
     <!-- PHOTOS -->
     <div class="panel" id="panel-photos">
       <div class="ptitle">Photo Gallery</div>
-      <div class="psub">All timelapse frames. Delete removes the Supabase row (R2 file remains). <button class="refresh-btn" onclick="loadPhotos(true)">↻ Refresh</button></div>
+      <div class="psub">All timelapse frames. Delete removes the Supabase row (R2 file remains). <button class="refresh-btn" onclick="loadPhotos(true)">↻ Refresh</button>
+        <a href="https://earth-pulse.org/upload" target="_blank" class="ext-btn sec" style="margin-left:.5rem;font-size:.78rem;padding:.35rem .85rem">📷 Upload Hill photos →</a>
+      </div>
       <div class="photo-filter-bar">
         <span style="font-size:.78rem;color:var(--text-muted);font-weight:600">Filter:</span>
         <button class="photo-filter-btn on" onclick="setPhotoFilter('all',this)">All</button>
@@ -488,17 +497,41 @@
       </div>
     </div>
 
-    <!-- SUBSCRIBERS -->
+    <!-- PEOPLE (registered users + newsletter subscribers) -->
     <div class="panel" id="panel-users">
-      <div class="ptitle">Subscribers</div>
-      <div class="psub" id="user-sub">Loading…</div>
-      <div class="tbl-wrap">
-        <table class="tbl">
-          <thead><tr><th>Email</th><th>Subscribed</th><th>Source</th></tr></thead>
-          <tbody id="users-body"><tr><td colspan="3" style="text-align:center;padding:2rem;color:var(--text-muted)">Loading…</td></tr></tbody>
-        </table>
+      <div class="ptitle">👥 People</div>
+      <div class="psub">Everyone who has an account or has signed up for the newsletter. <button class="refresh-btn" onclick="loadUsers()">↻ Refresh</button></div>
+
+      <!-- Registered users (auth.users) -->
+      <div class="card" style="margin-bottom:1.25rem">
+        <div class="card-title">🔐 Registered users</div>
+        <div id="reg-users-sub" style="font-size:.82rem;color:var(--text-muted);margin-bottom:1rem">Loading…</div>
+        <div class="tbl-wrap">
+          <table class="tbl">
+            <thead><tr><th>Email</th><th>Registered</th><th>Last sign-in</th><th>Journal access</th></tr></thead>
+            <tbody id="reg-users-body"><tr><td colspan="4" style="text-align:center;padding:1.5rem;color:var(--text-muted)">Loading…</td></tr></tbody>
+          </table>
+        </div>
+        <p style="font-size:.78rem;color:var(--text-muted);margin-top:.75rem">
+          These are people who created an account at earth-pulse.org/register.html. Only registered users can log in —
+          manage who can write Hill Journal entries from <a href="#" onclick="sp('journal',document.getElementById('al-journal'));return false" style="color:var(--ep-green);font-weight:600">📓 Hill Journal → Writer access</a>.
+        </p>
       </div>
-      <p style="font-size:.78rem;color:var(--text-muted);margin-top:.75rem">Full auth user list: Supabase → Authentication → Users.</p>
+
+      <!-- Newsletter subscribers -->
+      <div class="card">
+        <div class="card-title">📬 Newsletter subscribers</div>
+        <div class="psub" id="user-sub" style="margin-bottom:1rem">Loading…</div>
+        <div class="tbl-wrap">
+          <table class="tbl">
+            <thead><tr><th>Email</th><th>Subscribed</th><th>Source</th></tr></thead>
+            <tbody id="users-body"><tr><td colspan="3" style="text-align:center;padding:1.5rem;color:var(--text-muted)">Loading…</td></tr></tbody>
+          </table>
+        </div>
+        <p style="font-size:.78rem;color:var(--text-muted);margin-top:.75rem">
+          People who submitted their email for updates — this list is separate from registered accounts above; subscribing doesn't require login.
+        </p>
+      </div>
     </div>
 
     <!-- USAGE -->
@@ -531,46 +564,48 @@
         <a href="journal-admin.html" class="ext-btn sec" style="margin-left:.5rem;font-size:.78rem;padding:.35rem .85rem">Open Journal Editor →</a>
       </div>
 
-      <!-- ── Writer access management ── -->
+      <!-- ── Writer access — registered user picker ── -->
       <div class="card" style="margin-bottom:1.25rem">
-        <div class="card-title">👥 Writer access</div>
-        <p style="font-size:.82rem;color:var(--text-muted);margin-bottom:1rem;line-height:1.65">
-          Grant or revoke journal write/publish permissions for any registered user.
-          <strong>can_write</strong> = can create and edit drafts.
-          <strong>can_publish</strong> = can commit to GitHub (live site).
-        </p>
-        <div id="journal-writers-list"><div class="ep-skeleton" style="height:80px;border-radius:var(--radius-md)"></div></div>
-
-        <!-- Add writer form -->
-        <div style="margin-top:1.25rem;padding-top:1.25rem;border-top:1px solid var(--border)">
-          <div style="font-weight:600;font-size:.85rem;color:var(--ep-green);margin-bottom:.75rem">Grant access to a user</div>
-          <p style="font-size:.78rem;color:var(--text-muted);margin-bottom:.75rem;line-height:1.6">
-            The user must already be registered (have a Supabase auth account).
-            Look up their UUID in Supabase → Authentication → Users.
-          </p>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:.75rem">
-            <div>
-              <div style="font-size:.72rem;color:var(--text-muted);margin-bottom:4px;text-transform:uppercase;letter-spacing:.06em;font-weight:600">User UUID</div>
-              <input type="text" id="jw-uid" placeholder="xxxxxxxx-xxxx-…"
-                style="width:100%;padding:.55rem .85rem;border:1.5px solid var(--border-strong);border-radius:var(--radius-sm);font-family:var(--mono);font-size:.8rem;color:var(--ep-green);box-sizing:border-box;outline:none">
-            </div>
-            <div>
-              <div style="font-size:.72rem;color:var(--text-muted);margin-bottom:4px;text-transform:uppercase;letter-spacing:.06em;font-weight:600">Display name</div>
-              <input type="text" id="jw-name" placeholder="Full name"
-                style="width:100%;padding:.55rem .85rem;border:1.5px solid var(--border-strong);border-radius:var(--radius-sm);font-family:var(--sans);font-size:.88rem;color:var(--ep-green);box-sizing:border-box;outline:none">
-            </div>
-          </div>
-          <div style="display:flex;gap:1.25rem;align-items:center;margin-bottom:.75rem;flex-wrap:wrap">
-            <label style="display:flex;align-items:center;gap:6px;font-size:.85rem;cursor:pointer">
-              <input type="checkbox" id="jw-write" checked style="accent-color:var(--ep-green);width:15px;height:15px"> can_write
-            </label>
-            <label style="display:flex;align-items:center;gap:6px;font-size:.85rem;cursor:pointer">
-              <input type="checkbox" id="jw-publish" style="accent-color:var(--ep-green);width:15px;height:15px"> can_publish
-            </label>
-            <button class="ext-btn" style="font-size:.82rem;padding:.42rem .95rem" onclick="addJournalWriter()">Grant access</button>
-            <span id="jw-status" style="font-family:var(--mono);font-size:.78rem;color:var(--text-muted)"></span>
-          </div>
+        <div class="card-title" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem">
+          <span>👥 Writer access</span>
+          <button class="refresh-btn" onclick="loadJournalWriters()">↻ Refresh list</button>
         </div>
+        <p style="font-size:.82rem;color:var(--text-muted);margin-bottom:1.1rem;line-height:1.65">
+          Every registered user (Supabase auth account) is listed below — only registered
+          users can log in to write entries, so newsletter subscribers who haven't created
+          an account won't appear here. Toggle <strong>Write</strong> (create/edit drafts) and
+          <strong>Publish</strong> (commit to GitHub, go live) per person. Changes save instantly.
+        </p>
+
+        <!-- Legend -->
+        <div style="display:flex;gap:1rem;margin-bottom:.85rem;flex-wrap:wrap">
+          <span style="font-size:.72rem;display:flex;align-items:center;gap:4px;color:var(--text-muted)">
+            <span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#22c55e"></span> Has journal access
+          </span>
+          <span style="font-size:.72rem;display:flex;align-items:center;gap:4px;color:var(--text-muted)">
+            <span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#e5e7eb;border:1px solid #d1d5db"></span> No access
+          </span>
+        </div>
+
+        <!-- The registered-user+writer table -->
+        <div class="tbl-wrap" id="jw-table-wrap">
+          <table class="tbl">
+            <thead>
+              <tr>
+                <th>Registered user</th>
+                <th style="text-align:center;white-space:nowrap">✍️ Write</th>
+                <th style="text-align:center;white-space:nowrap">🌿 Publish</th>
+                <th>Display name</th>
+                <th style="white-space:nowrap">Last sign-in</th>
+                <th style="text-align:center">Status</th>
+              </tr>
+            </thead>
+            <tbody id="jw-tbody">
+              <tr><td colspan="6" style="text-align:center;padding:2rem;color:var(--text-muted)">Loading registered users…</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div id="jw-global-status" style="font-family:var(--mono);font-size:.76rem;color:var(--text-muted);margin-top:.6rem;min-height:1.2em"></div>
       </div>
 
       <!-- ── All entries with moderation ── -->
@@ -1207,14 +1242,55 @@ function initEmailPanel(){
 }
 
 /* ══════════════════════════════════════════════════════════════════
-   USERS / SUBSCRIBERS
-   FIX: select only specific columns to avoid RLS column-level blocks
+   PEOPLE — registered users (auth.users via Worker) + newsletter subs
 ══════════════════════════════════════════════════════════════════ */
 async function loadUsers() {
+  await Promise.all([loadRegisteredUsers(), loadNewsletterSubs()]);
+}
+
+/* Registered users — pulled from Supabase auth.users via the journal
+   Worker's /journal/users route (it already has service-key access).
+   Reused here so the admin doesn't need two separate code paths for
+   the same underlying data. */
+async function loadRegisteredUsers() {
+  var sub = ge('reg-users-sub');
+  var tbody = ge('reg-users-body');
+  tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:1.5rem;color:var(--text-muted)">Loading…</td></tr>';
+  try {
+    var data = await fetchWithWorker('GET', '/journal/users');
+    var users = (data && data.users) || [];
+    sub.textContent = users.length + ' registered user' + (users.length !== 1 ? 's' : '') + ' · accounts at earth-pulse.org/register.html';
+
+    if (!users.length) {
+      tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:1.5rem;color:var(--text-muted)">No registered users yet.</td></tr>';
+      return;
+    }
+
+    tbody.innerHTML = users.map(function(u) {
+      var regDate = u.created_at ? new Date(u.created_at).toLocaleDateString('en-IN', {day:'numeric',month:'short',year:'numeric'}) : '—';
+      var journalBadge = u.author_id != null
+        ? '<span style="font-size:.68rem;background:rgba(22,163,74,.12);color:#15803d;padding:2px 8px;border-radius:10px;font-weight:600">' + (u.can_publish ? 'Writer + Publisher' : 'Writer') + '</span>'
+        : '<span style="font-size:.68rem;background:rgba(33,67,50,.07);color:var(--text-muted);padding:2px 8px;border-radius:10px">No access</span>';
+      return '<tr>'
+        + '<td style="font-family:var(--mono);font-size:.79rem">' + escHtml(u.email) + '</td>'
+        + '<td style="font-size:.78rem;color:var(--text-muted);white-space:nowrap">' + regDate + '</td>'
+        + '<td style="font-size:.78rem;color:var(--text-muted);white-space:nowrap">' + relativeTime(u.last_sign_in) + '</td>'
+        + '<td>' + journalBadge + '</td>'
+        + '</tr>';
+    }).join('');
+  } catch(e) {
+    sub.textContent = 'Error loading registered users.';
+    tbody.innerHTML = '<tr><td colspan="4" style="color:#dc2626;padding:1rem">Error: ' + e.message
+      + '<br><span style="font-size:.75rem;color:var(--text-muted)">Make sure the updated worker-journal.js (with /journal/users) is deployed.</span></td></tr>';
+  }
+}
+
+/* FIX: select only specific columns to avoid RLS column-level blocks */
+async function loadNewsletterSubs() {
   try {
     /* FIX: use sbCount for accurate count, then fetch rows for display */
     var count = await sbCount('newsletter_signups');
-    ge('user-sub').textContent = count+' newsletter subscriber'+(count!==1?'s':'')+' · Full auth user list in Supabase → Authentication → Users.';
+    ge('user-sub').textContent = count+' newsletter subscriber'+(count!==1?'s':'');
 
     if(!count){
       ge('users-body').innerHTML='<tr><td colspan="3" style="text-align:center;padding:1.5rem;color:var(--text-muted)">No subscribers yet.</td></tr>';
@@ -1227,7 +1303,7 @@ async function loadUsers() {
 
     if(!rows.length){
       ge('users-body').innerHTML='<tr><td colspan="3" style="text-align:center;padding:1.5rem;color:var(--text-muted)">'
-        +count+' subscribers exist but RLS may be blocking row fetch. Check Supabase → Authentication → Users for full list.</td></tr>';
+        +count+' subscribers exist but RLS may be blocking row fetch.</td></tr>';
       return;
     }
 
@@ -1396,101 +1472,160 @@ async function deletePhoto(id){
 }
 /* ══════════════════════════════════════════════════════════════════
    HILL JOURNAL ADMIN
+   Writers are picked from REGISTERED USERS (Supabase auth.users) —
+   not newsletter subscribers. Logging in to write requires an auth
+   account, so that's the only list that matters here. The Worker's
+   GET /journal/users merges auth.users with journal_authors so the
+   admin only ever clicks buttons — no UUIDs, no manual lookups.
 ══════════════════════════════════════════════════════════════════ */
 var _journalLoaded = false;
+var JOURNAL_WORKER = 'https://earthpulse-journal.fangchu.workers.dev';
+var WORKER_SECRET  = '1f8d9b6c4a7e2d31b5c8f0a9e6d2473bc1a5f89d7e0c4b2a6f1d9e8c3b7a5f20';
 
 async function loadJournal() {
   await Promise.all([loadJournalWriters(), loadJournalEntries()]);
 }
 
-/* ── Writers list ── */
+async function fetchWithWorker(method, path, body) {
+  var opts = {
+    method: method,
+    headers: {
+      'Content-Type': 'application/json',
+      'X-Worker-Secret': WORKER_SECRET,
+    },
+  };
+  if (body) opts.body = JSON.stringify(body);
+  var res = await fetch(JOURNAL_WORKER + path, opts);
+  if (!res.ok) {
+    var e = await res.json().catch(function() { return { error: res.statusText }; });
+    throw new Error(e.error || res.statusText);
+  }
+  return res.json();
+}
+
+/* ── Writer picker — shows all registered users with toggle controls ── */
 async function loadJournalWriters() {
-  var wrap = ge('journal-writers-list');
-  if (!wrap) return;
-  wrap.innerHTML = '<div style="font-size:.85rem;color:var(--text-muted)">Loading writers…</div>';
+  var tbody = ge('jw-tbody');
+  if (!tbody) return;
+  tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:1.5rem;color:var(--text-muted)">Loading registered users…</td></tr>';
+  ge('jw-global-status').textContent = '';
+
   try {
-    var rows = await sbGet('/journal_authors?select=id,user_id,display_name,bio,can_write,can_publish&order=created_at.asc');
-    if (!Array.isArray(rows) || !rows.length) {
-      wrap.innerHTML = '<p style="font-size:.85rem;color:var(--text-muted)">No writers registered yet.</p>';
-      return;
-    }
-    wrap.innerHTML = '<div class="tbl-wrap"><table class="tbl"><thead><tr>'
-      + '<th>Name</th><th>User ID</th><th>can_write</th><th>can_publish</th><th>Remove</th>'
-      + '</tr></thead><tbody>'
-      + rows.map(function(r) {
-          return '<tr data-aid="' + r.id + '">'
-            + '<td><strong>' + (r.display_name || '—') + '</strong></td>'
-            + '<td style="font-family:var(--mono);font-size:.72rem;color:var(--text-muted)">' + r.user_id.slice(0,16) + '…</td>'
-            + '<td><input type="checkbox"' + (r.can_write ? ' checked' : '') + ' onchange="updateJournalWriter(\'' + r.id + '\')" style="accent-color:var(--ep-green);width:15px;height:15px;cursor:pointer"></td>'
-            + '<td><input type="checkbox"' + (r.can_publish ? ' checked' : '') + ' onchange="updateJournalWriter(\'' + r.id + '\')" style="accent-color:var(--ep-green);width:15px;height:15px;cursor:pointer"></td>'
-            + '<td><button class="mod-btn mod-reject" onclick="removeJournalWriter(\'' + r.id + '\',\'' + (r.display_name||'') + '\')">Remove</button></td>'
-            + '</tr>';
-        }).join('')
-      + '</tbody></table></div>';
+    var data = await fetchWithWorker('GET', '/journal/users');
+    renderWriterTable((data && data.users) || []);
   } catch(e) {
-    wrap.innerHTML = '<p style="color:#dc2626;font-size:.85rem">Error: ' + e.message + '</p>';
+    tbody.innerHTML = '<tr><td colspan="6" style="color:#dc2626;padding:1rem">Error loading registered users: ' + e.message
+      + '<br><span style="font-size:.75rem;color:var(--text-muted)">Make sure the updated worker-journal.js (with /journal/users) is deployed.</span></td></tr>';
   }
 }
 
-async function updateJournalWriter(authorId) {
-  var tr = document.querySelector('[data-aid="' + authorId + '"]');
-  if (!tr) return;
-  var boxes = tr.querySelectorAll('input[type=checkbox]');
-  var can_write   = boxes[0].checked;
-  var can_publish = boxes[1].checked;
+function relativeTime(iso) {
+  if (!iso) return '<span style="color:var(--text-muted)">Never</span>';
+  var d = new Date(iso);
+  var days = Math.floor((Date.now() - d.getTime()) / 86400000);
+  if (days < 1) return 'Today';
+  if (days === 1) return 'Yesterday';
+  if (days < 30) return days + 'd ago';
+  return d.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+}
+
+function renderWriterTable(users) {
+  var tbody = ge('jw-tbody');
+  if (!users || !users.length) {
+    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:1.5rem;color:var(--text-muted)">No registered users found.</td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = users.map(function(u) {
+    var hasAccess = u.author_id != null;
+    var rowId = escHtml(u.user_id);
+
+    var dot = hasAccess
+      ? '<span style="display:inline-block;width:9px;height:9px;border-radius:50%;background:#22c55e;margin-right:5px"></span>'
+      : '<span style="display:inline-block;width:9px;height:9px;border-radius:50%;background:#e5e7eb;border:1px solid #d1d5db;margin-right:5px"></span>';
+
+    var nameCell = hasAccess
+      ? '<input type="text" value="' + escHtml(u.display_name || '') + '" '
+        + 'onchange="updateWriterName(\'' + u.author_id + '\',this.value)" '
+        + 'style="width:100%;padding:3px 6px;border:1px solid var(--border);border-radius:3px;font-family:var(--sans);font-size:.8rem;color:var(--ep-green);box-sizing:border-box" '
+        + 'placeholder="Display name">'
+      : '<span style="color:var(--text-muted);font-size:.8rem">—</span>';
+
+    var statusCell = hasAccess
+      ? '<span style="font-size:.68rem;background:rgba(22,163,74,.12);color:#15803d;padding:2px 8px;border-radius:10px;font-weight:600">Writer</span>'
+      : '<span style="font-size:.68rem;background:rgba(33,67,50,.07);color:var(--text-muted);padding:2px 8px;border-radius:10px">Registered</span>';
+
+    var writeCell, publishCell;
+    if (hasAccess) {
+      writeCell   = '<input type="checkbox" ' + (u.can_write   ? 'checked' : '') + ' '
+        + 'onchange="toggleWriterPerm(\'' + u.author_id + '\',\'can_write\',this.checked,\'' + escHtml(u.email) + '\')" '
+        + 'style="accent-color:var(--ep-green);width:16px;height:16px;cursor:pointer" title="Toggle write access">';
+      publishCell = '<input type="checkbox" ' + (u.can_publish ? 'checked' : '') + ' '
+        + 'onchange="toggleWriterPerm(\'' + u.author_id + '\',\'can_publish\',this.checked,\'' + escHtml(u.email) + '\')" '
+        + 'style="accent-color:var(--ep-green);width:16px;height:16px;cursor:pointer" title="Toggle publish access">';
+    } else {
+      writeCell   = '<button class="mod-btn mod-approve" style="white-space:nowrap;font-size:.72rem" '
+        + 'onclick="grantWriterAccess(\'' + rowId + '\',\'' + escHtml(u.email) + '\',true,false,this)">Grant write</button>';
+      publishCell = '<button class="mod-btn mod-approve" style="white-space:nowrap;font-size:.72rem" '
+        + 'onclick="grantWriterAccess(\'' + rowId + '\',\'' + escHtml(u.email) + '\',true,true,this)">Grant + publish</button>';
+    }
+
+    return '<tr id="jw-row-' + rowId + '">'
+      + '<td style="font-family:var(--mono);font-size:.79rem">' + dot + escHtml(u.email) + '</td>'
+      + '<td style="text-align:center">' + writeCell   + '</td>'
+      + '<td style="text-align:center">' + publishCell + '</td>'
+      + '<td>' + nameCell + '</td>'
+      + '<td style="font-size:.78rem;color:var(--text-muted);white-space:nowrap">' + relativeTime(u.last_sign_in) + '</td>'
+      + '<td style="text-align:center">' + statusCell + '</td>'
+      + '</tr>';
+  }).join('');
+}
+
+async function grantWriterAccess(userId, email, canWrite, canPublish, btn) {
+  if (btn) { btn.disabled = true; btn.textContent = 'Granting…'; }
+  var status = ge('jw-global-status');
+  status.style.color = 'var(--text-muted)';
+  status.textContent = 'Granting access to ' + email + '…';
   try {
-    var r = await fetch(_SB_URL + '/rest/v1/journal_authors?id=eq.' + authorId, {
-      method: 'PATCH',
-      headers: { 'apikey': _SB_KEY, 'Authorization': 'Bearer ' + _SB_KEY,
-                 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
-      body: JSON.stringify({ can_write: can_write, can_publish: can_publish })
+    await fetchWithWorker('POST', '/journal/grant-access', {
+      user_id: userId,
+      email: email,
+      can_write: canWrite,
+      can_publish: canPublish,
     });
-    if (!r.ok) throw new Error('HTTP ' + r.status);
+    status.style.color = '#16a34a';
+    status.textContent = '✅ Access granted to ' + email;
+    setTimeout(loadJournalWriters, 600);
   } catch(e) {
-    alert('Save error: ' + e.message);
+    status.style.color = '#dc2626';
+    status.textContent = '❌ Error: ' + e.message;
+    if (btn) { btn.disabled = false; btn.textContent = 'Retry'; }
   }
 }
 
-async function removeJournalWriter(authorId, name) {
-  if (!confirm('Remove journal access for ' + (name || authorId) + '?\nThis does not delete their entries.')) return;
+async function toggleWriterPerm(authorId, field, value, email) {
+  var status = ge('jw-global-status');
+  status.style.color = 'var(--text-muted)';
+  status.textContent = 'Saving…';
   try {
-    var r = await fetch(_SB_URL + '/rest/v1/journal_authors?id=eq.' + authorId, {
-      method: 'DELETE',
-      headers: { 'apikey': _SB_KEY, 'Authorization': 'Bearer ' + _SB_KEY, 'Prefer': 'return=minimal' }
-    });
-    if (r.ok || r.status === 204) loadJournalWriters();
-    else throw new Error('HTTP ' + r.status);
-  } catch(e) { alert('Error: ' + e.message); }
+    var body = { author_id: authorId };
+    body[field] = value;
+    await fetchWithWorker('POST', '/journal/update-access', body);
+    status.style.color = '#16a34a';
+    status.textContent = '✅ ' + (email || '') + ' — ' + field + ' set to ' + value;
+    setTimeout(function() { if (ge('jw-global-status').textContent.indexOf('✅') === 0) ge('jw-global-status').textContent = ''; }, 3000);
+  } catch(e) {
+    status.style.color = '#dc2626';
+    status.textContent = '❌ Save error: ' + e.message;
+    setTimeout(loadJournalWriters, 500); // reload to reset checkbox to true state
+  }
 }
 
-async function addJournalWriter() {
-  var uid   = (ge('jw-uid').value || '').trim();
-  var name  = (ge('jw-name').value || '').trim();
-  var write = ge('jw-write').checked;
-  var pub   = ge('jw-publish').checked;
-  var st    = ge('jw-status');
-  if (!uid || uid.length < 30) { st.textContent = 'Enter a valid UUID.'; return; }
-  if (!name) { st.textContent = 'Display name required.'; return; }
-  st.textContent = 'Saving…';
+async function updateWriterName(authorId, name) {
   try {
-    var r = await fetch(_SB_URL + '/rest/v1/journal_authors', {
-      method: 'POST',
-      headers: { 'apikey': _SB_KEY, 'Authorization': 'Bearer ' + _SB_KEY,
-                 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
-      body: JSON.stringify({ user_id: uid, display_name: name, can_write: write, can_publish: pub })
-    });
-    if (!r.ok) {
-      var e = await r.json();
-      throw new Error(e.message || e.code || r.status);
-    }
-    st.textContent = '✅ Access granted';
-    ge('jw-uid').value = '';
-    ge('jw-name').value = '';
-    ge('jw-write').checked = true;
-    ge('jw-publish').checked = false;
-    loadJournalWriters();
+    await fetchWithWorker('POST', '/journal/update-access', { author_id: authorId, display_name: name });
   } catch(e) {
-    st.textContent = 'Error: ' + e.message;
+    ge('jw-global-status').textContent = '❌ Name save error: ' + e.message;
   }
 }
 
@@ -1537,17 +1672,10 @@ function escHtml(t) {
 }
 
 async function adminPublishEntry(entryId) {
-  if (!confirm('Publish this entry? This will call /generate-entry — assembles sensor data, commits to GitHub, and pings search engines.')) return;
-  var WORKER_SECRET = '1f8d9b6c4a7e2d31b5c8f0a9e6d2473bc1a5f89d7e0c4b2a6f1d9e8c3b7a5f20';
+  if (!confirm('Publish this entry? This will generate HTML, commit to GitHub, and ping search engines.')) return;
   try {
-    var res = await fetch('https://earthpulse-journal.fangchu.workers.dev/generate-entry', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'X-Worker-Secret': WORKER_SECRET },
-      body: JSON.stringify({ field_note_id: entryId })
-    });
-    var data = await res.json();
-    if (!res.ok || data.error) throw new Error(data.error || res.statusText);
-    alert('✅ Published!\nURL: ' + (data.url || '?') + '\nCommit: ' + (data.commit || '').slice(0, 7));
+    var res = await fetchWithWorker('POST', '/generate-entry', { field_note_id: entryId });
+    alert('✅ Published!\nURL: ' + (res.url || '?') + '\nCommit: ' + (res.commit || '').slice(0, 7));
     loadJournalEntries();
   } catch(e) {
     alert('Publish error: ' + e.message);
@@ -1555,7 +1683,7 @@ async function adminPublishEntry(entryId) {
 }
 
 async function adminDeleteEntry(entryId, entryNum) {
-  if (!confirm('PERMANENTLY delete entry #' + entryNum + '?\n\nThis deletes the database row. The GitHub static HTML file will remain until the index is regenerated. This cannot be undone.')) return;
+  if (!confirm('PERMANENTLY delete entry #' + entryNum + '?\n\nThe database row is deleted. The static HTML on GitHub stays until index is regenerated. Cannot be undone.')) return;
   try {
     var r = await fetch(_SB_URL + '/rest/v1/field_notes?id=eq.' + entryId, {
       method: 'DELETE',
