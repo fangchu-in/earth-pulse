@@ -1,0 +1,7 @@
+/*
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=()
+  Strict-Transport-Security: max-age=31536000; includeSubDomains
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://*.supabase.co https://upload.wikimedia.org https://en.wikipedia.org blob:; connect-src 'self' https://*.supabase.co https://api.open-meteo.com https://earthpulse-ai.fangchu.workers.dev https://earthpulse-email.fangchu.workers.dev https://en.wikipedia.org; frame-ancestors 'none'
